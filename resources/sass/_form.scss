@@ -1,0 +1,153 @@
+
+button:disabled{
+    opacity: .9;
+    cursor: not-allowed;
+}
+.control + .control {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+.forms{
+    margin-top: 2rem;
+    .from{
+        transition: all .3s ease-in-out;
+    }
+}
+
+.control{
+    position: relative;
+    label{
+        display: block;
+        font-size: .8rem;
+        margin-bottom: .6rem;
+        color: #1e212a;
+    }
+    p{
+        font-size: .77rem;
+        margin-top: .2rem;
+        color: darken($color: $gray, $amount: 20);
+    }
+    input, select{
+        width: 100%;
+        min-height: 35px;
+        border: 1px solid $gray-200;
+        padding: 0 .6rem;
+        border-radius: 4px;
+        outline: none;
+        transition: all .3s ease-in-out;
+        font-size: .9rem;
+        font-weight: 100;
+        color: #212121;
+    }
+
+    input[type="file"]{
+        padding: .5rem;
+    }
+    input::placeholder{
+        font-family: $font-family-sans-serif;
+        font-size: .8rem;
+        color: $gray;
+        font-weight: 100;
+    }
+    input:hover{
+        border-color: lighten($color: $gray-300, $amount: 50);
+    }
+
+    input:hover ~ .icon svg{
+        fill: lighten($color: $gray-300, $amount: 50);
+    }
+
+
+    input:active{
+        border-color: $gray-300;
+    }
+    input:focus{
+        border-color: $gray-400;
+    }
+    .icon{
+        width: 22px;
+        height: auto;
+        position: absolute;
+        right: .6rem;
+        top: 50%;
+        transform: translateY(-50%);
+        
+        svg{
+            transition: all .2s ease-in-out;
+            fill: $gray;
+
+        }
+    }
+}
+
+
+.btn{
+    border: none;
+    border-radius: 4px;
+    box-shadow: none;
+    background: none;
+    box-shadow: none;
+    display: block;
+    font-size: .9rem;
+    text-transform: uppercase;
+    letter-spacing: .6px;
+    padding: .6rem 1rem;
+    outline: none;
+    cursor: pointer;
+    font-weight: 100;
+    transition: all .3s ease-in-out;
+}
+
+.btn-primary{
+    box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.btn-primary:hover{
+    background-color: darken($color: $blue, $amount: 5%);
+}
+
+.btn-primary:active{
+    background-color: darken($color: $blue, $amount: 40%);
+}
+
+.btn-blue{
+    background-color: $blue;
+    color: $white;
+}
+
+.radio-group__item {
+    border: 1px solid $gray-200;
+    padding: 1rem;
+    background-color: lighten($color: $gray-200, $amount: 20);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all .3s ease-in-out;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0), 0 4px 5px 0 rgba(0, 0, 0, 0), 0 1px 10px 0 rgba(0, 0, 0, 0.12);
+}
+
+.radio-group__item.active{
+    border-color: $green;
+}
+
+.radio-group__item:hover{
+    background-color: lighten($color: $gray-200, $amount: 10);
+}
+
+.radio-group__item + .radio-group__item{
+    margin-top: .5rem;
+}
+
+.radio-group__item p{
+    font-weight: 100;
+    font-size: .77rem;
+    color: $gray-300;
+    margin-top: .4rem;
+    margin-bottom: 0;
+}
+
+.radio-group__item span{
+    color: $gray-400;
+    font-weight: 100;
+    letter-spacing: 0;
+}

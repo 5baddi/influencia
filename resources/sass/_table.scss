@@ -1,0 +1,61 @@
+.table{
+    background: #fff;
+    border-radius: 4px;
+    width: 100%;
+    box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+    border: 1px solid rgba(0,0,0,.12);
+}
+
+.table thead td{
+    min-height: 64px;
+}
+
+.table thead td{
+    color: rgba(0,0,0,.54);
+    font-weight: 100;
+    text-transform: uppercase;
+    font-size: .7rem;
+    padding: .8rem .6rem;
+    border-bottom: 1px solid rgba(0,0,0,.12);
+    
+}
+
+.table tbody td{
+    font-size: .8rem;
+    padding: .8rem .6rem;
+    color: $black-100;
+}
+
+.table tbody a{
+    color: $blue;
+}
+
+.badge{
+    border-radius: 4px;
+    padding: .4rem .5rem;
+    font-size: .7rem;
+    display: block;
+    
+    text-align: center;
+}
+
+.badge + .badge{
+    margin-top: .4rem;
+}
+
+.badge-success{
+    background: $green;
+    color: $white;
+}
+.badge-info{
+    background: $blue;
+    color: $white;
+}
+
+.table li + li {
+   margin-top: 0.4rem;
+}
+
+.table .info{
+    text-align: center;
+}
