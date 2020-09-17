@@ -70,7 +70,8 @@ class SearchController extends Controller
         $response = $client->get($url, [
             'cookies' => $cookieJar,
             "REMOTE_ADDR" => $dynamic_ip,
-            "HTTP_X_FORWARDED_FOR" => $dynamic_ip
+            "HTTP_X_FORWARDED_FOR" => $dynamic_ip,
+            'verify'    =>  !config('app.debug')
         ]);
 
         $body = $response->getBody();
@@ -117,7 +118,7 @@ class SearchController extends Controller
                     "id"    => $post["id"],
                     "display_url"   => $post["display_url"],
                     "is_video"    => $post["is_video"],
-                    "edge_media_to_caption"    => $post["edge_media_to_caption"]["edges"][0]["node"]["text"],
+                    "edge_media_to_caption"    => $post["edge_media_to_caption"]["edges"][0]["node"]["text"] ?? null,
                     "edge_media_to_comment"    => $post["edge_media_to_comment"]["count"],
                     "comments_disabled"    => $post["comments_disabled"],
                     "edge_liked_by"    => $post["edge_liked_by"],
@@ -150,7 +151,8 @@ class SearchController extends Controller
         $response = $client->get($url, [
             'cookies' => $cookieJar,
             "REMOTE_ADDR" => $dynamic_ip,
-            "HTTP_X_FORWARDED_FOR" => $dynamic_ip
+            "HTTP_X_FORWARDED_FOR" => $dynamic_ip,
+            'verify'    =>  !config('app.debug')
         ]);
 
         $body = $response->getBody();
