@@ -55,9 +55,4 @@ class TrackerMedia extends Model
     {
         return $this->belongsTo(Tracker::class);
     }
-
-    public function medias()
-    {
-        return $this->hasMany(TrackerMedia::class);
-    }
 }

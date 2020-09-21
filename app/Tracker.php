@@ -78,4 +78,9 @@ class Tracker extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+
+    public function medias()
+    {
+        return $this->hasMany(TrackerMedia::class);
+    }
 }
