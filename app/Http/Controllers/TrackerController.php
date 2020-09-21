@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Campaign;
+use App\Http\Requests\CreateTrackerRequest;
 use Illuminate\Http\Request;
 
 class TrackerController extends Controller
@@ -22,7 +23,7 @@ class TrackerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(CreateTrackerRequest $request)
     {
 
     }

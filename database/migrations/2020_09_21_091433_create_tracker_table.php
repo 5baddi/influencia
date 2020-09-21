@@ -15,13 +15,13 @@ class CreateTrackerTable extends Migration
     {
         Schema::create('trackers', function (Blueprint $table) {
             $table->id();
-            $table->foreign('user_id', 'users');
-            $table->foreign('campaign_id', 'campaigns');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('campaign_id');
             $table->string('uuid')->unique()->nullable(false);
-            $table->enum('platform', ['instagram', 'snapchat'])->default('instagram');
             $table->enum('type', ['url', 'post', 'story'])->default('url');
-            $table->string('username')->nullable(false);
             $table->string('name')->unique()->nullable(false);
+            $table->enum('platform', ['instagram', 'snapchat', null])->nullable();
+            $table->string('username')->nullable();
             $table->string('url')->nullable();
             $table->integer('nbr_squences')->nullable();
             $table->integer('nbr_squences_impressions')->nullable();
@@ -36,16 +36,21 @@ class CreateTrackerTable extends Migration
             $table->date('posted_date')->nullable();
             $table->time('posted_hour')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('campaign_id')->references('id')->on('campaigns');
         });
 
         Schema::create('tracker_medias', function(Blueprint $table){
             $table->id();
-            $table->foreign('tracker_id', 'trackers');
+            $table->unsignedBigInteger('tracker_id');
             $table->string('uuid')->unique()->nullable(false);
             $table->string('name')->unique()->nullable(false);
             $table->string('media_path')->nullable(false);
             $table->enum('type', ['media', 'proof'])->default('media');
             $table->timestamps();
+
+            $table->foreign('tracker_id')->references('id')->on('trackers');
         });
     }
 
