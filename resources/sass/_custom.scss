@@ -22,6 +22,12 @@ a.icon-link{
 }
 
 .form-control{
+    position: relative;
     margin-top: 1rem;
     margin-bottom: 1rem;
+}
+
+.btn-primary{
+    background-color: $blue;
+    color: white;
 }

@@ -1065,8 +1065,14 @@ a.icon-link:last-child {
 }
 
 .form-control {
+  position: relative;
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.btn-primary {
+  background-color: #039be5;
+  color: white;
 }
 
 .table {

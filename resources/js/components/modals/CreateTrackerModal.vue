@@ -55,6 +55,11 @@
                      </div>
                   </div>
                   <div class="form-url" v-show="type === 'story'">
+                     <div class="control">
+                        <label>Story medias</label>
+                        <FileInput v-bind:id="'upload-story'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/*,video/mp4,video/x-m4v,video/*'" v-bind:icon="'fas fa-plus'"></FileInput>
+                        <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
+                     </div>
                      <div class="form-control">
                         <p class="modal-form__heading">Which platform was used to post the story?</p>
                         <label for="instagram" class="instagram-radio">
@@ -141,7 +146,11 @@
 </template>
 <script>
 import {mapGetters} from 'vuex';
+import FileInput from '../FileInput';
 export default {
+   components: {
+      FileInput
+   },
    props: {
       show: {
          default: false,
