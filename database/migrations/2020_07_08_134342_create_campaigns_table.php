@@ -15,7 +15,6 @@ class CreateCampaignsTable extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
-            //$table->string('uuid')->unique();
             $table->string('uuid');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('brand_id');

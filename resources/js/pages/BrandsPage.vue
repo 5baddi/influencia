@@ -13,10 +13,7 @@
             </ul>
          </div>
          <div class="hero__actions">
-            <button
-               class="btn btn-success"
-               @click="showAddBrandModal = !showAddBrandModal"
-            >Add new Brand</button>
+            <button class="btn btn-success" @click="showAddBrandModal = !showAddBrandModal">Add new Brand</button>
          </div>
       </div>
       <div class="p-1">
@@ -68,20 +65,21 @@
                      <td>
                         <p>{{ moment(brand.created_at).format('DD/MM/YYYY h:mm') }}</p>
                      </td>
-                     <td></td>
+                     <td class="text-center">
+                        <a href="javascript:void(0);" v-show="brand.id" class="icon-link" title="Edit" @click="showEditBrandModal(brand)"><i class="fas fa-pen"></i></a>
+                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
+                     </td>
                   </tr>
                   <tr v-if="!brands.length">
                      <td colspan="7">
-                        <p
-                           class="info"
-                        >Looks like you don't have a brand record, start creating one.</p>
+                        <p class="info">Looks like you don't have a brand record, start creating one.</p>
                      </td>
                   </tr>
                </tbody>
             </table>
          </div>
       </div>
-      <CreateBrandModal :show="showAddBrandModal" @create="create" @dismiss="dismissAddBrandModal" />
+      <CreateBrandModal :show="showAddBrandModal" :brand="brand" @create="create" @dismiss="dismissAddBrandModal" />
    </div>
 </template>
 <script>
@@ -95,6 +93,7 @@ export default {
    data() {
       return {
          showAddBrandModal: false,
+         brand: {},
          isLoading: true
       };
    },
@@ -111,17 +110,23 @@ export default {
       moment() {
          return moment();
       },
-      dismissAddBrandModal() {
+      dismissAddBrandModal(id) {
          this.showAddBrandModal = false;
+         this.brand = {};
       },
       create(payload) {
          let formData = new FormData();
+         formData.append("id", payload.id);
          formData.append("image", payload.image);
          formData.append("name", payload.name);
          this.$store.dispatch("addBrand", formData).then(() => {
             this.createBrandSuccess({ message: "Brand created successfully." });
          });
          this.dismissAddBrandModal();
+      },
+      showEditBrandModal(brand){
+         this.showAddBrandModal = true;
+         this.brand = brand ?? null;
       }
    },
    computed: {

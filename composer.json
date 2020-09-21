@@ -15,7 +15,9 @@
         "laravel/framework": "^7.0",
         "laravel/sanctum": "^2.3",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^2.0"
+        "laravel/ui": "^2.0",
+        "raiym/instagram-php-scraper": "^0.9.14",
+        "webpatser/laravel-uuid": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

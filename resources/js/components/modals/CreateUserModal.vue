@@ -10,7 +10,7 @@
                   <input v-model="name" type="text" placeholder="User name" required />
                </div>
                <div class="control">
-                  <input v-model="email" type="email" placeholder="email" required />
+                  <input v-model="email" type="email" placeholder="Email" required />
                </div>
                <div class="control">
                   <input v-model="password" type="text" placeholder="Password" required />
@@ -18,7 +18,7 @@
                <div class="control">
                   <label for="brand">Brand</label>
                   <select id="brand" v-model="brand">
-                     <option value selected disabled>select a brand</option>
+                     <option value selected disabled>Select a brand</option>
                      <option
                         :value="brand.id"
                         v-for="brand in brands"

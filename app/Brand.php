@@ -11,6 +11,7 @@ class Brand extends Model
     {
         return $this->belongsToMany(User::class, 'brand_user');
     }
+    
     public function campaigns()
     {
         return $this->hasMany(Campaign::class);

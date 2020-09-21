@@ -118,7 +118,6 @@ const actions = {
     },
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {
-            const campaigns = null;
             if (state.activeBrand) {
                 api.get(`/api/campaigns/${state.activeBrand.id}`)
                     .then((response) => {
@@ -132,7 +131,6 @@ const actions = {
 
         });
     }
-
 };
 
 const mutations = {
@@ -172,7 +170,7 @@ const mutations = {
                     brand = item
                 }
             });
-            console.log(brand);
+            // console.log(brand);
         }
         state.activeBrand = brand
     },
@@ -181,9 +179,9 @@ const mutations = {
             state.campaigns = [];
         }
         state.campaigns.push(campaign)
-        console.log("%%%%%%%%%%%%%%")
-        console.log(campaign)
-        console.log("%%%%%%%%%%%%%%")
+        // console.log("%%%%%%%%%%%%%%")
+        // console.log(campaign)
+        // console.log("%%%%%%%%%%%%%%")
     },
     setCampaigns: (state, { campaigns }) => {
         state.campaigns = campaigns;

@@ -1043,6 +1043,32 @@ button:disabled {
   text-align: center !important;
 }
 
+a.icon-link {
+  margin-right: 8px;
+}
+
+a.icon-link:hover {
+  opacity: 0.7;
+}
+
+a.icon-link:last-child {
+  margin-right: 0;
+}
+
+.instagram-radio {
+  color: #DD2A7B;
+}
+
+.snapchat-radio {
+  margin-left: 2rem;
+  color: #FFFC00;
+}
+
+.form-control {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

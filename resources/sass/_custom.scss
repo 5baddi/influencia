@@ -1,0 +1,27 @@
+.text-center{
+    text-align: center !important;
+}
+
+a.icon-link{
+    margin-right: 8px;
+
+    &:hover{
+        opacity: .7;
+    }
+    &:last-child{
+        margin-right: 0;
+    }
+}
+
+.instagram-radio{
+    color: #DD2A7B;
+}
+.snapchat-radio{
+    margin-left: 2rem;
+    color: #FFFC00;
+}
+
+.form-control{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}

@@ -54,7 +54,7 @@
                         </router-link>
                      </li>
                      <li>
-                        <a href="#" @click="logout">
+                        <a href="javascript:void(0);" @click="logout">
                            <div class="icon">
                               <svg width="24" height="24" viewBox="0 0 24 24">
                                  <g fill="none" fill-rule="evenodd">
@@ -74,7 +74,7 @@
             </TopNavItem>
          </div>
          <div class="dashboard__content__page">
-            <loading :active.sync="isLoading" :can-cancel="false" :on-cancel="onCancel" :is-full-page="false"></loading>
+            <loading :active.sync="isLoading" :can-cancel="false" :is-full-page="false"></loading>
             <router-view></router-view>
          </div>
       </div>

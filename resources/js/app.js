@@ -14,6 +14,10 @@ import App from './pages/App'
 import { api } from './api/index'
 import './notifications'
 
+// Stylesheet
+import '@fortawesome/fontawesome-free/css/all.css'
+import '@fortawesome/fontawesome-free/js/all.js'
+
 
 
 Vue.prototype.$http = api;

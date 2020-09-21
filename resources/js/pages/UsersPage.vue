@@ -66,9 +66,6 @@
                         <p v-else>-</p>
                      </td>
                   </tr>
-                  <tr v-show="!users">
-                     <td colspan="6" class="text-center">No data!</td>
-                  </tr>
                </tbody>
             </table>
          </div>

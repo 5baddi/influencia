@@ -88,12 +88,19 @@ export default {
          showAddTrackerModal: false
       };
    },
+   created(){
+      // Fetch brand compaigns
+      if(!this.$store.getters.campaigns){
+         this.$store.dispatch("fetchCampaigns");
+      }
+   },
    methods: {
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
       },
       create(payload) {
-         console.log("payload", payload);
+         let data = payload.data;
+         console.log(data);
       }
    }
 };

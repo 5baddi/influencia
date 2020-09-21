@@ -42,17 +42,17 @@
                <h2>Result for {{ query }}</h2>
                <div class="influencer">
                   <div class="avatar">
-                     <img :src="result.profile_pic_url" alt />
+                     <img :src="result.profile_pic_url"/>
                   </div>
                   <div class="meta">
                      <h3>{{ result.name }}</h3>
                      <p>{{ result.username}}</p>
-                     <p>
+                     <p v-show="!!result.biography">
                         <strong>Biography:</strong>
                         {{result.biography}}
                      </p>
-                     <p>
-                        <a :href="result.website">{{ result.website}}</a>
+                     <p v-show="!!result.website">
+                        <strong>Website:</strong><a :href="result.website">{{ result.website }}</a>
                      </p>
                      <p>
                         <strong>Business account:</strong>

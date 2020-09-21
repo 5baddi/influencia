@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use InstagramScraper\Instagram;
 use GuzzleHttp\Cookie\CookieJar;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class SearchController extends Controller
 {
@@ -28,10 +29,17 @@ class SearchController extends Controller
     protected $response;
     protected $id_next = null;
 
+    /**
+     * @var InstagramScraper\Instagram
+     */
+    private $instagram;
 
-    public function __construct()
+    public function __construct(Instagram $instagram)
     {
         $this->cUrlOptionHandler();
+
+        // Init Instagram scraper
+        $this->instagram = $instagram;
     }
     public function search(Request $request)
     {
