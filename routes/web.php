@@ -38,4 +38,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/{any}', 'HomeController@index')->where('any', '.*');
 
-Route::post('/login', 'AuthenticationController@login');
+Route::post('/login', 'AuthenticationController@login')->name('login');
