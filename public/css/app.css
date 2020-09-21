@@ -1073,6 +1073,7 @@ a.icon-link:last-child {
 .btn-primary {
   background-color: #039be5;
   color: white;
+  font-size: 8pt;
 }
 
 .table {
