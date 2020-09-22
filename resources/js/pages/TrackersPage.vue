@@ -78,6 +78,7 @@
    </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
 import CreateTrackerModal from "../components/modals/CreateTrackerModal";
 export default {
    components: {
@@ -94,13 +95,19 @@ export default {
          this.$store.dispatch("fetchCampaigns");
       }
    },
+   computed:{
+      ...mapGetters(["campaigns"])
+   },
    methods: {
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
       },
       create(payload) {
          let data = payload.data;
-         console.log(data);
+
+         // Create story tracker
+         if(data.type === 'story')
+            this.$store.dispatch("addNewStoryTracker");
       }
    }
 };

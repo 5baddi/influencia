@@ -8391,7 +8391,14 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/modals/CreateTrackerModal */ "./resources/js/components/modals/CreateTrackerModal.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/modals/CreateTrackerModal */ "./resources/js/components/modals/CreateTrackerModal.vue");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -8472,9 +8479,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    CreateTrackerModal: _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_0__["default"]
+    CreateTrackerModal: _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
   data: function data() {
     return {
@@ -8487,13 +8495,15 @@ __webpack_require__.r(__webpack_exports__);
       this.$store.dispatch("fetchCampaigns");
     }
   },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns"])),
   methods: {
     dismissAddTrackerModal: function dismissAddTrackerModal() {
       this.showAddTrackerModal = false;
     },
     create: function create(payload) {
-      var data = payload.data;
-      console.log(data);
+      var data = payload.data; // Create story tracker
+
+      if (data.type === 'story') this.$store.dispatch("addNewStoryTracker");
     }
   }
 });
@@ -53497,16 +53507,30 @@ var actions = {
       });
     });
   },
-  setActiveBrand: function setActiveBrand(_ref8, brand) {
+  addNewStoryTracker: function addNewStoryTracker(_ref8, data) {
     var commit = _ref8.commit,
         state = _ref8.state;
+    return new Promise(function (resolve, reject) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/trackers/story", data).then(function (response) {
+        commit('setNewTracker', {
+          tracker: response.data
+        });
+        resolve(response);
+      })["catch"](function (response) {
+        reject(response);
+      });
+    });
+  },
+  setActiveBrand: function setActiveBrand(_ref9, brand) {
+    var commit = _ref9.commit,
+        state = _ref9.state;
     commit("setActiveBrand", {
       brand: brand
     });
   },
-  fetchCampaigns: function fetchCampaigns(_ref9) {
-    var commit = _ref9.commit,
-        state = _ref9.state;
+  fetchCampaigns: function fetchCampaigns(_ref10) {
+    var commit = _ref10.commit,
+        state = _ref10.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
         _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/campaigns/".concat(state.activeBrand.uuid)).then(function (response) {
@@ -53520,9 +53544,9 @@ var actions = {
       }
     });
   },
-  fetchTrackers: function fetchTrackers(_ref10) {
-    var commit = _ref10.commit,
-        state = _ref10.state;
+  fetchTrackers: function fetchTrackers(_ref11) {
+    var commit = _ref11.commit,
+        state = _ref11.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
         _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/brand/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
@@ -53538,17 +53562,17 @@ var actions = {
   }
 };
 var mutations = (_mutations = {
-  setUser: function setUser(state, _ref11) {
-    var user = _ref11.user;
+  setUser: function setUser(state, _ref12) {
+    var user = _ref12.user;
     state.user = user;
     if (user && state.user) axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common.Authorization = "Bearer ".concat(state.user.token);
   },
-  setUsers: function setUsers(state, _ref12) {
-    var users = _ref12.users;
+  setUsers: function setUsers(state, _ref13) {
+    var users = _ref13.users;
     state.users = users;
   },
-  setBrand: function setBrand(state, _ref13) {
-    var brand = _ref13.brand;
+  setBrand: function setBrand(state, _ref14) {
+    var brand = _ref14.brand;
 
     if (!state.brands) {
       state.brands = [];
@@ -53556,12 +53580,12 @@ var mutations = (_mutations = {
 
     state.brands.push(brand);
   },
-  setBrands: function setBrands(state, _ref14) {
-    var brands = _ref14.brands;
+  setBrands: function setBrands(state, _ref15) {
+    var brands = _ref15.brands;
     state.brands = brands;
   },
-  setNewUser: function setNewUser(state, _ref15) {
-    var user = _ref15.user;
+  setNewUser: function setNewUser(state, _ref16) {
+    var user = _ref16.user;
 
     if (!state.users) {
       state.users = [];
@@ -53569,16 +53593,16 @@ var mutations = (_mutations = {
 
     state.users.push(user);
   }
-}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref16) {
-  var user = _ref16.user;
+}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref17) {
+  var user = _ref17.user;
 
   if (!state.users) {
     state.users = [];
   }
 
   state.users.push(user);
-}), _defineProperty(_mutations, "setActiveBrand", function setActiveBrand(state, _ref17) {
-  var brand = _ref17.brand;
+}), _defineProperty(_mutations, "setActiveBrand", function setActiveBrand(state, _ref18) {
+  var brand = _ref18.brand;
 
   if (!brand) {
     state.brands.forEach(function (item, index) {
@@ -53589,8 +53613,8 @@ var mutations = (_mutations = {
   }
 
   state.activeBrand = brand;
-}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref18) {
-  var campaign = _ref18.campaign;
+}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref19) {
+  var campaign = _ref19.campaign;
 
   if (!state.campaigns) {
     state.campaigns = [];
@@ -53599,11 +53623,19 @@ var mutations = (_mutations = {
   state.campaigns.push(campaign); // console.log("%%%%%%%%%%%%%%")
   // console.log(campaign)
   // console.log("%%%%%%%%%%%%%%")
-}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref19) {
-  var campaigns = _ref19.campaigns;
+}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref20) {
+  var tracker = _ref20.tracker;
+
+  if (!state.trackers) {
+    state.trackers = [];
+  }
+
+  state.trackers.push(tracker);
+}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref21) {
+  var campaigns = _ref21.campaigns;
   state.campaigns = campaigns;
-}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref20) {
-  var trackers = _ref20.trackers;
+}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref22) {
+  var trackers = _ref22.trackers;
   state.trackers = trackers;
 }), _mutations);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({

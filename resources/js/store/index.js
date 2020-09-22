@@ -115,6 +115,18 @@ const actions = {
                 })
         })
     },
+    addNewStoryTracker({ commit, state }, data) {
+        return new Promise((resolve, reject) => {
+            api.post("/api/trackers/story", data)
+                .then(response => {
+                    commit('setNewTracker', { tracker: response.data })
+                    resolve(response)
+                })
+                .catch(response => {
+                    reject(response)
+                })
+        })
+    },
     setActiveBrand({ commit, state }, brand) {
         commit("setActiveBrand", { brand })
     },
@@ -198,6 +210,12 @@ const mutations = {
         // console.log("%%%%%%%%%%%%%%")
         // console.log(campaign)
         // console.log("%%%%%%%%%%%%%%")
+    },
+    setNewTracker: (state, { tracker }) => {
+        if(!state.trackers){
+            state.trackers = [];
+        }
+        state.trackers.push(tracker);
     },
     setCampaigns: (state, { campaigns }) => {
         state.campaigns = campaigns;

@@ -1070,6 +1070,10 @@ a.icon-link:last-child {
   margin-bottom: 1rem;
 }
 
+.dashboard__content {
+  overflow-x: hidden;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;
