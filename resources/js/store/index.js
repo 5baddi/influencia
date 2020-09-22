@@ -19,7 +19,8 @@ const state = () => ({
     brands: null,
     activeBrand: null,
     users: null,
-    campaigns: null
+    campaigns: null,
+    trackers: null
 })
 
 const getters = {
@@ -30,6 +31,7 @@ const getters = {
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
+    trackers: state => state.trackers,
     activeBrand: state => state.activeBrand
 };
 
@@ -119,9 +121,24 @@ const actions = {
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/campaigns/${state.activeBrand.id}`)
+                api.get(`/api/campaigns/${state.activeBrand.uuid}`)
                     .then((response) => {
                         commit('setCampaigns', { campaigns: response.data })
+                        resolve(response);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            }
+
+        });
+    },
+    fetchTrackers({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            if (state.activeBrand) {
+                api.get(`/api/brand/${state.activeBrand.uuid}/trackers`)
+                    .then((response) => {
+                        commit('setTrackers', { trackers: response.data })
                         resolve(response);
                     })
                     .catch((error) => {
@@ -184,8 +201,10 @@ const mutations = {
     },
     setCampaigns: (state, { campaigns }) => {
         state.campaigns = campaigns;
+    },
+    setTrackers: (state, { trackers }) => {
+        state.trackers = trackers;
     }
-
 }
 
 

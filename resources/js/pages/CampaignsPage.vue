@@ -1,5 +1,5 @@
 <template>
-   <div class="campaigns" v-if="!isLoading">
+   <div class="campaigns">
       <div class="hero">
          <div class="hero__intro">
             <h1>Campagins</h1>
@@ -27,7 +27,7 @@
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-               <div class="number">34</div>
+               <div class="number">{{ trackers.length }}</div>
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
@@ -48,7 +48,7 @@
                      <td>Number of trackers</td>
                      <td>Created on</td>
                      <td>Created by</td>
-                     <td>Actions</td>
+                     <td class="text-center">Actions</td>
                   </tr>
                </thead>
                <tbody>
@@ -63,7 +63,7 @@
                         </p>
                      </td>
                      <td>
-                        <p>0</p>
+                        <p>{{ campaign.trackers_count }}</p>
                      </td>
                      <td>
                         <p>{{ moment(campaign.created_at).format('DD/MM/YYYY h:mm') }}</p>
@@ -73,7 +73,10 @@
                            <span class="badge badge-success">{{ campaign.user.name }}</span>
                         </p>
                      </td>
-                     <td></td>
+                     <td class="text-center">
+                        <a href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a>
+                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
+                     </td>
                   </tr>
                </tbody>
             </table>
@@ -102,9 +105,8 @@ export default {
       };
    },
    created() {
-      this.$store.dispatch("fetchCampaigns").then(() => {
-         this.isLoading = false;
-      });
+      this.$store.dispatch("fetchCampaigns");
+      this.$store.dispatch("fetchTrackers");
    },
    methods: {
       moment() {
@@ -112,6 +114,9 @@ export default {
       },
       dismissAddCampaignModal() {
          this.showAddCampaignModal = false;
+      },
+      showEditCampaignModal(){
+
       },
       create(payload) {
          payload = {
@@ -125,7 +130,7 @@ export default {
       }
    },
    computed: {
-      ...mapGetters(["activeBrand", "campaigns"])
+      ...mapGetters(["activeBrand", "campaigns", "trackers"])
    },
    notifications: {
       createCampaignErrors: {

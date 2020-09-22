@@ -2,20 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Brand;
+use App\Tracker;
 use App\Campaign;
-use App\Http\Requests\CreateTrackerRequest;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateStoryTrackerRequest;
 
 class TrackerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Fetch trackers by brand.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Campaign $campaign)
+    public function fetchByBrand(Brand $brand)
     {
-        return $campaign->trackers()->with(['user', 'medias'])->get();
+        return Tracker::with(['user', 'campaign', 'medias'])
+                        ->whereHas('campaign', function($camp) use($brand){
+                            $camp->where('brand_id', $brand->id);
+                        })
+                        ->get();
     }
 
     /**
@@ -23,9 +29,9 @@ class TrackerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(CreateTrackerRequest $request)
+    public function createStory(CreateStoryTrackerRequest $request)
     {
-
+        return Tracker::create($request->all());
     }
 
     /**

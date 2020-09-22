@@ -7833,6 +7833,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 
@@ -7847,11 +7850,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   created: function created() {
-    var _this = this;
-
-    this.$store.dispatch("fetchCampaigns").then(function () {
-      _this.isLoading = false;
-    });
+    this.$store.dispatch("fetchCampaigns");
+    this.$store.dispatch("fetchTrackers");
   },
   methods: {
     moment: function moment() {
@@ -7860,22 +7860,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     dismissAddCampaignModal: function dismissAddCampaignModal() {
       this.showAddCampaignModal = false;
     },
+    showEditCampaignModal: function showEditCampaignModal() {},
     create: function create(payload) {
-      var _this2 = this;
+      var _this = this;
 
       payload = _objectSpread(_objectSpread({}, payload), {}, {
         brand_id: this.$store.getters.activeBrand && this.$store.getters.activeBrand.id
       });
       this.$store.dispatch("addNewCampaign", payload).then(function () {
-        _this2.createCampaignSuccess({
+        _this.createCampaignSuccess({
           message: "Campaign created successfully"
         });
 
-        _this2.dismissAddCampaignModal();
+        _this.dismissAddCampaignModal();
       });
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(["activeBrand", "campaigns"])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(["activeBrand", "campaigns", "trackers"])),
   notifications: {
     createCampaignErrors: {
       type: "error"
@@ -33669,111 +33670,143 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return !_vm.isLoading
-    ? _c(
-        "div",
-        { staticClass: "campaigns" },
-        [
-          _c("div", { staticClass: "hero" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "hero__actions" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success",
-                  attrs: { disabled: !_vm.activeBrand },
-                  on: {
-                    click: function($event) {
-                      _vm.showAddCampaignModal = !_vm.showAddCampaignModal
-                    }
-                  }
-                },
-                [_vm._v("Add new campagin")]
-              )
-            ])
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "p-1" }, [
-            _c("header", { staticClass: "cards" }, [
-              _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "number" }, [
-                  _vm._v(_vm._s(_vm.campaigns.length))
-                ]),
-                _vm._v(" "),
-                _c("p", { staticClass: "description" }, [
-                  _vm._v("NUMBER OF CAMPAIGNS")
-                ])
-              ]),
-              _vm._v(" "),
-              _vm._m(1),
-              _vm._v(" "),
-              _vm._m(2),
-              _vm._v(" "),
-              _vm._m(3)
+  return _c(
+    "div",
+    { staticClass: "campaigns" },
+    [
+      _c("div", { staticClass: "hero" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c("div", { staticClass: "hero__actions" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              attrs: { disabled: !_vm.activeBrand },
+              on: {
+                click: function($event) {
+                  _vm.showAddCampaignModal = !_vm.showAddCampaignModal
+                }
+              }
+            },
+            [_vm._v("Add new campagin")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "p-1" }, [
+        _c("header", { staticClass: "cards" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "number" }, [
+              _vm._v(_vm._s(_vm.campaigns.length))
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "datatable-scroll" }, [
-              _c("table", { staticClass: "table campagins-table" }, [
-                _vm._m(4),
-                _vm._v(" "),
-                _c(
-                  "tbody",
-                  _vm._l(_vm.campaigns, function(campaign) {
-                    return _c("tr", { key: campaign.id }, [
-                      _c("td", [
-                        _c("a", { attrs: { href: "#" } }, [
-                          _vm._v(_vm._s(campaign.name))
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c("p", [
-                          campaign.status
-                            ? _c("span", { staticClass: "status-success" })
-                            : _c("span", { staticClass: "status-danger" })
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _vm._m(5, true),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c("p", [
-                          _vm._v(
-                            _vm._s(
-                              _vm
-                                .moment(campaign.created_at)
-                                .format("DD/MM/YYYY h:mm")
-                            )
-                          )
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("td", [
-                        _c("p", [
-                          _c("span", { staticClass: "badge badge-success" }, [
-                            _vm._v(_vm._s(campaign.user.name))
-                          ])
-                        ])
-                      ]),
-                      _vm._v(" "),
-                      _c("td")
-                    ])
-                  }),
-                  0
-                )
-              ])
+            _c("p", { staticClass: "description" }, [
+              _vm._v("NUMBER OF CAMPAIGNS")
             ])
           ]),
           _vm._v(" "),
-          _c("CreateCampaignModal", {
-            attrs: { show: _vm.showAddCampaignModal },
-            on: { create: _vm.create, dismiss: _vm.dismissAddCampaignModal }
-          })
-        ],
-        1
-      )
-    : _vm._e()
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "number" }, [
+              _vm._v(_vm._s(_vm.trackers.length))
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "description" }, [
+              _vm._v("NUMBER OF TRACKERS")
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
+          _vm._m(2)
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "datatable-scroll" }, [
+          _c("table", { staticClass: "table campagins-table" }, [
+            _vm._m(3),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.campaigns, function(campaign) {
+                return _c("tr", { key: campaign.id }, [
+                  _c("td", [
+                    _c("a", { attrs: { href: "#" } }, [
+                      _vm._v(_vm._s(campaign.name))
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [
+                      campaign.status
+                        ? _c("span", { staticClass: "status-success" })
+                        : _c("span", { staticClass: "status-danger" })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [_vm._v(_vm._s(campaign.trackers_count))])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [
+                      _vm._v(
+                        _vm._s(
+                          _vm
+                            .moment(campaign.created_at)
+                            .format("DD/MM/YYYY h:mm")
+                        )
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [
+                      _c("span", { staticClass: "badge badge-success" }, [
+                        _vm._v(_vm._s(campaign.user.name))
+                      ])
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", { staticClass: "text-center" }, [
+                    _c(
+                      "a",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: campaign.id,
+                            expression: "campaign.id"
+                          }
+                        ],
+                        staticClass: "icon-link",
+                        attrs: { href: "javascript:void(0);", title: "Edit" },
+                        on: {
+                          click: function($event) {
+                            return _vm.showEditCampaignModal(campaign)
+                          }
+                        }
+                      },
+                      [_c("i", { staticClass: "fas fa-pen" })]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(4, true)
+                  ])
+                ])
+              }),
+              0
+            )
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("CreateCampaignModal", {
+        attrs: { show: _vm.showAddCampaignModal },
+        on: { create: _vm.create, dismiss: _vm.dismissAddCampaignModal }
+      })
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -33788,16 +33821,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Campaigns")])])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "number" }, [_vm._v("34")]),
-      _vm._v(" "),
-      _c("p", { staticClass: "description" }, [_vm._v("NUMBER OF TRACKERS")])
     ])
   },
   function() {
@@ -33840,7 +33863,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("td", [_vm._v("Created by")]),
         _vm._v(" "),
-        _c("td", [_vm._v("Actions")])
+        _c("td", { staticClass: "text-center" }, [_vm._v("Actions")])
       ])
     ])
   },
@@ -33848,7 +33871,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [_c("p", [_vm._v("0")])])
+    return _c(
+      "a",
+      {
+        staticClass: "icon-link",
+        attrs: { href: "javascript:void(0);", title: "Delete" }
+      },
+      [_c("i", { staticClass: "fas fa-trash" })]
+    )
   }
 ]
 render._withStripped = true
@@ -53327,7 +53357,8 @@ var state = function state() {
     brands: null,
     activeBrand: null,
     users: null,
-    campaigns: null
+    campaigns: null,
+    trackers: null
   };
 };
 
@@ -53352,6 +53383,9 @@ var getters = {
   },
   campaigns: function campaigns(state) {
     return state.campaigns;
+  },
+  trackers: function trackers(state) {
+    return state.trackers;
   },
   activeBrand: function activeBrand(state) {
     return state.activeBrand;
@@ -53475,9 +53509,25 @@ var actions = {
         state = _ref9.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
-        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/campaigns/".concat(state.activeBrand.id)).then(function (response) {
+        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/campaigns/".concat(state.activeBrand.uuid)).then(function (response) {
           commit('setCampaigns', {
             campaigns: response.data
+          });
+          resolve(response);
+        })["catch"](function (error) {
+          reject(error);
+        });
+      }
+    });
+  },
+  fetchTrackers: function fetchTrackers(_ref10) {
+    var commit = _ref10.commit,
+        state = _ref10.state;
+    return new Promise(function (resolve, reject) {
+      if (state.activeBrand) {
+        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/brand/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
+          commit('setTrackers', {
+            trackers: response.data
           });
           resolve(response);
         })["catch"](function (error) {
@@ -53488,17 +53538,17 @@ var actions = {
   }
 };
 var mutations = (_mutations = {
-  setUser: function setUser(state, _ref10) {
-    var user = _ref10.user;
+  setUser: function setUser(state, _ref11) {
+    var user = _ref11.user;
     state.user = user;
     if (user && state.user) axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common.Authorization = "Bearer ".concat(state.user.token);
   },
-  setUsers: function setUsers(state, _ref11) {
-    var users = _ref11.users;
+  setUsers: function setUsers(state, _ref12) {
+    var users = _ref12.users;
     state.users = users;
   },
-  setBrand: function setBrand(state, _ref12) {
-    var brand = _ref12.brand;
+  setBrand: function setBrand(state, _ref13) {
+    var brand = _ref13.brand;
 
     if (!state.brands) {
       state.brands = [];
@@ -53506,12 +53556,12 @@ var mutations = (_mutations = {
 
     state.brands.push(brand);
   },
-  setBrands: function setBrands(state, _ref13) {
-    var brands = _ref13.brands;
+  setBrands: function setBrands(state, _ref14) {
+    var brands = _ref14.brands;
     state.brands = brands;
   },
-  setNewUser: function setNewUser(state, _ref14) {
-    var user = _ref14.user;
+  setNewUser: function setNewUser(state, _ref15) {
+    var user = _ref15.user;
 
     if (!state.users) {
       state.users = [];
@@ -53519,16 +53569,16 @@ var mutations = (_mutations = {
 
     state.users.push(user);
   }
-}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref15) {
-  var user = _ref15.user;
+}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref16) {
+  var user = _ref16.user;
 
   if (!state.users) {
     state.users = [];
   }
 
   state.users.push(user);
-}), _defineProperty(_mutations, "setActiveBrand", function setActiveBrand(state, _ref16) {
-  var brand = _ref16.brand;
+}), _defineProperty(_mutations, "setActiveBrand", function setActiveBrand(state, _ref17) {
+  var brand = _ref17.brand;
 
   if (!brand) {
     state.brands.forEach(function (item, index) {
@@ -53539,8 +53589,8 @@ var mutations = (_mutations = {
   }
 
   state.activeBrand = brand;
-}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref17) {
-  var campaign = _ref17.campaign;
+}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref18) {
+  var campaign = _ref18.campaign;
 
   if (!state.campaigns) {
     state.campaigns = [];
@@ -53549,9 +53599,12 @@ var mutations = (_mutations = {
   state.campaigns.push(campaign); // console.log("%%%%%%%%%%%%%%")
   // console.log(campaign)
   // console.log("%%%%%%%%%%%%%%")
-}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref18) {
-  var campaigns = _ref18.campaigns;
+}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref19) {
+  var campaigns = _ref19.campaigns;
   state.campaigns = campaigns;
+}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref20) {
+  var trackers = _ref20.trackers;
+  state.trackers = trackers;
 }), _mutations);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({
   state: state,

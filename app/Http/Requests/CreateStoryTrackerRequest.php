@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTrackerRequest extends FormRequest
+class CreateStoryTrackerRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,10 +24,10 @@ class CreateTrackerRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'       =>  'required|unsignedInteger|exists:users,id',
-            'campaign_id'   =>  'required|unsignedInteger|exists:campaigns,id',
+            'user_id'       =>  'required|integer|exists:users,id',
+            'campaign_id'   =>  'required|integer|exists:campaigns,id',
             'name'          =>  'required|unique:trackers,name|max:255',
-            'type'          =>  'required|in:url,post,story',
+            'type'          =>  'required|in:story',
             'platform'      =>  'nullable|in:instagram,snapchat'
         ];
     }

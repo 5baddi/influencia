@@ -8,7 +8,7 @@ use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 class Tracker extends Model
 {
     use HasUuidRouteKey;
-    
+
     protected $guarded = [];
 
     /**
@@ -62,6 +62,6 @@ class Tracker extends Model
 
     public function medias()
     {
-        return $this->hasMany(TrackerMedia::class);
+        return $this->hasMany(TrackerMedias::class);
     }
 }

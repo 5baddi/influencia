@@ -16,9 +16,9 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Brand $brand)
+    public function index(Brand $brand)
     {
-        return $brand->campaigns()->with('user', 'brand')->get();
+        return $brand->campaigns()->with('user', 'brand')->withCount('trackers')->get();
     }
 
     /**
