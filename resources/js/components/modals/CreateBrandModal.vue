@@ -11,7 +11,8 @@
                   <input v-model="brand.name" type="text" placeholder="Brand name" />
                </div>
                <div class="control">
-                  <input type="file" ref="image" @change="handleImageUpload" />
+                     <FileInput v-on:custom="handleImageUpload" v-bind:id="'image'" v-bind:label="'Upload brand image'" v-bind:accept="'image/*'" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                  <!-- <input type="file" ref="image" @change="handleImageUpload" /> -->
                </div>
                <div class="modal-form__actions">
                   <button class="btn btn-success" @click.prevent="submit" type="submit">{{ brand.id ? "Update" : "Create" }}</button>
@@ -23,7 +24,12 @@
    </div>
 </template>
 <script>
+import FileInput from '../FileInput';
+
 export default {
+   components: {
+      FileInput
+   },
    props: {
       brand: {
          type: Object,
@@ -53,10 +59,15 @@ export default {
             this.dismiss();
          }
       });
+
+      // this.$on("handleImageUpload", this.handleImageUpload);
    },
    methods: {
-      handleImageUpload() {
-         this.brand.image = this.$refs.image.files[0];
+      handleImageUpload(files) {
+         if(typeof files[0] === "undefined")
+            return;
+
+         this.brand.image = files[0];
       },
       dismiss() {
          // Unset image file

@@ -3,7 +3,7 @@
         <ul>
             <li v-for="(file, index) in files" :key="file.name">{{ file.name.split('.').slice(0, -1).join('.') }}&nbsp;<button class="btn-flat btn-flat-danger" @click="removeFile(index)"><i class="fas fa-times"></i></button></li>
         </ul>
-        <button @click="preventFileInput()" class="btn btn-primary custom-file-input"><i :class="icon"></i>&nbsp;{{ label }}</button>
+        <button type="button" @click="preventFileInput()" class="btn btn-primary custom-file-input"><i :class="icon"></i>&nbsp;{{ label }}</button>
         <input :id="id" :ref="id" type="file" :accept="accept" @change="fileChanged" :multiple="multiple"/>
     </div>
 </template>
@@ -13,6 +13,7 @@
         display: none;
     }
     .custom-file-upload .btn{
+        width: 100%;
         color: white;
         font-size: 8pt;
     }
@@ -78,8 +79,15 @@ export default {
             
             // Verify duplicate file then push the file
             let existsIndex = this.files.findIndex(i => i.name === ref.files[0].name);
-            if(existsIndex === -1)
-                this.files.push(ref.files[0]);
+            if(existsIndex === -1){
+                if(this.multiple)
+                    this.files.push(ref.files[0]);
+                else
+                    this.files = [ref.files[0]];
+            }
+
+            // Emit on change method
+            this.$emit("custom", this.files);
         },
         removeFile(index){
             this.files.splice(index, 1);

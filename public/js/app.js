@@ -6608,6 +6608,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     id: {
@@ -6646,7 +6647,13 @@ __webpack_require__.r(__webpack_exports__);
       var existsIndex = this.files.findIndex(function (i) {
         return i.name === ref.files[0].name;
       });
-      if (existsIndex === -1) this.files.push(ref.files[0]);
+
+      if (existsIndex === -1) {
+        if (this.multiple) this.files.push(ref.files[0]);else this.files = [ref.files[0]];
+      } // Emit on change method
+
+
+      this.$emit("custom", this.files);
     },
     removeFile: function removeFile(index) {
       this.files.splice(index, 1);
@@ -6670,6 +6677,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _FileInput__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../FileInput */ "./resources/js/components/FileInput.vue");
 //
 //
 //
@@ -6694,7 +6702,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    FileInput: _FileInput__WEBPACK_IMPORTED_MODULE_0__["default"]
+  },
   props: {
     brand: {
       type: Object,
@@ -6729,11 +6742,12 @@ __webpack_require__.r(__webpack_exports__);
       if (e.key == "Escape" && _this.show) {
         _this.dismiss();
       }
-    });
+    }); // this.$on("handleImageUpload", this.handleImageUpload);
   },
   methods: {
-    handleImageUpload: function handleImageUpload() {
-      this.brand.image = this.$refs.image.files[0];
+    handleImageUpload: function handleImageUpload(files) {
+      if (typeof files[0] === "undefined") return;
+      this.brand.image = files[0];
     },
     dismiss: function dismiss() {
       // Unset image file
@@ -8653,7 +8667,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    color: white;\n    font-size: 8pt;\n}\n.custom-file-upload .btn-primary[data-v-6c71a2d3]{\n    background-color: #039be5;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]{\n    border: none;\n    background-color: unset;\n    cursor: pointer;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]:hover, .custom-file-upload .btn-flat[data-v-6c71a2d3]:focus{\n    opacity: .7;\n}\n.custom-file-upload .btn-flat-danger[data-v-6c71a2d3]{\n    color: #f44336;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n", ""]);
+exports.push([module.i, "\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    width: 100%;\n    color: white;\n    font-size: 8pt;\n}\n.custom-file-upload .btn-primary[data-v-6c71a2d3]{\n    background-color: #039be5;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]{\n    border: none;\n    background-color: unset;\n    cursor: pointer;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]:hover, .custom-file-upload .btn-flat[data-v-6c71a2d3]:focus{\n    opacity: .7;\n}\n.custom-file-upload .btn-flat-danger[data-v-6c71a2d3]{\n    color: #f44336;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n", ""]);
 
 // exports
 
@@ -31539,6 +31553,7 @@ var render = function() {
       "button",
       {
         staticClass: "btn btn-primary custom-file-input",
+        attrs: { type: "button" },
         on: {
           click: function($event) {
             return _vm.preventFileInput()
@@ -31626,13 +31641,23 @@ var render = function() {
               })
             ]),
             _vm._v(" "),
-            _c("div", { staticClass: "control" }, [
-              _c("input", {
-                ref: "image",
-                attrs: { type: "file" },
-                on: { change: _vm.handleImageUpload }
-              })
-            ]),
+            _c(
+              "div",
+              { staticClass: "control" },
+              [
+                _c("FileInput", {
+                  attrs: {
+                    id: "image",
+                    label: "Upload brand image",
+                    accept: "image/*",
+                    icon: "fas fa-plus",
+                    multiple: false
+                  },
+                  on: { custom: _vm.handleImageUpload }
+                })
+              ],
+              1
+            ),
             _vm._v(" "),
             _c("div", { staticClass: "modal-form__actions" }, [
               _c(
