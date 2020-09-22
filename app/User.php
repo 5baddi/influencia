@@ -6,10 +6,11 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, Notifiable;
+    use HasApiTokens, Notifiable, HasUuidRouteKey;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +44,7 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Brand::class, 'brand_user');
     }
+
     public function campaigns()
     {
         return $this->hasMany(campaign::class);

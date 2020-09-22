@@ -3,10 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class Campaign extends Model
 {
+    use HasUuidRouteKey;
+    
     protected $guarded = [];
+
     public function user()
     {
         return $this->belongsTo(User::class);
