@@ -73,9 +73,13 @@ export default {
         },
         fileChanged(){
             let ref = this.$refs[this.id];
-            this.files.push(ref.files[0]);
-
-            console.log(this.files);
+            if(!ref.files[0])
+                return;
+            
+            // Verify duplicate file then push the file
+            let existsIndex = this.files.findIndex(i => i.name = ref.files[0].name);
+            if(existsIndex === -1)
+                this.files.push(ref.files[0]);
         },
         removeFile(index){
             this.files.splice(index, 1);

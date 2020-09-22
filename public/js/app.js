@@ -6641,8 +6641,12 @@ __webpack_require__.r(__webpack_exports__);
     },
     fileChanged: function fileChanged() {
       var ref = this.$refs[this.id];
-      this.files.push(ref.files[0]);
-      console.log(this.files);
+      if (!ref.files[0]) return; // Verify duplicate file then push the file
+
+      var existsIndex = this.files.findIndex(function (i) {
+        return i.name = ref.files[0].name;
+      });
+      if (existsIndex === -1) this.files.push(ref.files[0]);
     },
     removeFile: function removeFile(index) {
       this.files.splice(index, 1);
