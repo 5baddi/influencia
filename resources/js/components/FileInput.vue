@@ -1,13 +1,24 @@
 <template>
-    <div>
+    <div class="custom-file-upload">
+        <ul>
+            <li v-for="(file, index) in files" :key="file.name">{{ file.name.split('.').slice(0, -1).join('.') }}&nbsp;<button class="btn-flat btn-flat-danger" @click="removeFile(index)"><i class="fas fa-times"></i></button></li>
+        </ul>
         <button @click="preventFileInput()" class="btn btn-primary custom-file-input"><i :class="icon"></i>&nbsp;{{ label }}</button>
-        <input :id="id" :ref="id" type="file" :accept="accept"/>
+        <input :id="id" :ref="id" type="file" :accept="accept" @change="fileChanged" :multiple="multiple"/>
     </div>
 </template>
 
 <style scoped>
-    input[type=file]{
+    .custom-file-upload > input[type=file]{
         display: none;
+    }
+    .custom-file-upload ul li{
+        font-size: 10pt;
+        font-weight: normal;
+        padding: 12px;
+    }
+    .custom-file-upload .btn{
+        display: initial !important;
     }
 </style>
 
@@ -41,6 +52,20 @@ export default {
             if(ref !== 'undefined'){
                 ref.click();
             }
+        },
+        fileChanged(){
+            let ref = this.$refs[this.id];
+            this.files.push(ref.files[0]);
+
+            console.log(this.files);
+        },
+        removeFile(index){
+            this.files.splice(index, 1);
+        }
+    },
+    data(){
+        return {
+            files: []
         }
     }
 }

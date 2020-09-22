@@ -6579,6 +6579,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     id: {
@@ -6609,7 +6620,20 @@ __webpack_require__.r(__webpack_exports__);
       if (ref !== 'undefined') {
         ref.click();
       }
+    },
+    fileChanged: function fileChanged() {
+      var ref = this.$refs[this.id];
+      this.files.push(ref.files[0]);
+      console.log(this.files);
+    },
+    removeFile: function removeFile(index) {
+      this.files.splice(index, 1);
     }
+  },
+  data: function data() {
+    return {
+      files: []
+    };
   }
 });
 
@@ -8607,7 +8631,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\ninput[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n", ""]);
+exports.push([module.i, "\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n", ""]);
 
 // exports
 
@@ -31459,7 +31483,36 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "custom-file-upload" }, [
+    _c(
+      "ul",
+      _vm._l(_vm.files, function(file, index) {
+        return _c("li", { key: file.name }, [
+          _vm._v(
+            _vm._s(
+              file.name
+                .split(".")
+                .slice(0, -1)
+                .join(".")
+            ) + " "
+          ),
+          _c(
+            "button",
+            {
+              staticClass: "btn-flat btn-flat-danger",
+              on: {
+                click: function($event) {
+                  return _vm.removeFile(index)
+                }
+              }
+            },
+            [_c("i", { staticClass: "fas fa-times" })]
+          )
+        ])
+      }),
+      0
+    ),
+    _vm._v(" "),
     _c(
       "button",
       {
@@ -31475,7 +31528,13 @@ var render = function() {
     _vm._v(" "),
     _c("input", {
       ref: _vm.id,
-      attrs: { id: _vm.id, type: "file", accept: _vm.accept }
+      attrs: {
+        id: _vm.id,
+        type: "file",
+        accept: _vm.accept,
+        multiple: _vm.multiple
+      },
+      on: { change: _vm.fileChanged }
     })
   ])
 }
@@ -32012,7 +32071,8 @@ var render = function() {
                             id: "upload-story",
                             label: "Add new Trackers",
                             accept: "image/*,video/mp4,video/x-m4v,video/*",
-                            icon: "fas fa-plus"
+                            icon: "fas fa-plus",
+                            multiple: false
                           }
                         }),
                         _vm._v(" "),
