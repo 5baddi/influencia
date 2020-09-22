@@ -1,8 +1,9 @@
 <template>
     <div class="custom-file-upload">
-        <ul>
+        <ul v-show="isList">
             <li v-for="(file, index) in files" :key="file.name">{{ file.name.split('.').slice(0, -1).join('.') }}&nbsp;<button class="btn-flat btn-flat-danger" @click="removeFile(index)"><i class="fas fa-times"></i></button></li>
         </ul>
+        <img v-if="isImage" ref="img_src"/>
         <button type="button" @click="preventFileInput()" class="btn btn-primary custom-file-input"><i :class="icon"></i>&nbsp;{{ label }}</button>
         <input :id="id" :ref="id" type="file" :accept="accept" @change="fileChanged" :multiple="multiple"/>
     </div>
@@ -60,6 +61,14 @@ export default {
             type: Boolean,
             default: false
         },
+        isList: {
+            type: Boolean,
+            default: false
+        },
+        isImage: {
+            type: Boolean,
+            default: false
+        },
         icon: {
             type: String,
             default: null
@@ -84,6 +93,17 @@ export default {
                     this.files.push(ref.files[0]);
                 else
                     this.files = [ref.files[0]];
+
+                // Is image
+                if(this.isImage){
+                    let vm = this;
+                    let reader = new FileReader();
+                    reader.onload = function(e){
+                        vm.$refs.img_src.src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(ref.files[0]);
+                }
             }
 
             // Emit on change method
@@ -95,7 +115,8 @@ export default {
     },
     data(){
         return {
-            files: []
+            files: [],
+            imgSrc: null
         }
     }
 }

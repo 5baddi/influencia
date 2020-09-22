@@ -11,7 +11,7 @@
                   <input v-model="brand.name" type="text" placeholder="Brand name" />
                </div>
                <div class="control">
-                     <FileInput v-on:custom="handleImageUpload" v-bind:id="'image'" v-bind:label="'Upload brand image'" v-bind:accept="'image/*'" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                     <FileInput v-on:custom="handleImageUpload" v-bind:id="'image'" v-bind:label="'Upload brand image'" v-bind:accept="'image/*'" v-bind:isImage="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
                   <!-- <input type="file" ref="image" @change="handleImageUpload" /> -->
                </div>
                <div class="modal-form__actions">
@@ -71,7 +71,7 @@ export default {
       },
       dismiss() {
          // Unset image file
-         this.$refs.image.value = null;
+         // this.$refs.image.value = null;
 
          this.$emit("dismiss");
       },
@@ -83,7 +83,7 @@ export default {
          });
 
          // Unset image file
-         this.$refs.image.value = null;
+         // this.$refs.image.value = null;
       }
    }
 };

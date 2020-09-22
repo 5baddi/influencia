@@ -6609,6 +6609,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     id: {
@@ -6624,6 +6625,14 @@ __webpack_require__.r(__webpack_exports__);
       "default": "*"
     },
     multiple: {
+      type: Boolean,
+      "default": false
+    },
+    isList: {
+      type: Boolean,
+      "default": false
+    },
+    isImage: {
       type: Boolean,
       "default": false
     },
@@ -6649,7 +6658,18 @@ __webpack_require__.r(__webpack_exports__);
       });
 
       if (existsIndex === -1) {
-        if (this.multiple) this.files.push(ref.files[0]);else this.files = [ref.files[0]];
+        if (this.multiple) this.files.push(ref.files[0]);else this.files = [ref.files[0]]; // Is image
+
+        if (this.isImage) {
+          var vm = this;
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+            vm.$refs.img_src.src = e.target.result;
+          };
+
+          reader.readAsDataURL(ref.files[0]);
+        }
       } // Emit on change method
 
 
@@ -6661,7 +6681,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      files: []
+      files: [],
+      imgSrc: null
     };
   }
 });
@@ -6751,7 +6772,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     dismiss: function dismiss() {
       // Unset image file
-      this.$refs.image.value = null;
+      // this.$refs.image.value = null;
       this.$emit("dismiss");
     },
     submit: function submit() {
@@ -6759,8 +6780,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$emit(action, {
         brand: this.brand
       }); // Unset image file
-
-      this.$refs.image.value = null;
+      // this.$refs.image.value = null;
     }
   }
 });
@@ -31522,6 +31542,16 @@ var render = function() {
   return _c("div", { staticClass: "custom-file-upload" }, [
     _c(
       "ul",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.isList,
+            expression: "isList"
+          }
+        ]
+      },
       _vm._l(_vm.files, function(file, index) {
         return _c("li", { key: file.name }, [
           _vm._v(
@@ -31548,6 +31578,8 @@ var render = function() {
       }),
       0
     ),
+    _vm._v(" "),
+    _vm.isImage ? _c("img", { ref: "img_src" }) : _vm._e(),
     _vm._v(" "),
     _c(
       "button",
@@ -31650,6 +31682,7 @@ var render = function() {
                     id: "image",
                     label: "Upload brand image",
                     accept: "image/*",
+                    isImage: true,
                     icon: "fas fa-plus",
                     multiple: false
                   },
@@ -32123,6 +32156,7 @@ var render = function() {
                             id: "upload-story",
                             label: "Add new Trackers",
                             accept: "image/*,video/mp4,video/x-m4v,video/*",
+                            isList: true,
                             icon: "fas fa-plus",
                             multiple: false
                           }
