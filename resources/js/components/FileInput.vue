@@ -1,15 +1,24 @@
 <template>
     <div class="custom-file-upload">
         <ul v-show="isList">
-            <li v-for="(file, index) in files" :key="file.name">{{ file.name.split('.').slice(0, -1).join('.') }}&nbsp;<button class="btn-flat btn-flat-danger" @click="removeFile(index)"><i class="fas fa-times"></i></button></li>
+            <li v-for="(file, index) in files" :key="file.name">{{ file.name.split('.').slice(0, -1).join('.') }}&nbsp;<button type="button" class="btn-flat btn-flat-danger" @click="removeFile(index)"><i class="fas fa-times"></i></button></li>
         </ul>
-        <img v-if="isImage" ref="img_src"/>
+        <div v-show="isImage && files.length === 1" class="custom-file-preview">
+            <button type="button" class="btn-flat btn-flat-danger" @click="removeImage"><i class="fas fa-times"></i></button>
+            <img ref="img_src"/>
+        </div>
         <button type="button" @click="preventFileInput()" class="btn btn-primary custom-file-input"><i :class="icon"></i>&nbsp;{{ label }}</button>
         <input :id="id" :ref="id" type="file" :accept="accept" @change="fileChanged" :multiple="multiple"/>
     </div>
 </template>
 
 <style scoped>
+    .custom-file-upload{
+        width: 100%;
+        height: auto;
+        overflow: hidden;
+        margin: 1rem 0;
+    }
     .custom-file-upload > input[type=file]{
         display: none;
     }
@@ -39,6 +48,12 @@
     }
     .custom-file-upload .btn{
         display: initial !important;
+    }
+    .custom-file-preview button{
+        position: absolute;
+        top: 0;
+        right: 0;
+        transform: translate(-50%, 50%);
     }
 </style>
 
@@ -111,6 +126,9 @@ export default {
         },
         removeFile(index){
             this.files.splice(index, 1);
+        },
+        removeImage(){
+            this.files = [];
         }
     },
     data(){

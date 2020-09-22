@@ -6610,6 +6610,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     id: {
@@ -6677,6 +6692,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     removeFile: function removeFile(index) {
       this.files.splice(index, 1);
+    },
+    removeImage: function removeImage() {
+      this.files = [];
     }
   },
   data: function data() {
@@ -8687,7 +8705,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    width: 100%;\n    color: white;\n    font-size: 8pt;\n}\n.custom-file-upload .btn-primary[data-v-6c71a2d3]{\n    background-color: #039be5;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]{\n    border: none;\n    background-color: unset;\n    cursor: pointer;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]:hover, .custom-file-upload .btn-flat[data-v-6c71a2d3]:focus{\n    opacity: .7;\n}\n.custom-file-upload .btn-flat-danger[data-v-6c71a2d3]{\n    color: #f44336;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n", ""]);
+exports.push([module.i, "\n.custom-file-upload[data-v-6c71a2d3]{\n    width: 100%;\n    height: auto;\n    overflow: hidden;\n    margin: 1rem 0;\n}\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    width: 100%;\n    color: white;\n    font-size: 8pt;\n}\n.custom-file-upload .btn-primary[data-v-6c71a2d3]{\n    background-color: #039be5;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]{\n    border: none;\n    background-color: unset;\n    cursor: pointer;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]:hover, .custom-file-upload .btn-flat[data-v-6c71a2d3]:focus{\n    opacity: .7;\n}\n.custom-file-upload .btn-flat-danger[data-v-6c71a2d3]{\n    color: #f44336;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n.custom-file-preview button[data-v-6c71a2d3]{\n    position: absolute;\n    top: 0;\n    right: 0;\n    transform: translate(-50%, 50%);\n}\n", ""]);
 
 // exports
 
@@ -31566,6 +31584,7 @@ var render = function() {
             "button",
             {
               staticClass: "btn-flat btn-flat-danger",
+              attrs: { type: "button" },
               on: {
                 click: function($event) {
                   return _vm.removeFile(index)
@@ -31579,7 +31598,33 @@ var render = function() {
       0
     ),
     _vm._v(" "),
-    _vm.isImage ? _c("img", { ref: "img_src" }) : _vm._e(),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.isImage && _vm.files.length === 1,
+            expression: "isImage && files.length === 1"
+          }
+        ],
+        staticClass: "custom-file-preview"
+      },
+      [
+        _c(
+          "button",
+          {
+            staticClass: "btn-flat btn-flat-danger",
+            attrs: { type: "button" },
+            on: { click: _vm.removeImage }
+          },
+          [_c("i", { staticClass: "fas fa-times" })]
+        ),
+        _vm._v(" "),
+        _c("img", { ref: "img_src" })
+      ]
+    ),
     _vm._v(" "),
     _c(
       "button",
@@ -31644,7 +31689,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "modal-form" }, [
-          _c("form", [
+          _c("form", { attrs: { method: "POST" } }, [
             _c("input", {
               attrs: { type: "hidden" },
               domProps: { value: _vm.brand.id }

@@ -5,7 +5,7 @@
             <h4 class="heading">{{ brand.id ? "Update " + brand.name : "Add new " }} brand</h4>
          </header>
          <div class="modal-form">
-            <form>
+            <form method="POST">
                <input type="hidden" :value="brand.id"/>
                <div class="control">
                   <input v-model="brand.name" type="text" placeholder="Brand name" />
