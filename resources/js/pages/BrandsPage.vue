@@ -116,17 +116,20 @@ export default {
       },
       create(payload) {
          let formData = new FormData();
-         formData.append("id", payload.id);
-         formData.append("image", payload.image);
-         formData.append("name", payload.name);
+         if(typeof payload.brand.id !== "undefined")
+            formData.append("id", payload.brand.id);
+         formData.append("image", payload.brand.image);
+         formData.append("name", payload.brand.name);
          this.$store.dispatch("addBrand", formData).then(() => {
             this.createBrandSuccess({ message: "Brand created successfully." });
          });
          this.dismissAddBrandModal();
+
+         this.brand = {};
       },
       showEditBrandModal(brand){
          this.showAddBrandModal = true;
-         this.brand = brand ?? null;
+         this.brand = {...brand} ?? {};
       }
    },
    computed: {

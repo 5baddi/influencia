@@ -6644,7 +6644,7 @@ __webpack_require__.r(__webpack_exports__);
       if (!ref.files[0]) return; // Verify duplicate file then push the file
 
       var existsIndex = this.files.findIndex(function (i) {
-        return i.name = ref.files[0].name;
+        return i.name === ref.files[0].name;
       });
       if (existsIndex === -1) this.files.push(ref.files[0]);
     },
@@ -6722,12 +6722,6 @@ __webpack_require__.r(__webpack_exports__);
       type: Boolean
     }
   },
-  data: function data() {
-    return {
-      newName: null,
-      newImage: null
-    };
-  },
   created: function created() {
     var _this = this;
 
@@ -6739,17 +6733,20 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     handleImageUpload: function handleImageUpload() {
-      this.newImage = this.$refs.image.files[0];
+      this.brand.image = this.$refs.image.files[0];
     },
     dismiss: function dismiss() {
+      // Unset image file
+      this.$refs.image.value = null;
       this.$emit("dismiss");
     },
     submit: function submit() {
-      this.$emit(this.brand.id !== null ? "update" : "create", {
-        id: this.brand.id !== null ? this.brand.id : null,
-        name: this.newName,
-        image: this.newImage
-      });
+      var action = typeof this.brand.id === "undefined" ? "create" : "update";
+      this.$emit(action, {
+        brand: this.brand
+      }); // Unset image file
+
+      this.$refs.image.value = null;
     }
   }
 });
@@ -7646,19 +7643,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this2 = this;
 
       var formData = new FormData();
-      formData.append("id", payload.id);
-      formData.append("image", payload.image);
-      formData.append("name", payload.name);
+      if (typeof payload.brand.id !== "undefined") formData.append("id", payload.brand.id);
+      formData.append("image", payload.brand.image);
+      formData.append("name", payload.brand.name);
       this.$store.dispatch("addBrand", formData).then(function () {
         _this2.createBrandSuccess({
           message: "Brand created successfully."
         });
       });
       this.dismissAddBrandModal();
+      this.brand = {};
     },
     showEditBrandModal: function showEditBrandModal(brand) {
+      var _brand;
+
       this.showAddBrandModal = true;
-      this.brand = brand !== null && brand !== void 0 ? brand : null;
+      this.brand = (_brand = _objectSpread({}, brand)) !== null && _brand !== void 0 ? _brand : {};
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(["brands"])),
@@ -31598,24 +31598,29 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "modal-form" }, [
           _c("form", [
+            _c("input", {
+              attrs: { type: "hidden" },
+              domProps: { value: _vm.brand.id }
+            }),
+            _vm._v(" "),
             _c("div", { staticClass: "control" }, [
               _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.newName,
-                    expression: "newName"
+                    value: _vm.brand.name,
+                    expression: "brand.name"
                   }
                 ],
                 attrs: { type: "text", placeholder: "Brand name" },
-                domProps: { value: _vm.newName },
+                domProps: { value: _vm.brand.name },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.newName = $event.target.value
+                    _vm.$set(_vm.brand, "name", $event.target.value)
                   }
                 }
               })
@@ -33174,60 +33179,66 @@ var render = function() {
               : _vm._e()
           ]
         : [
-            _c(
-              "button",
-              {
-                staticClass: "btn",
-                on: {
-                  click: function($event) {
-                    _vm.showDropdown = !_vm.showDropdown
-                  }
-                }
-              },
-              [
-                _c("div", { staticClass: "avatar" }, [
-                  _c("img", { attrs: { src: _vm.activeBrand.logo, alt: "" } })
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "text" }, [
-                  _c("p", [_vm._v(_vm._s(_vm.activeBrand.name))]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "icon" }, [
-                    _c(
-                      "svg",
-                      {
-                        staticClass: "sc-fzqAbL fPXfOL",
-                        attrs: {
-                          width: "24",
-                          height: "24",
-                          viewBox: "0 0 24 24",
-                          color: "#000629"
-                        }
-                      },
-                      [
+            _vm.activeBrand
+              ? _c(
+                  "button",
+                  {
+                    staticClass: "btn",
+                    on: {
+                      click: function($event) {
+                        _vm.showDropdown = !_vm.showDropdown
+                      }
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "avatar" }, [
+                      _c("img", {
+                        attrs: { src: _vm.activeBrand.logo, alt: "" }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "text" }, [
+                      _c("p", [_vm._v(_vm._s(_vm.activeBrand.name))]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "icon" }, [
                         _c(
-                          "g",
-                          { attrs: { fill: "none", "fill-rule": "evenodd" } },
+                          "svg",
+                          {
+                            staticClass: "sc-fzqAbL fPXfOL",
+                            attrs: {
+                              width: "24",
+                              height: "24",
+                              viewBox: "0 0 24 24",
+                              color: "#000629"
+                            }
+                          },
                           [
-                            _c("circle", {
-                              attrs: { cx: "12", cy: "12", r: "12" }
-                            }),
-                            _vm._v(" "),
-                            _c("path", {
-                              attrs: {
-                                fill: "#000",
-                                d:
-                                  "M12.492 12.283L7.306 7 5 9.35 12.492 17 20 9.35 17.677 7z"
-                              }
-                            })
+                            _c(
+                              "g",
+                              {
+                                attrs: { fill: "none", "fill-rule": "evenodd" }
+                              },
+                              [
+                                _c("circle", {
+                                  attrs: { cx: "12", cy: "12", r: "12" }
+                                }),
+                                _vm._v(" "),
+                                _c("path", {
+                                  attrs: {
+                                    fill: "#000",
+                                    d:
+                                      "M12.492 12.283L7.306 7 5 9.35 12.492 17 20 9.35 17.677 7z"
+                                  }
+                                })
+                              ]
+                            )
                           ]
                         )
-                      ]
-                    )
-                  ])
-                ])
-              ]
-            ),
+                      ])
+                    ])
+                  ]
+                )
+              : _vm._e(),
             _vm._v(" "),
             _vm.showDropdown
               ? _c("div", { staticClass: "dropdown" }, [
@@ -53416,7 +53427,7 @@ var mutations = (_mutations = {
   var brand = _ref16.brand;
 
   if (!brand) {
-    state.brands.forEach(function (item) {
+    state.brands.forEach(function (item, index) {
       if (item.id == state.user.user.selected_brand_id) {
         brand = item;
       }

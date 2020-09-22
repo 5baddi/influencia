@@ -77,7 +77,7 @@ export default {
                 return;
             
             // Verify duplicate file then push the file
-            let existsIndex = this.files.findIndex(i => i.name = ref.files[0].name);
+            let existsIndex = this.files.findIndex(i => i.name === ref.files[0].name);
             if(existsIndex === -1)
                 this.files.push(ref.files[0]);
         },

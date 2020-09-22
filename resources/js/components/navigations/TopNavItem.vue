@@ -9,7 +9,7 @@
          </div>
       </template>
       <template v-else>
-         <button class="btn" @click="showDropdown = !showDropdown">
+         <button class="btn" @click="showDropdown = !showDropdown" v-if="activeBrand">
             <div class="avatar">
                <img :src="activeBrand.logo" alt />
             </div>

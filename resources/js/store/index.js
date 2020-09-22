@@ -164,9 +164,8 @@ const mutations = {
     },
     setActiveBrand: (state, { brand }) => {
         if (!brand) {
-
-            state.brands.forEach((item) => {
-                if (item.id == state.user.user.selected_brand_id) {
+            state.brands.forEach((item, index) => {
+                if(item.id == state.user.user.selected_brand_id) {
                     brand = item
                 }
             });

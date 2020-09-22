@@ -6,9 +6,9 @@
          </header>
          <div class="modal-form">
             <form>
-               <!-- <input type="hidden" v-model="brand.id"/> -->
+               <input type="hidden" :value="brand.id"/>
                <div class="control">
-                  <input v-model="newName" type="text" placeholder="Brand name" />
+                  <input v-model="brand.name" type="text" placeholder="Brand name" />
                </div>
                <div class="control">
                   <input type="file" ref="image" @change="handleImageUpload" />
@@ -47,12 +47,6 @@ export default {
          type: Boolean
       }
    },
-   data(){
-      return {
-         newName: null,
-         newImage: null,
-      }
-   },
    created() {
       document.addEventListener("keydown", e => {
          if (e.key == "Escape" && this.show) {
@@ -62,17 +56,23 @@ export default {
    },
    methods: {
       handleImageUpload() {
-         this.newImage = this.$refs.image.files[0];
+         this.brand.image = this.$refs.image.files[0];
       },
       dismiss() {
+         // Unset image file
+         this.$refs.image.value = null;
+
          this.$emit("dismiss");
       },
       submit() {
-         this.$emit((this.brand.id !== null)  ? "update" : "create", {
-            id: (this.brand.id !== null) ? this.brand.id : null,
-            name: this.newName,
-            image: this.newImage
+         let action = (typeof this.brand.id === "undefined")  ? "create" : "update";
+
+         this.$emit(action, {
+            brand: this.brand
          });
+
+         // Unset image file
+         this.$refs.image.value = null;
       }
    }
 };
