@@ -12,6 +12,24 @@
     .custom-file-upload > input[type=file]{
         display: none;
     }
+    .custom-file-upload .btn{
+        color: white;
+        font-size: 8pt;
+    }
+    .custom-file-upload .btn-primary{
+        background-color: #039be5;
+    }
+    .custom-file-upload .btn-flat{
+        border: none;
+        background-color: unset;
+        cursor: pointer;
+    }
+    .custom-file-upload .btn-flat:hover, .custom-file-upload .btn-flat:focus{
+        opacity: .7;
+    }
+    .custom-file-upload .btn-flat-danger{
+        color: #f44336;
+    }
     .custom-file-upload ul li{
         font-size: 10pt;
         font-weight: normal;

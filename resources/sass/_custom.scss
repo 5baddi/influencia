@@ -26,23 +26,3 @@ a.icon-link{
     margin-top: 1rem;
     margin-bottom: 1rem;
 }
-
-.btn{
-    color: white;
-    font-size: 8pt;
-}
-.btn-primary{
-    background-color: $blue;
-}
-.btn-flat{
-    border: none;
-    background-color: unset;
-    cursor: pointer;
-
-    &:hover, &:focus{
-        opacity: .7;
-    }
-}
-.btn-flat-danger{
-    color: $red;
-}

@@ -6590,6 +6590,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     id: {
@@ -8631,7 +8649,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n", ""]);
+exports.push([module.i, "\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    color: white;\n    font-size: 8pt;\n}\n.custom-file-upload .btn-primary[data-v-6c71a2d3]{\n    background-color: #039be5;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]{\n    border: none;\n    background-color: unset;\n    cursor: pointer;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]:hover, .custom-file-upload .btn-flat[data-v-6c71a2d3]:focus{\n    opacity: .7;\n}\n.custom-file-upload .btn-flat-danger[data-v-6c71a2d3]{\n    color: #f44336;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n", ""]);
 
 // exports
 
