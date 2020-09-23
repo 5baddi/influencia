@@ -5,7 +5,7 @@
             <h4 class="heading">Add new Tracker</h4>
          </header>
          <div class="modal-form">
-            <form ref="trackerForm" v-on:submit.prevent="saveTracker">
+            <form enctype="multipart/form-data" ref="trackerForm" v-on:submit.prevent="saveTracker">
                <p class="modal-form__heading">What would you like to track?</p>
                <div class="radio-group">
                   <div class="radio-group__item" :class="{active: type === 'url'}">
@@ -57,7 +57,7 @@
                   <div class="form-url" v-show="type === 'story'">
                      <div class="control">
                         <label>Story medias</label>
-                        <FileInput v-bind:id="'upload-story'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/*,video/mp4,video/x-m4v,video/*'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                        <FileInput v-on:custom="handleStoryUpload" v-bind:id="'story'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
                         <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
                      </div>
                      <div class="form-control">
@@ -163,6 +163,7 @@ export default {
          name: null,
          type: "url",
          username: null,
+         story: null,
          url: null,
          n_squences: null,
          n_squences_impressions: null,
@@ -192,6 +193,12 @@ export default {
       dismiss() {
          this.$emit("dismiss");
       },
+      handleStoryUpload(files){
+         if(typeof files[0] === "undefined")
+            return;
+
+         this.story = files[0];
+      },
       saveTracker(){
          let _data = {
             name: this.name,
@@ -204,6 +211,7 @@ export default {
             _data.url = this.url;
          }else{
             // STORY data
+            _data.story = this.story;
             _data.platform = this.platform;
             _data.n_squences = this.n_squences;
             _data.n_squences_impressions = this.n_squences_impressions;

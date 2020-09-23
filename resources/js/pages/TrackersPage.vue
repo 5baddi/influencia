@@ -104,10 +104,20 @@ export default {
       },
       create(payload) {
          let data = payload.data;
+         let formData = new FormData();
 
          // Create story tracker
-         if(data.type === 'story')
-            this.$store.dispatch("addNewStoryTracker");
+         if(data.type === 'story'){
+            console.log(data.story);
+            // Append form data
+            formData.append("name", data.name);
+            formData.append("type", data.type);
+            formData.append("username", data.username);
+            formData.append("story", data.story);
+
+            // Dispatch the creation story action
+            this.$store.dispatch("addNewStoryTracker", formData);
+         }
       }
    }
 };

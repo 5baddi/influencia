@@ -118,6 +118,7 @@ export default {
          let formData = new FormData();
          if(typeof payload.brand.id !== "undefined")
             formData.append("id", payload.brand.id);
+            
          formData.append("image", payload.brand.image);
          formData.append("name", payload.brand.name);
          this.$store.dispatch("addBrand", formData).then(() => {

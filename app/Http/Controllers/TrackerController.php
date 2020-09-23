@@ -31,7 +31,11 @@ class TrackerController extends Controller
      */
     public function createStory(CreateStoryTrackerRequest $request)
     {
-        return Tracker::create($request->all());
+        die($request->file('story'));
+        // Create tracker
+        $tracker = Tracker::create($request->all());
+
+        return $tracker;
     }
 
     /**

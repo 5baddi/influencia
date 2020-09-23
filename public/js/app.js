@@ -7054,6 +7054,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       name: null,
       type: "url",
       username: null,
+      story: null,
       url: null,
       n_squences: null,
       n_squences_impressions: null,
@@ -7083,6 +7084,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     dismiss: function dismiss() {
       this.$emit("dismiss");
     },
+    handleStoryUpload: function handleStoryUpload(files) {
+      if (typeof files[0] === "undefined") return;
+      this.story = files[0];
+    },
     saveTracker: function saveTracker() {
       var _data = {
         name: this.name,
@@ -7094,6 +7099,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _data.url = this.url;
       } else {
         // STORY data
+        _data.story = this.story;
         _data.platform = this.platform;
         _data.n_squences = this.n_squences;
         _data.n_squences_impressions = this.n_squences_impressions;
@@ -8501,9 +8507,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.showAddTrackerModal = false;
     },
     create: function create(payload) {
-      var data = payload.data; // Create story tracker
+      var data = payload.data;
+      var formData = new FormData(); // Create story tracker
 
-      if (data.type === 'story') this.$store.dispatch("addNewStoryTracker");
+      if (data.type === 'story') {
+        console.log(data.story); // Append form data
+
+        formData.append("name", data.name);
+        formData.append("type", data.type);
+        formData.append("username", data.username);
+        formData.append("story", data.story); // Dispatch the creation story action
+
+        this.$store.dispatch("addNewStoryTracker", formData);
+      }
     }
   }
 });
@@ -31920,6 +31936,7 @@ var render = function() {
             "form",
             {
               ref: "trackerForm",
+              attrs: { enctype: "multipart/form-data" },
               on: {
                 submit: function($event) {
                   $event.preventDefault()
@@ -32209,13 +32226,15 @@ var render = function() {
                         _vm._v(" "),
                         _c("FileInput", {
                           attrs: {
-                            id: "upload-story",
+                            id: "story",
                             label: "Add new Trackers",
-                            accept: "image/*,video/mp4,video/x-m4v,video/*",
+                            accept:
+                              "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
                             isList: true,
                             icon: "fas fa-plus",
                             multiple: false
-                          }
+                          },
+                          on: { custom: _vm.handleStoryUpload }
                         }),
                         _vm._v(" "),
                         _c("p", [

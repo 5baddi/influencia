@@ -30,6 +30,7 @@ class CreateStoryTrackerRequest extends FormRequest
             'type'          =>  'required|in:story',
             'platform'      =>  'nullable|in:instagram,snapchat',
             'username'      =>  'required|string',
+            'story'         =>  'required|max:50000|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/quicktime',
             'nbr_squences'  =>  'nullable|integer',
             'nbr_squences_impressions'          =>  'nullable|integer',
             'nbr_impressions_first_sequence'    =>  'nullable|integer',
