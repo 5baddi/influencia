@@ -28,7 +28,20 @@ class CreateStoryTrackerRequest extends FormRequest
             'campaign_id'   =>  'required|integer|exists:campaigns,id',
             'name'          =>  'required|unique:trackers,name|max:255',
             'type'          =>  'required|in:story',
-            'platform'      =>  'nullable|in:instagram,snapchat'
+            'platform'      =>  'nullable|in:instagram,snapchat',
+            'username'      =>  'required|string',
+            'nbr_squences'  =>  'nullable|integer',
+            'nbr_squences_impressions'          =>  'nullable|integer',
+            'nbr_impressions_first_sequence'    =>  'nullable|integer',
+            'reach_first_sequence'              =>  'nullable|integer',
+            'sticker_taps_mentions'             =>  'nullable|integer',
+            'sticker_taps_hashtags'             =>  'nullable|string',
+            'link_clicks'                       =>  'nullable|integer',
+            'nbr_replies'                       =>  'nullable|integer',
+            'nbr_taps_forward'                  =>  'nullable|integer',
+            'nbr_taps_backward'                 =>  'nullable|integer',
+            'posted_date'                       =>  'nullable|date|date_format:d/m/Y',
+            'posted_hour'                       =>  'nullable|integer|min:0,max:23'
         ];
     }
 }

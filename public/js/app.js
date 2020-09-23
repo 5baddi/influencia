@@ -53665,8 +53665,8 @@ var mutations = (_mutations = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\BADDI Group\OneDrive\Projects Backup\TGAgency\influencia\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\BADDI Group\OneDrive\Projects Backup\TGAgency\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\influencia\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
