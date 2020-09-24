@@ -18,7 +18,12 @@ class CampaignController extends Controller
      */
     public function index(Brand $brand)
     {
-        return $brand->campaigns()->with('user', 'brand')->withCount('trackers')->get();
+        return $brand->campaigns()
+                    ->with('user', 'brand')
+                    ->withCount('trackers')
+                    // TODO: total estimated impressions
+                    // TODO: total size of activated communities
+                    ->get();
     }
 
     /**
