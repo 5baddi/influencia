@@ -49,4 +49,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(campaign::class);
     }
+
+    public function trackers()
+    {
+        return $this->hasMany(Tracker::class);
+    }
 }
