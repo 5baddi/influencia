@@ -7053,6 +7053,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
+      user_id: null,
       campaign_id: null,
       platform: "instagram",
       name: null,
@@ -7084,7 +7085,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     });
     this.$store.dispatch("fetchCampaigns");
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns"])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns", "AuthenticatedUser"])),
   methods: {
     dismiss: function dismiss() {
       this.$emit("dismiss");
@@ -7094,8 +7095,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.story = files[0];
     },
     disableAction: function disableAction() {
+      if (!this.campaign_id || !this.name) return true;
+
       if (this.type === 'url' || this.type === 'post') {
-        if (this.campaign_id && this.name && this.url) return false;
+        var urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', 'i');
+        if (this.url && urlPattern.test(this.url)) return false;
       } else {}
 
       return true;
@@ -7104,14 +7113,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _data = {
         name: this.name,
         type: this.type,
-        username: this.username,
-        campaign_id: this.campaign_id
+        campaign_id: this.campaign_id,
+        user_id: this.AuthenticatedUser.id
       }; // Set URL/POST data
 
       if (this.type === 'url' || this.type === 'post') {
         _data.url = this.url;
       } else {
         // STORY data
+        _data.username = this.username;
         _data.story = this.story;
         _data.platform = this.platform;
         _data.n_squences = this.n_squences;
@@ -8515,24 +8525,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns"])),
+  notifications: {
+    createTrackerErrors: {
+      type: "error"
+    },
+    createTrackerSuccess: {
+      type: "success"
+    }
+  },
   methods: {
     dismissAddTrackerModal: function dismissAddTrackerModal() {
       this.showAddTrackerModal = false;
     },
     create: function create(payload) {
+      var _this = this;
+
       var data = payload.data;
-      var formData = new FormData(); // Create story tracker
+      var formData = new FormData(); // Set base tracker info
 
-      if (data.type === 'story') {
-        console.log(data.story); // Append form data
+      formData.append("user_id", data.user_id);
+      formData.append("campaign_id", data.campaign_id);
+      formData.append("name", data.name);
+      formData.append("type", data.type); // Create story tracker
 
-        formData.append("name", data.name);
-        formData.append("type", data.type);
+      if (data.type === "story") {
+        // Append form data
         formData.append("username", data.username);
-        formData.append("story", data.story); // Dispatch the creation story action
+        formData.append("story", data.story);
+      } else {
+        formData.append("url", data.url);
+      } // Dispatch the creation action
 
-        this.$store.dispatch("addNewStoryTracker", formData);
-      }
+
+      this.$store.dispatch("addNewTracker", formData).then(function (response) {
+        _this.dismissAddTrackerModal();
+
+        _this.createTrackerSuccess({
+          message: "Tracker ".concat(response.data.name, " created successfuly!")
+        });
+      })["catch"](function (error) {
+        _this.createTrackerErrors({
+          title: "Error",
+          message: "".concat(error.response.data.message)
+        });
+      });
     }
   }
 });
@@ -53585,11 +53621,12 @@ var actions = {
       });
     });
   },
-  addNewStoryTracker: function addNewStoryTracker(_ref8, data) {
+  addNewTracker: function addNewTracker(_ref8, data) {
     var commit = _ref8.commit,
         state = _ref8.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/trackers/story", data).then(function (response) {
+      var isStory = data.type === "story";
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/trackers" + (isStory ? "/story" : ""), data).then(function (response) {
         commit('setNewTracker', {
           tracker: response.data
         });

@@ -98,6 +98,14 @@ export default {
    computed:{
       ...mapGetters(["campaigns"])
    },
+   notifications: {
+      createTrackerErrors: {
+         type: "error"
+      },
+      createTrackerSuccess: {
+         type: "success"
+      }
+   },
    methods: {
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
@@ -106,18 +114,30 @@ export default {
          let data = payload.data;
          let formData = new FormData();
 
+         // Set base tracker info
+         formData.append("user_id", data.user_id);
+         formData.append("campaign_id", data.campaign_id);
+         formData.append("name", data.name);
+         formData.append("type", data.type);
+
          // Create story tracker
-         if(data.type === 'story'){
-            console.log(data.story);
+         if(data.type === "story"){
             // Append form data
-            formData.append("name", data.name);
-            formData.append("type", data.type);
             formData.append("username", data.username);
             formData.append("story", data.story);
-
-            // Dispatch the creation story action
-            this.$store.dispatch("addNewStoryTracker", formData);
+         }else{
+            formData.append("url", data.url);
          }
+
+         // Dispatch the creation action
+         this.$store.dispatch("addNewTracker", formData)
+            .then(response => {
+               this.dismissAddTrackerModal();
+               this.createTrackerSuccess({ message: `Tracker ${response.data.name} created successfuly!` });
+            })
+            .catch(error => {
+               this.createTrackerErrors({ title: "Error", message: `${error.response.data.message}` });
+            });
       }
    }
 };

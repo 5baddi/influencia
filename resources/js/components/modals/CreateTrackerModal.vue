@@ -162,6 +162,7 @@ export default {
    },
    data() {
       return {
+         user_id: null,
          campaign_id: null,
          platform: "instagram",
          name: null,
@@ -193,7 +194,7 @@ export default {
       this.$store.dispatch("fetchCampaigns");
    },
    computed: {
-      ...mapGetters(["campaigns"])
+      ...mapGetters(["campaigns", "AuthenticatedUser"])
    },
    methods: {
       dismiss() {
@@ -206,8 +207,18 @@ export default {
          this.story = files[0];
       },
       disableAction(){
+         if(!this.campaign_id || !this.name)
+            return true;
+
          if(this.type === 'url' || this.type === 'post'){
-            if(this.campaign_id && this.name && this.url)
+            let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i');
+
+            if(this.url && urlPattern.test(this.url))
                return false;
          }else{
 
@@ -219,8 +230,8 @@ export default {
          let _data = {
             name: this.name,
             type: this.type,
-            username: this.username,
             campaign_id: this.campaign_id,
+            user_id: this.AuthenticatedUser.id
          };
 
          // Set URL/POST data
@@ -228,6 +239,7 @@ export default {
             _data.url = this.url;
          }else{
             // STORY data
+            _data.username = this.username;
             _data.story = this.story;
             _data.platform = this.platform;
             _data.n_squences = this.n_squences;

@@ -115,9 +115,11 @@ const actions = {
                 })
         })
     },
-    addNewStoryTracker({ commit, state }, data) {
+    addNewTracker({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            api.post("/api/trackers/story", data)
+            let isStory = data.type === "story";
+
+            api.post("/api/trackers" + (isStory ? "/story" : ""), data)
                 .then(response => {
                     commit('setNewTracker', { tracker: response.data })
                     resolve(response)

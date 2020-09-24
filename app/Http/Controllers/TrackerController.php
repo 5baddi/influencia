@@ -6,6 +6,7 @@ use App\Brand;
 use App\Tracker;
 use App\Campaign;
 use Illuminate\Http\Request;
+use App\Http\Requests\CreateTrackerRequest;
 use App\Http\Requests\CreateStoryTrackerRequest;
 
 class TrackerController extends Controller
@@ -24,6 +25,16 @@ class TrackerController extends Controller
                         ->get();
     }
 
+    /**
+     * Create campaign tracker
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(CreateTrackerRequest $request)
+    {
+        return Tracker::create($request->all());
+    }
+    
     /**
      * Show the form for creating a new resource.
      *
