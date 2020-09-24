@@ -36,6 +36,7 @@ class Tracker extends Model
         'nbr_taps_backward',
         'posted_date',
         'posted_hour',
+        'status'
     ];
 
      /**
@@ -47,7 +48,8 @@ class Tracker extends Model
         'user_id'       =>  'unsignedInteger',
         'campaign_id'   =>  'unsignedInteger',
         'posted_date'   =>  'date',
-        'posted_time'   =>  'time'
+        'posted_time'   =>  'time',
+        'status'        =>  'boolean'
     ];
 
     public function user()
