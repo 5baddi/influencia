@@ -221,7 +221,7 @@ export default {
             if(this.url && urlPattern.test(this.url))
                return false;
          }else{
-
+            return !(this.story && this.username);
          }
 
          return true;

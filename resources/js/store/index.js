@@ -117,7 +117,8 @@ const actions = {
     },
     addNewTracker({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            let isStory = data.type === "story";
+            // Verify is a story tracker
+            let isStory = data.get('type') === "story";
 
             api.post("/api/trackers" + (isStory ? "/story" : ""), data)
                 .then(response => {

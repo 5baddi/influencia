@@ -44,7 +44,6 @@ class TrackerController extends Controller
      */
     public function createStory(CreateStoryTrackerRequest $request)
     {
-        die($request->file('story'));
         // Create tracker
         $tracker = Tracker::create($request->all());
 
@@ -58,7 +57,7 @@ class TrackerController extends Controller
             'media_path'    =>  '/storage/' . $storyFilePath
         ]);
 
-        return Tracker::with('medias')->find($tracker->id);
+        return Tracker::with('medias')->find($tracker->id)->get();
     }
 
     /**

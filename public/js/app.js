@@ -7105,7 +7105,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
         '(\\#[-a-z\\d_]*)?$', 'i');
         if (this.url && urlPattern.test(this.url)) return false;
-      } else {}
+      } else {
+        return !(this.story && this.username);
+      }
 
       return true;
     },
@@ -53625,7 +53627,8 @@ var actions = {
     var commit = _ref8.commit,
         state = _ref8.state;
     return new Promise(function (resolve, reject) {
-      var isStory = data.type === "story";
+      // Verify is a story tracker
+      var isStory = data.get('type') === "story";
       _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/trackers" + (isStory ? "/story" : ""), data).then(function (response) {
         commit('setNewTracker', {
           tracker: response.data
