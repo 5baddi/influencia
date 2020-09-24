@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Brand;
 use App\Tracker;
 use App\Campaign;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateTrackerRequest;
 use App\Http\Requests\CreateStoryTrackerRequest;
+use App\TrackerMedias;
 
 class TrackerController extends Controller
 {
@@ -46,7 +48,17 @@ class TrackerController extends Controller
         // Create tracker
         $tracker = Tracker::create($request->all());
 
-        return $tracker;
+        // Upload story
+        $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $request->file('story')->getClientOriginalExtension();
+        $storyFilePath = $request->file('story')->storeAs('uploads', $storyFileName, 'public');
+        TrackerMedias::create([
+            'tracker_id'    =>  $tracker->id,
+            'name'          =>  $storyFileName,
+            'type'          =>  'media',
+            'media_path'    =>  '/storage/' . $storyFilePath
+        ]);
+
+        return Tracker::with('medias')->find($tracker->id);
     }
 
     /**
