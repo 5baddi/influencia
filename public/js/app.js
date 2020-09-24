@@ -8424,6 +8424,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/modals/CreateTrackerModal */ "./resources/js/components/modals/CreateTrackerModal.vue");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -8509,6 +8511,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -8522,11 +8528,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   created: function created() {
     // Fetch brand compaigns
-    if (!this.$store.getters.campaigns) {
-      this.$store.dispatch("fetchCampaigns");
-    }
+    this.$store.dispatch("fetchCampaigns"); // Fetch brand trackers
+
+    this.$store.dispatch("fetchTrackers");
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns"])),
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns", "trackers"])),
   notifications: {
     createTrackerErrors: {
       type: "error"
@@ -8536,6 +8542,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: {
+    moment: function moment() {
+      return moment__WEBPACK_IMPORTED_MODULE_2___default()();
+    },
     dismissAddTrackerModal: function dismissAddTrackerModal() {
       this.showAddTrackerModal = false;
     },
@@ -34984,7 +34993,79 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _vm._m(1),
+      _c("div", { staticClass: "p-1" }, [
+        _c("header", { staticClass: "cards" }, [
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "number" }, [
+              _vm._v(_vm._s(_vm.campaigns ? _vm.campaigns.length : 0))
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "description" }, [
+              _vm._v("NUMBER OF CAMPAIGNS")
+            ])
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card" }, [
+            _c("div", { staticClass: "number" }, [
+              _vm._v(_vm._s(_vm.trackers ? _vm.trackers.length : 0))
+            ]),
+            _vm._v(" "),
+            _c("p", { staticClass: "description" }, [
+              _vm._v("NUMBER OF TRACKERS")
+            ])
+          ]),
+          _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
+          _vm._m(2)
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "datatable-scroll" }, [
+          _c("table", { staticClass: "table campagins-table" }, [
+            _vm._m(3),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.trackers, function(tracker) {
+                return _c("tr", { key: tracker.id }, [
+                  _c("td", [_c("p", [_vm._v(_vm._s(tracker.name))])]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [
+                      tracker.status
+                        ? _c("span", { staticClass: "status-success" })
+                        : _c("span", { staticClass: "status-danger" })
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [
+                      _vm._v(
+                        _vm._s(tracker.username ? tracker.username : "---")
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("p", [
+                      _vm._v(
+                        _vm._s(
+                          _vm
+                            .moment(tracker.created_at)
+                            .format("DD/MM/YYYY h:mm")
+                        )
+                      )
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td")
+                ])
+              }),
+              0
+            )
+          ])
+        ])
+      ]),
       _vm._v(" "),
       _c("CreateTrackerModal", {
         attrs: { show: _vm.showAddTrackerModal },
@@ -35013,73 +35094,43 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "p-1" }, [
-      _c("header", { staticClass: "cards" }, [
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "number" }, [_vm._v("2")]),
-          _vm._v(" "),
-          _c("p", { staticClass: "description" }, [
-            _vm._v("NUMBER OF CAMPAIGNS")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "number" }, [_vm._v("34")]),
-          _vm._v(" "),
-          _c("p", { staticClass: "description" }, [
-            _vm._v("NUMBER OF TRACKERS")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "number" }, [_vm._v("4 933 424")]),
-          _vm._v(" "),
-          _c("p", { staticClass: "description" }, [
-            _vm._v("TOTAL ESTIMATED IMPRESSIONS")
-          ])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "card" }, [
-          _c("div", { staticClass: "number" }, [_vm._v("2 893 283")]),
-          _vm._v(" "),
-          _c("p", { staticClass: "description" }, [
-            _vm._v("TOTAL SIZE OF ACTIVATED COMMUNITIES")
-          ])
-        ])
-      ]),
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "number" }, [_vm._v("4 933 424")]),
       _vm._v(" "),
-      _c("div", { staticClass: "datatable-scroll" }, [
-        _c("table", { staticClass: "table campagins-table" }, [
-          _c("thead", [
-            _c("tr", { staticClass: "row" }, [
-              _c("td", [_vm._v("Tracker name")]),
-              _vm._v(" "),
-              _c("td", [_vm._v("Tracker status")]),
-              _vm._v(" "),
-              _c("td", [_vm._v("Tracker influencer")]),
-              _vm._v(" "),
-              _c("td", [_vm._v("Tracker meduim")]),
-              _vm._v(" "),
-              _c("td", [_vm._v("Created on")]),
-              _vm._v(" "),
-              _c("td", [_vm._v("Actions")])
-            ])
-          ]),
-          _vm._v(" "),
-          _c("tbody", [
-            _c("tr", [
-              _c("td", [_c("p", [_vm._v("#tracker")])]),
-              _vm._v(" "),
-              _c("td", [_c("p", [_vm._v("active")])]),
-              _vm._v(" "),
-              _c("td", [_c("p", [_vm._v("-")])]),
-              _vm._v(" "),
-              _c("td", [_c("p", [_vm._v("06/07/2020 09:21")])]),
-              _vm._v(" "),
-              _c("td")
-            ])
-          ])
-        ])
+      _c("p", { staticClass: "description" }, [
+        _vm._v("TOTAL ESTIMATED IMPRESSIONS")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "number" }, [_vm._v("2 893 283")]),
+      _vm._v(" "),
+      _c("p", { staticClass: "description" }, [
+        _vm._v("TOTAL SIZE OF ACTIVATED COMMUNITIES")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", { staticClass: "row" }, [
+        _c("td", [_vm._v("Tracker name")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Tracker status")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Tracker influencer")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Tracker meduim")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Created on")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Actions")])
       ])
     ])
   }

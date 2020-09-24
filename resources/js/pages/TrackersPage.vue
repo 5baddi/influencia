@@ -22,11 +22,11 @@
       <div class="p-1">
          <header class="cards">
             <div class="card">
-               <div class="number">2</div>
+               <div class="number">{{ campaigns ? campaigns.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-               <div class="number">34</div>
+               <div class="number">{{ trackers ? trackers.length : 0 }}</div>
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
@@ -51,18 +51,21 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr>
+                  <tr v-for="tracker in trackers" :key="tracker.id">
                      <td>
-                        <p>#tracker</p>
+                        <p>{{ tracker.name }}</p>
                      </td>
                      <td>
-                        <p>active</p>
+                        <p>
+                           <span class="status-success" v-if="tracker.status"></span>
+                           <span class="status-danger" v-else></span>
+                        </p>
                      </td>
                      <td>
-                        <p>-</p>
+                        <p>{{ tracker.username ? tracker.username : '---' }}</p>
                      </td>
                      <td>
-                        <p>06/07/2020 09:21</p>
+                        <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
                      </td>
                      <td></td>
                   </tr>
@@ -78,8 +81,9 @@
    </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters } from "vuex";
 import CreateTrackerModal from "../components/modals/CreateTrackerModal";
+import moment from "moment";
 export default {
    components: {
       CreateTrackerModal
@@ -91,12 +95,12 @@ export default {
    },
    created(){
       // Fetch brand compaigns
-      if(!this.$store.getters.campaigns){
-         this.$store.dispatch("fetchCampaigns");
-      }
+      this.$store.dispatch("fetchCampaigns");
+      // Fetch brand trackers
+      this.$store.dispatch("fetchTrackers");
    },
    computed:{
-      ...mapGetters(["campaigns"])
+      ...mapGetters(["campaigns", "trackers"])
    },
    notifications: {
       createTrackerErrors: {
@@ -107,6 +111,9 @@ export default {
       }
    },
    methods: {
+      moment(){
+         return moment();
+      },
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
       },
