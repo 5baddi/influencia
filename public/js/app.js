@@ -7036,6 +7036,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -7050,6 +7053,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
+      campaign_id: null,
       platform: "instagram",
       name: null,
       type: "url",
@@ -7078,6 +7082,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.dismiss();
       }
     });
+    this.$store.dispatch("fetchCampaigns");
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["campaigns"])),
   methods: {
@@ -7088,11 +7093,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (typeof files[0] === "undefined") return;
       this.story = files[0];
     },
+    disableAction: function disableAction() {
+      if (this.type === 'url' || this.type === 'post') {
+        if (this.campaign_id && this.name && this.url) return false;
+      } else {}
+
+      return true;
+    },
     saveTracker: function saveTracker() {
       var _data = {
         name: this.name,
         type: this.type,
-        username: this.username
+        username: this.username,
+        campaign_id: this.campaign_id
       }; // Set URL/POST data
 
       if (this.type === 'url' || this.type === 'post') {
@@ -32108,12 +32121,53 @@ var render = function() {
                   _c("div", { staticClass: "control" }, [
                     _c("label", [_vm._v("Assign to campaign")]),
                     _vm._v(" "),
-                    _c("select", {
-                      attrs: {
-                        options: _vm.campaigns,
-                        disabled: !_vm.campaigns
-                      }
-                    }),
+                    _c(
+                      "select",
+                      {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.campaign_id,
+                            expression: "campaign_id"
+                          }
+                        ],
+                        on: {
+                          change: function($event) {
+                            var $$selectedVal = Array.prototype.filter
+                              .call($event.target.options, function(o) {
+                                return o.selected
+                              })
+                              .map(function(o) {
+                                var val = "_value" in o ? o._value : o.value
+                                return val
+                              })
+                            _vm.campaign_id = $event.target.multiple
+                              ? $$selectedVal
+                              : $$selectedVal[0]
+                          }
+                        }
+                      },
+                      [
+                        _c(
+                          "option",
+                          {
+                            attrs: { selected: "" },
+                            domProps: { value: null }
+                          },
+                          [_vm._v("Select a campaign")]
+                        ),
+                        _vm._v(" "),
+                        _vm._l(_vm.campaigns, function(camp) {
+                          return _c(
+                            "option",
+                            { key: camp.id, domProps: { value: camp.id } },
+                            [_vm._v(_vm._s(camp.name))]
+                          )
+                        })
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
                     _c("p", [_vm._v("Assign tracker to a exists campaign")])
                   ])
@@ -32704,9 +32758,14 @@ var render = function() {
               ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-form__actions" }, [
-                _c("button", { staticClass: "btn btn-success" }, [
-                  _vm._v("Create")
-                ]),
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { disabled: _vm.disableAction() }
+                  },
+                  [_vm._v("Create")]
+                ),
                 _vm._v(" "),
                 _c(
                   "button",

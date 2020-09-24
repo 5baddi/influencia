@@ -42,7 +42,10 @@
                   <div class="form-url">
                      <div class="control">
                         <label>Assign to campaign</label>
-                        <select :options="campaigns" :disabled="!campaigns"></select>
+                        <select v-model="campaign_id">
+                           <option :value="null" selected>Select a campaign</option>
+                           <option v-for="camp in campaigns" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
+                        </select>
                         <p>Assign tracker to a exists campaign</p>
                      </div>
                   </div>
@@ -136,7 +139,7 @@
                </div>
 
                <div class="modal-form__actions">
-                  <button class="btn btn-success">Create</button>
+                  <button class="btn btn-success" :disabled="disableAction()">Create</button>
                   <button class="btn btn-danger" @click="dismiss">Cancel</button>
                </div>
             </form>
@@ -159,6 +162,7 @@ export default {
    },
    data() {
       return {
+         campaign_id: null,
          platform: "instagram",
          name: null,
          type: "url",
@@ -185,6 +189,8 @@ export default {
             this.dismiss();
          }
       });
+
+      this.$store.dispatch("fetchCampaigns");
    },
    computed: {
       ...mapGetters(["campaigns"])
@@ -199,11 +205,22 @@ export default {
 
          this.story = files[0];
       },
+      disableAction(){
+         if(this.type === 'url' || this.type === 'post'){
+            if(this.campaign_id && this.name && this.url)
+               return false;
+         }else{
+
+         }
+
+         return true;
+      },
       saveTracker(){
          let _data = {
             name: this.name,
             type: this.type,
             username: this.username,
+            campaign_id: this.campaign_id,
          };
 
          // Set URL/POST data
