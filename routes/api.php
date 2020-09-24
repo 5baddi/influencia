@@ -25,7 +25,7 @@ Route::middleware('auth:sanctum')->post('/brands', 'BrandController@store');
 Route::middleware('auth:sanctum')->get('/brands', 'BrandController@index');
 Route::middleware('auth:sanctum')->get('/users', 'UserController@index');
 Route::middleware('auth:sanctum')->post('/search', 'SearchController@search');
-Route::middleware('auth:sanctum')->post('/campaigns', 'CampaignController@store');
+Route::middleware('auth:sanctum')->post('/campaigns', 'CampaignController@create');
 Route::middleware('auth:sanctum')->get('/campaigns/{brand}', 'CampaignController@index');
 Route::middleware('auth:sanctum')->get('/brand/{brand}/trackers', 'TrackerController@fetchByBrand');
 Route::middleware('auth:sanctum')->post('/trackers', 'TrackerController@create');

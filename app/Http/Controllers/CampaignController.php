@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Campaign;
 use App\Brand;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 
 class CampaignController extends Controller
 {
@@ -27,13 +25,28 @@ class CampaignController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
+     * Insert new campaign row
+     * 
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        // Validate request
+        $request->validate([
+            'name'      => 'required|string',
+            'brand_id'  => 'required|integer|exists:brands,id'
+        ]);
+
+        // Insert new campaign row
+        $campaign = Campaign::create([
+            "name"      => $request->input("name"),
+            "brand_id"  => $request->input("brand_id"),
+            "user_id"   => Auth::id()
+        ]);
+
+
+        return Campaign::find($campaign->id)->with(['brand', 'user'])->get();
     }
 
     /**
@@ -44,22 +57,7 @@ class CampaignController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string',
-            'brand_id' => 'required|numeric|exists:brands,id'
-        ]);
-
-        $user = Auth::user();
-
-        $campaign = Campaign::create([
-            "name"  => request('name'),
-            "brand_id"  => request('brand_id'),
-            "uuid"  => Str::uuid(),
-            "user_id"   => $user->id
-        ]);
-
-
-        return Campaign::where(['id' => $campaign->id])->with('user')->with('brand')->get()->first();
+        
     }
 
     /**
