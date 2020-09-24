@@ -8514,6 +8514,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -8548,6 +8552,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     dismissAddTrackerModal: function dismissAddTrackerModal() {
       this.showAddTrackerModal = false;
     },
+    showEditTrackerModal: function showEditTrackerModal() {},
     create: function create(payload) {
       var _this = this;
 
@@ -34997,7 +35002,13 @@ var render = function() {
         _c("header", { staticClass: "cards" }, [
           _c("div", { staticClass: "card" }, [
             _c("div", { staticClass: "number" }, [
-              _vm._v(_vm._s(_vm.campaigns ? _vm.campaigns.length : 0))
+              _vm._v(
+                _vm._s(
+                  _vm.campaigns && _vm.campaigns.length
+                    ? _vm.campaigns.length
+                    : 0
+                )
+              )
             ]),
             _vm._v(" "),
             _c("p", { staticClass: "description" }, [
@@ -35007,7 +35018,11 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "card" }, [
             _c("div", { staticClass: "number" }, [
-              _vm._v(_vm._s(_vm.trackers ? _vm.trackers.length : 0))
+              _vm._v(
+                _vm._s(
+                  _vm.trackers && _vm.trackers.length ? _vm.trackers.length : 0
+                )
+              )
             ]),
             _vm._v(" "),
             _c("p", { staticClass: "description" }, [
@@ -35046,6 +35061,8 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
+                  _c("td"),
+                  _vm._v(" "),
                   _c("td", [
                     _c("p", [
                       _vm._v(
@@ -35058,7 +35075,44 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _c("td")
+                  _c("td", { staticClass: "text-center" }, [
+                    _c(
+                      "a",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: tracker.id,
+                            expression: "tracker.id"
+                          }
+                        ],
+                        staticClass: "icon-link",
+                        attrs: {
+                          href: "javascript:void(0);",
+                          title: "Edit tracker"
+                        },
+                        on: {
+                          click: function($event) {
+                            return _vm.showEditTrackerModal(tracker)
+                          }
+                        }
+                      },
+                      [_c("i", { staticClass: "fas fa-pen" })]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "a",
+                      {
+                        staticClass: "icon-link",
+                        attrs: {
+                          href: "javascript:void(0);",
+                          title: "Delete tracker"
+                        }
+                      },
+                      [_c("i", { staticClass: "fas fa-trash" })]
+                    )
+                  ])
                 ])
               }),
               0
@@ -35130,7 +35184,7 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("td", [_vm._v("Created on")]),
         _vm._v(" "),
-        _c("td", [_vm._v("Actions")])
+        _c("td", { staticClass: "text-center" }, [_vm._v("Actions")])
       ])
     ])
   }

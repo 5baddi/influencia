@@ -22,11 +22,11 @@
       <div class="p-1">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ campaigns ? campaigns.length : 0 }}</div>
+               <div class="number">{{ (campaigns && campaigns.length) ? campaigns.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-               <div class="number">{{ trackers ? trackers.length : 0 }}</div>
+               <div class="number">{{ (trackers && trackers.length) ? trackers.length : 0 }}</div>
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
@@ -47,7 +47,7 @@
                      <td>Tracker influencer</td>
                      <td>Tracker meduim</td>
                      <td>Created on</td>
-                     <td>Actions</td>
+                     <td class="text-center">Actions</td>
                   </tr>
                </thead>
                <tbody>
@@ -64,10 +64,14 @@
                      <td>
                         <p>{{ tracker.username ? tracker.username : '---' }}</p>
                      </td>
+                     <td></td>
                      <td>
                         <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
                      </td>
-                     <td></td>
+                     <td class="text-center">
+                        <a href="javascript:void(0);" v-show="tracker.id" class="icon-link" :title="'Edit tracker'" @click="showEditTrackerModal(tracker)"><i class="fas fa-pen"></i></a>
+                        <a href="javascript:void(0);" class="icon-link" :title="'Delete tracker'"><i class="fas fa-trash"></i></a>
+                     </td>
                   </tr>
                </tbody>
             </table>
@@ -116,6 +120,9 @@ export default {
       },
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
+      },
+      showEditTrackerModal(){
+
       },
       create(payload) {
          let data = payload.data;
