@@ -7727,7 +7727,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var formData = new FormData();
       if (typeof payload.brand.id !== "undefined") formData.append("id", payload.brand.id);
-      formData.append("image", payload.brand.image);
+      formData.append("logo", payload.brand.image);
       formData.append("name", payload.brand.name);
       this.$store.dispatch("addBrand", formData).then(function () {
         _this2.createBrandSuccess({
@@ -8610,12 +8610,6 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-//
-//
-//
-//
-//
-//
 //
 //
 //
@@ -33614,7 +33608,7 @@ var render = function() {
             _c("header", { staticClass: "cards" }, [
               _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "number" }, [
-                  _vm._v(_vm._s(_vm.brands.length))
+                  _vm._v(_vm._s(_vm.brands.total ? _vm.brands.total : 0))
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "description" }, [
@@ -33630,82 +33624,109 @@ var render = function() {
                 _c(
                   "tbody",
                   [
-                    _vm._l(_vm.brands, function(brand) {
-                      return _c("tr", { key: brand.id }, [
-                        _c("td", [_c("img", { attrs: { src: brand.logo } })]),
-                        _vm._v(" "),
-                        _c("td", [_c("p", [_vm._v(_vm._s(brand.name))])]),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("p", [_vm._v(_vm._s(brand.users_count))])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", [
-                          brand.users
-                            ? _c(
-                                "ul",
-                                _vm._l(brand.users, function(user) {
-                                  return _c("li", { key: user.id }, [
-                                    _c(
-                                      "span",
-                                      { staticClass: "badge badge-success" },
-                                      [_vm._v(_vm._s(user.name))]
-                                    )
-                                  ])
-                                }),
-                                0
-                              )
-                            : _c("p", [_vm._v("-")])
-                        ]),
-                        _vm._v(" "),
-                        _vm._m(2, true),
-                        _vm._v(" "),
-                        _vm._m(3, true),
-                        _vm._v(" "),
-                        _c("td", [
-                          _c("p", [
-                            _vm._v(
-                              _vm._s(
-                                _vm
-                                  .moment(brand.created_at)
-                                  .format("DD/MM/YYYY h:mm")
-                              )
-                            )
-                          ])
-                        ]),
-                        _vm._v(" "),
-                        _c("td", { staticClass: "text-center" }, [
-                          _c(
-                            "a",
+                    _vm._l(_vm.brands.data, function(brand) {
+                      return _c(
+                        "tr",
+                        {
+                          directives: [
                             {
-                              directives: [
-                                {
-                                  name: "show",
-                                  rawName: "v-show",
-                                  value: brand.id,
-                                  expression: "brand.id"
-                                }
-                              ],
-                              staticClass: "icon-link",
-                              attrs: {
-                                href: "javascript:void(0);",
-                                title: "Edit"
-                              },
-                              on: {
-                                click: function($event) {
-                                  return _vm.showEditBrandModal(brand)
-                                }
-                              }
-                            },
-                            [_c("i", { staticClass: "fas fa-pen" })]
-                          ),
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.brands.total > 0,
+                              expression: "brands.total > 0"
+                            }
+                          ],
+                          key: brand.id
+                        },
+                        [
+                          _c("td", [_c("img", { attrs: { src: brand.logo } })]),
                           _vm._v(" "),
-                          _vm._m(4, true)
-                        ])
-                      ])
+                          _c("td", [_c("p", [_vm._v(_vm._s(brand.name))])]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c("p", [_vm._v(_vm._s(brand.users_count))])
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            brand.users
+                              ? _c(
+                                  "ul",
+                                  _vm._l(brand.users, function(user) {
+                                    return _c("li", { key: user.id }, [
+                                      _c(
+                                        "span",
+                                        { staticClass: "badge badge-success" },
+                                        [_vm._v(_vm._s(user.name))]
+                                      )
+                                    ])
+                                  }),
+                                  0
+                                )
+                              : _c("p", [_vm._v("-")])
+                          ]),
+                          _vm._v(" "),
+                          _vm._m(2, true),
+                          _vm._v(" "),
+                          _vm._m(3, true),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c("p", [
+                              _vm._v(
+                                _vm._s(
+                                  _vm
+                                    .moment(brand.created_at)
+                                    .format("DD/MM/YYYY")
+                                )
+                              )
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("td", { staticClass: "text-center" }, [
+                            _c(
+                              "a",
+                              {
+                                directives: [
+                                  {
+                                    name: "show",
+                                    rawName: "v-show",
+                                    value: brand.id,
+                                    expression: "brand.id"
+                                  }
+                                ],
+                                staticClass: "icon-link",
+                                attrs: {
+                                  href: "javascript:void(0);",
+                                  title: "Edit"
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.showEditBrandModal(brand)
+                                  }
+                                }
+                              },
+                              [_c("i", { staticClass: "fas fa-pen" })]
+                            ),
+                            _vm._v(" "),
+                            _vm._m(4, true)
+                          ])
+                        ]
+                      )
                     }),
                     _vm._v(" "),
-                    !_vm.brands.length ? _c("tr", [_vm._m(5)]) : _vm._e()
+                    _c(
+                      "tr",
+                      {
+                        directives: [
+                          {
+                            name: "show",
+                            rawName: "v-show",
+                            value: !_vm.brands.total,
+                            expression: "!brands.total"
+                          }
+                        ]
+                      },
+                      [_vm._m(5)]
+                    )
                   ],
                   2
                 )
@@ -35020,7 +35041,7 @@ var render = function() {
             _c("div", { staticClass: "number" }, [
               _vm._v(
                 _vm._s(
-                  _vm.trackers && _vm.trackers.length ? _vm.trackers.length : 0
+                  _vm.trackers && _vm.trackers.total ? _vm.trackers.total : 0
                 )
               )
             ]),
@@ -35041,79 +35062,93 @@ var render = function() {
             _vm._v(" "),
             _c(
               "tbody",
-              _vm._l(_vm.trackers, function(tracker) {
-                return _c("tr", { key: tracker.id }, [
-                  _c("td", [_c("p", [_vm._v(_vm._s(tracker.name))])]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("p", [
-                      tracker.status
-                        ? _c("span", { staticClass: "status-success" })
-                        : _c("span", { staticClass: "status-danger" })
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("p", [
-                      _vm._v(
-                        _vm._s(tracker.username ? tracker.username : "---")
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("td"),
-                  _vm._v(" "),
-                  _c("td", [
-                    _c("p", [
-                      _vm._v(
-                        _vm._s(
-                          _vm
-                            .moment(tracker.created_at)
-                            .format("DD/MM/YYYY h:mm")
-                        )
-                      )
-                    ])
-                  ]),
-                  _vm._v(" "),
-                  _c("td", { staticClass: "text-center" }, [
-                    _c(
-                      "a",
+              _vm._l(_vm.trackers.data, function(tracker) {
+                return _c(
+                  "tr",
+                  {
+                    directives: [
                       {
-                        directives: [
-                          {
-                            name: "show",
-                            rawName: "v-show",
-                            value: tracker.id,
-                            expression: "tracker.id"
-                          }
-                        ],
-                        staticClass: "icon-link",
-                        attrs: {
-                          href: "javascript:void(0);",
-                          title: "Edit tracker"
-                        },
-                        on: {
-                          click: function($event) {
-                            return _vm.showEditTrackerModal(tracker)
-                          }
-                        }
-                      },
-                      [_c("i", { staticClass: "fas fa-pen" })]
-                    ),
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.trackers,
+                        expression: "trackers"
+                      }
+                    ],
+                    key: tracker.id
+                  },
+                  [
+                    _c("td", [_c("p", [_vm._v(_vm._s(tracker.name))])]),
                     _vm._v(" "),
-                    _c(
-                      "a",
-                      {
-                        staticClass: "icon-link",
-                        attrs: {
-                          href: "javascript:void(0);",
-                          title: "Delete tracker"
-                        }
-                      },
-                      [_c("i", { staticClass: "fas fa-trash" })]
-                    )
-                  ])
-                ])
+                    _c("td", [
+                      _c("p", [
+                        tracker.status
+                          ? _c("span", { staticClass: "status-success" })
+                          : _c("span", { staticClass: "status-danger" })
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("p", [
+                        _vm._v(
+                          _vm._s(tracker.username ? tracker.username : "---")
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td"),
+                    _vm._v(" "),
+                    _c("td", [
+                      _c("p", [
+                        _vm._v(
+                          _vm._s(
+                            _vm
+                              .moment(tracker.created_at)
+                              .format("DD/MM/YYYY h:mm")
+                          )
+                        )
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("td", { staticClass: "text-center" }, [
+                      _c(
+                        "a",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: tracker.id,
+                              expression: "tracker.id"
+                            }
+                          ],
+                          staticClass: "icon-link",
+                          attrs: {
+                            href: "javascript:void(0);",
+                            title: "Edit tracker"
+                          },
+                          on: {
+                            click: function($event) {
+                              return _vm.showEditTrackerModal(tracker)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fas fa-pen" })]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "a",
+                        {
+                          staticClass: "icon-link",
+                          attrs: {
+                            href: "javascript:void(0);",
+                            title: "Delete tracker"
+                          }
+                        },
+                        [_c("i", { staticClass: "fas fa-trash" })]
+                      )
+                    ])
+                  ]
+                )
               }),
               0
             )
@@ -35266,16 +35301,14 @@ var render = function() {
                       _c("td", [_c("p", [_vm._v(_vm._s(user.email))])]),
                       _vm._v(" "),
                       _c("td", [
-                        _c("p", [
-                          _c("span", { staticClass: "badge badge-success" }, [
-                            _vm._v(_vm._s(user.role))
-                          ])
+                        _c("span", { staticClass: "badge badge-success" }, [
+                          _vm._v(_vm._s(user.role))
                         ])
                       ]),
                       _vm._v(" "),
                       _c("td", [
                         !user.brands
-                          ? _c("p", [_vm._v("-")])
+                          ? _c("p", [_vm._v("--")])
                           : _c(
                               "ul",
                               _vm._l(user.brands, function(brand) {
@@ -35312,7 +35345,7 @@ var render = function() {
                                 _vm._s(
                                   _vm
                                     .moment(user.created_at)
-                                    .format("DD/MM/YYYY h:mm")
+                                    .format("DD/MM/YYYY")
                                 )
                               )
                             ])
@@ -53888,8 +53921,8 @@ var mutations = (_mutations = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\influencia\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\TCAgency\influencia\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\TCAgency\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

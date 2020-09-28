@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Application;
 use App\Brand;
+use App\Http\Requests\BrandRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
@@ -18,8 +20,9 @@ class BrandController extends Controller
      */
     public function index()
     {
-        $brands = Brand::withCount('users')->with('users')->get();
-        return $brands;
+        return Brand::withCount('users')
+                    ->with('users')
+                    ->paginate(Application::DEFAULT_PAGINATION);
     }
 
     /**
@@ -27,9 +30,27 @@ class BrandController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(BrandRequest $request)
     {
-        //
+        // Set data
+        $data = [
+            'name'  =>  $request->input('name')
+        ];
+
+        // Generate file name
+        if($request->file('logo')){
+            $fileName = Str::slug($data['name']) . '_' . time() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $path = $request->file('logo')->storeAs('uploads', $fileName, 'public');
+            
+            if($path)
+                $data['logo'] = "/storage/". $path;
+        }   
+
+        // Store the brand
+        $brand = Brand::create($data);
+        $brand->users()->attach(Auth::user());
+
+        return response()->json($band->load('users'), 201);
     }
 
     /**

@@ -41,12 +41,10 @@
                         <p>{{user.email}}</p>
                      </td>
                      <td>
-                        <p>
-                           <span class="badge badge-success">{{ user.role }}</span>
-                        </p>
+                        <span class="badge badge-success">{{ user.role }}</span>
                      </td>
                      <td>
-                        <p v-if="!user.brands">-</p>
+                        <p v-if="!user.brands">--</p>
                         <ul v-else>
                            <li v-for="brand in user.brands" :key="brand.id">
                               <span class="badge badge-info">{{ brand.name }}</span>
@@ -54,15 +52,11 @@
                         </ul>
                      </td>
                      <td>
-                        <p
-                           v-if="user.last_login"
-                        >{{ moment(user.last_login).format('DD/MM/YYYY h:mm') }}</p>
+                        <p v-if="user.last_login">{{ moment(user.last_login).format('DD/MM/YYYY h:mm') }}</p>
                         <p v-else>-</p>
                      </td>
                      <td>
-                        <p
-                           v-if="user.created_at"
-                        >{{ moment(user.created_at).format('DD/MM/YYYY h:mm') }}</p>
+                        <p v-if="user.created_at">{{ moment(user.created_at).format('DD/MM/YYYY') }}</p>
                         <p v-else>-</p>
                      </td>
                   </tr>

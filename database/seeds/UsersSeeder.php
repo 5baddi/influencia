@@ -12,10 +12,10 @@ class UsersSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name' => 'Amine sahmoudi',
-            'email' => 'amine.sahmoudi@tcagency.ma',
+            'name' => 'Admin',
+            'email' => 'project@baddi.info',
             'role' => 'SUPER_ADMIN',
-            'password' => Hash::make('amine.sahmoudi@tcagency.ma')
+            'password' => Hash::make('bad@2020')
         ]);
     }
 }

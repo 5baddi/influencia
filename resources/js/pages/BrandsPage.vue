@@ -19,7 +19,7 @@
       <div class="p-1">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ brands.length }}</div>
+               <div class="number">{{ brands.total ? brands.total : 0 }}</div>
                <p class="description">NUMBER OF BRANDS</p>
             </div>
          </header>
@@ -38,7 +38,7 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr v-for="brand in brands" :key="brand.id">
+                  <tr v-show="brands.total > 0" v-for="brand in brands.data" :key="brand.id">
                      <td>
                         <img :src="brand.logo" />
                      </td>
@@ -63,14 +63,14 @@
                         <p>0</p>
                      </td>
                      <td>
-                        <p>{{ moment(brand.created_at).format('DD/MM/YYYY h:mm') }}</p>
+                        <p>{{ moment(brand.created_at).format('DD/MM/YYYY') }}</p>
                      </td>
                      <td class="text-center">
                         <a href="javascript:void(0);" v-show="brand.id" class="icon-link" title="Edit" @click="showEditBrandModal(brand)"><i class="fas fa-pen"></i></a>
                         <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
-                  <tr v-if="!brands.length">
+                  <tr v-show="!brands.total">
                      <td colspan="7">
                         <p class="info">Looks like you don't have a brand record, start creating one.</p>
                      </td>
@@ -119,7 +119,7 @@ export default {
          if(typeof payload.brand.id !== "undefined")
             formData.append("id", payload.brand.id);
             
-         formData.append("image", payload.brand.image);
+         formData.append("logo", payload.brand.image);
          formData.append("name", payload.brand.name);
          this.$store.dispatch("addBrand", formData).then(() => {
             this.createBrandSuccess({ message: "Brand created successfully." });

@@ -26,7 +26,7 @@
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-               <div class="number">{{ (trackers && trackers.length) ? trackers.length : 0 }}</div>
+               <div class="number">{{ (trackers && trackers.total) ? trackers.total : 0 }}</div>
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
@@ -51,7 +51,7 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr v-for="tracker in trackers" :key="tracker.id">
+                  <tr v-show="trackers" v-for="tracker in trackers.data" :key="tracker.id">
                      <td>
                         <p>{{ tracker.name }}</p>
                      </td>

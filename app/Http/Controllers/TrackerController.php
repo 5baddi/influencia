@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Application;
 use App\Brand;
 use App\Tracker;
 use App\Campaign;
@@ -24,7 +25,7 @@ class TrackerController extends Controller
                         ->whereHas('campaign', function($camp) use($brand){
                             $camp->where('brand_id', $brand->id);
                         })
-                        ->get();
+                        ->paginate(Application::DEFAULT_PAGINATION);
     }
 
     /**
