@@ -16,7 +16,7 @@ class CreateBrandsTable extends Migration
         Schema::create('brands', function (Blueprint $table) {
             $table->id();
             //$table->string('uuid')->unique();
-            $table->string('uuid');
+            $table->string('uuid')->unique()->nullable(false);
             $table->string('name');
             $table->string('logo')->nullable();
 

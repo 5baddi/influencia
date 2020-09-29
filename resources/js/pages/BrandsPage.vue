@@ -70,7 +70,7 @@
                         <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
-                  <tr v-show="!brands.total">
+                  <tr v-show="!brands || brands.length == 0">
                      <td colspan="7">
                         <p class="info">Looks like you don't have a brand record, start creating one.</p>
                      </td>

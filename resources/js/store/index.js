@@ -61,8 +61,9 @@ const actions = {
     },
     fetchUsers({ commit, state }) {
         return new Promise((resolve, reject) => {
-            api.get("/api/users").then(response => {
-                commit('setUsers', { users: response.data })
+            api.get("/api/v1/users").then(response => {
+                let res = response.data
+                commit('setUsers', { users: res.data })
                 resolve(response)
             }).catch(response => reject(response))
         });
@@ -82,7 +83,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/brands").then(response => {
                 //state.brands = response.data
-                commit('setBrands', { brands: response.data })
+                let res = response.data
+                commit('setBrands', { brands: res.data })
                 resolve(response)
             }).catch(response => reject(response))
         });
@@ -105,9 +107,10 @@ const actions = {
     },
     addNewCampaign({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            api.post("/api/campaigns", data)
+            api.post("/api/v1/campaigns", data)
                 .then(response => {
-                    commit('setNewCampaign', { campaign: response.data })
+                    let res = response.data
+                    commit('setNewCampaign', { campaign: res.data })
                     resolve(response)
                 })
                 .catch(response => {
@@ -120,9 +123,10 @@ const actions = {
             // Verify is a story tracker
             let isStory = data.get('type') === "story";
 
-            api.post("/api/trackers" + (isStory ? "/story" : ""), data)
+            api.post("/api/v1/trackers" + (isStory ? "/story" : ""), data)
                 .then(response => {
-                    commit('setNewTracker', { tracker: response.data })
+                    let res = response.data
+                    commit('setNewTracker', { tracker: res.data })
                     resolve(response)
                 })
                 .catch(response => {
@@ -136,9 +140,10 @@ const actions = {
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/campaigns/${state.activeBrand.uuid}`)
+                api.get(`/api/v1/campaigns/${state.activeBrand.uuid}`)
                     .then((response) => {
-                        commit('setCampaigns', { campaigns: response.data })
+                        let res = response.data
+                        commit('setCampaigns', { campaigns: res.data })
                         resolve(response);
                     })
                     .catch((error) => {
@@ -151,9 +156,10 @@ const actions = {
     fetchTrackers({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/v1/brand/${state.activeBrand.uuid}/trackers`)
+                api.get(`/api/v1/brands/${state.activeBrand.uuid}/trackers`)
                     .then((response) => {
-                        commit('setTrackers', { trackers: response.data })
+                        let res = response.data
+                        commit('setTrackers', { trackers: res.data })
                         resolve(response);
                     })
                     .catch((error) => {

@@ -27,7 +27,7 @@ class CreateTrackerRequest extends FormRequest
             'user_id'       =>  'required|integer|exists:users,id',
             'campaign_id'   =>  'required|integer|exists:campaigns,id',
             'name'          =>  'required|unique:trackers,name|max:255',
-            'type'          =>  'required|in:url,post',
+            'type'          =>  'required|in:url,post_image,post_gallery,post_video,post_igtv',
             'url'           =>  'required|url',
         ];
     }

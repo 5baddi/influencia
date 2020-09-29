@@ -73,6 +73,11 @@
                         <a href="javascript:void(0);" class="icon-link" :title="'Delete tracker'"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
+                  <tr v-show="!trackers || trackers.length == 0">
+                     <td colspan="6">
+                        <p class="info">Looks like you don't have a tracker record, start creating one.</p>
+                     </td>
+                  </tr>
                </tbody>
             </table>
          </div>

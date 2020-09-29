@@ -8518,6 +8518,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -33720,8 +33725,8 @@ var render = function() {
                           {
                             name: "show",
                             rawName: "v-show",
-                            value: !_vm.brands.total,
-                            expression: "!brands.total"
+                            value: !_vm.brands || _vm.brands.length == 0,
+                            expression: "!brands || brands.length == 0"
                           }
                         ]
                       },
@@ -35062,95 +35067,112 @@ var render = function() {
             _vm._v(" "),
             _c(
               "tbody",
-              _vm._l(_vm.trackers, function(tracker) {
-                return _c(
+              [
+                _vm._l(_vm.trackers, function(tracker) {
+                  return _c(
+                    "tr",
+                    {
+                      directives: [
+                        {
+                          name: "show",
+                          rawName: "v-show",
+                          value: _vm.trackers.length > 0,
+                          expression: "trackers.length > 0"
+                        }
+                      ],
+                      key: tracker.id
+                    },
+                    [
+                      _c("td", [_c("p", [_vm._v(_vm._s(tracker.name))])]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("p", [
+                          tracker.status
+                            ? _c("span", { staticClass: "status-success" })
+                            : _c("span", { staticClass: "status-danger" })
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("p", [
+                          _vm._v(
+                            _vm._s(tracker.username ? tracker.username : "---")
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("td"),
+                      _vm._v(" "),
+                      _c("td", [
+                        _c("p", [
+                          _vm._v(
+                            _vm._s(
+                              _vm
+                                .moment(tracker.created_at)
+                                .format("DD/MM/YYYY h:mm")
+                            )
+                          )
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("td", { staticClass: "text-center" }, [
+                        _c(
+                          "a",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: tracker.id,
+                                expression: "tracker.id"
+                              }
+                            ],
+                            staticClass: "icon-link",
+                            attrs: {
+                              href: "javascript:void(0);",
+                              title: "Edit tracker"
+                            },
+                            on: {
+                              click: function($event) {
+                                return _vm.showEditTrackerModal(tracker)
+                              }
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-pen" })]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "a",
+                          {
+                            staticClass: "icon-link",
+                            attrs: {
+                              href: "javascript:void(0);",
+                              title: "Delete tracker"
+                            }
+                          },
+                          [_c("i", { staticClass: "fas fa-trash" })]
+                        )
+                      ])
+                    ]
+                  )
+                }),
+                _vm._v(" "),
+                _c(
                   "tr",
                   {
                     directives: [
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.trackers.length > 0,
-                        expression: "trackers.length > 0"
+                        value: !_vm.trackers || _vm.trackers.length == 0,
+                        expression: "!trackers || trackers.length == 0"
                       }
-                    ],
-                    key: tracker.id
+                    ]
                   },
-                  [
-                    _c("td", [_c("p", [_vm._v(_vm._s(tracker.name))])]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("p", [
-                        tracker.status
-                          ? _c("span", { staticClass: "status-success" })
-                          : _c("span", { staticClass: "status-danger" })
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("p", [
-                        _vm._v(
-                          _vm._s(tracker.username ? tracker.username : "---")
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("td"),
-                    _vm._v(" "),
-                    _c("td", [
-                      _c("p", [
-                        _vm._v(
-                          _vm._s(
-                            _vm
-                              .moment(tracker.created_at)
-                              .format("DD/MM/YYYY h:mm")
-                          )
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("td", { staticClass: "text-center" }, [
-                      _c(
-                        "a",
-                        {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value: tracker.id,
-                              expression: "tracker.id"
-                            }
-                          ],
-                          staticClass: "icon-link",
-                          attrs: {
-                            href: "javascript:void(0);",
-                            title: "Edit tracker"
-                          },
-                          on: {
-                            click: function($event) {
-                              return _vm.showEditTrackerModal(tracker)
-                            }
-                          }
-                        },
-                        [_c("i", { staticClass: "fas fa-pen" })]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "a",
-                        {
-                          staticClass: "icon-link",
-                          attrs: {
-                            href: "javascript:void(0);",
-                            title: "Delete tracker"
-                          }
-                        },
-                        [_c("i", { staticClass: "fas fa-trash" })]
-                      )
-                    ])
-                  ]
+                  [_vm._m(4)]
                 )
-              }),
-              0
+              ],
+              2
             )
           ])
         ])
@@ -35220,6 +35242,18 @@ var staticRenderFns = [
         _c("td", [_vm._v("Created on")]),
         _vm._v(" "),
         _c("td", { staticClass: "text-center" }, [_vm._v("Actions")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", { attrs: { colspan: "6" } }, [
+      _c("p", { staticClass: "info" }, [
+        _vm._v(
+          "Looks like you don't have a tracker record, start creating one."
+        )
       ])
     ])
   }
@@ -53690,9 +53724,10 @@ var actions = {
     var commit = _ref3.commit,
         state = _ref3.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/users").then(function (response) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/users").then(function (response) {
+        var res = response.data;
         commit('setUsers', {
-          users: response.data
+          users: res.data
         });
         resolve(response);
       })["catch"](function (response) {
@@ -53720,8 +53755,9 @@ var actions = {
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brands").then(function (response) {
         //state.brands = response.data
+        var res = response.data;
         commit('setBrands', {
-          brands: response.data
+          brands: res.data
         });
         resolve(response);
       })["catch"](function (response) {
@@ -53751,9 +53787,10 @@ var actions = {
     var commit = _ref7.commit,
         state = _ref7.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/campaigns", data).then(function (response) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/v1/campaigns", data).then(function (response) {
+        var res = response.data;
         commit('setNewCampaign', {
-          campaign: response.data
+          campaign: res.data
         });
         resolve(response);
       })["catch"](function (response) {
@@ -53767,9 +53804,10 @@ var actions = {
     return new Promise(function (resolve, reject) {
       // Verify is a story tracker
       var isStory = data.get('type') === "story";
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/trackers" + (isStory ? "/story" : ""), data).then(function (response) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/v1/trackers" + (isStory ? "/story" : ""), data).then(function (response) {
+        var res = response.data;
         commit('setNewTracker', {
-          tracker: response.data
+          tracker: res.data
         });
         resolve(response);
       })["catch"](function (response) {
@@ -53789,9 +53827,10 @@ var actions = {
         state = _ref10.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
-        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/campaigns/".concat(state.activeBrand.uuid)).then(function (response) {
+        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/campaigns/".concat(state.activeBrand.uuid)).then(function (response) {
+          var res = response.data;
           commit('setCampaigns', {
-            campaigns: response.data
+            campaigns: res.data
           });
           resolve(response);
         })["catch"](function (error) {
@@ -53805,9 +53844,10 @@ var actions = {
         state = _ref11.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
-        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brand/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
+        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brands/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
+          var res = response.data;
           commit('setTrackers', {
-            trackers: response.data
+            trackers: res.data
           });
           resolve(response);
         })["catch"](function (error) {

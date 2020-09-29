@@ -15,11 +15,11 @@ class CreateCampaignsTable extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid');
+            $table->string('uuid')->unique()->nullable(false);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('brand_id');
             $table->string('name');
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }
