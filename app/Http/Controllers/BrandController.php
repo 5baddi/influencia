@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Application;
 use App\Brand;
-use App\Http\Requests\BrandRequest;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Http\UploadedFile;
+use App\Http\Requests\BrandRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class BrandController extends Controller
 {
@@ -20,9 +16,11 @@ class BrandController extends Controller
      */
     public function index()
     {
-        return Brand::withCount('users')
-                    ->with('users')
-                    ->paginate(Application::DEFAULT_PAGINATION);
+        return response()->success("Brands fetched successfully.", 
+            Brand::withCount('users')
+                ->with('users')
+                ->get()
+        );
     }
 
     /**
@@ -49,86 +47,67 @@ class BrandController extends Controller
         // Store the brand
         $brand = Brand::create($data);
         $brand->users()->attach(Auth::user());
-
-        return response()->json($band->load('users'), 201);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        $user = Auth::user();
-
-
-        $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif',
-            'name' => 'required|string'
-        ]);
-
-        $uploadPath = public_path('upload');
-
-        $imageName =  Str::slug(request('name') . '_') . time() . '.' . $request->file('image')->getClientOriginalExtension();
-        $path = $request->file('image')->storeAs('uploads', $imageName, 'public');
-
-        $brand = Brand::create([
-            "name"  => request('name'),
-            "logo"  => '/storage/' . $path,
-            "uuid"  => Str::uuid()
-        ]);
-        $user->update([
+        Auth::user()->update([
             'selected_brand_id' => $brand->id
         ]);
 
-        $brand->users()->attach($user);
-        return response($brand->load('users'), 201);
+        return response()->success("Brand created successfully.", $brand->load('users')->toArray(), 201);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Brands  $brands
+     * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function show(Brand $brands)
+    public function show(Brand $brand)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Brands  $brands
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Brand $brands)
-    {
-        //
+        return response()->success("Brand fetched successfully.", $brand->load('users')->toArray());
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Brands  $brands
+     * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Brand $brands)
+    public function update(Brand $brand, BrandRequest $request)
     {
-        //
+        // Set data
+        $data = [];
+        if($request->input('name'))
+            $data['name'] = $request->input('name');
+
+        // Generate file name
+        if($request->file('logo')){
+            $fileName = Str::slug($data['name']) . '_' . time() . '.' . $request->file('logo')->getClientOriginalExtension();
+            $path = $request->file('logo')->storeAs('uploads', $fileName, 'public');
+            
+            if($path)
+                $data['logo'] = "/storage/". $path;
+        }   
+
+        // Update the brand
+        $brand->update($data);
+
+        return response()->success("Brands fetched successfully.", $brand->load('users')->toArray());
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Brands  $brands
+     * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Brand $brands)
+    public function destroy(Brand $brand)
     {
-        //
+        // Delete brand
+        $brand->delete();
+
+        return response()->json([
+            'success'   =>  true,
+            'message'   =>  'Brand deleted successfully.'
+        ]);
     }
 }

@@ -25,7 +25,8 @@ class TrackerController extends Controller
                         ->whereHas('campaign', function($camp) use($brand){
                             $camp->where('brand_id', $brand->id);
                         })
-                        ->paginate(Application::DEFAULT_PAGINATION);
+                        ->get();
+                        // ->paginate(Application::DEFAULT_PAGINATION);
     }
 
     /**

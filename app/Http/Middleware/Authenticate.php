@@ -18,6 +18,6 @@ class Authenticate extends Middleware
             return route('login');
         }
         
-        return response()->json(['message' => 'unauthenticated'], 401);
+        return response()->error("Unauthenticated!", [], 401);
     }
 }

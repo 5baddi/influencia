@@ -33608,7 +33608,7 @@ var render = function() {
             _c("header", { staticClass: "cards" }, [
               _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "number" }, [
-                  _vm._v(_vm._s(_vm.brands.total ? _vm.brands.total : 0))
+                  _vm._v(_vm._s(_vm.brands.length ? _vm.brands.length : 0))
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "description" }, [
@@ -33624,7 +33624,7 @@ var render = function() {
                 _c(
                   "tbody",
                   [
-                    _vm._l(_vm.brands.data, function(brand) {
+                    _vm._l(_vm.brands, function(brand) {
                       return _c(
                         "tr",
                         {
@@ -33632,8 +33632,8 @@ var render = function() {
                             {
                               name: "show",
                               rawName: "v-show",
-                              value: _vm.brands.total > 0,
-                              expression: "brands.total > 0"
+                              value: _vm.brands.length > 0,
+                              expression: "brands.length > 0"
                             }
                           ],
                           key: brand.id
@@ -35041,7 +35041,7 @@ var render = function() {
             _c("div", { staticClass: "number" }, [
               _vm._v(
                 _vm._s(
-                  _vm.trackers && _vm.trackers.total ? _vm.trackers.total : 0
+                  _vm.trackers && _vm.trackers.length ? _vm.trackers.length : 0
                 )
               )
             ]),
@@ -35062,7 +35062,7 @@ var render = function() {
             _vm._v(" "),
             _c(
               "tbody",
-              _vm._l(_vm.trackers.data, function(tracker) {
+              _vm._l(_vm.trackers, function(tracker) {
                 return _c(
                   "tr",
                   {
@@ -35070,8 +35070,8 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.trackers,
-                        expression: "trackers"
+                        value: _vm.trackers.length > 0,
+                        expression: "trackers.length > 0"
                       }
                     ],
                     key: tracker.id

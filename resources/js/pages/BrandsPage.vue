@@ -19,7 +19,7 @@
       <div class="p-1">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ brands.total ? brands.total : 0 }}</div>
+               <div class="number">{{ brands.length ? brands.length : 0 }}</div>
                <p class="description">NUMBER OF BRANDS</p>
             </div>
          </header>
@@ -38,7 +38,7 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr v-show="brands.total > 0" v-for="brand in brands.data" :key="brand.id">
+                  <tr v-show="brands.length > 0" v-for="brand in brands" :key="brand.id">
                      <td>
                         <img :src="brand.logo" />
                      </td>
