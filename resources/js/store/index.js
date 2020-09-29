@@ -80,7 +80,7 @@ const actions = {
     },
     fetchBrands({ commit, state }) {
         return new Promise((resolve, reject) => {
-            api.get("/api/brands").then(response => {
+            api.get("/api/v1/brands").then(response => {
                 //state.brands = response.data
                 commit('setBrands', { brands: response.data })
                 resolve(response)
@@ -89,7 +89,7 @@ const actions = {
     },
     addBrand({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            api.post("/api/brands", data, {
+            api.post("/api/v1/brands", data, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
@@ -151,7 +151,7 @@ const actions = {
     fetchTrackers({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/brand/${state.activeBrand.uuid}/trackers`)
+                api.get(`/api/v1/brand/${state.activeBrand.uuid}/trackers`)
                     .then((response) => {
                         commit('setTrackers', { trackers: response.data })
                         resolve(response);

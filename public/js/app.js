@@ -53718,7 +53718,7 @@ var actions = {
     var commit = _ref5.commit,
         state = _ref5.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/brands").then(function (response) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brands").then(function (response) {
         //state.brands = response.data
         commit('setBrands', {
           brands: response.data
@@ -53733,7 +53733,7 @@ var actions = {
     var commit = _ref6.commit,
         state = _ref6.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/brands", data, {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/v1/brands", data, {
         headers: {
           "Content-Type": "multipart/form-data"
         }
@@ -53805,7 +53805,7 @@ var actions = {
         state = _ref11.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
-        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/brand/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
+        _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brand/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
           commit('setTrackers', {
             trackers: response.data
           });
