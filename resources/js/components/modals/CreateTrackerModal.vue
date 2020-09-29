@@ -49,7 +49,7 @@
                         <p>Assign tracker to a exists campaign</p>
                      </div>
                   </div>
-                  <div class="form-url" v-show="type === 'url' || type === 'post'">
+                  <div class="form-url" v-show="type !== 'story'">
                      <div class="control">
                         <label>{{ type === 'url' ? 'Destination URL' : 'Post URL' }}</label>
                         <input v-model="url" type="text" placeholder="https://" />
@@ -59,7 +59,7 @@
                   </div>
                   <div class="form-url" v-show="type !== 'url'">
                      <div class="form-control">
-                        <p class="modal-form__heading">Which platform was used to post the story?</p>
+                        <p class="modal-form__heading">Which platform was used to post the {{ type }}?</p>
                         <label for="instagram" class="instagram-radio">
                            <input type="radio" value="instagram" v-model="platform" :checked="platform === 'instagram'"/>
                            <span><i class="fab fa-instagram"></i>&nbsp;Instagram</span>

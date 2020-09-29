@@ -32237,8 +32237,8 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.type === "url" || _vm.type === "post",
-                        expression: "type === 'url' || type === 'post'"
+                        value: _vm.type !== "story",
+                        expression: "type !== 'story'"
                       }
                     ],
                     staticClass: "form-url"
@@ -32331,7 +32331,11 @@ var render = function() {
                   [
                     _c("div", { staticClass: "form-control" }, [
                       _c("p", { staticClass: "modal-form__heading" }, [
-                        _vm._v("Which platform was used to post the story?")
+                        _vm._v(
+                          "Which platform was used to post the " +
+                            _vm._s(_vm.type) +
+                            "?"
+                        )
                       ]),
                       _vm._v(" "),
                       _c(

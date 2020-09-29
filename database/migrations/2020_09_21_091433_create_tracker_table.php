@@ -18,7 +18,7 @@ class CreateTrackerTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('campaign_id');
             $table->string('uuid')->unique()->nullable(false);
-            $table->enum('type', ['url', 'post_image', 'post_video', 'post_gallery', 'post_igtv', 'story'])->default('url');
+            $table->enum('type', ['url', 'post', 'story'])->default('url');
             $table->string('name')->unique()->nullable(false);
             $table->enum('platform', ['instagram', 'snapchat', null])->nullable();
             $table->string('username')->nullable();
