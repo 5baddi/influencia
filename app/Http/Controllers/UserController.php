@@ -3,37 +3,56 @@
 namespace App\Http\Controllers;
 
 use App\Brand;
+use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function register(Request $request)
+    public function register(UserRequest $request)
     {
-        $data = $request->validate([
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required',
-            'name' => 'required'
-        ]);
+        // Get data
+        $data = $request->all();
 
-        $password = Hash::make(request('password'));
+        // Hash the password
+        $data['password'] = Hash::make($data['password']);
 
-        $user = User::create(request(['name', 'email', 'password', 'role']));
+        // Set user role
+        $data['role'] = $request->input('role', 'BRAND_OWNER');
 
-        if (request('brand_id') && request('role') == 'BRAND_OWNER') {
-            $user->brands()->attach(request('brand_id'));
-            $user->update(["selected_brand_id" => request('brand_id')]);
+        // Create user row
+        $user = User::create($data);
+
+        if($request->get('brand_id') && $data['role'] == 'BRAND_OWNER'){
+            // Attach brand 
+            $brand = Brand::find($request->get('brand_id'));
+            $user->brands()->attach($brand);
+            $user->update(['selected_brand_id' => $brand->id]);
         }
 
-        if (request('role') == 'SUPER_ADMIN') {
+        // Attach all brands to Admin
+        if($data['role'] == 'SUPER_ADMIN')
             $user->brands()->attach(Brand::all());
-        }
 
-        return response($user->load('brands'), 201);
+        return response()->success("User created successfully.", $user->load('brands'), 201);
     }
-    public function index(Request $request)
+
+    public function index()
     {
-        return User::with('brands')->get();
+        return response()->success("Users fetched successfully.", User::with('brands')->get());
+    }
+
+    public function show(User $user)
+    {
+        return response()->success("User fetched successfully.", $user->load('brands'));
+    }
+
+    public function destroy(User $user)
+    {
+        // Delete user row
+        $user->delete();
+
+        return response()->success("User deleted successfully.", [], 204);
     }
 }
