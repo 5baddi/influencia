@@ -57,12 +57,7 @@
                         <p v-show="type === 'post'">You can specify multiple post URLs on blogs or social media, one URL per line. Several trackers will then be created.</p>
                      </div>
                   </div>
-                  <div class="form-url" v-show="type === 'story'">
-                     <div class="control">
-                        <label>Story medias</label>
-                        <FileInput v-on:custom="handleStoryUpload" v-bind:id="'story'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
-                        <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
-                     </div>
+                  <div class="form-url" v-show="type !== 'url'">
                      <div class="form-control">
                         <p class="modal-form__heading">Which platform was used to post the story?</p>
                         <label for="instagram" class="instagram-radio">
@@ -73,6 +68,17 @@
                            <input type="radio" value="snapchat" v-model="platform" :checked="platform === 'snapchat'" :disabled="true"/>
                            <span><i class="fab fa-snapchat-ghost"></i>&nbsp;Snapchat</span>
                         </label>
+                        <label for="youtube" class="youtube-radio">
+                           <input type="radio" value="youtube" v-model="platform" :checked="platform === 'youtube'" :disabled="true"/>
+                           <span><i class="fab fa-youtube"></i>&nbsp;YouTube</span>
+                        </label>
+                     </div>
+                  </div>
+                  <div class="form-url" v-show="type === 'story'">
+                     <div class="control">
+                        <label>Story medias</label>
+                        <FileInput v-on:custom="handleStoryUpload" v-bind:id="'story'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                        <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
                      </div>
                      <div class="control">
                         <label>{{platform === 'instagram' ? 'Instagram' : 'Snapchat'}} username</label>

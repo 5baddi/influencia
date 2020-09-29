@@ -7039,6 +7039,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -32316,41 +32322,13 @@ var render = function() {
                       {
                         name: "show",
                         rawName: "v-show",
-                        value: _vm.type === "story",
-                        expression: "type === 'story'"
+                        value: _vm.type !== "url",
+                        expression: "type !== 'url'"
                       }
                     ],
                     staticClass: "form-url"
                   },
                   [
-                    _c(
-                      "div",
-                      { staticClass: "control" },
-                      [
-                        _c("label", [_vm._v("Story medias")]),
-                        _vm._v(" "),
-                        _c("FileInput", {
-                          attrs: {
-                            id: "story",
-                            label: "Add new Trackers",
-                            accept:
-                              "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
-                            isList: true,
-                            icon: "fas fa-plus",
-                            multiple: false
-                          },
-                          on: { custom: _vm.handleStoryUpload }
-                        }),
-                        _vm._v(" "),
-                        _c("p", [
-                          _vm._v(
-                            "If there are multiple images or videos for the story, we recommend creating one tracker per image or video."
-                          )
-                        ])
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
                     _c("div", { staticClass: "form-control" }, [
                       _c("p", { staticClass: "modal-form__heading" }, [
                         _vm._v("Which platform was used to post the story?")
@@ -32422,8 +32400,88 @@ var render = function() {
                           _vm._v(" "),
                           _vm._m(2)
                         ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "label",
+                        {
+                          staticClass: "youtube-radio",
+                          attrs: { for: "youtube" }
+                        },
+                        [
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.platform,
+                                expression: "platform"
+                              }
+                            ],
+                            attrs: {
+                              type: "radio",
+                              value: "youtube",
+                              disabled: true
+                            },
+                            domProps: {
+                              checked: _vm.platform === "youtube",
+                              checked: _vm._q(_vm.platform, "youtube")
+                            },
+                            on: {
+                              change: function($event) {
+                                _vm.platform = "youtube"
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm._m(3)
+                        ]
                       )
-                    ]),
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  {
+                    directives: [
+                      {
+                        name: "show",
+                        rawName: "v-show",
+                        value: _vm.type === "story",
+                        expression: "type === 'story'"
+                      }
+                    ],
+                    staticClass: "form-url"
+                  },
+                  [
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Story medias")]),
+                        _vm._v(" "),
+                        _c("FileInput", {
+                          attrs: {
+                            id: "story",
+                            label: "Add new Trackers",
+                            accept:
+                              "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
+                            isList: true,
+                            icon: "fas fa-plus",
+                            multiple: false
+                          },
+                          on: { custom: _vm.handleStoryUpload }
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "If there are multiple images or videos for the story, we recommend creating one tracker per image or video."
+                          )
+                        ])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
                     _c("div", { staticClass: "control" }, [
                       _c("label", [
@@ -32856,6 +32914,15 @@ var staticRenderFns = [
     return _c("span", [
       _c("i", { staticClass: "fab fa-snapchat-ghost" }),
       _vm._v(" Snapchat")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("i", { staticClass: "fab fa-youtube" }),
+      _vm._v(" YouTube")
     ])
   }
 ]
