@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
-class TrackerMedias extends Model
+class Media extends Model
 {
     use HasUuidRouteKey;
 
