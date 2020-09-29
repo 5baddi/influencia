@@ -17,7 +17,6 @@ class TrackerMedias extends Model
      * @var array
      */
     protected $fillable = [
-        'tracker_id',
         'name',
         'type',
         'media_path'
@@ -29,11 +28,11 @@ class TrackerMedias extends Model
      * @var array
      */
     protected $casts = [
-        'tracker_id'   =>  'unsignedInteger'
+        //
     ];
     
-    public function tracker()
+    public function trackers()
     {
-        return $this->belongsTo(Tracker::class);
+        return $this->belongsTo(Tracker::class, 'tracker_id');
     }
 }

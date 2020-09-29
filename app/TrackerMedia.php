@@ -3,9 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
-class BrandUser extends Model
-{   
+class TrackerMedia extends Model
+{
     protected $guarded = [];
 }

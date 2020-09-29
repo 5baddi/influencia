@@ -32473,7 +32473,7 @@ var render = function() {
                               "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
                             isList: true,
                             icon: "fas fa-plus",
-                            multiple: false
+                            multiple: true
                           },
                           on: { custom: _vm.handleStoryUpload }
                         }),

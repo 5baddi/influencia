@@ -41,18 +41,6 @@ class CreateTrackerTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('campaign_id')->references('id')->on('campaigns');
         });
-
-        Schema::create('tracker_medias', function(Blueprint $table){
-            $table->id();
-            $table->unsignedBigInteger('tracker_id');
-            $table->string('uuid')->unique()->nullable(false);
-            $table->string('name')->unique()->nullable(false);
-            $table->string('media_path')->nullable(false);
-            $table->enum('type', ['media', 'proof'])->default('media');
-            $table->timestamps();
-
-            $table->foreign('tracker_id')->references('id')->on('trackers');
-        });
     }
 
     /**
@@ -63,6 +51,6 @@ class CreateTrackerTable extends Migration
     public function down()
     {
         Schema::dropIfExists('trackers');
-        Schema::dropIfExists('tracker_medias');
+        Schema::dropIfExists('medias');
     }
 }
