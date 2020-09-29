@@ -14,6 +14,13 @@ use App\TrackerMedias;
 
 class TrackerController extends Controller
 {
+    public function index()
+    {
+        return response()->success(
+            "Trackers fetched successfully.",
+            Tracker::all()
+        );
+    }
     /**
      * Fetch trackers by brand.
      *
@@ -21,12 +28,15 @@ class TrackerController extends Controller
      */
     public function fetchByBrand(Brand $brand)
     {
-        return Tracker::with(['user', 'campaign', 'medias'])
-                        ->whereHas('campaign', function($camp) use($brand){
-                            $camp->where('brand_id', $brand->id);
-                        })
-                        ->get();
-                        // ->paginate(Application::DEFAULT_PAGINATION);
+        return response()->success(
+            "Trackers fetched successfully.",
+            Tracker::with(['user', 'campaign', 'medias'])
+                    ->whereHas('campaign', function($camp) use($brand){
+                        $camp->where('brand_id', $brand->id);
+                    })
+                    ->get()
+                    // ->paginate(Application::DEFAULT_PAGINATION)
+        );
     }
 
     /**
@@ -36,7 +46,13 @@ class TrackerController extends Controller
      */
     public function create(CreateTrackerRequest $request)
     {
-        return Tracker::create($request->all());
+        // Create new tracker row
+        $tracker = Tracker::create($request->all());
+
+        return response()->success(
+            "Tracker created successfully.",
+            $tracker
+        );
     }
     
     /**
@@ -59,18 +75,10 @@ class TrackerController extends Controller
             'media_path'    =>  '/storage/' . $storyFilePath
         ]);
 
-        return Tracker::with('medias')->find($tracker->id)->get();
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
+        return response()->success(
+            "Story tracker created successfully.",
+            $tracker->load('medias')
+        );
     }
 
     /**
@@ -79,20 +87,12 @@ class TrackerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Tracker $tracker)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        return response()->success(
+            "Tracker fetched successfully.",
+            $tracker->toArray()
+        );
     }
 
     /**
@@ -113,8 +113,11 @@ class TrackerController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Tracker $tracker)
     {
-        //
+        // Delete tracker row
+        $tracker->delete();
+
+        return response()->success("Tracker deleted successfully.", [], 204);
     }
 }

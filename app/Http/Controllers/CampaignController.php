@@ -16,12 +16,14 @@ class CampaignController extends Controller
      */
     public function index(Brand $brand)
     {
-        return $brand->campaigns()
-                    ->with('user', 'brand')
-                    ->withCount('trackers')
-                    // TODO: total estimated impressions
-                    // TODO: total size of activated communities
-                    ->get();
+        return response()->success("Campaigns fetched successfully.", 
+            $brand->campaigns()
+                ->with('user', 'brand')
+                ->withCount('trackers')
+                // TODO: total estimated impressions
+                // TODO: total size of activated communities
+                ->get()
+        );
     }
 
     /**
@@ -45,19 +47,11 @@ class CampaignController extends Controller
             "user_id"   => Auth::id()
         ]);
 
-
-        return Campaign::find($campaign->id)->with(['brand', 'user'])->get();
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        
+        return response()->success(
+            "Campaign created successfully.", 
+            $campaign->load(['brand', 'user']),
+            201
+        );
     }
 
     /**
@@ -68,18 +62,10 @@ class CampaignController extends Controller
      */
     public function show(Campaign $campaign)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Campaign  $campaign
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Campaign $campaign)
-    {
-        //
+        return response()->success(
+            "Campaign fetched successfully.",
+            $campaign->toArray()
+        );
     }
 
     /**
@@ -89,9 +75,9 @@ class CampaignController extends Controller
      * @param  \App\Campaign  $campaign
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Campaign $campaign)
+    public function update(Campaign $campaign, Request $request)
     {
-        //
+        // TODO: update campaign entity
     }
 
     /**
@@ -102,6 +88,9 @@ class CampaignController extends Controller
      */
     public function destroy(Campaign $campaign)
     {
-        //
+        // Delete campaign entity
+        $campaign->delete();
+
+        return response()->success("Campaign deleted successfully.", [], 204);
     }
 }

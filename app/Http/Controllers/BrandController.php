@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Brand;
 use Illuminate\Support\Str;
 use App\Http\Requests\BrandRequest;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class BrandController extends Controller
@@ -44,10 +45,13 @@ class BrandController extends Controller
                 $data['logo'] = "/storage/". $path;
         }   
 
+        // Get current user
+        $user = User::find(Auth::id());
+
         // Store the brand
         $brand = Brand::create($data);
-        $brand->users()->attach(Auth::user());
-        Auth::user()->update([
+        $brand->users()->attach($user);
+        $user->update([
             'selected_brand_id' => $brand->id
         ]);
 

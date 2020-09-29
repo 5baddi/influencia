@@ -18,20 +18,21 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'auth:sanctum'], function(){
     // Get User
     Route::get('/user', function (Request $request) {
-        return $request->user();
+        return response()->success("User fetched successfully.", $request->user());
     });
 
     // Logout action
     Route::post('/logout', 'AuthenticationController@logout');
 });
 
+Route::post('/brands', 'BrandController@create');
+
 // API V1 routes
 Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     // Brands
-    Route::get('/brands', 'BrandController@index');
-    Route::post('/brands', 'BrandController@create');
-    Route::put('/brands/{brand}', 'BrandController@update');
-    Route::delete('/brands/{brand}', 'BrandController@destroy');
+    // Route::get('/brands', 'BrandController@index');
+    // Route::put('/brands/{brand}', 'BrandController@update');
+    // Route::delete('/brands/{brand}', 'BrandController@destroy');
     // Route::get('/brand/{brand}/trackers', 'TrackerController@fetchByBrand');
 });
 
