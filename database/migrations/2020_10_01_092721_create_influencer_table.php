@@ -1,0 +1,41 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateInfluencerTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('influencers', function (Blueprint $table) {
+            $table->id();
+            $table->string('uuid')->unique()->nullable(false);
+            $table->enum('network', ['instagram', 'snapchat', 'youtube'])->default('instagram');
+            $table->string('username')->nullable(false);
+            $table->string('name')->nullable();
+            $table->text('biography')->nullable();
+            $table->string('website')->nullable();
+            $table->string('pic_url')->nullable();
+            $table->boolean('is_business')->nullable();
+            $table->boolean('is_private')->nullable();
+            $table->boolean('banned')->default(false);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('influencers');
+    }
+}
