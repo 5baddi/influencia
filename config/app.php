@@ -175,6 +175,8 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\ResponseServiceProvider::class,
+        App\Providers\ScraperServiceProvider::class,
+        App\Providers\RepositoryServiceProvider::class,
 
     ],
 
@@ -230,6 +232,8 @@ return [
 
         'Responder' => Flugg\Responder\Facades\Responder::class,
         'Transformation' => Flugg\Responder\Facades\Transformation::class,
+
+        'Format'    =>  App\Helpers\FormatHelper::class,
 
     ],
 

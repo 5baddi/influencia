@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrackerMediaTable extends Migration
+class CreatePostMedias extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateTrackerMediaTable extends Migration
      */
     public function up()
     {
-        Schema::create('tracker_media', function (Blueprint $table) {
+        Schema::create('influencer_post_medias', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('media_id');
-            $table->unsignedBigInteger('tracker_id');
+            $table->unsignedBigInteger('influencer_post_id');
+            $table->enum('type', ['image', 'video', 'carousel'])->default('image');
 
             $table->foreign('media_id')->references('id')->on('medias')->cascadeOnDelete();
-            $table->foreign('tracker_id')->references('id')->on('trackers')->cascadeOnDelete();
+            $table->foreign('influencer_post_id')->references('id')->on('influencer_posts')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -31,6 +32,6 @@ class CreateTrackerMediaTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tracker_media');
+        Schema::dropIfExists('influencer_post_medias');
     }
 }

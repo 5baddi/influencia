@@ -27,6 +27,7 @@
     "dependencies": {
         "mini-toastr": "^0.8.1",
         "moment": "^2.27.0",
+        "number-abbreviate": "^2.0.0",
         "vue-loading-overlay": "^3.4.0",
         "vue-notifications": "^1.0.2",
         "vue-router": "^3.3.4",

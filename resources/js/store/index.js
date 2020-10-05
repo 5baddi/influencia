@@ -20,7 +20,9 @@ const state = () => ({
     activeBrand: null,
     users: null,
     campaigns: null,
-    trackers: null
+    trackers: null,
+    influencers: null,
+    influencer: null
 })
 
 const getters = {
@@ -32,6 +34,8 @@ const getters = {
     users: state => state.users,
     campaigns: state => state.campaigns,
     trackers: state => state.trackers,
+    influencers: state => state.influencers,
+    influencer: state => state.influencer,
     activeBrand: state => state.activeBrand
 };
 
@@ -78,6 +82,24 @@ const actions = {
                     reject(error)
                 })
         })
+    },
+    fetchInfluencers({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/influencers").then(response => {
+                let res = response.data
+                commit('setInfluencers', { influencers: res.data })
+                resolve(response)
+            }).catch(response => reject(response))
+        });
+    },
+    fetchInfluencer({ commit, state }, uuid) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/influencers/" + uuid).then(response => {
+                let res = response.data
+                commit('setInfluencer', { influencer: res.data })
+                resolve(response)
+            }).catch(response => reject(response))
+        });
     },
     fetchBrands({ commit, state }) {
         return new Promise((resolve, reject) => {
@@ -187,6 +209,12 @@ const mutations = {
     },
     setBrands: (state, { brands }) => {
         state.brands = brands
+    },
+    setInfluencers: (state, { influencers }) => {
+        state.influencers = influencers
+    },
+    setInfluencer: (state, { influencer }) => {
+        state.influencer = influencer
     },
     setNewUser: (state, { user }) => {
         if (!state.users) {

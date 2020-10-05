@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\ScrapInstagramInfluencers;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -13,7 +14,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        ScrapInstagramInfluencers::class
     ];
 
     /**
@@ -24,7 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        // Instagram scraper
+        $schedule->command('scrap:instagram')
+            ->dailyAt(env('INSTAGRAM_SCHEDULE'))
+            ->withoutOverlapping();
     }
 
     /**

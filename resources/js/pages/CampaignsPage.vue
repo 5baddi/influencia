@@ -23,11 +23,11 @@
       <div class="p-1">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ campaigns.length }}</div>
+               <div class="number">{{ (campaigns && campaigns.length > 0) ? campaigns.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-               <div class="number">{{ trackers.length }}</div>
+               <div class="number">{{ (trackers && trackers.length > 0) ? trackers.length : 0 }}</div>
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
@@ -97,7 +97,9 @@ export default {
    components: {
       CreateCampaignModal
    },
-
+   beforeRouteEnter(to, from, next){
+      next(vm => vm.initData());
+   },
    data() {
       return {
          showAddCampaignModal: false,
@@ -105,10 +107,14 @@ export default {
       };
    },
    created() {
-      this.$store.dispatch("fetchCampaigns");
-      this.$store.dispatch("fetchTrackers");
+      // this.$store.dispatch("fetchCampaigns");
+      // this.$store.dispatch("fetchTrackers");
    },
    methods: {
+      initData(){
+         this.$store.dispatch("fetchCampaigns");
+         this.$store.dispatch("fetchTrackers");
+      },
       moment() {
          return moment();
       },

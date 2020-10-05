@@ -17,13 +17,18 @@ class CreateInfluencerTable extends Migration
             $table->id();
             $table->string('uuid')->unique()->nullable(false);
             $table->enum('network', ['instagram', 'snapchat', 'youtube'])->default('instagram');
+            $table->string('account_id')->nullable(false);
             $table->string('username')->nullable(false);
             $table->string('name')->nullable();
             $table->text('biography')->nullable();
             $table->string('website')->nullable();
             $table->string('pic_url')->nullable();
+            $table->integer('followers')->nullable();
+            $table->integer('follows')->nullable();
+            $table->integer('posts')->nullable();
             $table->boolean('is_business')->nullable();
             $table->boolean('is_private')->nullable();
+            $table->boolean('is_verified')->nullable();
             $table->boolean('banned')->default(false);
             $table->timestamps();
         });

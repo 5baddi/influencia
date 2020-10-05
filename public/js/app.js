@@ -7416,6 +7416,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -7880,17 +7888,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   components: {
     CreateCampaignModal: _components_modals_CreateCampaignModal__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
+  beforeRouteEnter: function beforeRouteEnter(to, from, next) {
+    next(function (vm) {
+      return vm.initData();
+    });
+  },
   data: function data() {
     return {
       showAddCampaignModal: false,
       isLoading: true
     };
   },
-  created: function created() {
-    this.$store.dispatch("fetchCampaigns");
-    this.$store.dispatch("fetchTrackers");
+  created: function created() {// this.$store.dispatch("fetchCampaigns");
+    // this.$store.dispatch("fetchTrackers");
   },
   methods: {
+    initData: function initData() {
+      this.$store.dispatch("fetchCampaigns");
+      this.$store.dispatch("fetchTrackers");
+    },
     moment: function moment() {
       return moment__WEBPACK_IMPORTED_MODULE_2___default()();
     },
@@ -8107,6 +8123,202 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       next();
     });
   }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/InfluencersPage.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/InfluencersPage.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! number-abbreviate */ "./node_modules/number-abbreviate/index.js");
+/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(number_abbreviate__WEBPACK_IMPORTED_MODULE_2__);
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+// import CreateBrandModal from "../components/modals/CreateBrandModal";
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {//   CreateBrandModal
+  },
+  data: function data() {
+    return {
+      showAddInfluencerModal: false,
+      isLoading: true
+    };
+  },
+  beforeRouteEnter: function beforeRouteEnter(to, from, next) {
+    next(function (vm) {
+      return vm.initData();
+    });
+  },
+  beforeRouteUpdate: function beforeRouteUpdate(to, from, next) {
+    var routeUUID = to.params.uuid;
+
+    if (typeof routeUUID !== 'undefined' && this.influencer !== null && this.influencer.uuid !== routeUUID) {
+      this.$store.commit("setInfluencer", {
+        influencer: null
+      });
+      this.fetchInfluencer();
+    }
+
+    next();
+  },
+  created: function created() {
+    this.initData();
+  },
+  watch: {
+    '$route': 'initData'
+  },
+  methods: {
+    nbr: function nbr() {
+      return new number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default.a();
+    },
+    fetchInfluencer: function fetchInfluencer() {
+      // Load user by UUID
+      if (typeof this.$route.params.uuid !== 'undefined') this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);else this.$store.commit("setInfluencer", {
+        influencer: null
+      });
+    },
+    initData: function initData() {
+      var _this = this;
+
+      if (!this.$store.getters.influencers) {
+        this.$store.dispatch("fetchInfluencers").then(function (response) {
+          _this.isLoading = false;
+        });
+      }
+
+      this.fetchInfluencer();
+      this.isLoading = false;
+    },
+    moment: function moment() {
+      return moment__WEBPACK_IMPORTED_MODULE_1___default()();
+    },
+    dismissAddInfluencerModal: function dismissAddInfluencerModal(id) {
+      this.showAddInfluencerModal = false;
+      this.brand = {};
+    }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["influencers", "influencer"]))
 });
 
 /***/ }),
@@ -30482,6 +30694,73 @@ webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
 
 /***/ }),
 
+/***/ "./node_modules/number-abbreviate/index.js":
+/*!*************************************************!*\
+  !*** ./node_modules/number-abbreviate/index.js ***!
+  \*************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+(function(root){
+  'use strict';
+
+  function NumberAbbreviate() {
+    var units
+    if (!(this instanceof NumberAbbreviate)) {
+      // function usage: abbrev(n, decPlaces, units)
+      var n = arguments[0]
+      var decPlaces = arguments[1]
+      units = arguments[2]
+      var ab = new NumberAbbreviate(units)
+      return ab.abbreviate(n, decPlaces)
+    }
+    // class usage: new NumberAbbreviate(units)
+    units = arguments[0]
+    this.units = units == null ? ['k', 'm', 'b', 't'] : units
+  }
+
+  NumberAbbreviate.prototype._abbreviate = function(number, decPlaces) {
+    decPlaces = Math.pow(10, decPlaces)
+
+    for (var i = this.units.length - 1; i >= 0; i--) {
+
+      var size = Math.pow(10, (i + 1) * 3)
+
+      if (size <= number) {
+        number = Math.round(number * decPlaces / size) / decPlaces
+
+        if ((number === 1000) && (i < this.units.length - 1)) {
+          number = 1
+          i++
+        }
+
+        number += this.units[i]
+
+        break
+      }
+    }
+
+    return number
+  }
+
+  NumberAbbreviate.prototype.abbreviate = function(number, decPlaces) {
+    var isNegative = number < 0
+    var abbreviatedNumber = this._abbreviate(Math.abs(number), decPlaces || 0)
+
+    return isNegative ? '-' + abbreviatedNumber : abbreviatedNumber;
+  }
+
+  if ( true && module.exports) {
+    module.exports = NumberAbbreviate
+  } else {
+    root.NumberAbbreviate = NumberAbbreviate
+  }
+
+})(this);
+
+
+/***/ }),
+
 /***/ "./node_modules/process/browser.js":
 /*!*****************************************!*\
   !*** ./node_modules/process/browser.js ***!
@@ -33398,6 +33677,45 @@ var render = function() {
           _vm._v(" "),
           _c(
             "li",
+            { class: { active: _vm.currentRouteName == "influencers" } },
+            [
+              _c("router-link", { attrs: { to: { name: "influencers" } } }, [
+                _c("div", { staticClass: "icon" }, [
+                  _c(
+                    "svg",
+                    {
+                      staticClass: "svg-inline--fa fa-intercom fa-w-14",
+                      attrs: {
+                        "aria-hidden": "true",
+                        focusable: "false",
+                        "data-prefix": "fab",
+                        "data-icon": "intercom",
+                        role: "img",
+                        xmlns: "http://www.w3.org/2000/svg",
+                        viewBox: "0 0 448 512",
+                        "data-fa-i2svg": ""
+                      }
+                    },
+                    [
+                      _c("path", {
+                        attrs: {
+                          fill: "currentColor",
+                          d:
+                            "M392 32H56C25.1 32 0 57.1 0 88v336c0 30.9 25.1 56 56 56h336c30.9 0 56-25.1 56-56V88c0-30.9-25.1-56-56-56zm-108.3 82.1c0-19.8 29.9-19.8 29.9 0v199.5c0 19.8-29.9 19.8-29.9 0V114.1zm-74.6-7.5c0-19.8 29.9-19.8 29.9 0v216.5c0 19.8-29.9 19.8-29.9 0V106.6zm-74.7 7.5c0-19.8 29.9-19.8 29.9 0v199.5c0 19.8-29.9 19.8-29.9 0V114.1zM59.7 144c0-19.8 29.9-19.8 29.9 0v134.3c0 19.8-29.9 19.8-29.9 0V144zm323.4 227.8c-72.8 63-241.7 65.4-318.1 0-15-12.8 4.4-35.5 19.4-22.7 65.9 55.3 216.1 53.9 279.3 0 14.9-12.9 34.3 9.8 19.4 22.7zm5.2-93.5c0 19.8-29.9 19.8-29.9 0V144c0-19.8 29.9-19.8 29.9 0v134.3z"
+                        }
+                      })
+                    ]
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "text" }, [_vm._v("Influencers")])
+              ])
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "li",
             { class: { active: _vm.currentRouteName == "users" } },
             [
               _c("router-link", { attrs: { to: { name: "users" } } }, [
@@ -33935,7 +34253,13 @@ var render = function() {
         _c("header", { staticClass: "cards" }, [
           _c("div", { staticClass: "card" }, [
             _c("div", { staticClass: "number" }, [
-              _vm._v(_vm._s(_vm.campaigns.length))
+              _vm._v(
+                _vm._s(
+                  _vm.campaigns && _vm.campaigns.length > 0
+                    ? _vm.campaigns.length
+                    : 0
+                )
+              )
             ]),
             _vm._v(" "),
             _c("p", { staticClass: "description" }, [
@@ -33945,7 +34269,13 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "card" }, [
             _c("div", { staticClass: "number" }, [
-              _vm._v(_vm._s(_vm.trackers.length))
+              _vm._v(
+                _vm._s(
+                  _vm.trackers && _vm.trackers.length > 0
+                    ? _vm.trackers.length
+                    : 0
+                )
+              )
             ]),
             _vm._v(" "),
             _c("p", { staticClass: "description" }, [
@@ -34413,6 +34743,355 @@ var staticRenderFns = [
         _c("div", { staticClass: "hero__intro" }, [
           _c("h1", [_vm._v("Dashboard")])
         ])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/InfluencersPage.vue?vue&type=template&id=6690e2a8&":
+/*!*************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/InfluencersPage.vue?vue&type=template&id=6690e2a8& ***!
+  \*************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return !_vm.isLoading
+    ? _c("div", { staticClass: "influencers" }, [
+        !_vm.influencer
+          ? _c("div", { staticClass: "hero" }, [
+              _c("div", { staticClass: "hero__intro" }, [
+                _c("h1", [_vm._v("Influencers")]),
+                _vm._v(" "),
+                _c("ul", { staticClass: "breadcrumbs" }, [
+                  _c(
+                    "li",
+                    [
+                      _c(
+                        "router-link",
+                        { attrs: { to: { name: "dashboard" } } },
+                        [_vm._v("Dashboard")]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _vm._m(0)
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "hero__actions" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { disabled: "" },
+                    on: {
+                      click: function($event) {
+                        _vm.showAddInfluencerModal = !_vm.showAddInfluencerModal
+                      }
+                    }
+                  },
+                  [_vm._v("Add new Influencer")]
+                )
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        !_vm.influencer
+          ? _c("div", { staticClass: "p-1" }, [
+              _c("header", { staticClass: "cards" }, [
+                _c("div", { staticClass: "card" }, [
+                  _c("div", { staticClass: "number" }, [
+                    _vm._v(
+                      _vm._s(
+                        _vm.influencers && _vm.influencers.length
+                          ? _vm.influencers.length
+                          : 0
+                      )
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("p", { staticClass: "description" }, [
+                    _vm._v("NUMBER OF INFLUENCERS")
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "datatable-scroll" }, [
+                _c("table", { staticClass: "table table-with-profile" }, [
+                  _vm._m(1),
+                  _vm._v(" "),
+                  _c(
+                    "tbody",
+                    [
+                      _vm._l(_vm.influencers, function(influencer) {
+                        return _c(
+                          "tr",
+                          {
+                            directives: [
+                              {
+                                name: "show",
+                                rawName: "v-show",
+                                value: _vm.influencers.length > 0,
+                                expression: "influencers.length > 0"
+                              }
+                            ],
+                            key: influencer.id
+                          },
+                          [
+                            _c("td", [
+                              _c("img", { attrs: { src: influencer.pic_url } })
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("p", [
+                                _vm._v(
+                                  _vm._s(
+                                    influencer.name
+                                      ? influencer.name
+                                      : influencer.username
+                                  )
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("p", [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm
+                                      .nbr()
+                                      .abbreviate(influencer.followers, 0)
+                                  )
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("p", [_vm._v(_vm._s(influencer.posts))])
+                            ]),
+                            _vm._v(" "),
+                            _c("td", [
+                              _c("p", [
+                                _vm._v(
+                                  _vm._s(
+                                    _vm
+                                      .moment(influencer.created_at)
+                                      .format("DD/MM/YYYY")
+                                  )
+                                )
+                              ])
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "td",
+                              { staticClass: "text-center" },
+                              [
+                                _c(
+                                  "router-link",
+                                  {
+                                    staticClass: "icon-link",
+                                    attrs: {
+                                      to: {
+                                        name: "influencers",
+                                        params: { uuid: influencer.uuid }
+                                      },
+                                      title: "Details"
+                                    }
+                                  },
+                                  [_c("i", { staticClass: "fas fa-eye" })]
+                                ),
+                                _vm._v(" "),
+                                _vm._m(2, true)
+                              ],
+                              1
+                            )
+                          ]
+                        )
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "tr",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value:
+                                !_vm.influencers || _vm.influencers.length == 0,
+                              expression:
+                                "!influencers || influencers.length == 0"
+                            }
+                          ]
+                        },
+                        [_vm._m(3)]
+                      )
+                    ],
+                    2
+                  )
+                ])
+              ])
+            ])
+          : _vm._e(),
+        _vm._v(" "),
+        _vm.influencer
+          ? _c("div", { staticClass: "p-1" }, [
+              _c("div", { staticClass: "card influencer" }, [
+                _c("div", { staticClass: "influencer-details" }, [
+                  _c("div", { staticClass: "influencer-details-picture" }, [
+                    _c("img", {
+                      attrs: { src: _vm.influencer.pic_url, alt: "Avatar" }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "influencer-details-name" }, [
+                    _c("h4", [_vm._v(_vm._s(_vm.influencer.name))]),
+                    _vm._v(" "),
+                    _c("p", [_vm._v(_vm._s(_vm.influencer.biography))])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "influencer-details-bar" }, [
+                    _c(
+                      "span",
+                      {
+                        staticClass: "influencer-details-bar-instagram",
+                        staticStyle: { width: "100%" }
+                      },
+                      [
+                        _c("i", { staticClass: "fab fa-instagram" }),
+                        _vm._v(
+                          " " +
+                            _vm._s(_vm.nbr().abbreviate(500)) +
+                            "\n                 "
+                        )
+                      ]
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _vm._m(4)
+            ])
+          : _vm._e()
+      ])
+    : _vm._e()
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("li", [
+      _c("a", { attrs: { href: "#" } }, [_vm._v("Influencers")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", { staticClass: "row" }, [
+        _c("td", [_vm._v(" ")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Full name")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Followers")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Posts")]),
+        _vm._v(" "),
+        _c("td", [_vm._v("Added at")]),
+        _vm._v(" "),
+        _c("td", { staticClass: "text-center" }, [_vm._v("Actions")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "icon-link",
+        attrs: { href: "javascript:void(0);", title: "Delete" }
+      },
+      [_c("i", { staticClass: "fas fa-trash" })]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("td", { attrs: { colspan: "7" } }, [
+      _c("p", { staticClass: "info" }, [
+        _vm._v(
+          "Looks like you don't have a influencer record, start creating one."
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "influencer-posts" }, [
+      _c("div", { staticClass: "influencer-posts-card" }, [
+        _c("img", {
+          attrs: {
+            src:
+              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
+            loading: "lazy"
+          }
+        })
+      ]),
+      _c("div", { staticClass: "influencer-posts-card" }, [
+        _c("img", {
+          attrs: {
+            src:
+              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
+            loading: "lazy"
+          }
+        })
+      ]),
+      _c("div", { staticClass: "influencer-posts-card" }, [
+        _c("img", {
+          attrs: {
+            src:
+              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
+            loading: "lazy"
+          }
+        })
+      ]),
+      _c("div", { staticClass: "influencer-posts-card" }, [
+        _c("img", {
+          attrs: {
+            src:
+              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
+            loading: "lazy"
+          }
+        })
+      ]),
+      _c("div", { staticClass: "influencer-posts-card" }, [
+        _c("img", {
+          attrs: {
+            src:
+              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
+            loading: "lazy"
+          }
+        })
       ])
     ])
   }
@@ -53232,6 +53911,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/pages/InfluencersPage.vue":
+/*!************************************************!*\
+  !*** ./resources/js/pages/InfluencersPage.vue ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _InfluencersPage_vue_vue_type_template_id_6690e2a8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./InfluencersPage.vue?vue&type=template&id=6690e2a8& */ "./resources/js/pages/InfluencersPage.vue?vue&type=template&id=6690e2a8&");
+/* harmony import */ var _InfluencersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./InfluencersPage.vue?vue&type=script&lang=js& */ "./resources/js/pages/InfluencersPage.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _InfluencersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _InfluencersPage_vue_vue_type_template_id_6690e2a8___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _InfluencersPage_vue_vue_type_template_id_6690e2a8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/pages/InfluencersPage.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/pages/InfluencersPage.vue?vue&type=script&lang=js&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/pages/InfluencersPage.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluencersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./InfluencersPage.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/InfluencersPage.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluencersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/pages/InfluencersPage.vue?vue&type=template&id=6690e2a8&":
+/*!*******************************************************************************!*\
+  !*** ./resources/js/pages/InfluencersPage.vue?vue&type=template&id=6690e2a8& ***!
+  \*******************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluencersPage_vue_vue_type_template_id_6690e2a8___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./InfluencersPage.vue?vue&type=template&id=6690e2a8& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/InfluencersPage.vue?vue&type=template&id=6690e2a8&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluencersPage_vue_vue_type_template_id_6690e2a8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_InfluencersPage_vue_vue_type_template_id_6690e2a8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/pages/LoginPage.vue":
 /*!******************************************!*\
   !*** ./resources/js/pages/LoginPage.vue ***!
@@ -53601,6 +54349,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _pages_BrandsPage__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./pages/BrandsPage */ "./resources/js/pages/BrandsPage.vue");
 /* harmony import */ var _pages_UsersPage__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./pages/UsersPage */ "./resources/js/pages/UsersPage.vue");
 /* harmony import */ var _pages_SettingsPage__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./pages/SettingsPage */ "./resources/js/pages/SettingsPage.vue");
+/* harmony import */ var _pages_InfluencersPage__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./pages/InfluencersPage */ "./resources/js/pages/InfluencersPage.vue");
+
 
 
 
@@ -53671,6 +54421,13 @@ var routes = [{
     meta: {
       auth: true
     }
+  }, {
+    name: 'influencers',
+    path: '/influencers/:uuid?',
+    component: _pages_InfluencersPage__WEBPACK_IMPORTED_MODULE_11__["default"],
+    meta: {
+      auth: true
+    }
   }]
 }, {
   name: 'login',
@@ -53727,7 +54484,9 @@ var state = function state() {
     activeBrand: null,
     users: null,
     campaigns: null,
-    trackers: null
+    trackers: null,
+    influencers: null,
+    influencer: null
   };
 };
 
@@ -53755,6 +54514,12 @@ var getters = {
   },
   trackers: function trackers(state) {
     return state.trackers;
+  },
+  influencers: function influencers(state) {
+    return state.influencers;
+  },
+  influencer: function influencer(state) {
+    return state.influencer;
   },
   activeBrand: function activeBrand(state) {
     return state.activeBrand;
@@ -53820,9 +54585,39 @@ var actions = {
       });
     });
   },
-  fetchBrands: function fetchBrands(_ref5) {
+  fetchInfluencers: function fetchInfluencers(_ref5) {
     var commit = _ref5.commit,
         state = _ref5.state;
+    return new Promise(function (resolve, reject) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/influencers").then(function (response) {
+        var res = response.data;
+        commit('setInfluencers', {
+          influencers: res.data
+        });
+        resolve(response);
+      })["catch"](function (response) {
+        return reject(response);
+      });
+    });
+  },
+  fetchInfluencer: function fetchInfluencer(_ref6, uuid) {
+    var commit = _ref6.commit,
+        state = _ref6.state;
+    return new Promise(function (resolve, reject) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/influencers/" + uuid).then(function (response) {
+        var res = response.data;
+        commit('setInfluencer', {
+          influencer: res.data
+        });
+        resolve(response);
+      })["catch"](function (response) {
+        return reject(response);
+      });
+    });
+  },
+  fetchBrands: function fetchBrands(_ref7) {
+    var commit = _ref7.commit,
+        state = _ref7.state;
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brands").then(function (response) {
         //state.brands = response.data
@@ -53836,9 +54631,9 @@ var actions = {
       });
     });
   },
-  addBrand: function addBrand(_ref6, data) {
-    var commit = _ref6.commit,
-        state = _ref6.state;
+  addBrand: function addBrand(_ref8, data) {
+    var commit = _ref8.commit,
+        state = _ref8.state;
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/v1/brands", data, {
         headers: {
@@ -53854,9 +54649,9 @@ var actions = {
       });
     });
   },
-  addNewCampaign: function addNewCampaign(_ref7, data) {
-    var commit = _ref7.commit,
-        state = _ref7.state;
+  addNewCampaign: function addNewCampaign(_ref9, data) {
+    var commit = _ref9.commit,
+        state = _ref9.state;
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/v1/campaigns", data).then(function (response) {
         var res = response.data;
@@ -53869,9 +54664,9 @@ var actions = {
       });
     });
   },
-  addNewTracker: function addNewTracker(_ref8, data) {
-    var commit = _ref8.commit,
-        state = _ref8.state;
+  addNewTracker: function addNewTracker(_ref10, data) {
+    var commit = _ref10.commit,
+        state = _ref10.state;
     return new Promise(function (resolve, reject) {
       // Verify is a story tracker
       var isStory = data.get('type') === "story";
@@ -53886,16 +54681,16 @@ var actions = {
       });
     });
   },
-  setActiveBrand: function setActiveBrand(_ref9, brand) {
-    var commit = _ref9.commit,
-        state = _ref9.state;
+  setActiveBrand: function setActiveBrand(_ref11, brand) {
+    var commit = _ref11.commit,
+        state = _ref11.state;
     commit("setActiveBrand", {
       brand: brand
     });
   },
-  fetchCampaigns: function fetchCampaigns(_ref10) {
-    var commit = _ref10.commit,
-        state = _ref10.state;
+  fetchCampaigns: function fetchCampaigns(_ref12) {
+    var commit = _ref12.commit,
+        state = _ref12.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
         _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/campaigns/".concat(state.activeBrand.uuid)).then(function (response) {
@@ -53910,9 +54705,9 @@ var actions = {
       }
     });
   },
-  fetchTrackers: function fetchTrackers(_ref11) {
-    var commit = _ref11.commit,
-        state = _ref11.state;
+  fetchTrackers: function fetchTrackers(_ref13) {
+    var commit = _ref13.commit,
+        state = _ref13.state;
     return new Promise(function (resolve, reject) {
       if (state.activeBrand) {
         _api__WEBPACK_IMPORTED_MODULE_3__["api"].get("/api/v1/brands/".concat(state.activeBrand.uuid, "/trackers")).then(function (response) {
@@ -53929,17 +54724,17 @@ var actions = {
   }
 };
 var mutations = (_mutations = {
-  setUser: function setUser(state, _ref12) {
-    var user = _ref12.user;
+  setUser: function setUser(state, _ref14) {
+    var user = _ref14.user;
     state.user = user;
     if (user && state.user) axios__WEBPACK_IMPORTED_MODULE_2___default.a.defaults.headers.common.Authorization = "Bearer ".concat(state.user.token);
   },
-  setUsers: function setUsers(state, _ref13) {
-    var users = _ref13.users;
+  setUsers: function setUsers(state, _ref15) {
+    var users = _ref15.users;
     state.users = users;
   },
-  setBrand: function setBrand(state, _ref14) {
-    var brand = _ref14.brand;
+  setBrand: function setBrand(state, _ref16) {
+    var brand = _ref16.brand;
 
     if (!state.brands) {
       state.brands = [];
@@ -53947,12 +54742,20 @@ var mutations = (_mutations = {
 
     state.brands.push(brand);
   },
-  setBrands: function setBrands(state, _ref15) {
-    var brands = _ref15.brands;
+  setBrands: function setBrands(state, _ref17) {
+    var brands = _ref17.brands;
     state.brands = brands;
   },
-  setNewUser: function setNewUser(state, _ref16) {
-    var user = _ref16.user;
+  setInfluencers: function setInfluencers(state, _ref18) {
+    var influencers = _ref18.influencers;
+    state.influencers = influencers;
+  },
+  setInfluencer: function setInfluencer(state, _ref19) {
+    var influencer = _ref19.influencer;
+    state.influencer = influencer;
+  },
+  setNewUser: function setNewUser(state, _ref20) {
+    var user = _ref20.user;
 
     if (!state.users) {
       state.users = [];
@@ -53960,16 +54763,16 @@ var mutations = (_mutations = {
 
     state.users.push(user);
   }
-}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref17) {
-  var user = _ref17.user;
+}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref21) {
+  var user = _ref21.user;
 
   if (!state.users) {
     state.users = [];
   }
 
   state.users.push(user);
-}), _defineProperty(_mutations, "setActiveBrand", function setActiveBrand(state, _ref18) {
-  var brand = _ref18.brand;
+}), _defineProperty(_mutations, "setActiveBrand", function setActiveBrand(state, _ref22) {
+  var brand = _ref22.brand;
 
   if (!brand) {
     state.brands.forEach(function (item, index) {
@@ -53980,8 +54783,8 @@ var mutations = (_mutations = {
   }
 
   state.activeBrand = brand;
-}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref19) {
-  var campaign = _ref19.campaign;
+}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref23) {
+  var campaign = _ref23.campaign;
 
   if (!state.campaigns) {
     state.campaigns = [];
@@ -53990,19 +54793,19 @@ var mutations = (_mutations = {
   state.campaigns.push(campaign); // console.log("%%%%%%%%%%%%%%")
   // console.log(campaign)
   // console.log("%%%%%%%%%%%%%%")
-}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref20) {
-  var tracker = _ref20.tracker;
+}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref24) {
+  var tracker = _ref24.tracker;
 
   if (!state.trackers) {
     state.trackers = [];
   }
 
   state.trackers.push(tracker);
-}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref21) {
-  var campaigns = _ref21.campaigns;
+}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref25) {
+  var campaigns = _ref25.campaigns;
   state.campaigns = campaigns;
-}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref22) {
-  var trackers = _ref22.trackers;
+}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref26) {
+  var trackers = _ref26.trackers;
   state.trackers = trackers;
 }), _mutations);
 /* harmony default export */ __webpack_exports__["default"] = (new vuex__WEBPACK_IMPORTED_MODULE_1__["default"].Store({

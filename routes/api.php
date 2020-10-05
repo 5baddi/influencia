@@ -43,6 +43,17 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Users
     Route::get('/users', 'UserController@index');
+
+    // Influencers
+    Route::get('/influencers', 'InfluencerController@index');
+    Route::get('/influencers/{influencer}', 'InfluencerController@show');
+});
+
+// Scraper
+Route::group(['prefix' => '/v1/scraper/insta/'], function(){
+    Route::get('/{username}', 'ScraperController@instagramByUsername');
+    Route::get('/{id}', 'ScraperController@instagramById')->where('id', '[0-9]+');
+    Route::get('/{influencer}/medias', 'ScraperController@instagramMedias');
 });
 
 // Route::middleware('auth:sanctum')->post('/register', 'UserController@register');

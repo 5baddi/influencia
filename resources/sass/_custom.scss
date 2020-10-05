@@ -35,3 +35,91 @@ a.icon-link{
 .dashboard__content{
     overflow-x: hidden;
 }
+
+.table-with-profile td img{
+    max-width: 36px;
+    border-radius: 50%;
+}
+
+.influencer{
+    padding: .5rem 1rem;
+
+    &-details{
+        display: flex;
+        flex-flow: row wrap;
+        align-items: flex-start;
+
+        &-name{
+            margin: 0rem .7rem;
+
+            h4{
+                font-size: 16pt;
+                text-transform: uppercase;
+                margin: 0.5rem 0;
+            }
+
+            p{
+                font-size: 10pt;
+                color: gray;
+            }
+        }
+
+        &-picture{
+            img{
+                width: 100px;
+                height: auto;
+                border-radius: 50%;
+            }
+        }
+
+        &-bar{
+            display: inline-flex;
+            width: 100%;
+            height: 20px;
+            border-radius: 6px;
+            margin: .5rem 0 0 0;
+            overflow: hidden;
+
+            span{
+                display: flex;
+                align-items: center;
+                justify-content: start;
+                height: 100%;
+                font-size: 10pt;
+                color: white;
+                padding: .2rem 1rem;
+            }
+
+            &-instagram{
+                background-color: #DD2A7B;
+            }
+        }
+    }
+
+    &-posts{
+        margin-top: 1rem;
+        margin-left: 0 !important;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+
+        &-card{
+            overflow: hidden;
+            flex: 0 0 calc(34% - 20px);
+            margin-right: 20px;
+            margin-bottom: 20px;
+            border-color: rgba(0, 0, 0, 0.12);
+            border-radius: 4px;
+            box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+
+            &:nth-child(4n-1){
+                margin-right: 0;
+            }
+
+            &:hover{
+                cursor: pointer;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+        }
+    }
+}

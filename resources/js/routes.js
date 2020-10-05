@@ -11,6 +11,7 @@ import TrackersPage from "./pages/TrackersPage";
 import BrandsPage from "./pages/BrandsPage";
 import UsersPage from "./pages/UsersPage";
 import SettingsPage from "./pages/SettingsPage";
+import InfluencersPage from "./pages/InfluencersPage";
 
 Vue.use(VueRouter)
 
@@ -88,6 +89,15 @@ const routes = [
                 },
 
             },
+            {
+                name: 'influencers',
+                path: '/influencers/:uuid?',
+                component: InfluencersPage,
+                meta: {
+                    auth: true
+                },
+
+            }
         ]
     },
     {
