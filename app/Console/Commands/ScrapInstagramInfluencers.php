@@ -6,6 +6,7 @@ use App\Repositories\InfluencerPostRepository;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use App\Repositories\InfluencerRepository;
+use Carbon\Carbon;
 
 class ScrapInstagramInfluencers extends Command
 {
@@ -67,6 +68,7 @@ class ScrapInstagramInfluencers extends Command
     public function handle()
     {
         $this->info("=== Start scrap instagram influencers ===");
+        $startTaskAt = microtime(true);
 
         // Get username's
         $usernames = $this->repository->getUsernames();
@@ -90,6 +92,7 @@ class ScrapInstagramInfluencers extends Command
 
             // Update influencer posts
             $this->info("Number of posts: " . $influencer->posts);
+            $this->info("Start scraping medias ...");
             $instaMedias = $this->instagramScraper->getMedias($influencer);
             sleep(3);
             foreach($instaMedias as $media){
@@ -110,5 +113,7 @@ class ScrapInstagramInfluencers extends Command
         }
 
         $this->info("=== Done ===");
+        $endTaskAt = microtime(true) - $startTaskAt;
+        $this->info("Total Execution Time: " . Carbon::createFromTimestamp($endTaskAt)->toTimeString());
     }
 }

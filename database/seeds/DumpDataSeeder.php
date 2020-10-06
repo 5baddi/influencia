@@ -38,7 +38,8 @@ class DumpDataSeeder extends Seeder
         ]);
 
         // Influencers
-        $demoAccount = $instagramScraper->byUsername("5baddi");
+        // Demo account: exotics.worldwide
+        $demoAccount = $instagramScraper->byUsername("autoservicesrouen76");
         Influencer::create([
             'account_id'    =>  $demoAccount['id'],
             'username'      =>  $demoAccount['username'],

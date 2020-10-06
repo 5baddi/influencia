@@ -38,4 +38,9 @@ class Influencer extends Model
         'is_private'        =>  'boolean',
         'banned'            =>  'boolean'
     ];
+
+    public function statues()
+    {
+        return $this->hasMany(InfluencerPost::class);
+    }
 }

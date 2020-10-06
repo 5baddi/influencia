@@ -90,21 +90,21 @@ class InstagramScraper
         foreach($instaMedias['medias'] as $media){
             // Calculate video duration
             $videoDuration = null;
-            // if($media->getType() === 'video' && $media->getVideoDuration() === '' && !empty($media->getVideoStandardResolutionUrl())){
-            //     Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl()));
-            //     $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
-            //     $videoDuration = $video->getPlaytimeSeconds();
-            //     Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
-            // }
+            if($media->getType() === 'video' && $media->getVideoDuration() === '' && !empty($media->getVideoStandardResolutionUrl())){
+                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl()));
+                $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
+                $videoDuration = $video->getPlaytimeSeconds();
+                Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
+            }
 
             // Handle comments sentiments
             $positive = $neutral = $negative = 0;
-            // if($media->getCommentsCount() > 0){
-            //     $sentiment = $this->getCommentsSentiment($media->getId(), $media->getCommentsCount());
-            //     $positive = $sentiment['positive'];
-            //     $neutral = $sentiment['neutral'];
-            //     $negative = $sentiment['negative'];
-            // }
+            if($media->getCommentsCount() > 0){
+                $sentiment = $this->getCommentsSentiment($media->getId(), $media->getCommentsCount());
+                $positive = $sentiment['positive'];
+                $neutral = $sentiment['neutral'];
+                $negative = $sentiment['negative'];
+            }
 
             // Format data
             array_push($data, [
@@ -129,7 +129,7 @@ class InstagramScraper
                 'caption_edited'    =>  $media->isCaptionEdited(),
                 'comments_positive' =>  $positive,
                 'comments_neutral'  =>  $neutral,
-                'comments_negative' =>  $negative,
+                'comments_negative' =>  $negative
             ]);
         }
 

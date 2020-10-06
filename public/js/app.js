@@ -8136,11 +8136,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
-/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! number-abbreviate */ "./node_modules/number-abbreviate/index.js");
-/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(number_abbreviate__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_modals_CreateInfluencerModel__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/modals/CreateInfluencerModel */ "./resources/js/components/modals/CreateInfluencerModel.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! moment */ "./node_modules/moment/moment.js");
+/* harmony import */ var moment__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(moment__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! number-abbreviate */ "./node_modules/number-abbreviate/index.js");
+/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(number_abbreviate__WEBPACK_IMPORTED_MODULE_3__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -8252,17 +8253,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-// import CreateBrandModal from "../components/modals/CreateBrandModal";
+//
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  components: {//   CreateBrandModal
+  components: {
+    CreateInfluencerModel: _components_modals_CreateInfluencerModel__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   data: function data() {
     return {
       showAddInfluencerModal: false,
-      isLoading: true
+      isLoading: true,
+      attrActive: ''
     };
   },
   beforeRouteEnter: function beforeRouteEnter(to, from, next) {
@@ -8290,7 +8295,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     nbr: function nbr() {
-      return new number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default.a();
+      return new number_abbreviate__WEBPACK_IMPORTED_MODULE_3___default.a();
     },
     fetchInfluencer: function fetchInfluencer() {
       // Load user by UUID
@@ -8311,14 +8316,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.isLoading = false;
     },
     moment: function moment() {
-      return moment__WEBPACK_IMPORTED_MODULE_1___default()();
+      return moment__WEBPACK_IMPORTED_MODULE_2___default()();
     },
     dismissAddInfluencerModal: function dismissAddInfluencerModal(id) {
       this.showAddInfluencerModal = false;
       this.brand = {};
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["influencers", "influencer"]))
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(["influencers", "influencer"]))
 });
 
 /***/ }),
@@ -32258,6 +32263,30 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c&":
+/*!*******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c& ***!
+  \*******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateTrackerModal.vue?vue&type=template&id=079a9bc2&scoped=true&":
 /*!****************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateTrackerModal.vue?vue&type=template&id=079a9bc2&scoped=true& ***!
@@ -34769,224 +34798,300 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return !_vm.isLoading
-    ? _c("div", { staticClass: "influencers" }, [
-        !_vm.influencer
-          ? _c("div", { staticClass: "hero" }, [
-              _c("div", { staticClass: "hero__intro" }, [
-                _c("h1", [_vm._v("Influencers")]),
-                _vm._v(" "),
-                _c("ul", { staticClass: "breadcrumbs" }, [
-                  _c(
-                    "li",
-                    [
-                      _c(
-                        "router-link",
-                        { attrs: { to: { name: "dashboard" } } },
-                        [_vm._v("Dashboard")]
-                      )
-                    ],
-                    1
-                  ),
+    ? _c(
+        "div",
+        { staticClass: "influencers" },
+        [
+          !_vm.influencer
+            ? _c("div", { staticClass: "hero" }, [
+                _c("div", { staticClass: "hero__intro" }, [
+                  _c("h1", [_vm._v("Influencers")]),
                   _vm._v(" "),
-                  _vm._m(0)
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "hero__actions" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: { disabled: "" },
-                    on: {
-                      click: function($event) {
-                        _vm.showAddInfluencerModal = !_vm.showAddInfluencerModal
-                      }
-                    }
-                  },
-                  [_vm._v("Add new Influencer")]
-                )
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        !_vm.influencer
-          ? _c("div", { staticClass: "p-1" }, [
-              _c("header", { staticClass: "cards" }, [
-                _c("div", { staticClass: "card" }, [
-                  _c("div", { staticClass: "number" }, [
-                    _vm._v(
-                      _vm._s(
-                        _vm.influencers && _vm.influencers.length
-                          ? _vm.influencers.length
-                          : 0
-                      )
-                    )
-                  ]),
-                  _vm._v(" "),
-                  _c("p", { staticClass: "description" }, [
-                    _vm._v("NUMBER OF INFLUENCERS")
+                  _c("ul", { staticClass: "breadcrumbs" }, [
+                    _c(
+                      "li",
+                      [
+                        _c(
+                          "router-link",
+                          { attrs: { to: { name: "dashboard" } } },
+                          [_vm._v("Dashboard")]
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _vm._m(0)
                   ])
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "datatable-scroll" }, [
-                _c("table", { staticClass: "table table-with-profile" }, [
-                  _vm._m(1),
-                  _vm._v(" "),
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "hero__actions" }, [
                   _c(
-                    "tbody",
-                    [
-                      _vm._l(_vm.influencers, function(influencer) {
-                        return _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: { disabled: "" },
+                      on: {
+                        click: function($event) {
+                          _vm.showAddInfluencerModal = !_vm.showAddInfluencerModal
+                        }
+                      }
+                    },
+                    [_vm._v("Add new Influencer")]
+                  )
+                ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.influencer
+            ? _c("div", { staticClass: "p-1" }, [
+                _c("header", { staticClass: "cards" }, [
+                  _c("div", { staticClass: "card" }, [
+                    _c("div", { staticClass: "number" }, [
+                      _vm._v(
+                        _vm._s(
+                          _vm.influencers && _vm.influencers.length
+                            ? _vm.influencers.length
+                            : 0
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("p", { staticClass: "description" }, [
+                      _vm._v("NUMBER OF INFLUENCERS")
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "datatable-scroll" }, [
+                  _c("table", { staticClass: "table table-with-profile" }, [
+                    _vm._m(1),
+                    _vm._v(" "),
+                    _c(
+                      "tbody",
+                      [
+                        _vm._l(_vm.influencers, function(influencer) {
+                          return _c(
+                            "tr",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.influencers.length > 0,
+                                  expression: "influencers.length > 0"
+                                }
+                              ],
+                              key: influencer.id
+                            },
+                            [
+                              _c("td", [
+                                _c("img", {
+                                  attrs: { src: influencer.pic_url }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("p", [
+                                  _vm._v(
+                                    _vm._s(
+                                      influencer.name
+                                        ? influencer.name
+                                        : influencer.username
+                                    )
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("p", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm
+                                        .nbr()
+                                        .abbreviate(influencer.followers, 0)
+                                    )
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("p", [_vm._v(_vm._s(influencer.posts))])
+                              ]),
+                              _vm._v(" "),
+                              _c("td", { staticClass: "text-center" }, [
+                                influencer.network === "instagram"
+                                  ? _c(
+                                      "a",
+                                      {
+                                        attrs: {
+                                          href:
+                                            "https://instagram.com/" +
+                                            influencer.username,
+                                          target: "_blank"
+                                        }
+                                      },
+                                      [
+                                        _c("i", {
+                                          staticClass: "fab fa-instagram"
+                                        })
+                                      ]
+                                    )
+                                  : _vm._e()
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _c("p", [
+                                  _vm._v(
+                                    _vm._s(
+                                      _vm
+                                        .moment(influencer.created_at)
+                                        .format("DD/MM/YYYY")
+                                    )
+                                  )
+                                ])
+                              ]),
+                              _vm._v(" "),
+                              _c(
+                                "td",
+                                { staticClass: "text-center" },
+                                [
+                                  _c(
+                                    "router-link",
+                                    {
+                                      staticClass: "icon-link",
+                                      attrs: {
+                                        to: {
+                                          name: "influencers",
+                                          params: { uuid: influencer.uuid }
+                                        },
+                                        title: "Details"
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-eye" })]
+                                  ),
+                                  _vm._v(" "),
+                                  _vm._m(2, true)
+                                ],
+                                1
+                              )
+                            ]
+                          )
+                        }),
+                        _vm._v(" "),
+                        _c(
                           "tr",
                           {
                             directives: [
                               {
                                 name: "show",
                                 rawName: "v-show",
-                                value: _vm.influencers.length > 0,
-                                expression: "influencers.length > 0"
+                                value:
+                                  !_vm.influencers ||
+                                  _vm.influencers.length == 0,
+                                expression:
+                                  "!influencers || influencers.length == 0"
                               }
-                            ],
-                            key: influencer.id
+                            ]
                           },
-                          [
-                            _c("td", [
-                              _c("img", { attrs: { src: influencer.pic_url } })
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("p", [
-                                _vm._v(
-                                  _vm._s(
-                                    influencer.name
-                                      ? influencer.name
-                                      : influencer.username
-                                  )
-                                )
-                              ])
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("p", [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm
-                                      .nbr()
-                                      .abbreviate(influencer.followers, 0)
-                                  )
-                                )
-                              ])
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("p", [_vm._v(_vm._s(influencer.posts))])
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("p", [
-                                _vm._v(
-                                  _vm._s(
-                                    _vm
-                                      .moment(influencer.created_at)
-                                      .format("DD/MM/YYYY")
-                                  )
-                                )
-                              ])
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "td",
-                              { staticClass: "text-center" },
-                              [
-                                _c(
-                                  "router-link",
-                                  {
-                                    staticClass: "icon-link",
-                                    attrs: {
-                                      to: {
-                                        name: "influencers",
-                                        params: { uuid: influencer.uuid }
-                                      },
-                                      title: "Details"
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "fas fa-eye" })]
-                                ),
-                                _vm._v(" "),
-                                _vm._m(2, true)
-                              ],
-                              1
-                            )
-                          ]
+                          [_vm._m(3)]
                         )
-                      }),
-                      _vm._v(" "),
-                      _c(
-                        "tr",
-                        {
-                          directives: [
-                            {
-                              name: "show",
-                              rawName: "v-show",
-                              value:
-                                !_vm.influencers || _vm.influencers.length == 0,
-                              expression:
-                                "!influencers || influencers.length == 0"
-                            }
-                          ]
-                        },
-                        [_vm._m(3)]
-                      )
-                    ],
-                    2
-                  )
-                ])
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.influencer
-          ? _c("div", { staticClass: "p-1" }, [
-              _c("div", { staticClass: "card influencer" }, [
-                _c("div", { staticClass: "influencer-details" }, [
-                  _c("div", { staticClass: "influencer-details-picture" }, [
-                    _c("img", {
-                      attrs: { src: _vm.influencer.pic_url, alt: "Avatar" }
-                    })
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "influencer-details-name" }, [
-                    _c("h4", [_vm._v(_vm._s(_vm.influencer.name))]),
-                    _vm._v(" "),
-                    _c("p", [_vm._v(_vm._s(_vm.influencer.biography))])
-                  ]),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "influencer-details-bar" }, [
-                    _c(
-                      "span",
-                      {
-                        staticClass: "influencer-details-bar-instagram",
-                        staticStyle: { width: "100%" }
-                      },
-                      [
-                        _c("i", { staticClass: "fab fa-instagram" }),
-                        _vm._v(
-                          " " +
-                            _vm._s(_vm.nbr().abbreviate(500)) +
-                            "\n                 "
-                        )
-                      ]
+                      ],
+                      2
                     )
                   ])
                 ])
-              ]),
-              _vm._v(" "),
-              _vm._m(4)
-            ])
-          : _vm._e()
-      ])
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.influencer
+            ? _c("div", { staticClass: "p-1" }, [
+                _c("div", { staticClass: "card influencer" }, [
+                  _c("div", { staticClass: "influencer-details" }, [
+                    _c("div", { staticClass: "influencer-details-picture" }, [
+                      _c("img", {
+                        attrs: { src: _vm.influencer.pic_url, alt: "Avatar" }
+                      })
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "influencer-details-name" }, [
+                      _c("h4", [_vm._v(_vm._s(_vm.influencer.name))]),
+                      _vm._v(" "),
+                      _c("p", [_vm._v(_vm._s(_vm.influencer.biography))])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "influencer-details-bar" }, [
+                      _c(
+                        "span",
+                        {
+                          staticClass: "influencer-details-bar-instagram",
+                          staticStyle: { width: "100%" }
+                        },
+                        [
+                          _c("i", { staticClass: "fab fa-instagram" }),
+                          _vm._v(
+                            " " +
+                              _vm._s(
+                                _vm.nbr().abbreviate(_vm.influencer.followers)
+                              ) +
+                              "\n                 "
+                          )
+                        ]
+                      )
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "influencer-posts" },
+                  _vm._l(_vm.influencer.statues, function(status) {
+                    return _c(
+                      "div",
+                      {
+                        key: status.id,
+                        staticClass: "influencer-posts-card",
+                        on: {
+                          mouseover: function($event) {
+                            _vm.attrActive = "active"
+                          },
+                          mouseleave: function($event) {
+                            _vm.attrActive = ""
+                          }
+                        }
+                      },
+                      [
+                        _c("img", {
+                          attrs: { src: status.thumbnail_url, loading: "lazy" }
+                        }),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            class:
+                              "influencer-posts-card-attr " + _vm.attrActive
+                          },
+                          [
+                            _c("i", { staticClass: "fas fa-heart" }),
+                            _vm._v(_vm._s(status.likes) + "\n               "),
+                            _c("i", { staticClass: "fas fa-comment" }),
+                            _vm._v(_vm._s(status.comments) + "\n            ")
+                          ]
+                        )
+                      ]
+                    )
+                  }),
+                  0
+                )
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          _c("CreateInfluencerModel", {
+            attrs: { show: _vm.showAddInfluencerModal },
+            on: { dismiss: _vm.dismissAddInfluencerModal }
+          })
+        ],
+        1
+      )
     : _vm._e()
 }
 var staticRenderFns = [
@@ -35011,6 +35116,8 @@ var staticRenderFns = [
         _c("td", [_vm._v("Followers")]),
         _vm._v(" "),
         _c("td", [_vm._v("Posts")]),
+        _vm._v(" "),
+        _c("td", { staticClass: "text-center" }, [_vm._v("Platform")]),
         _vm._v(" "),
         _c("td", [_vm._v("Added at")]),
         _vm._v(" "),
@@ -35040,58 +35147,6 @@ var staticRenderFns = [
         _vm._v(
           "Looks like you don't have a influencer record, start creating one."
         )
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "influencer-posts" }, [
-      _c("div", { staticClass: "influencer-posts-card" }, [
-        _c("img", {
-          attrs: {
-            src:
-              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
-            loading: "lazy"
-          }
-        })
-      ]),
-      _c("div", { staticClass: "influencer-posts-card" }, [
-        _c("img", {
-          attrs: {
-            src:
-              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
-            loading: "lazy"
-          }
-        })
-      ]),
-      _c("div", { staticClass: "influencer-posts-card" }, [
-        _c("img", {
-          attrs: {
-            src:
-              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
-            loading: "lazy"
-          }
-        })
-      ]),
-      _c("div", { staticClass: "influencer-posts-card" }, [
-        _c("img", {
-          attrs: {
-            src:
-              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
-            loading: "lazy"
-          }
-        })
-      ]),
-      _c("div", { staticClass: "influencer-posts-card" }, [
-        _c("img", {
-          attrs: {
-            src:
-              "https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46",
-            loading: "lazy"
-          }
-        })
       ])
     ])
   }
@@ -53132,6 +53187,59 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/modals/CreateInfluencerModel.vue":
+/*!******************************************************************!*\
+  !*** ./resources/js/components/modals/CreateInfluencerModel.vue ***!
+  \******************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CreateInfluencerModel_vue_vue_type_template_id_5afe1e9c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c& */ "./resources/js/components/modals/CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _CreateInfluencerModel_vue_vue_type_template_id_5afe1e9c___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CreateInfluencerModel_vue_vue_type_template_id_5afe1e9c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/modals/CreateInfluencerModel.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/modals/CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c&":
+/*!*************************************************************************************************!*\
+  !*** ./resources/js/components/modals/CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c& ***!
+  \*************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateInfluencerModel_vue_vue_type_template_id_5afe1e9c___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateInfluencerModel.vue?vue&type=template&id=5afe1e9c&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateInfluencerModel_vue_vue_type_template_id_5afe1e9c___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateInfluencerModel_vue_vue_type_template_id_5afe1e9c___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

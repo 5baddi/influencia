@@ -31,6 +31,7 @@
                      <td>Full name</td>
                      <td>Followers</td>
                      <td>Posts</td>
+                     <td class="text-center">Platform</td>
                      <td>Added at</td>
                      <td class="text-center">Actions</td>
                   </tr>
@@ -49,6 +50,11 @@
                      <td>
                         <p>{{ influencer.posts }}</p>
                      </td>
+                     <td class="text-center">
+                        <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.network === 'instagram'">
+                           <i class="fab fa-instagram"></i>
+                        </a>
+                     </td> 
                      <td>
                         <p>{{ moment(influencer.created_at).format('DD/MM/YYYY') }}</p>
                      </td>
@@ -81,42 +87,39 @@
                 </div>
                 <div class="influencer-details-bar">
                     <span class="influencer-details-bar-instagram" style="width:100%">
-                        <i class="fab fa-instagram"></i>&nbsp;{{ nbr().abbreviate(500) }}
+                        <i class="fab fa-instagram"></i>&nbsp;{{ nbr().abbreviate(influencer.followers) }}
                     </span>
                 </div>
               </div>
           </div>
           <div class="influencer-posts">
-             <div class="influencer-posts-card">
-               <img src="https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46" loading="lazy"/>
-             </div><div class="influencer-posts-card">
-               <img src="https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46" loading="lazy"/>
-             </div><div class="influencer-posts-card">
-               <img src="https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46" loading="lazy"/>
-             </div><div class="influencer-posts-card">
-               <img src="https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46" loading="lazy"/>
-             </div><div class="influencer-posts-card">
-               <img src="https://instagram.ffez1-1.fna.fbcdn.net/v/t51.2885-15/e35/118883269_794278248037886_6994619765710027019_n.jpg?_nc_ht=instagram.ffez1-1.fna.fbcdn.net&_nc_cat=102&_nc_ohc=DLUQeuf1SIIAX-LLHYi&_nc_tp=18&oh=50fba10e16de95f9f474db097a168148&oe=5FA40B46" loading="lazy"/>
+             <div @mouseover="attrActive='active'" @mouseleave="attrActive=''" class="influencer-posts-card" v-for="status in influencer.statues" :key="status.id">
+               <img :src="status.thumbnail_url" loading="lazy"/>
+               <div :class="'influencer-posts-card-attr ' + attrActive">
+                  <i class="fas fa-heart"></i>{{ status.likes }}
+                  <i class="fas fa-comment"></i>{{ status.comments }}
+               </div>
              </div>
           </div>
       </div>
-      <!-- <CreateBrandModal :show="showAddBrandModal" :brand="brand" @create="create" @dismiss="dismissAddInfluencerModal" /> -->
+      <CreateInfluencerModel :show="showAddInfluencerModal" @dismiss="dismissAddInfluencerModal" />
    </div>
 </template>
 <script>
-// import CreateBrandModal from "../components/modals/CreateBrandModal";
+import CreateInfluencerModel from "../components/modals/CreateInfluencerModel";
 import { mapGetters } from "vuex";
 import moment from "moment";
 import abbreviate from 'number-abbreviate';
 
 export default {
    components: {
-    //   CreateBrandModal
+      CreateInfluencerModel
    },
    data() {
       return {
          showAddInfluencerModal: false,
          isLoading: true,
+         attrActive: '',
       };
    },
    beforeRouteEnter(to, from, next){
