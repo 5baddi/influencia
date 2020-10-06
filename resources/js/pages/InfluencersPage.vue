@@ -93,9 +93,9 @@
               </div>
           </div>
           <div class="influencer-posts">
-             <div @mouseover="attrActive='active'" @mouseleave="attrActive=''" class="influencer-posts-card" v-for="status in influencer.statues" :key="status.id">
+             <div @mouseover="attrActive=status.id" @mouseleave="attrActive=null" class="influencer-posts-card" v-for="status in influencer.statues" :key="status.id">
                <img :src="status.thumbnail_url" loading="lazy"/>
-               <div :class="'influencer-posts-card-attr ' + attrActive">
+               <div :class="'influencer-posts-card-attr ' + (attrActive === status.id ? ' active' : '')">
                   <i class="fas fa-heart"></i>{{ status.likes }}
                   <i class="fas fa-comment"></i>{{ status.comments }}
                </div>
@@ -119,7 +119,7 @@ export default {
       return {
          showAddInfluencerModal: false,
          isLoading: true,
-         attrActive: '',
+         attrActive: null,
       };
    },
    beforeRouteEnter(to, from, next){

@@ -8267,7 +8267,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       showAddInfluencerModal: false,
       isLoading: true,
-      attrActive: ''
+      attrActive: null
     };
   },
   beforeRouteEnter: function beforeRouteEnter(to, from, next) {
@@ -35052,10 +35052,10 @@ var render = function() {
                         staticClass: "influencer-posts-card",
                         on: {
                           mouseover: function($event) {
-                            _vm.attrActive = "active"
+                            _vm.attrActive = status.id
                           },
                           mouseleave: function($event) {
-                            _vm.attrActive = ""
+                            _vm.attrActive = null
                           }
                         }
                       },
@@ -35068,7 +35068,8 @@ var render = function() {
                           "div",
                           {
                             class:
-                              "influencer-posts-card-attr " + _vm.attrActive
+                              "influencer-posts-card-attr " +
+                              (_vm.attrActive === status.id ? " active" : "")
                           },
                           [
                             _c("i", { staticClass: "fas fa-heart" }),
