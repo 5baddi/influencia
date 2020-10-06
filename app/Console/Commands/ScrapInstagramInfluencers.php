@@ -86,12 +86,14 @@ class ScrapInstagramInfluencers extends Command
             // Update influencer
             $this->repository->update($influencer, $accountDetails);
             $this->info("Successfully updated influencer ID: " . $influencer->id);
+            $influencer->fresh();
 
             // Update influencer posts
             $this->info("Number of posts: " . $influencer->posts);
             $instaMedias = $this->instagramScraper->getMedias($influencer);
             sleep(3);
             foreach($instaMedias as $media){
+                $this->info("Start fetching media: " . $media['short_code']);
                 // Update exists row
                 $existsMedia = $this->postRepository->exists($influencer, $media['post_id']);
                 if(!is_null($existsMedia)){
@@ -100,7 +102,7 @@ class ScrapInstagramInfluencers extends Command
                     continue;
                 }
 
-                $this->info("Create post: " . $existsMedia->short_code);
+                $this->info("Create post: " . $media['short_code']);
                 $this->postRepository->create($media);
 
                 sleep(3);

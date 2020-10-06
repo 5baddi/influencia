@@ -99,12 +99,12 @@ class InstagramScraper
 
             // Handle comments sentiments
             $positive = $neutral = $negative = 0;
-            if($media->getCommentsCount() > 0){
-                $sentiment = $this->getCommentsSentiment($media->getId(), $media->getCommentsCount());
-                $positive = $sentiment['positive'];
-                $neutral = $sentiment['neutral'];
-                $negative = $sentiment['negative'];
-            }
+            // if($media->getCommentsCount() > 0){
+            //     $sentiment = $this->getCommentsSentiment($media->getId(), $media->getCommentsCount());
+            //     $positive = $sentiment['positive'];
+            //     $neutral = $sentiment['neutral'];
+            //     $negative = $sentiment['negative'];
+            // }
 
             // Format data
             array_push($data, [
@@ -139,7 +139,7 @@ class InstagramScraper
     public function getCommentsSentiment($mediaID, $max, array $data = ['positive' => 0, 'neutral' => 0, 'negative' => 0])
     {
         // Set proxy
-        $this->setProxy();
+        //$this->setProxy();
 
         // Load comments
         $comments = $this->instagram->getMediaCommentsById($mediaID, $max);
@@ -164,9 +164,21 @@ class InstagramScraper
         ]; 
     }
 
-    public function getStories($username)
+    /**
+     * Scrap instagram stories for an username
+     * 
+     * @param string $username
+     * @return array
+     */
+    public function getStories(string $username)
     {
-        dd(collect($this->instagram->getStories([$username])));
+        // Scrap user
+        $stories = collect($this->instagram->getStories($username));
+
+        // Format account
+        $data = Format::parseArrayASCIIKey($stories);
+
+        return $data->toArray();
     }
 
     /**

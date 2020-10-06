@@ -10,4 +10,11 @@ class InfluencerPost extends Model
     use HasUuidRouteKey;
 
     protected $guarded = [];
+
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'influencer_posts';
 }
