@@ -65,7 +65,7 @@ const routes = [
             },
             {
                 name: 'campagins',
-                path: '/campaigns',
+                path: '/campaigns/:uuid?',
                 component: CampaignsPage,
                 meta: {
                     auth: true

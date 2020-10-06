@@ -107,8 +107,7 @@ export default {
       };
    },
    created() {
-      // this.$store.dispatch("fetchCampaigns");
-      // this.$store.dispatch("fetchTrackers");
+      this.initData();
    },
    methods: {
       initData(){

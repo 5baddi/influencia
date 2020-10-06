@@ -38,8 +38,8 @@ class DumpDataSeeder extends Seeder
         ]);
 
         // Influencers
-        // Demo account: exotics.worldwide
         $demoAccount = $instagramScraper->byUsername("autoservicesrouen76");
+        $demoAccount2 = $instagramScraper->byUsername("exotics.worldwide");
         Influencer::create([
             'account_id'    =>  $demoAccount['id'],
             'username'      =>  $demoAccount['username'],
@@ -53,6 +53,20 @@ class DumpDataSeeder extends Seeder
             'is_business'   =>  $demoAccount['isBusinessAccount'],
             'is_private'    =>  $demoAccount['isPrivate'],
             'is_verified'   =>  $demoAccount['isVerified'],
+        ]);
+        Influencer::create([
+            'account_id'    =>  $demoAccount2['id'],
+            'username'      =>  $demoAccount2['username'],
+            'name'          =>  $demoAccount2['fullName'],
+            'pic_url'       =>  $demoAccount2['profilePicUrlHd'],
+            'biography'     =>  $demoAccount2['biography'],
+            'website'       =>  $demoAccount2['externalUrl'],
+            'followers'     =>  $demoAccount2['followedByCount'],
+            'follows'       =>  $demoAccount2['followsCount'],
+            'posts'         =>  $demoAccount2['mediaCount'],
+            'is_business'   =>  $demoAccount2['isBusinessAccount'],
+            'is_private'    =>  $demoAccount2['isPrivate'],
+            'is_verified'   =>  $demoAccount2['isVerified'],
         ]);
     }
 }

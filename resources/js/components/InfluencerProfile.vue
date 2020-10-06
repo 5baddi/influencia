@@ -1,0 +1,73 @@
+<template>
+    <div class="p-1" v-if="influencer">
+          <div class="card influencer">
+              <div class="influencer-details">
+                <div class="influencer-details-picture">
+                    <img :src="influencer.pic_url" alt="Avatar"/>
+                </div>
+                <div class="influencer-details-name">
+                    <h4>{{ influencer.name }}</h4>
+                    <p>{{ influencer.biography }}</p>
+                </div>
+                <div class="influencer-details-bar">
+                    <span class="influencer-details-bar-instagram" style="width:100%">
+                        <i class="fab fa-instagram"></i>&nbsp;{{ nbr().abbreviate(influencer.followers) }}
+                    </span>
+                </div>
+              </div>
+          </div>
+          <div class="influencer-posts">
+             <div @mouseover="attrActive=status.id" @mouseleave="attrActive=null" class="influencer-posts-card" v-for="status in influencer.statues" :key="status.id">
+               <img :src="status.thumbnail_url" loading="lazy"/>
+               <i v-if="status.type === 'video' || status.type === 'sidecar'" :class="'influencer-posts-card-type fas fa-' + (status.type === 'sidecar' ? 'images' : 'video')"></i>
+               <div :class="'influencer-posts-card-attr ' + (attrActive === status.id ? ' active' : '')">
+                  <i class="fas fa-heart"></i>{{ status.likes }}
+                  <i class="fas fa-comment"></i>{{ status.comments }}
+               </div>
+             </div>
+          </div>
+      </div>
+</template>
+<script>
+import abbreviate from 'number-abbreviate';
+
+export default {
+   props: {
+       influencer: {
+           type: Object,
+           default: () => ({
+               pic_url: {
+                   type: String,
+                   default: null
+               },
+               name: {
+                   type: String,
+                   default: null
+               },
+               biography: {
+                   type: String,
+                   default: null
+               },
+               followers: {
+                   type: Number,
+                   default: 0
+               },
+               statues: {
+                   type: Array,
+                   default: []
+               }
+           })
+       }
+   },
+   methods: {
+       nbr(){
+           return new abbreviate();
+       },
+   },
+   data(){
+       return {
+            attrActive: null,
+       }
+   }
+}
+</script>

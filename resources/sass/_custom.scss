@@ -99,14 +99,14 @@ a.icon-link{
     &-posts{
         display: flex;
         flex-wrap: wrap;
-        justify-content: space-between;
+        justify-content: start;
+        gap: 1rem;
         margin-top: 1rem;
 
         &-card{
             position: relative;
-            flex: 0 1 calc(20% - 1rem);
+            flex: 0 0 calc(20% - 1rem);
             overflow: hidden;
-            margin-bottom: 1rem;
             border-color: rgba(0, 0, 0, 0.12);
             border-radius: .5rem;
             box-sizing: border-box;
@@ -123,6 +123,15 @@ a.icon-link{
                 height: 100%;
             }
 
+            &-type{
+                z-index: 1000;
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                color: white;
+                font-size: 16pt;
+            }
+
             &-attr{
                 display: none !important;
                 position: absolute;
@@ -136,9 +145,11 @@ a.icon-link{
                 color: white;
                 font-size: 12pt;
                 background: rgba(0, 0, 0, 0.7);
+                cursor: pointer;
 
                 > *{
                     margin: 0 .5rem;
+                    cursor: pointer;
                 }
 
                 &.active{

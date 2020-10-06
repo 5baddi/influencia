@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\EmojiParser;
 use Format;
 use Exception;
 use Carbon\Carbon;
@@ -24,7 +25,14 @@ class InstagramScraper
      */
     private $instagram;
 
-    public function __construct()
+    /**
+     * Emoji parser
+     * 
+     * @var App\Helpers\EmojiParser
+     */
+    private $emojiParser;
+
+    public function __construct(EmojiParser $emojiParser)
     {
         // Disable SSL Certif
         if(config("app.debug"))
@@ -40,6 +48,9 @@ class InstagramScraper
 
             $this->instagram = new Instagram();
         }
+
+        // Init emoji parser
+        $this->emojiParser = $emojiParser;
     }
 
     public function setProxy()
@@ -68,6 +79,7 @@ class InstagramScraper
      */
     public function byUsername(string $username) : array
     {
+        // dd($this->emojiParser->matchAll('😂😂😂😂👏👏👏'));
         // Scrap user
         $account = collect($this->instagram->getAccount($username));
 
@@ -99,11 +111,17 @@ class InstagramScraper
 
             // Handle comments sentiments
             $positive = $neutral = $negative = 0;
+            $emojis = null;
             if($media->getCommentsCount() > 0){
                 $sentiment = $this->getCommentsSentiment($media->getId(), $media->getCommentsCount());
                 $positive = $sentiment['positive'];
                 $neutral = $sentiment['neutral'];
                 $negative = $sentiment['negative'];
+
+                // Get top 3 emojis
+                if(!empty($sentiment['emojis']) && sizeof($sentiment['emojis']) > 0){
+                    $emojis = json_encode($sentiment['emojis'], JSON_PRETTY_PRINT);
+                }
             }
 
             // Format data
@@ -129,7 +147,8 @@ class InstagramScraper
                 'caption_edited'    =>  $media->isCaptionEdited(),
                 'comments_positive' =>  $positive,
                 'comments_neutral'  =>  $neutral,
-                'comments_negative' =>  $negative
+                'comments_negative' =>  $negative,
+                'comments_emojis'   =>  $emojis
             ]);
         }
 
@@ -138,8 +157,12 @@ class InstagramScraper
 
     public function getCommentsSentiment($mediaID, $max, array $data = ['positive' => 0, 'neutral' => 0, 'negative' => 0])
     {
+        // TODO: enable proxy
         // Set proxy
         //$this->setProxy();
+
+        // Init vars
+        $emojis = [];
 
         // Load comments
         $comments = $this->instagram->getMediaCommentsById($mediaID, $max);
@@ -153,14 +176,32 @@ class InstagramScraper
             $data['positive'] += $sentiment['pos'];
             $data['neutral'] += $sentiment['neu'];
             $data['negative'] += $sentiment['neg'];
+
+            // Match all emojis
+            array_push($emojis, $this->emojiParser->matchAll($comment->getText()));
         }
 
         // TODO: calcul sentiment for child comments
 
+        // Extract occurrence of each duplicate emoji
+        $parsedEmojis = [];
+        array_walk($emojis, function($value) use ($parsedEmojis){
+            if(empty($value))
+                return;
+
+            // Get emojis count and set values as keys 
+            $_emojis = array_flip(array_count_values($value));
+            // Sort emojis by top count
+            asort($_emojis);
+
+            array_merge($parsedEmojis, $_emojis);
+        });
+
         return [
-            'positive'  => round($data['positive'] / sizeof($comments), 2),
-            'neutral'   => round($data['neutral'] / sizeof($comments), 2),
-            'negative'  => round($data['negative'] / sizeof($comments), 2),
+            'positive'  =>  round($data['positive'] / sizeof($comments), 2),
+            'neutral'   =>  round($data['neutral'] / sizeof($comments), 2),
+            'negative'  =>  round($data['negative'] / sizeof($comments), 2),
+            'emojis'    =>  $parsedEmojis
         ]; 
     }
 

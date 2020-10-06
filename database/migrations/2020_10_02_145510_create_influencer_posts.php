@@ -29,6 +29,7 @@ class CreateInfluencerPosts extends Migration
             $table->double('comments_positive')->nullable();
             $table->double('comments_neutral')->nullable();
             $table->double('comments_negative')->nullable();
+            $table->json('comments_emojis')->nullable();
             $table->integer('video_views')->nullable();
             $table->double('video_duration')->nullable();
             $table->string('location_id')->nullable();
