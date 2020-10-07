@@ -30,6 +30,6 @@ class InfluencerPost extends Model
 
     public function files()
     {
-        return $this->hasMany(InfluencerPostMedia::class, 'influencer_post_id');
+        return $this->hasMany(InfluencerPostMedia::class, 'post_id');
     }
 }

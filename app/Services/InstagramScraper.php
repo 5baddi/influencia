@@ -103,16 +103,6 @@ class InstagramScraper
         foreach($instaMedias['medias'] as $media){
             // TODO: Handle comments sentiments
 
-            // Get media files 
-            $files = [];
-            if(in_array($media->getType(), ['sidecar', 'carousel'])){
-                $files = array_map(function($file){
-                    $this->getFile($file);
-                },  ($media->getType() === 'sidecar' ? $media->getSidecarMedias() : $media->getCarouselMedia()));
-            }else{
-                $files = $this->getFile($media);
-            }
-            
             // Format data
             array_push($data, [
                 'influencer_id' =>  $influencer->id,
@@ -135,7 +125,7 @@ class InstagramScraper
                 'is_ad'         =>  $media->isAd(),
                 'comments_disabled' =>  $media->getCommentsDisabled(),
                 'caption_edited'    =>  $media->isCaptionEdited(),
-                'files'             =>  $files
+                'files'             =>  $this->getFiles($media)
             ]);
         }
 
@@ -173,7 +163,8 @@ class InstagramScraper
             'video_duration'=>  $this->getVideoDuration($media),
             'is_ad'         =>  $media->isAd(),
             'comments_disabled' =>  $media->getCommentsDisabled(),
-            'caption_edited'    =>  $media->isCaptionEdited()
+            'caption_edited'    =>  $media->isCaptionEdited(),
+            'files'             =>  $this->getFiles($media)
         ];
     }
 
@@ -195,6 +186,27 @@ class InstagramScraper
     }
 
     /**
+     * Get files for a media
+     * 
+     * @param \InstagramScraper\Model\Media $media
+     * @return null|array
+     */
+    private function getFiles(\InstagramScraper\Model\Media $media) : ?array
+    {
+        // Get media files 
+        $files = [];
+        if(in_array($media->getType(), ['sidecar', 'carousel'])){
+            $files = array_map(function($file){
+                return $this->getFile($file);
+            },  ($media->getType() === 'sidecar' ? $media->getSidecarMedias() : $media->getCarouselMedia()));
+        }else{
+            $files = $this->getFile($media);
+        }
+
+        return $files;
+    }
+    
+    /**
      * Get file from media
      * 
      * @param \InstagramScraper\Model\Media $media
@@ -215,8 +227,9 @@ class InstagramScraper
         }
 
         return [
-            'type'  =>  $media->getType(),
-            'url'   =>  $url,
+            'file_id'   =>  $media->getId(),
+            'type'      =>  $media->getType(),
+            'url'       =>  $url,
         ];
     }
 
@@ -228,12 +241,13 @@ class InstagramScraper
      */
     private function getVideoDuration(\InstagramScraper\Model\Media $media) : ?int
     {
-        if($media->getType() === 'video' && $media->getVideoDuration() === '' && !empty($media->getVideoStandardResolutionUrl())){
-            Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl()));
+        if($media->getType() === 'video' && $media->getVideoDuration() === ''){
+            Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl() ?? $media->getVideoStandardResolutionUrl()));
             $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
+            $duration = $video->getPlaytimeSeconds();
             Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
 
-            return $video->getPlaytimeSeconds();
+            return $duration;
         }
 
         return null;

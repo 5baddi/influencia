@@ -17,6 +17,6 @@ class InfluencerPostMedia extends Model
 
     public function post()
     {
-        return $this->belongsTo(InfluencerPost::class, 'influencer_post_id');
+        return $this->belongsTo(InfluencerPost::class, 'post_id');
     }
 }

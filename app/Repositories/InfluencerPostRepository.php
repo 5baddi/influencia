@@ -55,7 +55,11 @@ class InfluencerPostRepository extends BaseRepository
         // Update post record
         $entity->update($scraperAttributes);
 
-        return $entity->refresh();
+        // Add and update files records to the post
+        if(isset($files) && !empty($files))
+            $this->addMedias($entity, $files);
+
+        return $entity->load('files')->refresh();
     }
 
     public function exists(Influencer $influencer, int $postID) : ?InfluencerPost
@@ -81,12 +85,12 @@ class InfluencerPostRepository extends BaseRepository
         $files = [];
 
         array_walk($mediaFiles, function($file) use ($post, &$files){
-            if(empty($file) || is_null($file))
+            if(empty($file) || is_null($file) || !is_array($file))
                 return;
 
             // Push added media record
-            $file['influencer_post_id'] =  $post->id;
-            array_push($files, InfluencerPostMedia::create($file));
+            $file = array_merge($file, ['post_id' =>  $post->id]);
+            array_push($files, InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file));
         });
 
         return $files;

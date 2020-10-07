@@ -15,13 +15,13 @@ class CreatePostMedias extends Migration
     {
         Schema::create('influencer_post_medias', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('media_id');
-            $table->unsignedBigInteger('influencer_post_id');
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('file_id');
             $table->enum('type', ['image', 'video'])->default('image');
-            $table->string('url')->nullable();
-            $table->timestamp('created_at')->useCurrent();
+            $table->text('url')->nullable();
+            $table->timestamps();
 
-            $table->foreign('influencer_post_id')->references('id')->on('influencer_posts')->cascadeOnDelete();
+            $table->foreign('post_id')->references('id')->on('influencer_posts')->cascadeOnDelete();
         });
     }
 
