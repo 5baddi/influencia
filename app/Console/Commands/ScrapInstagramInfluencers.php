@@ -77,10 +77,8 @@ class ScrapInstagramInfluencers extends Command
         // Scrap each influencer details
         foreach($influencers as $influencer){
             // Scrap & update influencer details
-            // TODO: add force option
-            // if(!$this->argument('--force') && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
-            // if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
-            //     continue;
+            if((!$this->option('force') || $this->option('force') !== 'true') && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
+                continue;
 
             // Scrap account details
             $this->info("Start scraping account @" . $influencer->username);

@@ -79,7 +79,6 @@ class InstagramScraper
      */
     public function byUsername(string $username) : array
     {
-        dd($this->getTopEmojis($this->getCommentEmojis('😂😂😂😂👏👏👏')));
         // Scrap user
         $account = collect($this->instagram->getAccount($username));
 
@@ -250,7 +249,7 @@ class InstagramScraper
     public function getStories(string $username)
     {
         // Scrap user
-        $stories = collect($this->instagram->getStories($username));
+        $stories = collect($this->instagram->getStories([$username]));
 
         // Format account
         $data = Format::parseArrayASCIIKey($stories);

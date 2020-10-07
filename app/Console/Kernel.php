@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Instagram scraper
-        $schedule->command('scrap:instagram')
+        $schedule->command('scrap:instagram --force=true')
             ->dailyAt(env('INSTAGRAM_SCHEDULE'))
             ->withoutOverlapping();
     }
