@@ -267,8 +267,12 @@ class InstagramScraper
         // init
         $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => null];
 
+        // Ignore media with disabled comments option
+        if($media->getCommentsDisabled())
+            return $data;
+
         // Scrap comments
-        $sentiment = $this->getCommentsSentiment($media, 100, $data);
+        $sentiment = $this->getCommentsSentiment($media, 100, null, $data);
 
         // Get top 3 emojis
         if(!is_null($sentiment['emojis']) && !empty($sentiment['emojis'])){
@@ -330,9 +334,8 @@ class InstagramScraper
         return array_slice($_emojis, 0, $max, true);
     }
 
-    private function getCommentsSentiment(\InstagramScraper\Model\Media $media, $max, array &$data)
+    private function getCommentsSentiment(\InstagramScraper\Model\Media $media, int $nextComment = null, $max, array &$data)
     {
-        dd($max, $data);
         // Init vars
         $emojis = [];
 
@@ -353,14 +356,17 @@ class InstagramScraper
             array_push($emojis, $this->getCommentEmojis($comment->getText()));
 
             // Scrap more comments 
-            if($key === array_key_last($comments))
-                return $this->getCommentsSentiment($media, $max, $data);
+            if($key === array_key_last($comments) && sizeof($data) < $media->getCommentsCount())
+                return $this->getCommentsSentiment($media, $max, $comment->getChildCommentsNextPage(), $data);
         }
 
         return [
-            'positive'  =>  round($data['positive'] / sizeof($media->getCommentsCount()), 2),
-            'neutral'   =>  round($data['neutral'] / sizeof($media->getCommentsCount()), 2),
-            'negative'  =>  round($data['negative'] / sizeof($media->getCommentsCount()), 2),
+            // 'positive'  =>  round($data['positive'] / sizeof($media->getCommentsCount()), 2),
+            'positive'  =>  $data['positive'],
+            // 'neutral'   =>  round($data['neutral'] / sizeof($media->getCommentsCount()), 2),
+            'neutral'   =>  $data['neutral'],
+            // 'negative'  =>  round($data['negative'] / sizeof($media->getCommentsCount()), 2),
+            'negative'  =>  $data['negative'],
             'emojis'    =>  $emojis
         ]; 
     }
