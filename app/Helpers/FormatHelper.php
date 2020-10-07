@@ -52,4 +52,21 @@ class FormatHelper
 
         return $data;
     }
+
+    /**
+     * Extract short code from instagram post link
+     * 
+     * @param string $link
+     * @return null|string
+     */
+    public static function extractInstagarmShortCode(string $link) : ?string
+    {
+        // Init 
+        $match = [];
+
+        // Extract short code
+        preg_match("/^(?:https?:\/\/)?(?:www\.)?(?:instagram\.com.*\/p\/)([\d\w\-_]+)(?:\/)?(\?.*)?$/", $link, $match);
+
+        return isset($match[1]) ? $match[1] : null;
+    }
 }

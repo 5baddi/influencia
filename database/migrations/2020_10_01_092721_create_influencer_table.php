@@ -16,7 +16,7 @@ class CreateInfluencerTable extends Migration
         Schema::create('influencers', function (Blueprint $table) {
             $table->id();
             $table->string('uuid')->unique()->nullable(false);
-            $table->enum('network', ['instagram', 'snapchat', 'youtube'])->default('instagram');
+            $table->enum('platform', ['instagram', 'snapchat', 'youtube'])->default('instagram');
             $table->string('account_id')->nullable(false);
             $table->string('username')->nullable(false);
             $table->string('name')->nullable();

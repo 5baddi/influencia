@@ -17,11 +17,11 @@ class CreatePostMedias extends Migration
             $table->id();
             $table->unsignedBigInteger('media_id');
             $table->unsignedBigInteger('influencer_post_id');
-            $table->enum('type', ['image', 'video', 'carousel'])->default('image');
+            $table->enum('type', ['image', 'video'])->default('image');
+            $table->string('url')->nullable();
+            $table->timestamp('created_at')->useCurrent();
 
-            $table->foreign('media_id')->references('id')->on('medias')->cascadeOnDelete();
             $table->foreign('influencer_post_id')->references('id')->on('influencer_posts')->cascadeOnDelete();
-            $table->timestamps();
         });
     }
 

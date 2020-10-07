@@ -6,7 +6,9 @@ use App\Repositories\InfluencerPostRepository;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use App\Repositories\InfluencerRepository;
+use App\Repositories\TrackerRepository;
 use Carbon\Carbon;
+use Format;
 
 class ScrapInstagramInfluencers extends Command
 {
@@ -43,21 +45,33 @@ class ScrapInstagramInfluencers extends Command
      * 
      * @var App\Repositories\InfluencerPostRepository
      */
-    private $postRepository;
+    private $postRepo;
+    
+    /**
+     * Tracker repository
+     * 
+     * @var App\Repositories\TrackerRepository
+     */
+    private $trackerRepo;
 
     /**
      * Create a new command instance.
      *
      * @return void
      */
-    public function __construct(InstagramScraper $instagramScraper, InfluencerRepository $repository, InfluencerPostRepository $postRepository)
+    public function __construct(
+        InstagramScraper $instagramScraper, 
+        InfluencerRepository $repository, 
+        InfluencerPostRepository $postRepo,
+        TrackerRepository $trackerRepo)
     {
         parent::__construct();
 
         // Init
         $this->instagramScraper = $instagramScraper;
         $this->repository = $repository;
-        $this->postRepository = $postRepository;
+        $this->postRepo = $postRepo;
+        $this->trackerRepo = $trackerRepo;
     }
 
     /**
@@ -67,18 +81,36 @@ class ScrapInstagramInfluencers extends Command
      */
     public function handle()
     {
-        $this->info("=== Start scrap instagram influencers ===");
+        $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
-        // Get username's
+        // Scrap influencers details & posts
+        $this->scrapInfluencers();
+
+        // Scrap trackers details & analytics
+        // $this->scrapTrackers();
+
+        $this->info("=== Done ===");
+        $endTaskAt = microtime(true) - $startTaskAt;
+        $this->info("Total Execution Time: " . Carbon::createFromTimestamp($endTaskAt)->toTimeString());
+    }
+
+    /**
+     * Scrap influencers details and medias
+     * 
+     * @return void
+     */
+    private function scrapInfluencers() : void
+    {
+        // Get influencers
         $influencers = $this->repository->all();
         $this->info("Number of account to sync: " . $influencers->count());
 
         // Scrap each influencer details
         foreach($influencers as $influencer){
-            // Scrap & update influencer details
-            if((!$this->option('force') || $this->option('force') !== 'true') && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
-                continue;
+            // Ignore last updated influencer
+            // if((!$this->option('force') || $this->option('force') === 'false') && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
+            //     continue;
 
             // Scrap account details
             $this->info("Start scraping account @" . $influencer->username);
@@ -87,7 +119,7 @@ class ScrapInstagramInfluencers extends Command
 
             // Update influencer
             $this->repository->update($influencer, $accountDetails);
-            $this->info("Successfully updated influencer ID: " . $influencer->id);
+            $this->info("Successfully updated influencer @" . $influencer->username);
             $influencer->fresh();
 
             // Update influencer posts
@@ -98,22 +130,58 @@ class ScrapInstagramInfluencers extends Command
             foreach($instaMedias as $media){
                 $this->info("Start fetching media: " . $media['short_code']);
                 // Update exists row
-                $existsMedia = $this->postRepository->exists($influencer, $media['post_id']);
+                $existsMedia = $this->postRepo->exists($influencer, $media['post_id']);
                 if(!is_null($existsMedia)){
-                    $this->info("Update post: " . $existsMedia->short_code);
-                    $this->postRepository->update($existsMedia, $media);
+                    $this->info("Update post: " . $existsMedia->uuid);
+                    $this->postRepo->update($existsMedia, $media);
                     continue;
                 }
 
                 $this->info("Create post: " . $media['short_code']);
-                $this->postRepository->create($media);
+                $this->postRepo->create($media);
 
                 sleep(3);
             }
         }
+    }
 
-        $this->info("=== Done ===");
-        $endTaskAt = microtime(true) - $startTaskAt;
-        $this->info("Total Execution Time: " . Carbon::createFromTimestamp($endTaskAt)->toTimeString());
+    /**
+     * Scrap trackers details and analytics
+     * 
+     * @return void
+     */
+    private function scrapTrackers() : void
+    {
+        // Get trackers
+        $trackers = $this->trackerRepo->getInstagram();
+        $this->info("Number of trackers to sync: " . $trackers->count());
+
+        // Scrap each tracker details
+        foreach($trackers as $tracker){
+            // Ignore last updated trackers
+            if((!$this->option('force') || $this->option('force') !== 'true') && isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
+                continue;
+
+            // TODO: scrap stories details
+            if($tracker->type === 'story')
+                continue;
+
+            // Scrap posts details
+            if($tracker->type === 'post'){
+                // Extract short code
+                $shortCode = Format::extractInstagarmShortCode($tracker->url);
+                if(is_null($shortCode)){
+                    $this->error("Faild to extract media short code! for tracker: " . $tracker->uuid);
+                    continue;
+                }
+
+                // Scrap media details
+                $mediaDetails = $this->instagramScraper->getMedia($shortCode);
+                dd($mediaDetails);
+            }
+
+            // Scrap tracker details
+            $this->info("Start scraping tracker @" . $tracker->name ?? $tracker->uuid);
+        }
     }
 }

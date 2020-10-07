@@ -17,7 +17,7 @@ class Influencer extends Model
      * @var array
      */
     protected $fillable = [
-        'network',
+        'platform',
         'username',
         'biography',
         'website',

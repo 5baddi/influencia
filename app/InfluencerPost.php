@@ -17,4 +17,19 @@ class InfluencerPost extends Model
      * @var string
      */
     protected $table = 'influencer_posts';
+
+    /**
+     * Get Emojis list
+     * 
+     * @return array
+     */
+    public function getCommentsEmojisAttribute()
+    {
+        return json_decode($this->comments_emojis);
+    }
+
+    public function files()
+    {
+        return $this->hasMany(InfluencerPostMedia::class, 'influencer_post_id');
+    }
 }

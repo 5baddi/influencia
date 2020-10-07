@@ -92,37 +92,27 @@ class InstagramScraper
      * Scrap user medias
      * 
      * @param Influencer $influencer
+     * @param int $maxID
+     * @param array $data
      * @return array
      */
-    public function getMedias(Influencer $influencer, $maxID = null, array $data = []) : array
+    public function getMedias(Influencer $influencer, $maxID = null, array &$data = []) : array
     {
         // Scrap medias
         $instaMedias = $this->instagram->getPaginateMedias($influencer->username, $maxID);
         foreach($instaMedias['medias'] as $media){
-            // Calculate video duration
-            $videoDuration = null;
-            if($media->getType() === 'video' && $media->getVideoDuration() === '' && !empty($media->getVideoStandardResolutionUrl())){
-                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl()));
-                $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
-                $videoDuration = $video->getPlaytimeSeconds();
-                Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
+            // TODO: Handle comments sentiments
+
+            // Get media files 
+            $files = [];
+            if(in_array($media->getType(), ['sidecar', 'carousel'])){
+                $files = array_map(function($file){
+                    $this->getFile($file);
+                },  ($media->getType() === 'sidecar' ? $media->getSidecarMedias() : $media->getCarouselMedia()));
+            }else{
+                $files = $this->getFile($media);
             }
-
-            // Handle comments sentiments
-            $positive = $neutral = $negative = 0;
-            $emojis = null;
-            if($media->getCommentsCount() > 0){
-                $sentiment = $this->getCommentsSentiment($media->getId(), $media->getCommentsCount());
-                $positive = $sentiment['positive'];
-                $neutral = $sentiment['neutral'];
-                $negative = $sentiment['negative'];
-
-                // Get top 3 emojis
-                if(!is_null($sentiment['emojis']) && !empty($sentiment['emojis'])){
-                    $emojis = json_encode($sentiment['emojis'], JSON_PRETTY_PRINT);
-                }
-            }
-
+            
             // Format data
             array_push($data, [
                 'influencer_id' =>  $influencer->id,
@@ -139,55 +129,141 @@ class InstagramScraper
                 'location'      =>  $media->getLocationName(),
                 'location_id'   =>  $media->getLocationId(),
                 'location_slug' =>  $media->getLocationSlug(),
+                'location_json' =>  $media->getLocationAddressJson(),
                 'video_views'   =>  $media->getVideoViews(),
-                'video_duration'=>  $videoDuration,
+                'video_duration'=>  $this->getVideoDuration($media),
                 'is_ad'         =>  $media->isAd(),
                 'comments_disabled' =>  $media->getCommentsDisabled(),
                 'caption_edited'    =>  $media->isCaptionEdited(),
-                'comments_positive' =>  $positive,
-                'comments_neutral'  =>  $neutral,
-                'comments_negative' =>  $negative,
-                'comments_emojis'   =>  $emojis
+                'files'             =>  $files
             ]);
         }
 
         return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data) : $data;
     }
 
-    public function getCommentsSentiment($mediaID, $max, array $data = ['positive' => 0, 'neutral' => 0, 'negative' => 0])
+    /**
+     * Scrap media details
+     * 
+     * @param string $mediaShortCode
+     * @return array
+     */
+    public function getMedia(string $mediaShortCode) : array
     {
-        // TODO: enable proxy
-        // Set proxy
-        //$this->setProxy();
+        // Scrap media
+        $media = $this->instagram->getMediaByCode($mediaShortCode);
 
-        // Init vars
-        $emojis = [];
+        // Format media
+        return [
+            'post_id'       =>  $media->getId(),
+            'link'          =>  $media->getLink(),
+            'short_code'    =>  $media->getShortCode(),
+            'type'          =>  $media->getType(),
+            'likes'         =>  $media->getLikesCount(),
+            'thumbnail_url' =>  $media->getImageThumbnailUrl(),
+            'comments'      =>  $media->getCommentsCount(),
+            'published_at'  =>  Carbon::parse($media->getCreatedTime()),
+            'caption'       =>  $media->getCaption(),
+            'alttext'       =>  $media->getAltText(),
+            'location'      =>  $media->getLocationName(),
+            'location_id'   =>  $media->getLocationId(),
+            'location_slug' =>  $media->getLocationSlug(),
+            'location_json' =>  $media->getLocationAddressJson(),
+            'video_views'   =>  $media->getVideoViews(),
+            'video_duration'=>  $this->getVideoDuration($media),
+            'is_ad'         =>  $media->isAd(),
+            'comments_disabled' =>  $media->getCommentsDisabled(),
+            'caption_edited'    =>  $media->isCaptionEdited()
+        ];
+    }
 
-        // Load comments
-        $comments = $this->instagram->getMediaCommentsById($mediaID, $max);
-        if(sizeof($comments) === 0)
-            return $data;
-            
-        foreach($comments as $comment){
-            // Analyze sentiment
-            $analyzer = new Analyzer();
-            $sentiment = $analyzer->getSentiment($comment->getText());
-            $data['positive'] += $sentiment['pos'];
-            $data['neutral'] += $sentiment['neu'];
-            $data['negative'] += $sentiment['neg'];
+    /**
+     * Scrap instagram stories for an username
+     * 
+     * @param string $username
+     * @return array
+     */
+    public function getStories(string $username)
+    {
+        // Scrap user
+        $stories = collect($this->instagram->getStories([$username]));
 
-            // Match all emojis
-            array_push($emojis, $this->getCommentEmojis($comment->getText()));
+        // Format account
+        $data = Format::parseArrayASCIIKey($stories);
+
+        return $data->toArray();
+    }
+
+    /**
+     * Get file from media
+     * 
+     * @param \InstagramScraper\Model\Media $media
+     * @return null|array
+     */
+    private function getFile(\InstagramScraper\Model\Media $media) : ?array
+    {
+        if(empty($media) || is_null($media))
+            return null;
+
+        // Init URL
+        $url = null;
+
+        if($media->getType() === 'image'){
+            $url = $media->getImageHighResolutionUrl() ?? $media->getImageStandardResolutionUrl();
+        }elseif($media->getType() === 'video'){
+            $url = $media->getVideoStandardResolutionUrl() ?? $media->getVideoLowResolutionUrl();
         }
 
-        // TODO: calcul sentiment for child comments
-
         return [
-            'positive'  =>  round($data['positive'] / sizeof($comments), 2),
-            'neutral'   =>  round($data['neutral'] / sizeof($comments), 2),
-            'negative'  =>  round($data['negative'] / sizeof($comments), 2),
-            'emojis'    =>  $this->getTopEmojis($emojis)
-        ]; 
+            'type'  =>  $media->getType(),
+            'url'   =>  $url,
+        ];
+    }
+
+    /**
+     * Get video duration
+     * 
+     * @param \InstagramScraper\Model\Media $media
+     * @return null|int
+     */
+    private function getVideoDuration(\InstagramScraper\Model\Media $media) : ?int
+    {
+        if($media->getType() === 'video' && $media->getVideoDuration() === '' && !empty($media->getVideoStandardResolutionUrl())){
+            Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl()));
+            $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
+            Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
+
+            return $video->getPlaytimeSeconds();
+        }
+
+        return null;
+    }
+
+    /**
+     * Get media sentiments and emojis from comments
+     * 
+     * @param \InstagramScraper\Model\Media $media
+     * @return null|array
+     */
+    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media) : ?array
+    {
+        if($media->getCommentsCount() === 0)
+            return null;
+
+        // init
+        $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => null];
+
+        // Scrap comments
+        $sentiment = $this->getCommentsSentiment($media, 100, $data);
+
+        // Get top 3 emojis
+        if(!is_null($sentiment['emojis']) && !empty($sentiment['emojis'])){
+            $data['emojis'] = $this->getTopEmojis($sentiment['emojis']);
+            // Format unicode for DB saving
+            $data['emojis'] = json_encode($sentiment['emojis'], JSON_PRETTY_PRINT);
+        }
+
+        return $data;
     }
 
     /**
@@ -196,7 +272,7 @@ class InstagramScraper
      * @param string $comment
      * @return null|array
      */
-    public function getCommentEmojis(string $comment) : ?array
+    private function getCommentEmojis(string $comment) : ?array
     {
         // Ignore empty text
         if(empty($comment))
@@ -225,7 +301,7 @@ class InstagramScraper
      * @param int $max
      * @return null|array
      */
-    public function getTopEmojis(array $emojis, int $max = 3) : ?array
+    private function getTopEmojis(array $emojis, int $max = 3) : ?array
     {
         // Ignore empty emojis list
         if(is_null($emojis) || empty($emojis))
@@ -240,21 +316,39 @@ class InstagramScraper
         return array_slice($_emojis, 0, $max, true);
     }
 
-    /**
-     * Scrap instagram stories for an username
-     * 
-     * @param string $username
-     * @return array
-     */
-    public function getStories(string $username)
+    private function getCommentsSentiment(\InstagramScraper\Model\Media $media, $max, array &$data)
     {
-        // Scrap user
-        $stories = collect($this->instagram->getStories([$username]));
+        dd($max, $data);
+        // Init vars
+        $emojis = [];
 
-        // Format account
-        $data = Format::parseArrayASCIIKey($stories);
+        // Load comments
+        $comments = $this->instagram->getMediaCommentsById($media->getId(), $max);
+        if(sizeof($comments) === 0)
+            return $data;
+            
+        foreach($comments as $key => $comment){
+            // Analyze sentiment
+            $analyzer = new Analyzer();
+            $sentiment = $analyzer->getSentiment($comment->getText());
+            $data['positive'] += $sentiment['pos'];
+            $data['neutral'] += $sentiment['neu'];
+            $data['negative'] += $sentiment['neg'];
 
-        return $data->toArray();
+            // Match all emojis
+            array_push($emojis, $this->getCommentEmojis($comment->getText()));
+
+            // Scrap more comments 
+            if($key === array_key_last($comments))
+                return $this->getCommentsSentiment($media, $max, $data);
+        }
+
+        return [
+            'positive'  =>  round($data['positive'] / sizeof($media->getCommentsCount()), 2),
+            'neutral'   =>  round($data['neutral'] / sizeof($media->getCommentsCount()), 2),
+            'negative'  =>  round($data['negative'] / sizeof($media->getCommentsCount()), 2),
+            'emojis'    =>  $emojis
+        ]; 
     }
 
     /**

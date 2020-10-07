@@ -35,6 +35,7 @@ class CreateInfluencerPosts extends Migration
             $table->string('location_id')->nullable();
             $table->string('location')->nullable();
             $table->string('location_slug')->nullable();
+            $table->json('location_json')->nullable();
             $table->timestamp('published_at')->nullable(false);
             $table->boolean('comments_disabled')->default(false);
             $table->boolean('caption_edited')->default(false);

@@ -4,7 +4,7 @@ namespace App\Repositories;
 
 use App\Influencer;
 use App\InfluencerPost;
-use Illuminate\Support\Collection;
+use App\InfluencerPostMedia;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -32,11 +32,27 @@ class InfluencerPostRepository extends BaseRepository
     */
     public function create(array $scraperAttributes) : Model
     {
-        return $this->model->create($scraperAttributes);
+        // Parse files
+        $files = $scraperAttributes['files'];
+        unset($scraperAttributes['files']);
+
+        // Add post record
+        $post = $this->model->create($scraperAttributes);
+
+        // Add files records to the post
+        if(isset($files) && !empty($files))
+            $this->addMedias($post, $files);
+
+        return $post->load('files');
     }
 
     public function update(Model $entity, array $scraperAttributes) : Model
     {
+        // Parse files
+        $files = $scraperAttributes['files'];
+        unset($scraperAttributes['files']);
+
+        // Update post record
         $entity->update($scraperAttributes);
 
         return $entity->refresh();
@@ -50,5 +66,29 @@ class InfluencerPostRepository extends BaseRepository
             return $existsRow;
 
         return null;
+    }
+
+    /**
+     * Add Media for influencer post
+     * 
+     * @param InfluencerPost $post
+     * @param array $mediaFiles
+     * @return null|array
+     */
+    public function addMedias(InfluencerPost $post, array $mediaFiles) : array
+    {
+        // Init
+        $files = [];
+
+        array_walk($mediaFiles, function($file) use ($post, &$files){
+            if(empty($file) || is_null($file))
+                return;
+
+            // Push added media record
+            $file['influencer_post_id'] =  $post->id;
+            array_push($files, InfluencerPostMedia::create($file));
+        });
+
+        return $files;
     }
 }

@@ -19,6 +19,7 @@
         "laravel/ui": "^2.0",
         "owen-oj/laravel-getid3": "^1.1",
         "phpfastcache/phpfastcache": "^8.0",
+        "pusher/pusher-php-server": "~4.0",
         "raiym/instagram-php-scraper": "^0.9.14",
         "ryancco/laravel-uuid-models": "^1.0",
         "scotteh/php-goose": "^1.0"
