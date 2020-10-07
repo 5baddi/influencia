@@ -15,7 +15,7 @@ class ScrapInstagramInfluencers extends Command
      *
      * @var string
      */
-    protected $signature = 'scrap:instagram';
+    protected $signature = 'scrap:instagram {--force=false}';
 
     /**
      * The console command description.
@@ -71,19 +71,21 @@ class ScrapInstagramInfluencers extends Command
         $startTaskAt = microtime(true);
 
         // Get username's
-        $usernames = $this->repository->getUsernames();
-        $this->info("Number of account to sync: " . count($usernames));
+        $influencers = $this->repository->all();
+        $this->info("Number of account to sync: " . $influencers->count());
 
         // Scrap each influencer details
-        foreach($usernames as $id => $username){
-            // Scrap account details
-            $accountDetails = $this->instagramScraper->byUsername($username);
-            sleep(3);
+        foreach($influencers as $influencer){
+            // Scrap & update influencer details
+            // TODO: add force option
+            // if(!$this->argument('--force') && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
+            // if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
+            //     continue;
 
-            // Get influencer entity
-            $influencer = $this->repository->find($id);
-            if(is_null($influencer))
-                continue;
+            // Scrap account details
+            $this->info("Start scraping account @" . $influencer->username);
+            $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+            sleep(3);
 
             // Update influencer
             $this->repository->update($influencer, $accountDetails);

@@ -83,9 +83,9 @@ class EmojiParser
         $values = array_values($matches[0]);
 
         // Split multi emojis
-        foreach($values as $value){
+        array_walk($values, function($value) use (&$emojis){
             $emojis = array_merge($emojis, array_filter(preg_split("//u", $value, -1, PREG_SPLIT_NO_EMPTY)));
-        }
+        });
 
 
         return $emojis;

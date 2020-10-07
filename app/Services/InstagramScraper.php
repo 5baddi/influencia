@@ -79,7 +79,7 @@ class InstagramScraper
      */
     public function byUsername(string $username) : array
     {
-        // dd($this->emojiParser->matchAll('😂😂😂😂👏👏👏'));
+        dd($this->getTopEmojis($this->getCommentEmojis('😂😂😂😂👏👏👏')));
         // Scrap user
         $account = collect($this->instagram->getAccount($username));
 
@@ -119,7 +119,7 @@ class InstagramScraper
                 $negative = $sentiment['negative'];
 
                 // Get top 3 emojis
-                if(!empty($sentiment['emojis']) && sizeof($sentiment['emojis']) > 0){
+                if(!is_null($sentiment['emojis']) && !empty($sentiment['emojis'])){
                     $emojis = json_encode($sentiment['emojis'], JSON_PRETTY_PRINT);
                 }
             }
@@ -178,31 +178,67 @@ class InstagramScraper
             $data['negative'] += $sentiment['neg'];
 
             // Match all emojis
-            array_push($emojis, $this->emojiParser->matchAll($comment->getText()));
+            array_push($emojis, $this->getCommentEmojis($comment->getText()));
         }
 
         // TODO: calcul sentiment for child comments
-
-        // Extract occurrence of each duplicate emoji
-        $parsedEmojis = [];
-        array_walk($emojis, function($value) use ($parsedEmojis){
-            if(empty($value))
-                return;
-
-            // Get emojis count and set values as keys 
-            $_emojis = array_flip(array_count_values($value));
-            // Sort emojis by top count
-            asort($_emojis);
-
-            array_merge($parsedEmojis, $_emojis);
-        });
 
         return [
             'positive'  =>  round($data['positive'] / sizeof($comments), 2),
             'neutral'   =>  round($data['neutral'] / sizeof($comments), 2),
             'negative'  =>  round($data['negative'] / sizeof($comments), 2),
-            'emojis'    =>  $parsedEmojis
+            'emojis'    =>  $this->getTopEmojis($emojis)
         ]; 
+    }
+
+    /**
+     * Get Emojis from comment text
+     * 
+     * @param string $comment
+     * @return null|array
+     */
+    public function getCommentEmojis(string $comment) : ?array
+    {
+        // Ignore empty text
+        if(empty($comment))
+            return null;
+
+        // Parse emojis
+        $emojis = $this->emojiParser->matchAll($comment);
+
+        // Ignore empty emojis list
+        if(empty($emojis))
+            return null;        
+
+        // Slice empty emoji
+        array_walk($emojis, function($item, $key) use (&$emojis){
+            if(is_null($item) || empty($item))
+                unset($emojis[$key]);
+        });
+
+        return $emojis;
+    }
+
+    /**
+     * Get top emojis
+     * 
+     * @param array $emojis
+     * @param int $max
+     * @return null|array
+     */
+    public function getTopEmojis(array $emojis, int $max = 3) : ?array
+    {
+        // Ignore empty emojis list
+        if(is_null($emojis) || empty($emojis))
+            return null;
+
+        // Extract occurrence of each duplicate emoji
+        // Get emojis count and set values as keys 
+        $_emojis = array_flip(array_count_values($emojis));
+        // Sort emojis by top count
+        krsort($_emojis);
+
+        return array_slice($_emojis, 0, $max, true);
     }
 
     /**
