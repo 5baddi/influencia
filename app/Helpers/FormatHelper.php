@@ -69,4 +69,21 @@ class FormatHelper
 
         return isset($match[1]) ? $match[1] : null;
     }
+    
+    /**
+     * Extract all hashtags from text
+     * 
+     * @param string $text
+     * @return array
+     */
+    public static function extractHashTags(string $text) : array
+    {
+        // Init 
+        $matches = [];
+
+        // Extract short code
+        preg_match_all("/#(\\w+)/", $text, $matches);
+        
+        return isset($matches[1]) ? $matches[1] : [];
+    }
 }

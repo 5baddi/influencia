@@ -88,7 +88,7 @@ class ScrapInstagramInfluencers extends Command
         $this->scrapInfluencers();
 
         // Scrap trackers details & analytics
-        // $this->scrapTrackers();
+        $this->scrapTrackers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
@@ -124,7 +124,7 @@ class ScrapInstagramInfluencers extends Command
 
             // Update influencer posts
             $this->info("Number of posts: " . $influencer->posts);
-            $this->info("Start scraping medias ...");
+            $this->info("Please wait until scraping all medias ...");
             $instaMedias = $this->instagramScraper->getMedias($influencer);
             sleep(3);
             foreach($instaMedias as $media){
@@ -159,7 +159,7 @@ class ScrapInstagramInfluencers extends Command
         // Scrap each tracker details
         foreach($trackers as $tracker){
             // Ignore last updated trackers
-            if((!$this->option('force') || $this->option('force') !== 'true') && isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
+            if($this->option('force') === 'false' && isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
 
             // TODO: scrap stories details
@@ -168,20 +168,14 @@ class ScrapInstagramInfluencers extends Command
 
             // Scrap posts details
             if($tracker->type === 'post'){
-                // Extract short code
-                $shortCode = Format::extractInstagarmShortCode($tracker->url);
-                if(is_null($shortCode)){
-                    $this->error("Faild to extract media short code! for tracker: " . $tracker->uuid);
-                    continue;
-                }
+                $trackerData = [
+                    'nbr_replies'   =>  $this->trackerRepo->getNomberOfReplies($tracker)
+                ];
 
-                // Scrap media details
-                $mediaDetails = $this->instagramScraper->getMedia($shortCode);
-                dd($mediaDetails);
+                // Update tracker analytics
+                $this->info("Updating tracker @" . $tracker->name ?? $tracker->uuid);
+                $this->trackerRepo->update($tracker, $trackerData);
             }
-
-            // Scrap tracker details
-            $this->info("Start scraping tracker @" . $tracker->name ?? $tracker->uuid);
         }
     }
 }

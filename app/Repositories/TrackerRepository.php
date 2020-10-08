@@ -2,8 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Influencer;
+use App\InfluencerPost;
 use App\Tracker;
 use Illuminate\Support\Collection;
+use Format;
 
 /**
  * Class TrackerRepository.
@@ -29,8 +32,27 @@ class TrackerRepository extends BaseRepository
     */
    public function getInstagram() : Collection
    {
-       return $this->model->where('platform', 'instagram')
+       return $this->model->where(['platform' => 'instagram', 'status' => true])
                     ->whereIn('type', ['post', 'story'])
                     ->get();
    }
+
+   public function getNomberOfReplies(Tracker $entity) : int
+    {
+        // Parse short code
+        $shortCode = Format::extractInstagarmShortCode($entity->url);
+
+        // Get influencer ID
+        $influencer = Influencer::where('username', $entity->username)->first();
+
+        if(is_null($shortCode) || is_null($influencer))
+            return 0;
+
+        // Get Post
+        $post = InfluencerPost::where(['influencer_id' => $influencer->id, 'short_code' => $shortCode])->first();
+        if(is_null($post))
+            return 0;
+
+        return $post->comments;
+    }
 }
