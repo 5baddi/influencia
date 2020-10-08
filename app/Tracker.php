@@ -75,11 +75,11 @@ class Tracker extends Model
     /**
      * Get tracker media files
      * 
-     * @return \App\Media
+     * @return \App\TrackerMedia
      */
     public function medias()
     {
-        return $this->belongsToMany(Media::class, 'tracker_id');
+        return $this->hasMany(TrackerMedia::class);
     }
     
     /**

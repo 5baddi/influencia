@@ -8,6 +8,17 @@
                 <div class="influencer-details-name">
                     <h4>{{ influencer.name }}</h4>
                     <p>{{ influencer.biography }}</p>
+                    <ul>
+                        <li>
+                            <i class="fas fa-users"></i>
+                            <span>{{ influencer.followers }}</span>
+                        </li>
+                        <!-- <i class="fas fa-image"></i>
+                        <i class="fas fa-images"></i>
+                        <i class="fas fa-video"></i>
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-comment"></i> -->
+                    </ul>
                 </div>
                 <div class="influencer-details-bar">
                     <span class="influencer-details-bar-instagram" style="width:100%">

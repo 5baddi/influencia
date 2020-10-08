@@ -13,6 +13,7 @@ class CreateTrackerTable extends Migration
      */
     public function up()
     {
+        // Trackers
         Schema::create('trackers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
@@ -41,6 +42,19 @@ class CreateTrackerTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
         });
+
+        // Tracker medias
+        Schema::create('tracker_medias', function(Blueprint $table){
+            $table->id();
+            $table->unsignedBigInteger('tracker_id')->nullable(false);
+            $table->string('uuid')->unique()->nullable(false);
+            $table->string('name')->unique()->nullable(false);
+            $table->string('media_path')->nullable(false);
+            $table->enum('type', ['media', 'proof'])->default('media');
+            $table->timestamps();
+
+            $table->foreign('tracker_id')->references('id')->on('trackers')->cascadeOnDelete();
+        });
     }
 
     /**
@@ -51,6 +65,6 @@ class CreateTrackerTable extends Migration
     public function down()
     {
         Schema::dropIfExists('trackers');
-        Schema::dropIfExists('medias');
+        Schema::dropIfExists('tracker_medias');
     }
 }

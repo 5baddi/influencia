@@ -67,14 +67,11 @@ class TrackerController extends Controller
         // Upload story
         $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $request->file('story')->getClientOriginalExtension();
         $storyFilePath = $request->file('story')->storeAs('uploads', $storyFileName, 'public');
-        $media = Media::create([
+        $media = TrackerMedia::create([
+            'tracker_id'    =>  $tracker->id,
             'name'          =>  $storyFileName,
             'type'          =>  'media',
             'media_path'    =>  '/storage/' . $storyFilePath
-        ]);
-        TrackerMedia::create([
-            'tracker_id'    =>  $tracker->id,
-            'media_id'      =>  $media->id
         ]);
 
         return response()->success(

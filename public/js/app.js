@@ -6748,6 +6748,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -32126,7 +32137,15 @@ var render = function() {
             _c("div", { staticClass: "influencer-details-name" }, [
               _c("h4", [_vm._v(_vm._s(_vm.influencer.name))]),
               _vm._v(" "),
-              _c("p", [_vm._v(_vm._s(_vm.influencer.biography))])
+              _c("p", [_vm._v(_vm._s(_vm.influencer.biography))]),
+              _vm._v(" "),
+              _c("ul", [
+                _c("li", [
+                  _c("i", { staticClass: "fas fa-users" }),
+                  _vm._v(" "),
+                  _c("span", [_vm._v(_vm._s(_vm.influencer.followers))])
+                ])
+              ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "influencer-details-bar" }, [

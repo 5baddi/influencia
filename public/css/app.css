@@ -1141,7 +1141,7 @@ a.icon-link:last-child {
 .influencer-posts {
   display: flex;
   flex-wrap: wrap;
-  justify-content: start;
+  justify-content: flex-start;
   gap: 1rem;
   margin-top: 1rem;
 }
@@ -1149,6 +1149,7 @@ a.icon-link:last-child {
 .influencer-posts-card {
   position: relative;
   flex: 0 0 calc(20% - 1rem);
+  margin-right: auto;
   overflow: hidden;
   border-color: rgba(0, 0, 0, 0.12);
   border-radius: 0.5rem;

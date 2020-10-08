@@ -38,6 +38,6 @@ class Campaign extends Model
      */
     public function trackers()
     {
-        return $this->hasMany(Tracker::class);
+        return $this->hasMany(Tracker::class, 'campaign_id');
     }
 }
