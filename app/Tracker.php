@@ -52,18 +52,43 @@ class Tracker extends Model
         'status'        =>  'boolean'
     ];
 
+    /**
+     * Get user
+     * 
+     * @return \App\User
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
     
+    /**
+     * Get campaign
+     * 
+     * @return \App\Campaign
+     */
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
     }
 
+    /**
+     * Get tracker media files
+     * 
+     * @return \App\Media
+     */
     public function medias()
     {
         return $this->belongsToMany(Media::class, 'tracker_id');
+    }
+    
+    /**
+     * Get tracker posts
+     * 
+     * @return \App\InfluencerPost
+     */
+    public function posts()
+    {
+        return $this->hasMany(InfluencerPost::class, 'tracker_id');
     }
 }

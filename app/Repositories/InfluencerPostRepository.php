@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Influencer;
 use App\InfluencerPost;
 use App\InfluencerPostMedia;
+use App\Tracker;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -103,18 +104,33 @@ class InfluencerPostRepository extends BaseRepository
         return $files;
     }
 
-    public function getEntity(string $username, string $link) : ?InfluencerPost
+    /**
+     * Get post by tracker 
+     * 
+     * @param \App\Tracker $tracker
+     * @return \App\InfluencerPost|null
+     */
+    public function getPostByTracker(Tracker $tracker) : ?InfluencerPost
     {
         // Parse short code
-        $shortCode = Format::extractInstagarmShortCode($link);
+        $shortCode = Format::extractInstagarmShortCode($tracker->url);
         if(is_null($shortCode))
             return null;
 
-        return InfluencerPost::whereHas('influencer', function($influencer) use ($username){
-                    $influencer->where('username', $username);
-                })
-                ->where('short_code', $shortCode)
-                ->first();
+        // Get post record
+        $post = InfluencerPost::where(['tracker_id' => $tracker->id, 'short_code' => $shortCode])->first();
+        if(is_null($post)){
+            $post = InfluencerPost::whereHas('influencer', function($influencer) use ($tracker){
+                $influencer->where('username', $tracker->username);
+            })
+            ->where('short_code', $shortCode)
+            ->first();
+
+            // Set post tracker ID
+            $post->update(['tracker_id' => $tracker->id]);
+        }
+
+        return $post;
     }
 
     public function getNumberOfReplies() : int

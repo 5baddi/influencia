@@ -38,20 +38,12 @@ class DumpDataSeeder extends Seeder
             'status'    =>  true
         ]);
         Tracker::create([
-            'name'  =>  'Test 1',
+            'name'  =>  'Tracker 1',
             'type'  =>  'post',
             'platform'  =>  'instagram',
             'user_id'   =>  $user->id,
             'campaign_id'   =>  $campaign->id,
-            'url'           =>  'https://www.instagram.com/p/CBnLKgAi79w/'
-        ]);
-        Tracker::create([
-            'name'  =>  'Test 2',
-            'type'  =>  'post',
-            'platform'  =>  'instagram',
-            'user_id'   =>  $user->id,
-            'campaign_id'   =>  $campaign->id,
-            'url'           =>  'https://www.instagram.com/p/B_iDEz7iBr9/'
+            'url'           =>  'https://www.instagram.com/p/BwbZ0PhlNSm'
         ]);
 
         // Influencers

@@ -18,6 +18,7 @@ class CreateInfluencerPosts extends Migration
             $table->unsignedBigInteger('influencer_id');
             $table->string('uuid')->unique()->nullable(false);
             $table->unsignedBigInteger('post_id')->nullable(false);
+            $table->unsignedBigInteger('tracker_id')->nullable();
             $table->string('link')->nullable(false);
             $table->string('short_code')->nullable();
             $table->text('thumbnail_url')->nullable();
@@ -32,6 +33,7 @@ class CreateInfluencerPosts extends Migration
             $table->double('comments_neutral')->nullable();
             $table->double('comments_negative')->nullable();
             $table->json('comments_emojis')->nullable();
+            $table->json('caption_hashtags')->nullable();
             $table->integer('video_views')->nullable();
             $table->double('video_duration')->nullable();
             $table->string('location_id')->nullable();
@@ -45,6 +47,7 @@ class CreateInfluencerPosts extends Migration
             $table->timestamps();
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
+            $table->foreign('tracker_id')->references('id')->on('trackers');
         });
     }
 

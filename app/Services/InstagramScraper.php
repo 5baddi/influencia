@@ -22,7 +22,7 @@ class InstagramScraper
      * Max request by each fetch
      */
     const MAX_REQUEST = 100;
-    
+
     /**
      * Instagram scraper
      * 
@@ -132,9 +132,7 @@ class InstagramScraper
             array_push($data, $_media);
         }
 
-        return $data;
-
-        // return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
+        return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
     }
 
     /**
@@ -156,6 +154,16 @@ class InstagramScraper
         $comments = [];
         $this->getSentimentsAndEmojis($media, $comments);
 
+        // calculate all comments sentiment
+        if($media->getCommentsCount() > 0){
+            $comments['comments_positive'] = round($comments['comments_positive'] / $media->getCommentsCount(), 2);
+            $comments['comments_neutral'] = round($comments['comments_neutral'] / $media->getCommentsCount(), 2);
+            $comments['comments_negative'] = round($comments['comments_negative'] / $media->getCommentsCount(), 2); 
+        }       
+
+        // Count hashtags on media caption
+        $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
+        
         // Add media and comments details
         $_media = [
             'post_id'       =>  $media->getId(),
@@ -177,6 +185,7 @@ class InstagramScraper
             'video_views'   =>  $media->getVideoViews(),
             'video_duration'=>  $this->getVideoDuration($media),
             'is_ad'         =>  $media->isAd(),
+            'caption_hashtags'  =>  $this->hashtags,
             'comments_disabled' =>  $media->getCommentsDisabled(),
             'caption_edited'    =>  $media->isCaptionEdited(),
             'files'             =>  $this->getFiles($media)       
@@ -333,9 +342,9 @@ class InstagramScraper
             $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
 
         return [
-            'comments_positive'  =>  round($data['comments_positive'] / $media->getCommentsCount(), 2),
-            'comments_neutral'   =>  round($data['comments_neutral'] / $media->getCommentsCount(), 2),
-            'comments_negative'  =>  round($data['comments_negative'] / $media->getCommentsCount(), 2),
+            'comments_positive'  =>  $data['comments_positive'],
+            'comments_neutral'   =>  $data['comments_neutral'],
+            'comments_negative'  =>  $data['comments_negative'],
             'comments_emojis'    =>  $data['comments_emojis']
         ]; 
     }

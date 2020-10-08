@@ -42,6 +42,29 @@ class InfluencerPost extends Model
         if(!is_string($value))
             $this->attributes['comments_emojis'] = json_encode($value);
     }
+    
+    /**
+     * Get Hashtags list
+     * 
+     * @return array
+     */
+    public function getCaptionHashtagsAttribute()
+    {
+        $result = json_decode($this->attributes['caption_hashtags']);
+
+        return $result;
+    }
+    
+    /**
+     * Set Hashtags list
+     * 
+     * @return void
+     */
+    public function setCaptionHashtagsAttribute($value)
+    {
+        if(!is_string($value))
+            $this->attributes['caption_hashtags'] = json_encode($value);
+    }
 
     /**
      * Get media sequences
@@ -56,10 +79,20 @@ class InfluencerPost extends Model
     /**
      * Get media owner
      * 
-     * @return Influencer
+     * @return \App\Influencer
      */
     public function influencer()
     {
         return $this->belongsTo(Influencer::class);
+    }
+    
+    /**
+     * Get tracker
+     * 
+     * @return \App\Tracker
+     */
+    public function tracker()
+    {
+        return $this->belongsTo(Tracker::class, 'tracker_id');
     }
 }

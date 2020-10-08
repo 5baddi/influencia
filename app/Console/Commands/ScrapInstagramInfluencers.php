@@ -168,7 +168,7 @@ class ScrapInstagramInfluencers extends Command
 
             if(isset($tracker->username, $tracker->url) && $tracker->type === 'post'){
                 // Get post
-                $post = $this->postRepo->getEntity($tracker->username, $tracker->url);
+                $post = $this->postRepo->getPostByTracker($tracker);
 
                 // Scrap post details
                 if(!is_null($post)){
