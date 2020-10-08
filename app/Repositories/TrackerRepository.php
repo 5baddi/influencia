@@ -36,23 +36,4 @@ class TrackerRepository extends BaseRepository
                     ->whereIn('type', ['post', 'story'])
                     ->get();
    }
-
-   public function getNomberOfReplies(Tracker $entity) : int
-    {
-        // Parse short code
-        $shortCode = Format::extractInstagarmShortCode($entity->url);
-
-        // Get influencer ID
-        $influencer = Influencer::where('username', $entity->username)->first();
-
-        if(is_null($shortCode) || is_null($influencer))
-            return 0;
-
-        // Get Post
-        $post = InfluencerPost::where(['influencer_id' => $influencer->id, 'short_code' => $shortCode])->first();
-        if(is_null($post))
-            return 0;
-
-        return $post->comments;
-    }
 }

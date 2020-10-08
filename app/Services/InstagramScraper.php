@@ -32,6 +32,20 @@ class InstagramScraper
      */
     private $emojiParser;
 
+    /**
+     * All emojis used in media comments
+     * 
+     * @var array
+     */
+    public $emojis = [];
+    
+    /**
+     * All hashags used in media comments
+     * 
+     * @var array
+     */
+    public $hashtags = [];
+
     public function __construct(EmojiParser $emojiParser)
     {
         // Disable SSL Certif
@@ -96,22 +110,26 @@ class InstagramScraper
      * @param array $data
      * @return array
      */
-    public function getMedias(Influencer $influencer, $maxID = null, array &$data = []) : array
+    public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = 1) : array
     {
         // Scrap medias
-        $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, 10);
+        $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max);
         sleep(3);
         
         foreach($instaMedias['medias'] as $media){
             // Scrap media
             $_media = $this->getMedia($media->getShortCode(), $media);
-            $_media['influencer_id'] = $influencer->id;  
+
+            // Set media influencer ID
+            $_media['influencer_id'] = $influencer->id;
         
             // Format data
             array_push($data, $_media);
         }
 
-        return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data) : $data;
+        return $data;
+
+        // return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
     }
 
     /**
@@ -142,6 +160,8 @@ class InstagramScraper
             'likes'         =>  $media->getLikesCount(),
             'thumbnail_url' =>  $media->getImageThumbnailUrl(),
             'comments'      =>  $media->getCommentsCount(),
+            'emojis'        =>  $this->getEmojisSum(),
+            'hashtags'      =>  sizeof($this->hashtags),
             'published_at'  =>  Carbon::parse($media->getCreatedTime()),
             'caption'       =>  $media->getCaption(),
             'alttext'       =>  $media->getAltText(),
@@ -154,7 +174,7 @@ class InstagramScraper
             'is_ad'         =>  $media->isAd(),
             'comments_disabled' =>  $media->getCommentsDisabled(),
             'caption_edited'    =>  $media->isCaptionEdited(),
-            'files'             =>  $this->getFiles($media)
+            'files'             =>  $this->getFiles($media)       
         ];
 
         return array_merge($_media, $comments);
@@ -246,6 +266,24 @@ class InstagramScraper
     }
 
     /**
+     * Calculate number of emojis used in comments pf a media
+     */
+    private function getEmojisSum() : int
+    {
+        if(sizeof($this->emojis) === 0)
+            return 0;
+
+        // Get emojis counts
+        $emojisCount = 0;
+        array_walk($this->emojis, function($value, $key) use (&$emojisCount){
+            if(is_int($key))
+                $emojisCount += $key;
+        });
+
+        return $emojisCount;
+    }
+
+    /**
      * Get media sentiments and emojis from comments
      * 
      * @param \InstagramScraper\Model\Media $media
@@ -276,9 +314,8 @@ class InstagramScraper
             // Match all emojis
             $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
 
-            // Scrap more comments 
-            // if($key === array_key_last($comments) && sizeof($data) < $media->getCommentsCount())
-                // return $this->getCommentsSentiment($media, $max, $comment->getChildCommentsNextPage(), $data);
+            // Extract comment hashtags
+            array_merge($this->hashtags, Format::extractHashTags($comment->getText()));
         }
 
         // Get more comments
@@ -287,13 +324,8 @@ class InstagramScraper
 
 
         // Get top 3 emojis
-        if(isset($data['comments_emojis']) && !empty($data['comments_emojis'])){
+        if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
             $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
-            // Sort top emojis
-            krsort($data['comments_emojis']);
-            // Format unicode for DB saving
-            $data['comments_emojis'] = json_encode($data['comments_emojis'], JSON_PRETTY_PRINT);
-        }
 
         return [
             'comments_positive'  =>  round($data['comments_positive'] / $media->getCommentsCount(), 2),
@@ -344,10 +376,12 @@ class InstagramScraper
         if(is_null($emojis) || empty($emojis))
             return null;
 
+           
         // Extract occurrence of each duplicate emoji and set values as keys 
-        $_emojis = array_flip(array_count_values($emojis));
+        $this->emojis = array_flip(array_count_values($emojis));
 
-        return array_slice($_emojis, 0, $max, true);
+        // Slice top emojis
+        return array_slice($this->emojis, 0, $max, true);
     }
 
     /**

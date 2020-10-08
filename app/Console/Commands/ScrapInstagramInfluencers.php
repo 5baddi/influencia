@@ -88,7 +88,7 @@ class ScrapInstagramInfluencers extends Command
         $this->scrapInfluencers();
 
         // Scrap trackers details & analytics
-        $this->scrapTrackers();
+        // $this->scrapTrackers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
@@ -166,15 +166,21 @@ class ScrapInstagramInfluencers extends Command
             if($tracker->type === 'story')
                 continue;
 
-            // Scrap posts details
-            if($tracker->type === 'post'){
-                $trackerData = [
-                    'nbr_replies'   =>  $this->trackerRepo->getNomberOfReplies($tracker)
-                ];
+            if(isset($tracker->username, $tracker->url) && $tracker->type === 'post'){
+                // Get post
+                $post = $this->postRepo->getEntity($tracker->username, $tracker->url);
 
-                // Update tracker analytics
-                $this->info("Updating tracker @" . $tracker->name ?? $tracker->uuid);
-                $this->trackerRepo->update($tracker, $trackerData);
+                // Scrap post details
+                if(!is_null($post)){
+                    $trackerData = [
+                        'nbr_replies'   =>  $this->postRepo->getNumberOfReplies(),
+                        'nbr_squences'  =>  $this->postRepo->getNumberOfSequences(),
+                    ];
+
+                    // Update tracker analytics
+                    $this->info("Updating tracker @" . $tracker->name ?? $tracker->uuid);
+                    $this->trackerRepo->update($tracker, $trackerData);
+                }
             }
         }
     }
