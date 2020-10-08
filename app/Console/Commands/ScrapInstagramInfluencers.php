@@ -88,7 +88,7 @@ class ScrapInstagramInfluencers extends Command
         $this->scrapInfluencers();
 
         // Scrap trackers details & analytics
-        // $this->scrapTrackers();
+        $this->scrapTrackers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;

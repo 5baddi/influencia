@@ -19,6 +19,11 @@ use Sentiment\Analyzer;
 class InstagramScraper
 {
     /**
+     * Max request by each fetch
+     */
+    const MAX_REQUEST = 100;
+    
+    /**
      * Instagram scraper
      * 
      * @var InstagramScraper\Instagram
@@ -110,7 +115,7 @@ class InstagramScraper
      * @param array $data
      * @return array
      */
-    public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = 1) : array
+    public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
     {
         // Scrap medias
         $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max);
@@ -289,7 +294,7 @@ class InstagramScraper
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, int $nextComment = null, $max = 100) : ?array
+    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, int $nextComment = null, $max = self::MAX_REQUEST) : ?array
     {
         // init
         $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => []];
