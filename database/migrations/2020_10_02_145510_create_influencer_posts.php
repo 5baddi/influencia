@@ -29,6 +29,7 @@ class CreateInfluencerPosts extends Migration
             $table->integer('comments')->nullable();
             $table->integer('hashtags')->nullable();
             $table->integer('emojis')->nullable();
+            $table->integer('sequences')->default(0);
             $table->double('comments_positive')->nullable();
             $table->double('comments_neutral')->nullable();
             $table->double('comments_negative')->nullable();

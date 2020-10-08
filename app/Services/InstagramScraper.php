@@ -164,6 +164,11 @@ class InstagramScraper
         // Count hashtags on media caption
         $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
         
+        // Calculate number of sequences
+        $sequences = 1;
+        if(in_array($media->getType(), ['sidecar', 'carousel']))
+            $sequences = sizeof($media->{"get" . ucfirst($media->getType()) . "Medias"}());
+            
         // Add media and comments details
         $_media = [
             'post_id'       =>  $media->getId(),
@@ -174,6 +179,7 @@ class InstagramScraper
             'thumbnail_url' =>  $media->getImageThumbnailUrl(),
             'comments'      =>  $media->getCommentsCount(),
             'emojis'        =>  $this->getEmojisSum(),
+            'sequences'     =>  $sequences,
             'hashtags'      =>  sizeof($this->hashtags),
             'published_at'  =>  Carbon::parse($media->getCreatedTime()),
             'caption'       =>  $media->getCaption(),
@@ -188,7 +194,7 @@ class InstagramScraper
             'caption_hashtags'  =>  $this->hashtags,
             'comments_disabled' =>  $media->getCommentsDisabled(),
             'caption_edited'    =>  $media->isCaptionEdited(),
-            'files'             =>  $this->getFiles($media)       
+            'files'             =>  $this->getFiles($media)    
         ];
 
         return array_merge($_media, $comments);

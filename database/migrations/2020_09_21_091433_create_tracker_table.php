@@ -64,7 +64,7 @@ class CreateTrackerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('trackers');
         Schema::dropIfExists('tracker_medias');
+        Schema::dropIfExists('trackers');
     }
 }
