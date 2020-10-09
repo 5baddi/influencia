@@ -51,13 +51,6 @@ class InstagramScraper
      */
     public $hashtags = [];
 
-    /**
-     * All hashtags used in media comments
-     * 
-     * @var array
-     */
-    public $commentsHashtags = [];
-
     public function __construct(EmojiParser $emojiParser)
     {
         // Disable SSL Certif
@@ -312,7 +305,7 @@ class InstagramScraper
     private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, int $nextComment = null, $max = self::MAX_REQUEST) : ?array
     {
         // init
-        $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => []];
+        $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
 
         // Ignore media with disabled comments option
         if($media->getCommentsCount() === 0 || $media->getCommentsDisabled())
@@ -335,7 +328,7 @@ class InstagramScraper
             $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
 
             // Extract comment hashtags
-            $this->commentsHashtags = array_merge($this->commentsHashtags, Format::extractHashTags($comment->getText()));
+            $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
         }
 
         // Get more comments
@@ -352,7 +345,7 @@ class InstagramScraper
             'comments_neutral'   => $data['comments_neutral'],
             'comments_negative'  => $data['comments_negative'],
             'comments_emojis'    => $data['comments_emojis'],
-            'comments_hashtags'  => $this->commentsHashtags
+            'comments_hashtags'  => $data['comments_hashtags']
         ]; 
     }
 
