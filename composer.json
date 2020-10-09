@@ -48,6 +48,12 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "exclude-from-classmap": [
+            "vendor/raiym/instagram-php-scraper/src/InstagramScraper/Instagram.php"
+        ],
+        "files": [
+            "app/Overrides/Instagram.php"
         ]
     },
     "autoload-dev": {

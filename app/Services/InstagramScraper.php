@@ -335,7 +335,6 @@ class InstagramScraper
             $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
 
             // Extract comment hashtags
-            print_r(Format::extractHashTags($comment->getText()));
             $this->commentsHashtags = array_merge($this->commentsHashtags, Format::extractHashTags($comment->getText()));
         }
 

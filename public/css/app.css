@@ -1146,7 +1146,7 @@ a.icon-link:last-child {
 .influencer-details-bar span {
   display: flex;
   align-items: center;
-  justify-content: start;
+  justify-content: flex-start;
   height: 100%;
   font-size: 10pt;
   color: white;
