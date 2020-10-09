@@ -12,6 +12,31 @@ class Brand extends Model
     protected $guarded = [];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['trackers_count'];
+
+    /**
+     * Get tracker count for the whole brand
+     *
+     * @return int
+     */
+    public function getTrackersCountAttribute() : int
+    {
+        // Init
+        $trackersCount = 0;
+        
+        // Calculate trackers count for each campaign
+        $this->campaigns()->each(function($campaign) use(&$trackersCount) {
+            $trackersCount += $campaign->trackers()->count();
+        });
+
+        return $trackersCount;
+    }
+
+    /**
      * Get users
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

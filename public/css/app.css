@@ -1084,6 +1084,21 @@ a.icon-link:last-child {
   border-radius: 50%;
 }
 
+span.status {
+  width: 10px;
+  height: 10px;
+  display: block;
+  border-radius: 50%;
+}
+
+span.status-success {
+  background: #09d260;
+}
+
+span.status-danger {
+  background: #f44336;
+}
+
 .influencer {
   padding: 0.5rem 1rem;
 }

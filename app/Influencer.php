@@ -44,7 +44,7 @@ class Influencer extends Model
      *
      * @var array
      */
-    protected $appends = ['Sequences', 'image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments'];
+    protected $appends = ['sequences', 'image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments'];
     
     /**
      * Get likes of an infleuncer

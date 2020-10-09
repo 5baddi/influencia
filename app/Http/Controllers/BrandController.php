@@ -18,8 +18,8 @@ class BrandController extends Controller
     public function index()
     {
         return response()->success("Brands fetched successfully.", 
-            Brand::withCount('users')
-                ->with('users')
+            Brand::withCount(['users', 'campaigns'])
+                ->with(['users', 'campaigns'])
                 ->get()
         );
     }
@@ -55,7 +55,7 @@ class BrandController extends Controller
             'selected_brand_id' => $brand->id
         ]);
 
-        return response()->success("Brand created successfully.", $brand->load('users')->toArray(), 201);
+        return response()->success("Brand created successfully.", $brand->load(['users', 'campaigns'])->toArray(), 201);
     }
 
     /**
@@ -66,7 +66,7 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
-        return response()->success("Brand fetched successfully.", $brand->load('users')->toArray());
+        return response()->success("Brand fetched successfully.", $brand->load(['users', 'campaigns'])->toArray());
     }
 
     /**

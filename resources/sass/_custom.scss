@@ -41,6 +41,21 @@ a.icon-link{
     border-radius: 50%;
 }
 
+span.status{
+    width: 10px;
+    height: 10px;
+    display: block;
+    border-radius: 50%;
+
+    &-success{
+        background: #09d260;
+    }
+
+    &-danger{
+        background: #f44336;
+    }
+}
+
 .influencer{
     padding: .5rem 1rem;
 

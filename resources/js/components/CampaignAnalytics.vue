@@ -1,5 +1,5 @@
 <template>
-    <div class="p-1" v-if="compaign">
+    <div class="p-1" v-if="campaign">
 
     </div>
 </template>

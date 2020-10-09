@@ -130,17 +130,22 @@ class InfluencerPostRepository extends BaseRepository
 
         // Get post record
         $post = InfluencerPost::where(['tracker_id' => $tracker->id, 'short_code' => $shortCode])->first();
-        if(is_null($post)){
+        if(is_null($post) && !is_null($tracker->username)){
+            // Get post by username & shortcode
             $post = InfluencerPost::whereHas('influencer', function($influencer) use ($tracker){
                 $influencer->where('username', $tracker->username);
             })
             ->where('short_code', $shortCode)
             ->first();
-
-            // Set post tracker ID
-            if(!is_null($post))
-                $post->update(['tracker_id' => $tracker->id]);
+        }else{
+            // Get post by URL
+            $post = InfluencerPost::where('url', $tracker->url)
+                        ->first();
         }
+
+        // Set post tracker ID
+        if(!is_null($post))
+            $post->update(['tracker_id' => $tracker->id]);
 
         return $post;
     }

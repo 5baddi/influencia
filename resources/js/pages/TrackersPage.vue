@@ -57,8 +57,8 @@
                      </td>
                      <td>
                         <p>
-                           <span class="status-success" v-if="tracker.status"></span>
-                           <span class="status-danger" v-else></span>
+                           <span class="status status-success" v-if="tracker.status"></span>
+                           <span class="status status-danger" v-else></span>
                         </p>
                      </td>
                      <td>
@@ -138,6 +138,8 @@ export default {
          formData.append("campaign_id", data.campaign_id);
          formData.append("name", data.name);
          formData.append("type", data.type);
+         formData.append("platform", data.platform);
+
 
          // Create story tracker
          if(data.type === "story"){

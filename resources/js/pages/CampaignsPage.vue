@@ -1,6 +1,6 @@
 <template>
-   <div class="campaigns" v-if="!isLoading">
-      <div class="hero" v-if="!campaign">
+   <div class="campaigns">
+      <div class="hero">
          <div class="hero__intro">
             <h1>Campagins</h1>
             <ul class="breadcrumbs">
@@ -20,7 +20,7 @@
             >Add new campagin</button>
          </div>
       </div>
-      <div class="p-1" v-if="!campaign">
+      <div class="p-1">
          <header class="cards">
             <div class="card">
                <div class="number">{{ (campaigns && campaigns.length > 0) ? campaigns.length : 0 }}</div>
@@ -58,8 +58,8 @@
                      </td>
                      <td>
                         <p>
-                           <span class="status-success" v-if="campaign.status"></span>
-                           <span class="status-danger" v-else></span>
+                           <span class="status status-success" v-if="campaign.status"></span>
+                           <span class="status status-danger" v-else></span>
                         </p>
                      </td>
                      <td>
@@ -138,7 +138,7 @@ export default {
       }
    },
    computed: {
-      ...mapGetters(["activeBrand", "campaigns", "campaign", "trackers"])
+      ...mapGetters(["activeBrand", "campaigns", "trackers"])
    },
    notifications: {
       createCampaignErrors: {
@@ -150,12 +150,3 @@ export default {
    }
 };
 </script>
-<style scoped>
-span.status-success {
-   background: #09d260;
-   width: 10px;
-   height: 10px;
-   display: block;
-   border-radius: 50%;
-}
-</style>

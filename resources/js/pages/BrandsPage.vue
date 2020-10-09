@@ -46,7 +46,7 @@
                         <p>{{ brand.name }}</p>
                      </td>
                      <td>
-                        <p>{{ brand.users_count}}</p>
+                        <p>{{ brand.users_count }}</p>
                      </td>
                      <td>
                         <ul v-if="brand.users">
@@ -57,10 +57,10 @@
                         <p v-else>-</p>
                      </td>
                      <td>
-                        <p>0</p>
+                        <p>{{ brand.campaigns_count }}</p>
                      </td>
                      <td>
-                        <p>0</p>
+                        <p>{{ brand.trackers_count }}</p>
                      </td>
                      <td>
                         <p>{{ moment(brand.created_at).format('DD/MM/YYYY') }}</p>

@@ -237,7 +237,8 @@ export default {
             name: this.name,
             type: this.type,
             campaign_id: this.campaign_id,
-            user_id: this.AuthenticatedUser.id
+            user_id: this.AuthenticatedUser.id,
+            platform: this.platform
          };
 
          // Set URL/POST data

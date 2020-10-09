@@ -64,9 +64,7 @@ class CampaignController extends Controller
     {
         return response()->success(
             "Campaign fetched successfully.",
-            $campaign->whereHas('trackers', function($tracker){
-                $tracker->load('posts')->get();
-            })->toArray()
+            $campaign->load('trackers')->toArray()
         );
     }
 
