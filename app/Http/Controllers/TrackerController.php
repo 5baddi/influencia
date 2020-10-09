@@ -3,12 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Brand;
-use App\Media;
 use App\Tracker;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateTrackerRequest;
 use App\Http\Requests\CreateStoryTrackerRequest;
+use App\Jobs\ScrapInstagramJob;
 use App\TrackerMedia;
 
 class TrackerController extends Controller
@@ -47,6 +47,10 @@ class TrackerController extends Controller
     {
         // Create new tracker row
         $tracker = Tracker::create($request->all());
+
+        // Dispatch scraping job
+        if($tracker->platform === 'instagram')
+            ScrapInstagramJob::dispatch($tracker);
 
         return response()->success(
             "Tracker created successfully.",

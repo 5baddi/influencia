@@ -108,6 +108,23 @@ class InstagramScraper
     }
 
     /**
+     * Scrap media by link
+     *
+     * @param string $link
+     * @return array
+     */
+    public function byMedia(string $link) : array
+    {
+        // Scrap media
+        $media = collect($this->instagram->getMediaByUrl($link));
+
+        // Format account
+        $data = Format::parseArrayASCIIKey($media);
+
+        return $data->toArray();
+    }
+
+    /**
      * Scrap user medias
      * 
      * @param Influencer $influencer

@@ -2,13 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Repositories\InfluencerPostRepository;
+use Format;
+use App\Tracker;
+use Carbon\Carbon;
+use App\Jobs\ScrapInstagramJob;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
-use App\Repositories\InfluencerRepository;
 use App\Repositories\TrackerRepository;
-use Carbon\Carbon;
-use Format;
+use App\Repositories\InfluencerRepository;
+use App\Repositories\InfluencerPostRepository;
 
 class ScrapInstagramInfluencers extends Command
 {
@@ -84,8 +86,17 @@ class ScrapInstagramInfluencers extends Command
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
+        ScrapInstagramJob::dispatchNow(Tracker::create([
+            'name'  =>  'Tracker ' . rand(),
+            'type'  =>  'post',
+            'platform'  =>  'instagram',
+            'user_id'   =>  1,
+            'campaign_id'   =>  1,
+            'url'           =>  'https://www.instagram.com/p/BzPkb3Ji9Cj'
+        ]));
+
         // Scrap influencers details & posts
-        $this->scrapInfluencers();
+        // $this->scrapInfluencers();
 
         // Update or store media
         // if(!is_null($this->option('post')) && is_string($this->option('post'))){
@@ -111,7 +122,7 @@ class ScrapInstagramInfluencers extends Command
         // }
 
         // Scrap trackers details & analytics
-        $this->scrapTrackers();
+        // $this->scrapTrackers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
