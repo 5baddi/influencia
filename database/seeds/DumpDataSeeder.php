@@ -41,6 +41,7 @@ class DumpDataSeeder extends Seeder
             'name'  =>  'Tracker 1',
             'type'  =>  'post',
             'platform'  =>  'instagram',
+            'username'  =>  'autoservicesrouen76',
             'user_id'   =>  $user->id,
             'campaign_id'   =>  $campaign->id,
             'url'           =>  'https://www.instagram.com/p/BwbZ0PhlNSm'

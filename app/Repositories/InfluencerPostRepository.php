@@ -7,6 +7,7 @@ use App\InfluencerPost;
 use App\InfluencerPostMedia;
 use App\Tracker;
 use Illuminate\Database\Eloquent\Model;
+use Format;
 
 /**
  * Class InfluencerRepository.
@@ -79,6 +80,16 @@ class InfluencerPostRepository extends BaseRepository
 
         return null;
     }
+    
+    public function existsByShortCode(string $shortCode) : ?InfluencerPost
+    {
+        // Get exists row
+        $existsRow = InfluencerPost::where(['short_code' => $shortCode])->first();
+        if(!is_null($existsRow))
+            return $existsRow;
+
+        return null;
+    }
 
     /**
      * Add Media for influencer post
@@ -127,22 +138,10 @@ class InfluencerPostRepository extends BaseRepository
             ->first();
 
             // Set post tracker ID
-            $post->update(['tracker_id' => $tracker->id]);
+            if(!is_null($post))
+                $post->update(['tracker_id' => $tracker->id]);
         }
 
         return $post;
-    }
-
-    public function getNumberOfReplies() : int
-    {
-        return !is_null($this->entity) ? $this->entity->comments : 0;
-    }
-    
-    public function getNumberOfSequences() : int
-    {
-        if(is_null($this->entity))
-            return 0;
-
-        dd($this->entity->withCount('files')->get());
     }
 }

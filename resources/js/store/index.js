@@ -20,6 +20,7 @@ const state = () => ({
     activeBrand: null,
     users: null,
     campaigns: null,
+    campaign: null,
     trackers: null,
     influencers: null,
     influencer: null
@@ -33,6 +34,7 @@ const getters = {
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
+    campaign: state => state.campaign,
     trackers: state => state.trackers,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
@@ -175,6 +177,15 @@ const actions = {
 
         });
     },
+    fetchCampaign({ commit, state }, uuid) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/campaigns/" + uuid).then(response => {
+                let res = response.data
+                commit('setCampaign', { campaign: res.data })
+                resolve(response)
+            }).catch(response => reject(response))
+        });
+    },
     fetchTrackers({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
@@ -256,6 +267,9 @@ const mutations = {
     },
     setCampaigns: (state, { campaigns }) => {
         state.campaigns = campaigns;
+    },
+    setCampaign: (state, { campaign }) => {
+        state.campaign = campaign;
     },
     setTrackers: (state, { trackers }) => {
         state.trackers = trackers;

@@ -51,7 +51,7 @@
                         <p>{{ influencer.posts }}</p>
                      </td>
                      <td class="text-center">
-                        <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.network === 'instagram'">
+                        <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.platform === 'instagram'">
                            <i class="fab fa-instagram"></i>
                         </a>
                      </td> 

@@ -72,6 +72,24 @@ a.icon-link{
             }
         }
 
+        ul{
+            color: #039be5;
+            font-size: 9pt;
+
+            li{
+                display: inline;
+                margin: 0 .3rem;
+
+                a{
+                    color: #039be5;
+                    text-decoration: none;
+                    &:hover{
+                        color: adjust-color($color: #039be5, $alpha: -0.5)
+                    }
+                }
+            }
+        }
+
         &-bar{
             display: inline-flex;
             width: 100%;

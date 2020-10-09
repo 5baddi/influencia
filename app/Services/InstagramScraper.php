@@ -26,14 +26,14 @@ class InstagramScraper
     /**
      * Instagram scraper
      * 
-     * @var InstagramScraper\Instagram
+     * @var \InstagramScraper\Instagram
      */
     private $instagram;
 
     /**
      * Emoji parser
      * 
-     * @var App\Helpers\EmojiParser
+     * @var \App\Helpers\EmojiParser
      */
     private $emojiParser;
 
@@ -45,11 +45,18 @@ class InstagramScraper
     public $emojis = [];
     
     /**
-     * All hashags used in media comments
+     * All hashags used in media
      * 
      * @var array
      */
     public $hashtags = [];
+
+    /**
+     * All hashtags used in media comments
+     * 
+     * @var array
+     */
+    public $commentsHashtags = [];
 
     public function __construct(EmojiParser $emojiParser)
     {
@@ -163,12 +170,7 @@ class InstagramScraper
 
         // Count hashtags on media caption
         $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
-        
-        // Calculate number of sequences
-        $sequences = 1;
-        if(in_array($media->getType(), ['sidecar', 'carousel']))
-            $sequences = sizeof($media->{"get" . ucfirst($media->getType()) . "Medias"}());
-            
+
         // Add media and comments details
         $_media = [
             'post_id'       =>  $media->getId(),
@@ -179,8 +181,6 @@ class InstagramScraper
             'thumbnail_url' =>  $media->getImageThumbnailUrl(),
             'comments'      =>  $media->getCommentsCount(),
             'emojis'        =>  $this->getEmojisSum(),
-            'sequences'     =>  $sequences,
-            'hashtags'      =>  sizeof($this->hashtags),
             'published_at'  =>  Carbon::parse($media->getCreatedTime()),
             'caption'       =>  $media->getCaption(),
             'alttext'       =>  $media->getAltText(),
@@ -194,7 +194,7 @@ class InstagramScraper
             'caption_hashtags'  =>  $this->hashtags,
             'comments_disabled' =>  $media->getCommentsDisabled(),
             'caption_edited'    =>  $media->isCaptionEdited(),
-            'files'             =>  $this->getFiles($media)    
+            'files'             =>  $this->getFiles($media)
         ];
 
         return array_merge($_media, $comments);
@@ -335,7 +335,8 @@ class InstagramScraper
             $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
 
             // Extract comment hashtags
-            array_merge($this->hashtags, Format::extractHashTags($comment->getText()));
+            print_r(Format::extractHashTags($comment->getText()));
+            $this->commentsHashtags = array_merge($this->commentsHashtags, Format::extractHashTags($comment->getText()));
         }
 
         // Get more comments
@@ -348,10 +349,11 @@ class InstagramScraper
             $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
 
         return [
-            'comments_positive'  =>  $data['comments_positive'],
-            'comments_neutral'   =>  $data['comments_neutral'],
-            'comments_negative'  =>  $data['comments_negative'],
-            'comments_emojis'    =>  $data['comments_emojis']
+            'comments_positive'  => $data['comments_positive'],
+            'comments_neutral'   => $data['comments_neutral'],
+            'comments_negative'  => $data['comments_negative'],
+            'comments_emojis'    => $data['comments_emojis'],
+            'comments_hashtags'  => $this->commentsHashtags
         ]; 
     }
 

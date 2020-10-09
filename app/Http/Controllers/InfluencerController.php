@@ -27,6 +27,10 @@ class InfluencerController extends Controller
      */
     public function show(Influencer $influencer)
     {
-        return response()->success("Influencer fetched successfully.", $influencer->load('statues')->toArray());
+        return response()->success("Influencer fetched successfully.", 
+            $influencer
+                ->load('statues')
+                ->toArray()
+        );
     }
 }

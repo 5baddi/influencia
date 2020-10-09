@@ -8,15 +8,17 @@ import abbreviate from 'number-abbreviate';
 
 export default {
    props: {
-       compaign: {
+       campaign: {
            type: Object,
-           default: () => ({})
+           default: () => ({
+
+           })
        }
    },
    methods: {
        nbr(){
            return new abbreviate();
        },
-   },
+   }
 }
 </script>

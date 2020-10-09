@@ -75,7 +75,7 @@ class Tracker extends Model
     /**
      * Get tracker media files
      * 
-     * @return \App\TrackerMedia
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function medias()
     {
@@ -85,7 +85,7 @@ class Tracker extends Model
     /**
      * Get tracker posts
      * 
-     * @return \App\InfluencerPost
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()
     {

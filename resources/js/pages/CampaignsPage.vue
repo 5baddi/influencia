@@ -1,6 +1,6 @@
 <template>
-   <div class="campaigns">
-      <div class="hero">
+   <div class="campaigns" v-if="!isLoading">
+      <div class="hero" v-if="!campaign">
          <div class="hero__intro">
             <h1>Campagins</h1>
             <ul class="breadcrumbs">
@@ -20,7 +20,7 @@
             >Add new campagin</button>
          </div>
       </div>
-      <div class="p-1">
+      <div class="p-1" v-if="!campaign">
          <header class="cards">
             <div class="card">
                <div class="number">{{ (campaigns && campaigns.length > 0) ? campaigns.length : 0 }}</div>
@@ -87,15 +87,18 @@
          @create="create"
          @dismiss="dismissAddCampaignModal"
       />
+      <CampaignAnalytics v-if="campaign" :campaign="campaign"/>
    </div>
 </template>
 <script>
 import CreateCampaignModal from "../components/modals/CreateCampaignModal";
+import CampaignAnalytics from "../components/CampaignAnalytics";
 import { mapGetters } from "vuex";
 import moment from "moment";
 export default {
    components: {
-      CreateCampaignModal
+      CreateCampaignModal,
+      CampaignAnalytics
    },
    beforeRouteEnter(to, from, next){
       next(vm => vm.initData());
@@ -135,7 +138,7 @@ export default {
       }
    },
    computed: {
-      ...mapGetters(["activeBrand", "campaigns", "trackers"])
+      ...mapGetters(["activeBrand", "campaigns", "campaign", "trackers"])
    },
    notifications: {
       createCampaignErrors: {

@@ -15,7 +15,7 @@ class InfluencerPostMedia extends Model
      */
     protected $table = 'influencer_post_medias';
 
-    public function post()
+    public function status()
     {
         return $this->belongsTo(InfluencerPost::class, 'post_id');
     }

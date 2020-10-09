@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Influencer;
+use App\InfluencerPost;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 

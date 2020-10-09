@@ -1115,6 +1115,25 @@ a.icon-link:last-child {
   border-radius: 50%;
 }
 
+.influencer-details ul {
+  color: #039be5;
+  font-size: 9pt;
+}
+
+.influencer-details ul li {
+  display: inline;
+  margin: 0 0.3rem;
+}
+
+.influencer-details ul li a {
+  color: #039be5;
+  text-decoration: none;
+}
+
+.influencer-details ul li a:hover {
+  color: rgba(3, 155, 229, 0.5);
+}
+
 .influencer-details-bar {
   display: inline-flex;
   width: 100%;

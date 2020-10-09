@@ -19,6 +19,13 @@ class InfluencerPost extends Model
     protected $table = 'influencer_posts';
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['hashtags_count', 'sequences', 'image_sequences', 'video_sequences'];
+
+    /**
      * Get Emojis list
      * 
      * @return array
@@ -48,6 +55,29 @@ class InfluencerPost extends Model
      * 
      * @return array
      */
+    public function getCommentsHashtagsAttribute()
+    {
+        $result = json_decode($this->attributes['comments_hashtags']);
+
+        return $result;
+    }
+    
+    /**
+     * Set Hashtags list
+     * 
+     * @return void
+     */
+    public function setCommentsHashtagsAttribute($value)
+    {
+        if(!is_string($value))
+            $this->attributes['comments_hashtags'] = json_encode($value);
+    }
+    
+    /**
+     * Get Hashtags list
+     * 
+     * @return array
+     */
     public function getCaptionHashtagsAttribute()
     {
         $result = json_decode($this->attributes['caption_hashtags']);
@@ -67,9 +97,51 @@ class InfluencerPost extends Model
     }
 
     /**
+     * Get count of all used hashtags in media
+     * 
+     * @return int
+     */
+    public function getHashtagsCountAttribute() : int
+    {
+        $allHashtags = array_merge($this->getCaptionHashtagsAttribute() ?? [], $this->getCommentsHashtagsAttribute() ?? []);
+
+        return sizeof($allHashtags);
+    }
+    
+    /**
+     * Get sequences of media
+     * 
+     * @return int
+     */
+    public function getSequencesAttribute() : int
+    {
+        return $this->files()->count();
+    }
+    
+    /**
+     * Get image sequences of media
+     * 
+     * @return int
+     */
+    public function getImageSequencesAttribute() : int
+    {
+        return $this->files()->where('type', 'image')->count();
+    }
+    
+    /**
+     * Get video sequences of media
+     * 
+     * @return int
+     */
+    public function getVideoSequencesAttribute() : int
+    {
+        return $this->files()->where('type', 'video')->count();
+    }
+
+    /**
      * Get media sequences
      * 
-     * @return InfluencerPostMedia[]
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function files()
     {

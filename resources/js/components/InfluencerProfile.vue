@@ -9,15 +9,36 @@
                     <h4>{{ influencer.name }}</h4>
                     <p>{{ influencer.biography }}</p>
                     <ul>
+                        <li v-if="influencer.website">
+                            <a :href="influencer.website" target="_blank">
+                                <i class="fas fa-globe"></i>
+                                &nbsp;External website
+                            </a>
+                        </li>
                         <li>
                             <i class="fas fa-users"></i>
-                            <span>{{ influencer.followers }}</span>
+                            <span>{{ nbr().abbreviate(influencer.followers) }}</span>
                         </li>
-                        <!-- <i class="fas fa-image"></i>
-                        <i class="fas fa-images"></i>
-                        <i class="fas fa-video"></i>
-                        <i class="fas fa-heart"></i>
-                        <i class="fas fa-comment"></i> -->
+                        <li>
+                            <i class="fas fa-image"></i>
+                            <span>{{ nbr().abbreviate(influencer.image_sequences) }}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-images"></i>
+                            <span>{{ nbr().abbreviate(influencer.carousel_sequences) }}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-video"></i>
+                            <span>{{ nbr().abbreviate(influencer.video_sequences) }}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-heart"></i>
+                            <span>{{ nbr().abbreviate(influencer.likes) }}</span>
+                        </li>
+                        <li>
+                            <i class="fas fa-comments"></i>
+                            <span>{{ nbr().abbreviate(influencer.comments) }}</span>
+                        </li>
                     </ul>
                 </div>
                 <div class="influencer-details-bar">

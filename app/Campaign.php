@@ -34,7 +34,7 @@ class Campaign extends Model
     /**
      * Get campaign trackers
      * 
-     * @return \App\Tracker[]
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function trackers()
     {

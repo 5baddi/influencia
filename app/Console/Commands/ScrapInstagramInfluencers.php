@@ -17,7 +17,7 @@ class ScrapInstagramInfluencers extends Command
      *
      * @var string
      */
-    protected $signature = 'scrap:instagram {--force=false}';
+    protected $signature = 'scrap:instagram {--force=false} {post?}';
 
     /**
      * The console command description.
@@ -29,28 +29,28 @@ class ScrapInstagramInfluencers extends Command
     /**
      * Instagram scraper
      * 
-     * @var App\Services\InstagramScraper
+     * @var \App\Services\InstagramScraper
      */
     private $instagramScraper;
 
     /**
      * Influencer account repository
      * 
-     * @var App\Repositories\InfluencerRepository
+     * @var \App\Repositories\InfluencerRepository
      */
     private $repository;
     
     /**
      * Influencer post repository
      * 
-     * @var App\Repositories\InfluencerPostRepository
+     * @var \App\Repositories\InfluencerPostRepository
      */
     private $postRepo;
     
     /**
      * Tracker repository
      * 
-     * @var App\Repositories\TrackerRepository
+     * @var \App\Repositories\TrackerRepository
      */
     private $trackerRepo;
 
@@ -86,6 +86,29 @@ class ScrapInstagramInfluencers extends Command
 
         // Scrap influencers details & posts
         $this->scrapInfluencers();
+
+        // Update or store media
+        // if(!is_null($this->option('post')) && is_string($this->option('post'))){
+        //     // Extract post short code
+        //     $shortCode = Format::extractInstagarmShortCode($this->option('post'));
+
+        //     if(!is_null($shortCode)){
+        //         // Scrap media details
+        //         $this->info("Start scraping post: " . $this->option('post'));
+        //         $instaMedia = $this->instagramScraper->getMedia($shortCode);
+        //         sleep(3);
+
+        //         // Update exists row
+        //         $existsMedia = $this->postRepo->existsByShortCode($shortCode);
+        //         if(!is_null($existsMedia)){
+        //             $this->info("Update post: " . $existsMedia->uuid);
+        //             $this->postRepo->update($existsMedia, $instaMedia);
+        //         }
+
+        //         $this->info("Create post: " . $instaMedia['short_code']);
+        //         $this->postRepo->create($instaMedia);
+        //     }
+        // }
 
         // Scrap trackers details & analytics
         $this->scrapTrackers();
@@ -128,7 +151,6 @@ class ScrapInstagramInfluencers extends Command
             $instaMedias = $this->instagramScraper->getMedias($influencer);
             sleep(3);
             foreach($instaMedias as $media){
-                $this->info("Start fetching media: " . $media['short_code']);
                 // Update exists row
                 $existsMedia = $this->postRepo->exists($influencer, $media['post_id']);
                 if(!is_null($existsMedia)){
@@ -166,16 +188,15 @@ class ScrapInstagramInfluencers extends Command
             if($tracker->type === 'story')
                 continue;
 
-            if(isset($tracker->username, $tracker->url) && $tracker->type === 'post'){
+            if($tracker->type === 'post'){
                 // Get post
                 $post = $this->postRepo->getPostByTracker($tracker);
-                dd($post);
 
                 // Scrap post details
                 if(!is_null($post)){
                     $trackerData = [
-                        'nbr_replies'   =>  $this->postRepo->getNumberOfReplies(),
-                        'nbr_squences'  =>  $this->postRepo->getNumberOfSequences(),
+                        'nbr_replies'   =>  $post->comments,
+                        'nbr_squences'  =>  $post->sequences,
                     ];
 
                     // Update tracker analytics

@@ -11,11 +11,21 @@ class Brand extends Model
 
     protected $guarded = [];
 
+    /**
+     * Get users
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'brand_user');
     }
     
+    /**
+     * Get campaigns
+     * 
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function campaigns()
     {
         return $this->hasMany(Campaign::class);
