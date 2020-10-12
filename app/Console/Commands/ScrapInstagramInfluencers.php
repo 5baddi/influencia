@@ -94,6 +94,7 @@ class ScrapInstagramInfluencers extends Command
             'campaign_id'   =>  1,
             'url'           =>  'https://www.instagram.com/p/CGOPhRwjsYF/'
         ]));
+        die();
 
         // Scrap influencers details & posts
         $this->scrapInfluencers();
@@ -126,7 +127,6 @@ class ScrapInstagramInfluencers extends Command
             // Scrap account details
             $this->info("Start scraping account @" . $influencer->username);
             $accountDetails = $this->instagramScraper->byUsername($influencer->username);
-            sleep(3);
 
             // Update influencer
             $this->repository->update($influencer, $accountDetails);
@@ -136,22 +136,7 @@ class ScrapInstagramInfluencers extends Command
             // Update influencer posts
             $this->info("Number of posts: " . $influencer->posts);
             $this->info("Please wait until scraping all medias ...");
-            $instaMedias = $this->instagramScraper->getMedias($influencer);
-            sleep(3);
-            foreach($instaMedias as $media){
-                // Update exists row
-                $existsMedia = $this->postRepo->exists($influencer, $media['post_id']);
-                if(!is_null($existsMedia)){
-                    $this->info("Update post: " . $existsMedia->uuid);
-                    $this->postRepo->update($existsMedia, $media);
-                    continue;
-                }
-
-                $this->info("Create post: " . $media['short_code']);
-                $this->postRepo->create($media);
-
-                sleep(3);
-            }
+            $this->instagramScraper->getMedias($influencer);
         }
     }
 

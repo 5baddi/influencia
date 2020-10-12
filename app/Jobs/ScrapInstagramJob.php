@@ -66,18 +66,6 @@ class ScrapInstagramJob implements ShouldQueue
 
             // Store media analytics
             $instaMedias = $scraper->getMedias($influencer);
-            sleep(3);
-            foreach($instaMedias as $media){
-                // Update exists row
-                $existsMedia = $this->postRepo->exists($influencer, $media['post_id']);
-                if(!is_null($existsMedia)){
-                    $this->postRepo->update($existsMedia, $media);
-                    continue;
-                }
-                $this->postRepo->create($media);
-
-                sleep(3);
-            }
         }
     }
 }

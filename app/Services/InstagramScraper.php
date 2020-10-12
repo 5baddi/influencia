@@ -2,26 +2,28 @@
 
 namespace App\Services;
 
-use App\Helpers\EmojiParser;
 use Format;
 use Exception;
 use Carbon\Carbon;
 use App\Influencer;
-use Illuminate\Http\UploadedFile;
 use Unirest\Request;
+use Sentiment\Analyzer;
+use App\Helpers\EmojiParser;
+use App\Repositories\InfluencerPostRepository;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Phpfastcache\Helper\Psr16Adapter;
-use Sentiment\Analyzer;
+use Illuminate\Support\Facades\Storage;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class InstagramScraper
 {
     /**
      * Max request by each fetch
      */
-    const MAX_REQUEST = 100;
+    const MAX_REQUEST = 10;
 
     /**
      * Instagram scraper
@@ -38,6 +40,20 @@ class InstagramScraper
     private $emojiParser;
 
     /**
+     * Influencer Post repository
+     * 
+     * @var \App\Repositories\InfluencerPostRepository
+     */
+    private $postRepo;
+
+    /**
+     * Console output
+     * 
+     * @var \Symfony\Component\Console\Output\ConsoleOutput
+     */
+    private $console;
+
+    /**
      * All emojis used in media comments
      * 
      * @var array
@@ -51,7 +67,7 @@ class InstagramScraper
      */
     public $hashtags = [];
 
-    public function __construct(EmojiParser $emojiParser)
+    public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
         // Disable SSL Certif
         if(config("app.debug"))
@@ -70,6 +86,12 @@ class InstagramScraper
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
+
+        // Init repositories
+        $this->postRepo = $postRepo;
+
+        // Init console
+        $this->console = new ConsoleOutput();
     }
 
     public function setProxy()
@@ -134,22 +156,38 @@ class InstagramScraper
      */
     public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
     {
-        // Scrap medias
-        $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max);
-        sleep(3);
-        
-        foreach($instaMedias['medias'] as $media){
-            // Scrap media
-            $_media = $this->getMedia($media->getShortCode(), $media);
+        try{
+            // Scrap medias
+            $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max);
+            sleep(1);
+            
+            foreach($instaMedias['medias'] as $media){
+                // Scrap media
+                $_media = $this->getMedia($media->getShortCode(), $media);
 
-            // Set media influencer ID
-            $_media['influencer_id'] = $influencer->id;
-        
-            // Format data
-            array_push($data, $_media);
+                // Set media influencer ID
+                $_media['influencer_id'] = $influencer->id;
+
+                // Store or update media
+                $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
+                if(!is_null($existsMedia)){
+                    $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
+                    $this->postRepo->update($existsMedia, $_media);
+                    continue;
+                }else{
+                    $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
+                    $this->postRepo->create($_media);
+                }
+
+                // Format data
+                array_push($data, $_media);
+            }
+
+            return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
+        }catch(\Exception $ex){
+            Log::error($ex->getMessage());
+            $this->console->writeln("<fg=red>Something going wrong!</>");
         }
-
-        return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
     }
 
     /**

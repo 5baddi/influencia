@@ -17,7 +17,7 @@ class ScraperServiceProvider extends ServiceProvider
     {
         // Register Instagram scraper
         $this->app->singleton(InstagramScraper::class, function($app){
-            return new InstagramScraper($app->make('App\Helpers\EmojiParser'));
+            return new InstagramScraper($app->make('App\Helpers\EmojiParser'), $app->make('App\Repositories\InfluencerPostRepository'));
         });
         
         // Register Emojis parser
