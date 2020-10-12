@@ -24,8 +24,38 @@ class CampaignRepository extends BaseRepository
 
    public function getEstimatedImpressions() : int
    {
+       // Init
        $campaigns = $this->model->all();
-       // TODO: calculate total estimated impressions
+       $impressions = 0;
+
+       // calculate total estimated impressions
+       foreach($campaigns as $campaign){
+            foreach($campaign->trackers->load('posts') as $tracker){
+                $tracker->posts->sum(function($item) use (&$impressions){
+                    $impressions += ($item->likes + $item->video_views);
+                });
+            }
+       }
+
+       return $impressions;
+   }
+
+   public function getEstimatedCommunities() : int
+   {
+       // Init 
+       $campaigns = $this->model->all();
+       $communities = 0;
+
+       // calculate total estimated activated communities
+       foreach($campaigns as $campaign){
+        foreach($campaign->trackers->load('posts') as $tracker){
+            $tracker->posts->sum(function($item) use (&$communities){
+                $communities += $item->comments;
+            });
+        }
+   }
+
+       return $communities;
    }
 
    /**

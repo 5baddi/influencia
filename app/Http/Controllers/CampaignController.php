@@ -11,19 +11,38 @@ use App\Repositories\CampaignRepository;
 class CampaignController extends Controller
 {
     /**
+     * 
+     * @var \App\Repositories\CampaignRepository
+     */
+    private $campaignRepo;
+
+    public function __construct(CampaignRepository $campaignRepo)
+    {
+        $this->campaignRepo = $campaignRepo;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function byBrand(Brand $brand)
     {
-        return response()->success("Campaigns fetched successfully.", 
-            $brand->campaigns()
+        // Load data
+        $campaigns = $brand->campaigns()
                 ->with('user', 'brand')
                 ->withCount('trackers')
-                // TODO: total estimated impressions
-                // TODO: total size of activated communities
-                ->get()
+                ->get();
+
+        $impressions = $this->campaignRepo->getEstimatedImpressions();
+        $communities = $this->campaignRepo->getEstimatedCommunities();
+
+        return response()->success("Campaigns fetched successfully.", 
+            [
+                'all'           =>  $campaigns,
+                'impressions'   =>  $impressions,
+                'communities'   =>  $communities
+            ]
         );
     }
 
@@ -61,12 +80,12 @@ class CampaignController extends Controller
      * @param  \App\Campaign  $campaign
      * @return \Illuminate\Http\Response
      */
-    public function analytics(Campaign $campaign, CampaignRepository $campaignRepo)
+    public function analytics(Campaign $campaign)
     {
         // Load tracker 
         $campaign = $campaign->load('trackers');
         // Load data
-        $comments = $campaignRepo->getComments($campaign);
+        $comments = $this->campaignRepo->getComments($campaign);
 
         return response()->success(
             "Campaign fetched successfully.",

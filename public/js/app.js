@@ -50855,8 +50855,8 @@ var render = function() {
                 _c("div", { staticClass: "number" }, [
                   _vm._v(
                     _vm._s(
-                      _vm.campaigns && _vm.campaigns.length > 0
-                        ? _vm.campaigns.length
+                      _vm.campaigns.all && _vm.campaigns.all.length > 0
+                        ? _vm.campaigns.all.length
                         : 0
                     )
                   )
@@ -50883,18 +50883,50 @@ var render = function() {
                 ])
               ]),
               _vm._v(" "),
-              _vm._m(1),
+              _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "number" }, [
+                  _vm._v(
+                    _vm._s(
+                      _vm.campaigns.impressions
+                        ? _vm.campaigns.impressions
+                            .toLocaleString()
+                            .replace(/,/g, " ")
+                        : "---"
+                    )
+                  )
+                ]),
+                _vm._v(" "),
+                _c("p", { staticClass: "description" }, [
+                  _vm._v("TOTAL ESTIMATED IMPRESSIONS")
+                ])
+              ]),
               _vm._v(" "),
-              _vm._m(2)
+              _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "number" }, [
+                  _vm._v(
+                    _vm._s(
+                      _vm.campaigns.communities
+                        ? _vm.campaigns.communities
+                            .toLocaleString()
+                            .replace(/,/g, " ")
+                        : "---"
+                    )
+                  )
+                ]),
+                _vm._v(" "),
+                _c("p", { staticClass: "description" }, [
+                  _vm._v("TOTAL SIZE OF ACTIVATED COMMUNITIES")
+                ])
+              ])
             ]),
             _vm._v(" "),
             _c("div", { staticClass: "datatable-scroll" }, [
               _c("table", { staticClass: "table campagins-table" }, [
-                _vm._m(3),
+                _vm._m(1),
                 _vm._v(" "),
                 _c(
                   "tbody",
-                  _vm._l(_vm.campaigns, function(campaign) {
+                  _vm._l(_vm.campaigns.all, function(campaign) {
                     return _c("tr", { key: campaign.id }, [
                       _c("td", [
                         _vm._v(
@@ -50984,7 +51016,7 @@ var render = function() {
                             [_c("i", { staticClass: "fas fa-pen" })]
                           ),
                           _vm._v(" "),
-                          _vm._m(4, true)
+                          _vm._m(2, true)
                         ],
                         1
                       )
@@ -51018,30 +51050,6 @@ var staticRenderFns = [
       _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Dashboard")])]),
       _vm._v(" "),
       _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Campaigns")])])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "number" }, [_vm._v("4 933 424")]),
-      _vm._v(" "),
-      _c("p", { staticClass: "description" }, [
-        _vm._v("TOTAL ESTIMATED IMPRESSIONS")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "number" }, [_vm._v("2 893 283")]),
-      _vm._v(" "),
-      _c("p", { staticClass: "description" }, [
-        _vm._v("TOTAL SIZE OF ACTIVATED COMMUNITIES")
-      ])
     ])
   },
   function() {

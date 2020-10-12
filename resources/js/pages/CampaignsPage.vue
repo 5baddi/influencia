@@ -23,7 +23,7 @@
       <div class="p-1" v-if="!campaign">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ (campaigns && campaigns.length > 0) ? campaigns.length : 0 }}</div>
+               <div class="number">{{ (campaigns.all && campaigns.all.length > 0) ? campaigns.all.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
@@ -31,11 +31,11 @@
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
-               <div class="number">4 933 424</div>
+               <div class="number">{{ campaigns.impressions ? campaigns.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
             <div class="card">
-               <div class="number">2 893 283</div>
+               <div class="number">{{ campaigns.communities ? campaigns.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
          </header>
@@ -52,7 +52,7 @@
                   </tr>
                </thead>
                <tbody>
-                  <tr v-for="campaign in campaigns" :key="campaign.id">
+                  <tr v-for="campaign in campaigns.all" :key="campaign.id">
                      <td>
                         {{ campaign.name }}
                      </td>
