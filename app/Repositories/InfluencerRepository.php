@@ -42,11 +42,12 @@ class InfluencerRepository extends BaseRepository
     */
     public function create(array $scraperAttributes) : Model
     {
-        return $this->model->create([
+        // Parse data
+        $parsedData = [
             'account_id'    =>  $scraperAttributes['id'],
             'username'      =>  $scraperAttributes['username'],
             'name'          =>  $scraperAttributes['fullName'],
-            'pic_url'       =>  $scraperAttributes['profilePicUrlHd'] ?? $scraperAttributes['profilePicUrl'],
+            'pic_url'       =>  ($scraperAttributes['profilePicUrlHd'] !== '') ? $scraperAttributes['profilePicUrlHd'] : $scraperAttributes['profilePicUrl'],
             'biography'     =>  $scraperAttributes['biography'],
             'website'       =>  $scraperAttributes['externalUrl'],
             'followers'     =>  $scraperAttributes['followedByCount'],
@@ -55,16 +56,19 @@ class InfluencerRepository extends BaseRepository
             'is_business'   =>  $scraperAttributes['isBusinessAccount'],
             'is_private'    =>  $scraperAttributes['isPrivate'],
             'is_verified'   =>  $scraperAttributes['isVerified'],
-        ]);
+        ];
+
+        return $this->model->create($parsedData);
     }
 
     public function update(Model $entity, array $scraperAttributes) : Model
     {
-        $entity->update([
+        // Parse data
+        $parsedData = [
             'account_id'    =>  $scraperAttributes['id'],
             'username'      =>  $scraperAttributes['username'],
             'name'          =>  $scraperAttributes['fullName'],
-            'pic_url'       =>  $scraperAttributes['profilePicUrlHd'] ?? $scraperAttributes['profilePicUrl'],
+            'pic_url'       =>  ($scraperAttributes['profilePicUrlHd'] !== '') ? $scraperAttributes['profilePicUrlHd'] : $scraperAttributes['profilePicUrl'],
             'biography'     =>  $scraperAttributes['biography'],
             'website'       =>  $scraperAttributes['externalUrl'],
             'followers'     =>  $scraperAttributes['followedByCount'],
@@ -73,7 +77,9 @@ class InfluencerRepository extends BaseRepository
             'is_business'   =>  $scraperAttributes['isBusinessAccount'],
             'is_private'    =>  $scraperAttributes['isPrivate'],
             'is_verified'   =>  $scraperAttributes['isVerified'],
-        ]);
+        ];
+
+        $entity->update($parsedData);
 
         return $entity->refresh();
     }

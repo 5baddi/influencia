@@ -17,6 +17,7 @@ class Influencer extends Model
      * @var array
      */
     protected $fillable = [
+        'account_id',
         'platform',
         'username',
         'biography',
@@ -24,6 +25,10 @@ class Influencer extends Model
         'name',
         'is_business',
         'is_private',
+        'is_verified',
+        'posts',
+        'follows',
+        'followers',
         'pic_url',
         'banned'
     ];
@@ -44,7 +49,7 @@ class Influencer extends Model
      *
      * @var array
      */
-    protected $appends = ['sequences', 'image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments'];
+    protected $appends = ['image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments'];
     
     /**
      * Get likes of an infleuncer
@@ -64,16 +69,6 @@ class Influencer extends Model
     public function getCommentsAttribute() : int
     {
         return $this->statues()->sum('comments');
-    }
-
-    /**
-     * Get status sequences of an infleuncer
-     * 
-     * @return int
-     */
-    public function getSequencesAttribute() : int
-    {
-        return $this->statues()->count();
     }
 
     /**

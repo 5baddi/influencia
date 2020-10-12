@@ -92,37 +92,14 @@ class ScrapInstagramInfluencers extends Command
             'platform'  =>  'instagram',
             'user_id'   =>  1,
             'campaign_id'   =>  1,
-            'url'           =>  'https://www.instagram.com/p/BzPkb3Ji9Cj'
+            'url'           =>  'https://www.instagram.com/p/CGOPhRwjsYF/'
         ]));
 
         // Scrap influencers details & posts
-        // $this->scrapInfluencers();
-
-        // Update or store media
-        // if(!is_null($this->option('post')) && is_string($this->option('post'))){
-        //     // Extract post short code
-        //     $shortCode = Format::extractInstagarmShortCode($this->option('post'));
-
-        //     if(!is_null($shortCode)){
-        //         // Scrap media details
-        //         $this->info("Start scraping post: " . $this->option('post'));
-        //         $instaMedia = $this->instagramScraper->getMedia($shortCode);
-        //         sleep(3);
-
-        //         // Update exists row
-        //         $existsMedia = $this->postRepo->existsByShortCode($shortCode);
-        //         if(!is_null($existsMedia)){
-        //             $this->info("Update post: " . $existsMedia->uuid);
-        //             $this->postRepo->update($existsMedia, $instaMedia);
-        //         }
-
-        //         $this->info("Create post: " . $instaMedia['short_code']);
-        //         $this->postRepo->create($instaMedia);
-        //     }
-        // }
+        $this->scrapInfluencers();
 
         // Scrap trackers details & analytics
-        // $this->scrapTrackers();
+        $this->scrapTrackers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
