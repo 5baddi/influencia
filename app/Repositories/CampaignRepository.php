@@ -30,10 +30,11 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                $tracker->posts->sum(function($item) use (&$impressions){
-                    $impressions += ($item->likes + $item->video_views);
-                });
+            foreach($campaign->trackers->load('post') as $tracker){
+                if(is_null($tracker->post))
+                    continue;
+                    
+                $impressions += ($tracker->post->likes + $tracker->post->video_views);
             }
        }
 
@@ -52,6 +53,9 @@ class CampaignRepository extends BaseRepository
                 continue;
 
             foreach($campaign->trackers->load('post') as $tracker){
+                if(is_null($tracker->post))
+                    continue;
+
                 $communities += $tracker->post->comments;
             }
         }
@@ -73,6 +77,9 @@ class CampaignRepository extends BaseRepository
 
         // Calculate comments count
         foreach($campaign->trackers->load('post') as $tracker){
+            if(is_null($tracker->post))
+                continue;
+
             $comments['count'] += $tracker->post->comments;
             $comments['positive'] += $tracker->post->comments_positive;
             $comments['neutral'] += $tracker->post->comments_neutral;
