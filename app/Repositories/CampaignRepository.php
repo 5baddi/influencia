@@ -48,12 +48,13 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated activated communities
        foreach($campaigns as $campaign){
-        foreach($campaign->trackers->load('posts') as $tracker){
-            $tracker->posts->sum(function($item) use (&$communities){
-                $communities += $item->comments;
-            });
+            if($campaign->trackers->count() === 0)
+                continue;
+
+            foreach($campaign->trackers->load('post') as $tracker){
+                $communities += $tracker->post->comments;
+            }
         }
-   }
 
        return $communities;
    }
@@ -71,20 +72,11 @@ class CampaignRepository extends BaseRepository
             return $comments;
 
         // Calculate comments count
-        foreach($campaign->trackers->load('posts') as $tracker){
-            $tracker->posts->sum(function($item) use (&$comments){
-                $comments['count'] += $item->comments;
-                $comments['positive'] += $item->comments_positive;
-                $comments['neutral'] += $item->comments_neutral;
-                $comments['negative'] += $item->comments_negative;
-            });
-        }
-
-        // Reforme calcul
-        if(sizeof($comments) > 0){
-            $comments['positive'] = $comments['positive'] / sizeof($comments);
-            $comments['neutral'] = $comments['neutral'] / sizeof($comments);
-            $comments['negative'] = $comments['negative'] / sizeof($comments);
+        foreach($campaign->trackers->load('post') as $tracker){
+            $comments['count'] += $tracker->post->comments;
+            $comments['positive'] += $tracker->post->comments_positive;
+            $comments['neutral'] += $tracker->post->comments_neutral;
+            $comments['negative'] += $tracker->post->comments_negative;
         }
 
         return $comments;
