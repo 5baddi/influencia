@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateTrackerRequest;
 use App\Http\Requests\CreateStoryTrackerRequest;
-use App\Jobs\ScrapInstagramJob;
+use App\Jobs\ScrapInstagramPostJob;
 use App\TrackerMedia;
 
 class TrackerController extends Controller
@@ -50,7 +50,7 @@ class TrackerController extends Controller
 
         // Dispatch scraping job
         if($tracker->platform === 'instagram')
-            ScrapInstagramJob::dispatch($tracker);
+            ScrapInstagramPostJob::dispatch($tracker);
 
         return response()->success(
             "Tracker created successfully.",

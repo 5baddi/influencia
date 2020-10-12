@@ -193,3 +193,17 @@ span.status{
         }
     }
 }
+
+.campaign{
+    .cards{
+        &.sentiments{
+            .card{
+                flex: 0 0 calc(50% - .777rem);
+
+                h5{
+                    margin: 0;
+                }
+            }
+        }
+    }
+}

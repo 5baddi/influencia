@@ -1237,6 +1237,14 @@ span.status-danger {
   display: flex !important;
 }
 
+.campaign .cards.sentiments .card {
+  flex: 0 0 calc(50% - .777rem);
+}
+
+.campaign .cards.sentiments .card h5 {
+  margin: 0;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

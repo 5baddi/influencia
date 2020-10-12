@@ -177,9 +177,9 @@ const actions = {
 
         });
     },
-    fetchCampaign({ commit, state }, uuid) {
+    fetchCampaignAnalytics({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
-            api.get("/api/v1/campaigns/" + uuid).then(response => {
+            api.get("/api/v1/campaigns/" + uuid + "/analytics").then(response => {
                 let res = response.data
                 commit('setCampaign', { campaign: res.data })
                 resolve(response)

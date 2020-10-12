@@ -1,6 +1,6 @@
 <template>
    <div class="campaigns">
-      <div class="hero">
+      <div class="hero" v-if="!campaign">
          <div class="hero__intro">
             <h1>Campagins</h1>
             <ul class="breadcrumbs">
@@ -20,7 +20,7 @@
             >Add new campagin</button>
          </div>
       </div>
-      <div class="p-1">
+      <div class="p-1" v-if="!campaign">
          <header class="cards">
             <div class="card">
                <div class="number">{{ (campaigns && campaigns.length > 0) ? campaigns.length : 0 }}</div>
@@ -112,56 +112,50 @@ export default {
    beforeRouteEnter(to, from, next){
        next(vm => vm.initData())
    },
-   // beforeRouteUpdate(to, from, next){
-   //     let routeUUID = to.params.uuid
-   //     if(typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)){
-   //         this.$store.commit("setCampaign", {campaign: null})
-   //         this.fetchCampaign()
-   //     }
-
-   //     next()
-   // },
-   // created(){
-   //    this.initData();
-   // },
-   // watch: {
-   //    $route: "initData"
-   // },
+   beforeRouteUpdate(to, from, next){
+       next(vm => vm.fetchCampaign())
+   },
+   created(){
+      // this.initData();
+   },
+   watch: {
+      $route: "initData"
+   },
    methods: {
       initData(){
          this.$store.dispatch("fetchCampaigns");
          // this.$store.dispatch("fetchTrackers");
 
-         // this.fetchInfluencer();
+         this.fetchCampaign();
 
          this.isLoading = false;
       },
-      // fetchCampaign(){
-      //    // Load user by UUID
-      //    if(typeof this.$route.params.uuid !== 'undefined')
-      //          this.$store.dispatch("fetchCamapaign", this.$route.params.uuid);
-      //    else
-      //          this.$store.commit("setCampaign", {campaign: null});
-      // },
+      fetchCampaign(){
+         // Load user by UUID
+         if(typeof this.$route.params.uuid !== 'undefined')
+               this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
+         else
+               this.$store.commit("setCampaign", {campaign: null});
+      },
       moment() {
          return moment();
       },
-      // dismissAddCampaignModal() {
-      //    this.showAddCampaignModal = false;
-      // },
-      // showEditCampaignModal(){
+      dismissAddCampaignModal() {
+         this.showAddCampaignModal = false;
+      },
+      showEditCampaignModal(){
 
-      // },
-      // create(payload) {
-      //    payload = {
-      //       ...payload,
-      //       brand_id: this.$store.getters.activeBrand && this.$store.getters.activeBrand.id
-      //    };
-      //    this.$store.dispatch("addNewCampaign", payload).then(() => {
-      //       this.createCampaignSuccess({ message: "Campaign created successfully" });
-      //       this.dismissAddCampaignModal();
-      //    });
-      // }
+      },
+      create(payload) {
+         payload = {
+            ...payload,
+            brand_id: this.$store.getters.activeBrand && this.$store.getters.activeBrand.id
+         };
+         this.$store.dispatch("addNewCampaign", payload).then(() => {
+            this.createCampaignSuccess({ message: "Campaign created successfully" });
+            this.dismissAddCampaignModal();
+         });
+      }
    },
    computed: {
       ...mapGetters(["activeBrand", "campaigns", "campaign"])

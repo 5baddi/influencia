@@ -23,7 +23,11 @@ class InstagramScraper
     /**
      * Max request by each fetch
      */
-    const MAX_REQUEST = 10;
+    const MAX_REQUEST = 100;
+    /**
+     * Sleep request seconds
+     */
+    const SLEEP_REQUEST = 2;
 
     /**
      * Instagram scraper
@@ -122,6 +126,7 @@ class InstagramScraper
     {
         // Scrap user
         $account = collect($this->instagram->getAccount($username));
+        sleep(self::SLEEP_REQUEST);
 
         // Format account
         $data = Format::parseArrayASCIIKey($account);
@@ -139,6 +144,7 @@ class InstagramScraper
     {
         // Scrap media
         $media = collect($this->instagram->getMediaByUrl($link));
+        sleep(self::SLEEP_REQUEST);
 
         // Format account
         $data = Format::parseArrayASCIIKey($media);
@@ -158,8 +164,8 @@ class InstagramScraper
     {
         try{
             // Scrap medias
-            $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max);
-            sleep(1);
+            $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
+            sleep(self::SLEEP_REQUEST);
             
             foreach($instaMedias['medias'] as $media){
                 // Scrap media
@@ -172,11 +178,15 @@ class InstagramScraper
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
                 if(!is_null($existsMedia)){
                     $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
+                    $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
                     $this->postRepo->update($existsMedia, $_media);
+                    Log::info("Update post: {$existsMedia->short_code}");
                     continue;
                 }else{
                     $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
+                    $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
                     $this->postRepo->create($_media);
+                    Log::info("Create post: {$_media['short_code']}");
                 }
 
                 // Format data
@@ -187,6 +197,9 @@ class InstagramScraper
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>Something going wrong!</>");
+
+            if($ex->getCode() === 429)
+                return $data;
         }
     }
 
@@ -202,7 +215,7 @@ class InstagramScraper
         // Scrap media
         if(is_null($media)){
             $media = $this->instagram->getMediaByCode($mediaShortCode);
-            sleep(3);
+            sleep(self::SLEEP_REQUEST);
         }
 
         // Fetch comments sentiments
@@ -369,7 +382,7 @@ class InstagramScraper
 
         // Load comments
         $comments = $this->instagram->getPaginateMediaCommentsById($media->getId(), $max);
-        sleep(3);
+        sleep(self::SLEEP_REQUEST);
             
         foreach($comments['comments'] as $comment){
             // Analyze sentiment

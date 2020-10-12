@@ -53,8 +53,8 @@
                <img :src="status.thumbnail_url" loading="lazy"/>
                <i v-if="status.type === 'video' || status.type === 'sidecar'" :class="'influencer-posts-card-type fas fa-' + (status.type === 'sidecar' ? 'images' : 'video')"></i>
                <div :class="'influencer-posts-card-attr ' + (attrActive === status.id ? ' active' : '')">
-                  <i class="fas fa-heart"></i>{{ status.likes }}
-                  <i class="fas fa-comment"></i>{{ status.comments }}
+                  <i class="fas fa-heart"></i>{{ nbr().abbreviate(status.likes) }}
+                  <i class="fas fa-comment"></i>{{ nbr().abbreviate(status.comments) }}
                </div>
              </div>
           </div>

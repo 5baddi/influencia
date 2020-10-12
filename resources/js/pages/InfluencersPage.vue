@@ -45,10 +45,10 @@
                         <p>{{ influencer.name ? influencer.name : influencer.username }}</p>
                      </td>
                      <td>
-                        <p>{{ nbr().abbreviate(influencer.followers, 0) }}</p>
+                        <p>{{ nbr().abbreviate(influencer.followers) }}</p>
                      </td>
                      <td>
-                        <p>{{ influencer.posts }}</p>
+                        <p>{{ nbr().abbreviate(influencer.posts) }}</p>
                      </td>
                      <td class="text-center">
                         <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.platform === 'instagram'">

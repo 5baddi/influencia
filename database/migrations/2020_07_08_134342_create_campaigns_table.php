@@ -20,6 +20,12 @@ class CreateCampaignsTable extends Migration
             $table->unsignedBigInteger('brand_id');
             $table->string('name');
             $table->boolean('status')->default(true);
+            $table->bigInteger('impressions')->nullable();
+            $table->bigInteger('communities')->nullable();
+            $table->double('comments_positive')->nullable();
+            $table->double('comments_neutral')->nullable();
+            $table->double('comments_negative')->nullable();
+            $table->json('comments_emojis')->nullable();
             $table->timestamps();
         });
     }

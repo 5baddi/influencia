@@ -35,8 +35,8 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/brands/{brand}/trackers', 'TrackerController@fetchByBrand');
 
     // Campaigns
-    Route::get('/campaigns', 'CampaignController@index');
-    Route::get('/campaigns/{brand}', 'CampaignController@index');
+    Route::get('/campaigns/{brand}', 'CampaignController@byBrand');
+    Route::get('/campaigns/{campaign}/analytics', 'CampaignController@analytics');
 
     // Trackers
     Route::post('/trackers', 'TrackerController@create');

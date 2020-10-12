@@ -14,7 +14,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Format;
 
-class ScrapInstagramJob implements ShouldQueue
+class ScrapInstagramPostJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -49,15 +49,13 @@ class ScrapInstagramJob implements ShouldQueue
         if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
             // Scrap media details
             $media = $scraper->byMedia($this->tracker->url);
-            sleep(3);
             if(!is_array($media) || sizeof($media) === 0 || !isset($media['owner']) || is_null($media['owner']->getId()))
                 return $this->fail();
 
             // Check influencer if already exists
             $influencer = Influencer::where('account_id', $media['owner']->getId())->first();
             // Parse owner data
-            $owner = Format::parseArrayASCIIKey(collect($media['owner']));
-            $owner = $owner->toArray();
+            $owner = $scraper->byUsername($media['owner']->getUsername());
             // Store influencer if not exists
             if(is_null($influencer))
                 $influencer = $influencerRepo->create($owner);

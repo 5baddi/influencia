@@ -14,7 +14,7 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Brand $brand)
+    public function byBrand(Brand $brand)
     {
         return response()->success("Campaigns fetched successfully.", 
             $brand->campaigns()
@@ -60,7 +60,7 @@ class CampaignController extends Controller
      * @param  \App\Campaign  $campaign
      * @return \Illuminate\Http\Response
      */
-    public function show(Campaign $campaign)
+    public function analytics(Campaign $campaign)
     {
         return response()->success(
             "Campaign fetched successfully.",
