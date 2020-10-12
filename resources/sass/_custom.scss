@@ -203,6 +203,39 @@ span.status{
                 h5{
                     margin: 0;
                 }
+                canvas{
+                    margin: 1rem 0rem;
+                }
+                span{
+                    float: right;
+                    font-size: 8pt;
+                    font-style: italic;
+                    color: #333;
+                }
+                ul{
+                    display: flex;
+                    gap: 5rem;
+                    align-items: center;
+                    justify-content: center;
+                    height: 100%;
+
+                    li{
+                        display: grid;
+                        text-align: center;
+                        padding: 1rem;
+                        font-size: 32pt;
+
+                        span{
+                            margin-top: 1rem;
+                            font-weight: bold;
+                            font-style: normal;
+                            background: #F2F5FC;
+                            padding: 6px;
+                            border-radius: 12px;
+                            color: #333;
+                        }
+                    }
+                }
             }
         }
     }

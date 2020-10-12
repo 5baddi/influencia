@@ -97,7 +97,7 @@ class ScrapInstagramInfluencers extends Command
         // die();
 
         // Scrap influencers details & posts
-        $this->scrapInfluencers();
+        // $this->scrapInfluencers();
 
         // Scrap trackers details & analytics
         $this->scrapTrackers();

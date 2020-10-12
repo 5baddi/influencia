@@ -1245,6 +1245,42 @@ span.status-danger {
   margin: 0;
 }
 
+.campaign .cards.sentiments .card canvas {
+  margin: 1rem 0rem;
+}
+
+.campaign .cards.sentiments .card span {
+  float: right;
+  font-size: 8pt;
+  font-style: italic;
+  color: #333;
+}
+
+.campaign .cards.sentiments .card ul {
+  display: flex;
+  gap: 5rem;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.campaign .cards.sentiments .card ul li {
+  display: grid;
+  text-align: center;
+  padding: 1rem;
+  font-size: 32pt;
+}
+
+.campaign .cards.sentiments .card ul li span {
+  margin-top: 1rem;
+  font-weight: bold;
+  font-style: normal;
+  background: #F2F5FC;
+  padding: 6px;
+  border-radius: 12px;
+  color: #333;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

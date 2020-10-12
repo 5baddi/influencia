@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Campaign;
 use App\Brand;
+use App\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Repositories\CampaignRepository;
 
 class CampaignController extends Controller
 {
@@ -60,11 +61,19 @@ class CampaignController extends Controller
      * @param  \App\Campaign  $campaign
      * @return \Illuminate\Http\Response
      */
-    public function analytics(Campaign $campaign)
+    public function analytics(Campaign $campaign, CampaignRepository $campaignRepo)
     {
+        // Load tracker 
+        $campaign = $campaign->load('trackers');
+        // Load data
+        $comments = $campaignRepo->getComments($campaign);
+
         return response()->success(
             "Campaign fetched successfully.",
-            $campaign->load('trackers')->toArray()
+            [
+                'data'              => $campaign,
+                'comments'          => $comments
+            ]
         );
     }
 

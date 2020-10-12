@@ -139,7 +139,7 @@ class InfluencerPostRepository extends BaseRepository
             ->first();
         }else{
             // Get post by URL
-            $post = InfluencerPost::where('url', $tracker->url)
+            $post = InfluencerPost::where('link', $tracker->url)
                         ->first();
         }
 

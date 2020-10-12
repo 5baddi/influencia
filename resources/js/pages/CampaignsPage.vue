@@ -1,8 +1,8 @@
 <template>
    <div class="campaigns">
-      <div class="hero" v-if="!campaign">
+      <div class="hero">
          <div class="hero__intro">
-            <h1>Campagins</h1>
+            <h1>{{ (campaign && campaign.data.name) ? campaign.data.name.toUpperCase() : 'Campagins' }}</h1>
             <ul class="breadcrumbs">
                <li>
                   <a href="#">Dashboard</a>
@@ -12,7 +12,7 @@
                </li>
             </ul>
          </div>
-         <div class="hero__actions">
+         <div class="hero__actions" v-if="!campaign">
             <button
                :disabled="!activeBrand"
                class="btn btn-success"
@@ -26,10 +26,10 @@
                <div class="number">{{ (campaigns && campaigns.length > 0) ? campaigns.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
-            <!-- <div class="card">
-               <div class="number">{{ (campagins.trackers_count && campaigns.trackers_count > 0) ? trackers.length : 0 }}</div>
+            <div class="card">
+               <div class="number">{{ (trackers && trackers.length > 0) ? trackers.length : 0 }}</div>
                <p class="description">NUMBER OF TRACKERS</p>
-            </div> -->
+            </div>
             <div class="card">
                <div class="number">4 933 424</div>
                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
@@ -124,7 +124,7 @@ export default {
    methods: {
       initData(){
          this.$store.dispatch("fetchCampaigns");
-         // this.$store.dispatch("fetchTrackers");
+         this.$store.dispatch("fetchTrackers");
 
          this.fetchCampaign();
 
@@ -158,7 +158,7 @@ export default {
       }
    },
    computed: {
-      ...mapGetters(["activeBrand", "campaigns", "campaign"])
+      ...mapGetters(["activeBrand", "campaigns", "campaign", "trackers"])
    },
    notifications: {
       createCampaignErrors: {
