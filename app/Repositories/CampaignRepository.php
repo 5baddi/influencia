@@ -77,6 +77,25 @@ class CampaignRepository extends BaseRepository
 
        return $impressions;
    }
+   
+   public function getEstimatedOrganicImpressions() : int
+   {
+       // Init
+       $campaigns = $this->model->all();
+       $impressions = 0;
+
+       // calculate total estimated impressions
+       foreach($campaigns as $campaign){
+            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+                if(is_null($tracker->post) || $tracker->post->is_ad)
+                    continue;
+
+                $impressions += ($tracker->post->likes + $tracker->post->video_views);
+            }
+       }
+
+       return $impressions;
+   }
 
    public function getEstimatedCommunities() : int
    {
@@ -90,7 +109,7 @@ class CampaignRepository extends BaseRepository
                 continue;
 
             foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
-                if($tracker->type === 'post' && is_null($tracker->post))
+                if(is_null($tracker->post))
                     continue;
 
                 switch($tracker->type){
@@ -101,6 +120,28 @@ class CampaignRepository extends BaseRepository
                         $communities += $tracker->nbr_replies;
                     break;
                 }
+            }
+        }
+
+       return $communities;
+   }
+   
+   public function getEstimatedOrganicCommunities() : int
+   {
+       // Init 
+       $campaigns = $this->model->all();
+       $communities = 0;
+
+       // calculate total estimated activated communities
+       foreach($campaigns as $campaign){
+            if($campaign->trackers->count() === 0)
+                continue;
+
+            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+                if(is_null($tracker->post) || $tracker->post->is_ad)
+                    continue;
+
+                $communities += $tracker->post->comments;
             }
         }
 

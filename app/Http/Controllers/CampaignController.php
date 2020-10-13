@@ -41,7 +41,7 @@ class CampaignController extends Controller
             [
                 'all'           =>  $campaigns,
                 'impressions'   =>  $impressions,
-                'communities'   =>  $communities
+                'communities'   =>  $communities,
             ]
         );
     }
@@ -85,7 +85,9 @@ class CampaignController extends Controller
         // Load data
         $campaign = $campaign->load('trackers');
         $impressions = $this->campaignRepo->getEstimatedImpressions();
+        $organicImpressions = $this->campaignRepo->getEstimatedOrganicImpressions();
         $communities = $this->campaignRepo->getEstimatedCommunities();
+        $organicCommunities = $this->campaignRepo->getEstimatedOrganicCommunities();
         $views = $this->campaignRepo->getViews();
         $engagements = $this->campaignRepo->getEngagements();
 
@@ -96,7 +98,9 @@ class CampaignController extends Controller
                 'impressions'   =>  $impressions,
                 'communities'   =>  $communities,
                 'views'         =>  $views,
-                'engagements'   =>  $engagements
+                'engagements'   =>  $engagements,
+                'organicImpressions'    =>  $organicImpressions,
+                'organicCommunities'    =>  $organicCommunities
             ]
         );
     }

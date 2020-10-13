@@ -10,6 +10,7 @@
                     </div>
                 </div>
                 <canvas id="communities-chart"></canvas>
+                <span>Organic communities {{ nbr().abbreviate(campaign.organicCommunities) }} ({{ campaign.communities > 0 ? ((campaign.organicCommunities / campaign.communities) * 100).toFixed(2) : 0  }}%)</span>
             </div>
             <div class="card" v-if="campaign.impressions >= 0">
                 <div class="title">
@@ -20,7 +21,7 @@
                     </div>
                 </div>
                 <canvas id="impressions-chart"></canvas>
-                <span>Organic impressions {{ nbr().abbreviate(campaign.impressions) }} (100%)</span>
+                <span>Organic impressions {{ nbr().abbreviate(campaign.organicImpressions) }} ({{ campaign.impressions > 0 ? ((campaign.organicImpressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
             </div>
             <div class="card" v-if="campaign.views >= 0">
                 <div class="title">
