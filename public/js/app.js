@@ -51159,8 +51159,8 @@ var render = function() {
           _c("h1", [
             _vm._v(
               _vm._s(
-                _vm.campaign && _vm.campaign.name
-                  ? _vm.campaign.name.toUpperCase()
+                _vm.campaign && _vm.campaign.data.name
+                  ? _vm.campaign.data.name.toUpperCase()
                   : "Campagins"
               )
             )

@@ -38,7 +38,7 @@ class AuthenticationController extends Controller
         return response($response, 201);
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
         $user = Auth::user();
         if ($user) {

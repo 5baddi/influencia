@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+// Logout action
+Route::post('/logout', 'AuthenticationController@logout');
+
 Route::group(['middleware' => 'auth:sanctum'], function(){
     // Get User
     Route::get('/user', function (Request $request) {
         return response()->success("User fetched successfully.", $request->user());
     });
-
-    // Logout action
-    Route::post('/logout', 'AuthenticationController@logout');
 });
 
 // API V1 routes

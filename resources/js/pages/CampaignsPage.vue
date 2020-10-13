@@ -2,7 +2,7 @@
    <div class="campaigns">
       <div class="hero">
          <div class="hero__intro">
-            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'Campagins' }}</h1>
+            <h1>{{ (campaign && campaign.data.name) ? campaign.data.name.toUpperCase() : 'Campagins' }}</h1>
             <ul class="breadcrumbs">
                <li>
                   <a href="#">Dashboard</a>
