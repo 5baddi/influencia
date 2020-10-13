@@ -55,7 +55,7 @@
                 <canvas id="posts-chart"></canvas>
             </div>
         </div>
-        <div class="posts-section" v-if="campaign.data && campaign.data.trackers">
+        <div class="posts-section" v-if="campaign.data && campaign.data.posts_count > 0">
             <h4>Posts</h4>
             <p>There are {{ campaign.data.posts_count ? campaign.data.posts_count : 0 }} posts for this campaign.</p>
             <div class="campaign-posts">

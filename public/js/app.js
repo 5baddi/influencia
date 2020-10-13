@@ -48505,7 +48505,7 @@ var render = function() {
             : _vm._e()
         ]),
         _vm._v(" "),
-        _vm.campaign.data && _vm.campaign.data.trackers
+        _vm.campaign.data && _vm.campaign.data.posts_count > 0
           ? _c("div", { staticClass: "posts-section" }, [
               _c("h4", [_vm._v("Posts")]),
               _vm._v(" "),

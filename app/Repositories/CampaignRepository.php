@@ -29,7 +29,7 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
+            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
                     
@@ -48,7 +48,7 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
+            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
                     
@@ -67,10 +67,10 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
+            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
-                    
+
                 $impressions += ($tracker->post->likes + $tracker->post->video_views);
             }
        }
@@ -89,11 +89,18 @@ class CampaignRepository extends BaseRepository
             if($campaign->trackers->count() === 0)
                 continue;
 
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post))
+            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+                if($tracker->type === 'post' && is_null($tracker->post))
                     continue;
 
-                $communities += $tracker->post->comments;
+                switch($tracker->type){
+                    case 'post':
+                        $communities += $tracker->post->comments;
+                    break;
+                    case 'story':
+                        $communities += $tracker->nbr_replies;
+                    break;
+                }
             }
         }
 
@@ -113,7 +120,7 @@ class CampaignRepository extends BaseRepository
             return $comments;
 
         // Calculate comments count
-        foreach($campaign->trackers->load('post') as $tracker){
+        foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
             if(is_null($tracker->post))
                 continue;
 

@@ -16,7 +16,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $appends = ['posts_count', 'stories_count'];
+    protected $appends = ['posts_count', 'stories_count', 'urls_count'];
     
 
     /**
@@ -46,7 +46,9 @@ class Campaign extends Model
      */
     public function trackers()
     {
-        return $this->hasMany(Tracker::class, 'campaign_id')->with('post')->where('status', true);
+        return $this->hasMany(Tracker::class, 'campaign_id')
+                ->with('post')
+                ->where('status', true);
     }
 
     /**
@@ -67,5 +69,15 @@ class Campaign extends Model
     public function getStoriesCountAttribute() : int
     {
         return $this->trackers()->where('type', 'story')->count();
+    }
+    
+    /**
+     * Get urls count
+     * 
+     * @return int
+     */
+    public function getUrlsCountAttribute() : int
+    {
+        return $this->trackers()->where('type', 'url')->count();
     }
 }

@@ -1308,6 +1308,7 @@ span.status-danger {
   color: #000629;
   font-size: 10pt;
   font-weight: bold;
+  margin-top: 1rem;
 }
 
 .campaign .cards.sentiments .card {
