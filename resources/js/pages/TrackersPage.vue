@@ -22,7 +22,7 @@
       <div class="p-1">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ (campaigns && campaigns.length) ? campaigns.length : 0 }}</div>
+               <div class="number">{{ (campaigns.all && campaigns.all.length) ? campaigns.all.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">

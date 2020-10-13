@@ -16,7 +16,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $appends = ['posts_count'];
+    protected $appends = ['posts_count', 'stories_count'];
     
 
     /**
@@ -57,5 +57,15 @@ class Campaign extends Model
     public function getPostsCountAttribute() : int
     {
         return $this->trackers()->where('type', 'post')->count();
+    }
+    
+    /**
+     * Get stories count
+     * 
+     * @return int
+     */
+    public function getStoriesCountAttribute() : int
+    {
+        return $this->trackers()->where('type', 'story')->count();
     }
 }

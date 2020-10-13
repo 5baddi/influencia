@@ -76,7 +76,7 @@ const actions = {
     },
     addNewUser({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            api.post("/api/register", data)
+            api.post("/api/v1/users", data)
                 .then(response => {
                     commit('setNewUser', { user: response.data })
                     resolve(response)
@@ -251,13 +251,13 @@ const mutations = {
         state.activeBrand = brand
     },
     setNewCampaign: (state, { campaign }) => {
-        if (!state.campaigns) {
-            state.campaigns = [];
+        if (!state.campaigns.all) {
+            state.campaigns = {
+                all: []
+            };
         }
-        state.campaigns.push(campaign)
-        // console.log("%%%%%%%%%%%%%%")
-        // console.log(campaign)
-        // console.log("%%%%%%%%%%%%%%")
+
+        state.campaigns.all.push(campaign);
     },
     setNewTracker: (state, { tracker }) => {
         if(!state.trackers){

@@ -21,6 +21,44 @@ class CampaignRepository extends BaseRepository
        parent::__construct($model);
    }
 
+   public function getEngagements() : int
+   {
+       // Init
+       $campaigns = $this->model->all();
+       $engagements = 0;
+
+       // calculate total estimated impressions
+       foreach($campaigns as $campaign){
+            foreach($campaign->trackers->load('post') as $tracker){
+                if(is_null($tracker->post))
+                    continue;
+                    
+                $engagements += $tracker->post->likes;
+            }
+       }
+
+       return $engagements;
+   }
+   
+   public function getViews() : int
+   {
+       // Init
+       $campaigns = $this->model->all();
+       $views = 0;
+
+       // calculate total estimated impressions
+       foreach($campaigns as $campaign){
+            foreach($campaign->trackers->load('post') as $tracker){
+                if(is_null($tracker->post))
+                    continue;
+                    
+                $views += $tracker->post->video_views;
+            }
+       }
+
+       return $views;
+   }
+   
    public function getEstimatedImpressions() : int
    {
        // Init

@@ -86,13 +86,17 @@ class CampaignController extends Controller
         $campaign = $campaign->load('trackers');
         $impressions = $this->campaignRepo->getEstimatedImpressions();
         $communities = $this->campaignRepo->getEstimatedCommunities();
+        $views = $this->campaignRepo->getViews();
+        $engagements = $this->campaignRepo->getEngagements();
 
         return response()->success(
             "Campaign fetched successfully.",
             [
                 'data'          =>  $campaign,
                 'impressions'   =>  $impressions,
-                'communities'   =>  $communities
+                'communities'   =>  $communities,
+                'views'         =>  $views,
+                'engagements'   =>  $engagements
             ]
         );
     }
