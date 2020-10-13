@@ -6602,6 +6602,55 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = (_mounted$props$method = {
@@ -6625,7 +6674,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         type: 'doughnut',
         data: {
           datasets: [{
-            data: [(this.campaign.comments.positive * 100).toFixed(2), (this.campaign.comments.neutral * 100).toFixed(2), (this.campaign.comments.negative * 100).toFixed(2)],
+            data: [//    (this.campaign.comments.positive * 100).toFixed(2),
+              //    (this.campaign.comments.neutral * 100).toFixed(2),
+              //    (this.campaign.comments.negative * 100).toFixed(2),
+            ],
             backgroundColor: ["#AFD75C", "#999999", "#ED435A"]
           }],
           labels: ['Positive', 'Neutral', 'Negative']
@@ -6637,6 +6689,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   this.createSentimentsChart('sentiments-chart');
 }), _defineProperty(_mounted$props$method, "data", function data() {
   return {
+    attrActive: null,
     sentimentData: {
       labels: ['Positive', 'Neutral', 'Negative'],
       backgroundColor: ["#AFD75C", "#999999", "#ED435A"]
@@ -48255,22 +48308,118 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _vm.campaign
     ? _c("div", { staticClass: "p-1 campaign" }, [
-        _c("div", { staticClass: "cards sentiments" }, [
+        _c("div", { staticClass: "cards statistics" }, [
           _c("div", { staticClass: "card" }, [
-            _c("h5", [_vm._v("Comments sentiment")]),
-            _vm._v(" "),
-            _c("canvas", { attrs: { id: "sentiments-chart" } }),
-            _vm._v(" "),
-            _c("span", [
-              _vm._v(
-                "Based on " +
-                  _vm._s(_vm.nbr().abbreviate(_vm.campaign.comments.count)) +
-                  " comments"
-              )
+            _c("div", { staticClass: "title" }, [
+              _c("i", { staticClass: "fas fa-users egg-blue" }),
+              _vm._v(" "),
+              _c("div", { staticClass: "numbers" }, [
+                _c("h4", [
+                  _vm._v(
+                    _vm._s(
+                      _vm.campaign.communities
+                        ? _vm.campaign.communities
+                            .toLocaleString()
+                            .replace(/,/g, " ")
+                        : "---"
+                    )
+                  )
+                ]),
+                _vm._v(" "),
+                _c("span", [_vm._v("Total size of activated communities ")])
+              ])
             ])
           ]),
           _vm._v(" "),
-          _vm._m(0)
+          _vm._m(0),
+          _vm._v(" "),
+          _vm._m(1),
+          _vm._v(" "),
+          _vm._m(2),
+          _vm._v(" "),
+          _vm._m(3)
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "posts-section" }, [
+          _c("h4", [_vm._v("Posts")]),
+          _vm._v(" "),
+          _c("p", [
+            _vm._v(
+              "There are " +
+                _vm._s(
+                  _vm.campaign.data.posts_count
+                    ? _vm.campaign.data.posts_count
+                    : 0
+                ) +
+                " posts for this campaign."
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "campaign-posts" },
+            _vm._l(_vm.campaign.data.trackers, function(tracker) {
+              return _c(
+                "div",
+                {
+                  key: tracker.id,
+                  staticClass: "campaign-posts-card",
+                  on: {
+                    mouseover: function($event) {
+                      _vm.attrActive = tracker.post.id
+                    },
+                    mouseleave: function($event) {
+                      _vm.attrActive = null
+                    }
+                  }
+                },
+                [
+                  _c("img", {
+                    attrs: { src: tracker.post.thumbnail_url, loading: "lazy" }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "campaign-posts-card-icons" }, [
+                    tracker.platform === "instagram"
+                      ? _c("i", { staticClass: "fab fa-instagram" })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    tracker.post.type === "video" ||
+                    tracker.post.type === "sidecar"
+                      ? _c("i", {
+                          class:
+                            "fas fa-" +
+                            (tracker.post.type === "sidecar"
+                              ? "images"
+                              : "video")
+                        })
+                      : _vm._e()
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      class:
+                        "campaign-posts-card-attr " +
+                        (_vm.attrActive === tracker.post.id ? " active" : "")
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-heart" }),
+                      _vm._v(
+                        _vm._s(_vm.nbr().abbreviate(tracker.post.likes)) +
+                          "\n                    "
+                      ),
+                      _c("i", { staticClass: "fas fa-comment" }),
+                      _vm._v(
+                        _vm._s(_vm.nbr().abbreviate(tracker.post.comments)) +
+                          "\n                "
+                      )
+                    ]
+                  )
+                ]
+              )
+            }),
+            0
+          )
         ])
       ])
     : _vm._e()
@@ -48281,24 +48430,31 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "card" }, [
-      _c("h5", [_vm._v("Top 3 emojis")]),
-      _vm._v(" "),
-      _c("ul", [
-        _c("li", [
-          _vm._v("\n                    🖤\n                    "),
-          _c("span", [_vm._v("38.9%")])
-        ]),
-        _vm._v(" "),
-        _c("li", [
-          _vm._v("\n                    😍\n                    "),
-          _c("span", [_vm._v("21.1%")])
-        ]),
-        _vm._v(" "),
-        _c("li", [
-          _vm._v("\n                    🙏\n                    "),
-          _c("span", [_vm._v("40%")])
-        ])
-      ])
+      _c("div", { staticClass: "title" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "title" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "title" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "card" }, [
+      _c("div", { staticClass: "title" })
     ])
   }
 ]
@@ -50819,8 +50975,8 @@ var render = function() {
           _c("h1", [
             _vm._v(
               _vm._s(
-                _vm.campaign && _vm.campaign.data.name
-                  ? _vm.campaign.data.name.toUpperCase()
+                _vm.campaign && _vm.campaign.name
+                  ? _vm.campaign.name.toUpperCase()
                   : "Campagins"
               )
             )
@@ -50855,7 +51011,9 @@ var render = function() {
                 _c("div", { staticClass: "number" }, [
                   _vm._v(
                     _vm._s(
-                      _vm.campaigns.all && _vm.campaigns.all.length > 0
+                      _vm.campaigns &&
+                        _vm.campaigns.all &&
+                        _vm.campaigns.all.length > 0
                         ? _vm.campaigns.all.length
                         : 0
                     )
@@ -50887,7 +51045,7 @@ var render = function() {
                 _c("div", { staticClass: "number" }, [
                   _vm._v(
                     _vm._s(
-                      _vm.campaigns.impressions
+                      _vm.campaigns && _vm.campaigns.impressions
                         ? _vm.campaigns.impressions
                             .toLocaleString()
                             .replace(/,/g, " ")
@@ -50905,7 +51063,7 @@ var render = function() {
                 _c("div", { staticClass: "number" }, [
                   _vm._v(
                     _vm._s(
-                      _vm.campaigns.communities
+                      _vm.campaigns && _vm.campaigns.communities
                         ? _vm.campaigns.communities
                             .toLocaleString()
                             .replace(/,/g, " ")
@@ -71566,8 +71724,8 @@ var mutations = (_mutations = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\TCAgency\influencia\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\BADDI Group\OneDrive\BADDI Services\Works\TCAgency\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\hp\Documents\influencia\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\hp\Documents\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

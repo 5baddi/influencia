@@ -89,6 +89,6 @@ class Tracker extends Model
      */
     public function post()
     {
-        return $this->hasOne(InfluencerPost::class, 'tracker_id');
+        return $this->hasOne(InfluencerPost::class, 'tracker_id', 'id');
     }
 }

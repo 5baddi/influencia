@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Campaign;
-use Illuminate\Support\Collection;
 
 /**
  * Class Campaign Repository.

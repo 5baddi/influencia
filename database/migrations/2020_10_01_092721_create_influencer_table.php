@@ -26,6 +26,11 @@ class CreateInfluencerTable extends Migration
             $table->integer('followers')->nullable();
             $table->integer('follows')->nullable();
             $table->integer('posts')->nullable();
+            $table->integer('highlight_reel')->nullable();
+            $table->string('business_category')->nullable();
+            $table->string('business_email')->nullable();
+            $table->string('business_phone')->nullable();
+            $table->json('business_address')->nullable();
             $table->boolean('is_business')->nullable();
             $table->boolean('is_private')->nullable();
             $table->boolean('is_verified')->nullable();

@@ -2,17 +2,16 @@
 
 namespace App\Jobs;
 
-use App\Influencer;
-use App\Repositories\InfluencerPostRepository;
-use App\Repositories\InfluencerRepository;
-use App\Services\InstagramScraper;
 use App\Tracker;
+use App\Influencer;
 use Illuminate\Bus\Queueable;
+use App\Services\InstagramScraper;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Repositories\InfluencerRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Format;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ScrapInstagramPostJob implements ShouldQueue
 {
@@ -26,6 +25,13 @@ class ScrapInstagramPostJob implements ShouldQueue
     private $tracker;
 
     /**
+     * Console output
+     * 
+     * @var \Symfony\Component\Console\Output\ConsoleOutput
+     */
+    private $console;
+
+    /**
      * Create a new job instance.
      *
      * @return void
@@ -33,6 +39,9 @@ class ScrapInstagramPostJob implements ShouldQueue
     public function __construct(Tracker $tracker)
     {
         $this->tracker = $tracker;
+
+        // Init console
+        $this->console = new ConsoleOutput();
     }
 
     /**
@@ -40,7 +49,7 @@ class ScrapInstagramPostJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(InstagramScraper $scraper, InfluencerRepository $influencerRepo, InfluencerPostRepository $postRepo)
+    public function handle(InstagramScraper $scraper, InfluencerRepository $influencerRepo)
     {
         // Refresh tracker
         $this->tracker->refresh();
@@ -57,13 +66,18 @@ class ScrapInstagramPostJob implements ShouldQueue
             // Parse owner data
             $owner = $scraper->byUsername($media['owner']->getUsername());
             // Store influencer if not exists
-            if(is_null($influencer))
+            if(is_null($influencer)){
                 $influencer = $influencerRepo->create($owner);
-            else
+                $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
+            }else{
                 $influencer = $influencerRepo->update($influencer, $owner);
+                $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");
+            }
 
             // Store media analytics
             $instaMedias = $scraper->getMedias($influencer);
+            if(is_array($instaMedias) && sizeof($instaMedias) > 0)
+                $this->console->writeln("<fg=green>Successfully updated " . sizeof($influencerRepo) . " posts</>");
         }
     }
 }

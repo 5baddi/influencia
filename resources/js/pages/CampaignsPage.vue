@@ -2,7 +2,7 @@
    <div class="campaigns">
       <div class="hero">
          <div class="hero__intro">
-            <h1>{{ (campaign && campaign.data.name) ? campaign.data.name.toUpperCase() : 'Campagins' }}</h1>
+            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'Campagins' }}</h1>
             <ul class="breadcrumbs">
                <li>
                   <a href="#">Dashboard</a>
@@ -23,7 +23,7 @@
       <div class="p-1" v-if="!campaign">
          <header class="cards">
             <div class="card">
-               <div class="number">{{ (campaigns.all && campaigns.all.length > 0) ? campaigns.all.length : 0 }}</div>
+               <div class="number">{{ (campaigns && campaigns.all && campaigns.all.length > 0) ? campaigns.all.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
@@ -31,11 +31,11 @@
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
-               <div class="number">{{ campaigns.impressions ? campaigns.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
+               <div class="number">{{ campaigns && campaigns.impressions ? campaigns.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
             <div class="card">
-               <div class="number">{{ campaigns.communities ? campaigns.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
+               <div class="number">{{ campaigns && campaigns.communities ? campaigns.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
          </header>

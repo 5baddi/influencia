@@ -12,6 +12,14 @@ class Campaign extends Model
     protected $guarded = [];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = ['posts_count'];
+    
+
+    /**
      * Get user
      * 
      * @return \App\User
@@ -38,6 +46,16 @@ class Campaign extends Model
      */
     public function trackers()
     {
-        return $this->hasMany(Tracker::class, 'campaign_id');
+        return $this->hasMany(Tracker::class, 'campaign_id')->with('post');
+    }
+
+    /**
+     * Get posts count
+     * 
+     * @return int
+     */
+    public function getPostsCountAttribute() : int
+    {
+        return $this->trackers()->where('type', 'post')->count();
     }
 }

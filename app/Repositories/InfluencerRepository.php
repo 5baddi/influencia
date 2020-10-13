@@ -56,6 +56,11 @@ class InfluencerRepository extends BaseRepository
             'is_business'   =>  $scraperAttributes['isBusinessAccount'],
             'is_private'    =>  $scraperAttributes['isPrivate'],
             'is_verified'   =>  $scraperAttributes['isVerified'],
+            'highlight_reel'    =>  $scraperAttributes['highlightReelCount'],
+            'business_category' =>  $scraperAttributes['businessCategoryName'],
+            'business_email'    =>  $scraperAttributes['businessEmail'],
+            'business_phone'    =>  $scraperAttributes['businessPhoneNumber'],
+            'business_address'  =>  $scraperAttributes['businessAddressJson'],
         ];
 
         return $this->model->create($parsedData);
@@ -77,6 +82,11 @@ class InfluencerRepository extends BaseRepository
             'is_business'   =>  $scraperAttributes['isBusinessAccount'],
             'is_private'    =>  $scraperAttributes['isPrivate'],
             'is_verified'   =>  $scraperAttributes['isVerified'],
+            'highlight_reel'    =>  $scraperAttributes['highlightReelCount'],
+            'business_category' =>  $scraperAttributes['businessCategoryName'],
+            'business_email'    =>  $scraperAttributes['businessEmail'],
+            'business_phone'    =>  $scraperAttributes['businessPhoneNumber'],
+            'business_address'  =>  $scraperAttributes['businessAddressJson'],
         ];
 
         $entity->update($parsedData);

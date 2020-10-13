@@ -131,6 +131,10 @@ class InstagramScraper
         // Format account
         $data = Format::parseArrayASCIIKey($account);
 
+        // Remove no needed data
+        unset($data['medias']);
+        unset($data['data']);
+
         return $data->toArray();
     }
 

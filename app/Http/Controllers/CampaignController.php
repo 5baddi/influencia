@@ -82,16 +82,17 @@ class CampaignController extends Controller
      */
     public function analytics(Campaign $campaign)
     {
-        // Load tracker 
-        $campaign = $campaign->load('trackers');
         // Load data
-        $comments = $this->campaignRepo->getComments($campaign);
+        $campaign = $campaign->load('trackers');
+        $impressions = $this->campaignRepo->getEstimatedImpressions();
+        $communities = $this->campaignRepo->getEstimatedCommunities();
 
         return response()->success(
             "Campaign fetched successfully.",
             [
-                'data'              => $campaign,
-                'comments'          => $comments
+                'data'          =>  $campaign,
+                'impressions'   =>  $impressions,
+                'communities'   =>  $communities
             ]
         );
     }

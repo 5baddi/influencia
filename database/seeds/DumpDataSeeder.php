@@ -37,33 +37,32 @@ class DumpDataSeeder extends Seeder
             'brand_id'  =>  $brand->id,
             'status'    =>  true
         ]);
-        Tracker::create([
-            'name'  =>  'Tracker 1',
-            'type'  =>  'post',
-            'platform'  =>  'instagram',
-            'username'  =>  'autoservicesrouen76',
-            'user_id'   =>  $user->id,
-            'campaign_id'   =>  $campaign->id,
-            'url'           =>  'https://www.instagram.com/p/BwbZ0PhlNSm'
-        ]);
+        // Tracker::create([
+        //     'name'  =>  'Tracker 1',
+        //     'type'  =>  'post',
+        //     'platform'  =>  'instagram',
+        //     'user_id'   =>  $user->id,
+        //     'campaign_id'   =>  $campaign->id,
+        //     'url'           =>  'https://www.instagram.com/p/CB5zGnmomWp/'
+        // ]);
 
         // Influencers
-        $demoAccount = $instagramScraper->byUsername("autoservicesrouen76");
+        // $demoAccount = $instagramScraper->byUsername("autoservicesrouen76");
         // $demoAccount2 = $instagramScraper->byUsername("exotics.worldwide");
-        Influencer::create([
-            'account_id'    =>  $demoAccount['id'],
-            'username'      =>  $demoAccount['username'],
-            'name'          =>  $demoAccount['fullName'],
-            'pic_url'       =>  $demoAccount['profilePicUrlHd'],
-            'biography'     =>  $demoAccount['biography'],
-            'website'       =>  $demoAccount['externalUrl'],
-            'followers'     =>  $demoAccount['followedByCount'],
-            'follows'       =>  $demoAccount['followsCount'],
-            'posts'         =>  $demoAccount['mediaCount'],
-            'is_business'   =>  $demoAccount['isBusinessAccount'],
-            'is_private'    =>  $demoAccount['isPrivate'],
-            'is_verified'   =>  $demoAccount['isVerified'],
-        ]);
+        // Influencer::create([
+        //     'account_id'    =>  $demoAccount['id'],
+        //     'username'      =>  $demoAccount['username'],
+        //     'name'          =>  $demoAccount['fullName'],
+        //     'pic_url'       =>  $demoAccount['profilePicUrlHd'],
+        //     'biography'     =>  $demoAccount['biography'],
+        //     'website'       =>  $demoAccount['externalUrl'],
+        //     'followers'     =>  $demoAccount['followedByCount'],
+        //     'follows'       =>  $demoAccount['followsCount'],
+        //     'posts'         =>  $demoAccount['mediaCount'],
+        //     'is_business'   =>  $demoAccount['isBusinessAccount'],
+        //     'is_private'    =>  $demoAccount['isPrivate'],
+        //     'is_verified'   =>  $demoAccount['isVerified'],
+        // ]);
         // Influencer::create([
         //     'account_id'    =>  $demoAccount2['id'],
         //     'username'      =>  $demoAccount2['username'],
