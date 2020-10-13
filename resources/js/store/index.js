@@ -19,7 +19,7 @@ const state = () => ({
     brands: null,
     activeBrand: null,
     users: null,
-    campaigns: null,
+    campaigns: {all: []},
     campaign: null,
     trackers: null,
     influencers: null,

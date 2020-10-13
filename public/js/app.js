@@ -48564,70 +48564,77 @@ var render = function() {
                 "div",
                 { staticClass: "campaign-posts" },
                 _vm._l(_vm.campaign.data.trackers, function(tracker) {
-                  return _c(
-                    "div",
-                    {
-                      key: tracker.id,
-                      staticClass: "campaign-posts-card",
-                      on: {
-                        mouseover: function($event) {
-                          _vm.attrActive = tracker.post.id
-                        },
-                        mouseleave: function($event) {
-                          _vm.attrActive = null
-                        }
-                      }
-                    },
-                    [
-                      _c("img", {
-                        attrs: {
-                          src: tracker.post.thumbnail_url,
-                          loading: "lazy"
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "campaign-posts-card-icons" }, [
-                        tracker.platform === "instagram"
-                          ? _c("i", { staticClass: "fab fa-instagram" })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        tracker.post.type === "video" ||
-                        tracker.post.type === "sidecar"
-                          ? _c("i", {
-                              class:
-                                "fas fa-" +
-                                (tracker.post.type === "sidecar"
-                                  ? "images"
-                                  : "video")
-                            })
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c(
+                  return tracker.post
+                    ? _c(
                         "div",
                         {
-                          class:
-                            "campaign-posts-card-attr " +
-                            (_vm.attrActive === tracker.post.id
-                              ? " active"
-                              : "")
+                          key: tracker.id,
+                          staticClass: "campaign-posts-card",
+                          on: {
+                            mouseover: function($event) {
+                              _vm.attrActive = tracker.post.id
+                            },
+                            mouseleave: function($event) {
+                              _vm.attrActive = null
+                            }
+                          }
                         },
                         [
-                          _c("i", { staticClass: "fas fa-heart" }),
-                          _vm._v(
-                            _vm._s(_vm.nbr().abbreviate(tracker.post.likes)) +
-                              "\n                    "
+                          _c("img", {
+                            attrs: {
+                              src: tracker.post.thumbnail_url,
+                              loading: "lazy"
+                            }
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "campaign-posts-card-icons" },
+                            [
+                              tracker.platform === "instagram"
+                                ? _c("i", { staticClass: "fab fa-instagram" })
+                                : _vm._e(),
+                              _vm._v(" "),
+                              tracker.post.type === "video" ||
+                              tracker.post.type === "sidecar"
+                                ? _c("i", {
+                                    class:
+                                      "fas fa-" +
+                                      (tracker.post.type === "sidecar"
+                                        ? "images"
+                                        : "video")
+                                  })
+                                : _vm._e()
+                            ]
                           ),
-                          _c("i", { staticClass: "fas fa-comment" }),
-                          _vm._v(
-                            _vm._s(
-                              _vm.nbr().abbreviate(tracker.post.comments)
-                            ) + "\n                "
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              class:
+                                "campaign-posts-card-attr " +
+                                (_vm.attrActive === tracker.post.id
+                                  ? " active"
+                                  : "")
+                            },
+                            [
+                              _c("i", { staticClass: "fas fa-heart" }),
+                              _vm._v(
+                                _vm._s(
+                                  _vm.nbr().abbreviate(tracker.post.likes)
+                                ) + "\n                    "
+                              ),
+                              _c("i", { staticClass: "fas fa-comment" }),
+                              _vm._v(
+                                _vm._s(
+                                  _vm.nbr().abbreviate(tracker.post.comments)
+                                ) + "\n                "
+                              )
+                            ]
                           )
                         ]
                       )
-                    ]
-                  )
+                    : _vm._e()
                 }),
                 0
               )
@@ -71534,7 +71541,9 @@ var state = function state() {
     brands: null,
     activeBrand: null,
     users: null,
-    campaigns: null,
+    campaigns: {
+      all: []
+    },
     campaign: null,
     trackers: null,
     influencers: null,

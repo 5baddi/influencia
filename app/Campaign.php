@@ -46,7 +46,7 @@ class Campaign extends Model
      */
     public function trackers()
     {
-        return $this->hasMany(Tracker::class, 'campaign_id')->with('post');
+        return $this->hasMany(Tracker::class, 'campaign_id')->with('post')->where('status', true);
     }
 
     /**

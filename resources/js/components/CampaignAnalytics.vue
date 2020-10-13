@@ -59,7 +59,7 @@
             <h4>Posts</h4>
             <p>There are {{ campaign.data.posts_count ? campaign.data.posts_count : 0 }} posts for this campaign.</p>
             <div class="campaign-posts">
-                <div @mouseover="attrActive=tracker.post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="tracker in campaign.data.trackers" :key="tracker.id">
+                <div @mouseover="attrActive=tracker.post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="tracker in campaign.data.trackers" :key="tracker.id" v-if="tracker.post">
                     <img :src="tracker.post.thumbnail_url" loading="lazy"/>
                     <div class="campaign-posts-card-icons">
                         <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>

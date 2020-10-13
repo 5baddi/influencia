@@ -86,15 +86,15 @@ class ScrapInstagramInfluencers extends Command
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
-        ScrapInstagramPostJob::dispatch(Tracker::create([
-            'name'  =>  'Tracker ' . rand(),
-            'type'  =>  'post',
-            'user_id'   =>  1,
-            'campaign_id'   =>  1,
-            'platform'  =>  'instagram',
-            'url'           =>  'https://www.instagram.com/p/B_BGuKwheCA'
-        ]));
-        die();
+        // ScrapInstagramPostJob::dispatch(Tracker::create([
+        //     'name'  =>  'Tracker ' . rand(),
+        //     'type'  =>  'post',
+        //     'user_id'   =>  1,
+        //     'campaign_id'   =>  1,
+        //     'platform'  =>  'instagram',
+        //     'url'           =>  'https://www.instagram.com/p/B_BGuKwheCA'
+        // ]));
+        // die();
 
         // Scrap influencers details & posts
         $this->scrapInfluencers();
@@ -171,6 +171,7 @@ class ScrapInstagramInfluencers extends Command
                     $trackerData = [
                         'nbr_replies'   =>  $post->comments,
                         'nbr_squences'  =>  $post->sequences,
+                        'status'        =>  true
                     ];
 
                     // Update tracker analytics
