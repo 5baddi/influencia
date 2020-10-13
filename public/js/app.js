@@ -25496,7 +25496,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.modal-content[data-v-079a9bc2] {\n   min-width: 80%;\n}\n", ""]);
+exports.push([module.i, "\n.modal-content[data-v-079a9bc2] {\r\n   min-width: 80%;\n}\r\n", ""]);
 
 // exports
 
@@ -25515,7 +25515,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.radio-group[data-v-a540ee70] {\n   display: flex;\n   align-items: center;\n   margin: 1.2rem 0;\n}\n.radio-group > label + label[data-v-a540ee70] {\n   margin-left: 0.5rem;\n}\n.radio-group label[data-v-a540ee70] {\n   display: flex;\n   align-items: center;\n}\n.radio-group label span[data-v-a540ee70] {\n   margin-left: 0.3rem;\n}\n.radio-group span[data-v-a540ee70] {\n   font-weight: 100;\n   font-size: 0.8rem;\n}\n", ""]);
+exports.push([module.i, "\n.radio-group[data-v-a540ee70] {\r\n   display: flex;\r\n   align-items: center;\r\n   margin: 1.2rem 0;\n}\n.radio-group > label + label[data-v-a540ee70] {\r\n   margin-left: 0.5rem;\n}\n.radio-group label[data-v-a540ee70] {\r\n   display: flex;\r\n   align-items: center;\n}\n.radio-group label span[data-v-a540ee70] {\r\n   margin-left: 0.3rem;\n}\n.radio-group span[data-v-a540ee70] {\r\n   font-weight: 100;\r\n   font-size: 0.8rem;\n}\r\n", ""]);
 
 // exports
 
@@ -25534,7 +25534,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\ntd img[data-v-0f155978] {\n   max-width: 36px;\n   border-radius: 50%;\n}\n", ""]);
+exports.push([module.i, "\ntd img[data-v-0f155978] {\r\n   max-width: 36px;\r\n   border-radius: 50%;\n}\r\n", ""]);
 
 // exports
 
@@ -25553,7 +25553,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.card[data-v-483e11c0] {\n   padding-top: 3rem;\n   padding-bottom: 3rem;\n}\n.card h2[data-v-483e11c0] {\n   text-align: center;\n   color: rgba(0, 0, 0, 0.87);\n   margin-bottom: 1.5rem;\n   margin-top: 0;\n}\n.searchform[data-v-483e11c0] {\n   max-width: 600px;\n   margin: 0 auto;\n}\n.searchform button[data-v-483e11c0] {\n   position: absolute;\n   right: 0;\n   top: 0;\n}\n.results[data-v-483e11c0] {\n   margin-top: 2rem;\n}\n.results .influencer[data-v-483e11c0] {\n   display: flex;\n   align-items: flex-start;\n}\n.results .avatar[data-v-483e11c0] {\n   margin-right: 1rem;\n}\n.results h3[data-v-483e11c0] {\n   margin-top: 0;\n   margin-bottom: 0.2rem;\n}\n.results .avatar img[data-v-483e11c0] {\n   max-width: 200px;\n}\n.meta p[data-v-483e11c0] {\n   margin: 0.2rem 0;\n}\n.feed[data-v-483e11c0] {\n   display: flex;\n   flex-wrap: wrap;\n}\n.feed .post[data-v-483e11c0] {\n   flex: 0 0 calc(50% - 4rem);\n   margin: 2rem;\n}\n.feed .post p[data-v-483e11c0] {\n   font-size: 0.7rem;\n}\n", ""]);
+exports.push([module.i, "\n.card[data-v-483e11c0] {\r\n   padding-top: 3rem;\r\n   padding-bottom: 3rem;\n}\n.card h2[data-v-483e11c0] {\r\n   text-align: center;\r\n   color: rgba(0, 0, 0, 0.87);\r\n   margin-bottom: 1.5rem;\r\n   margin-top: 0;\n}\n.searchform[data-v-483e11c0] {\r\n   max-width: 600px;\r\n   margin: 0 auto;\n}\n.searchform button[data-v-483e11c0] {\r\n   position: absolute;\r\n   right: 0;\r\n   top: 0;\n}\n.results[data-v-483e11c0] {\r\n   margin-top: 2rem;\n}\n.results .influencer[data-v-483e11c0] {\r\n   display: flex;\r\n   align-items: flex-start;\n}\n.results .avatar[data-v-483e11c0] {\r\n   margin-right: 1rem;\n}\n.results h3[data-v-483e11c0] {\r\n   margin-top: 0;\r\n   margin-bottom: 0.2rem;\n}\n.results .avatar img[data-v-483e11c0] {\r\n   max-width: 200px;\n}\n.meta p[data-v-483e11c0] {\r\n   margin: 0.2rem 0;\n}\n.feed[data-v-483e11c0] {\r\n   display: flex;\r\n   flex-wrap: wrap;\n}\n.feed .post[data-v-483e11c0] {\r\n   flex: 0 0 calc(50% - 4rem);\r\n   margin: 2rem;\n}\n.feed .post p[data-v-483e11c0] {\r\n   font-size: 0.7rem;\n}\r\n", ""]);
 
 // exports
 
@@ -71896,8 +71896,8 @@ var mutations = (_mutations = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/amine/Desktop/Projects/influencia/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/amine/Desktop/Projects/influencia/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\hp\Documents\influencia\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\hp\Documents\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
