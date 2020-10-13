@@ -29,8 +29,8 @@ const app = new Vue({
         api.interceptors.response.use(
             response => response,
             error => {
+
                 if (error.response.status === 401) {
-                    //localStorage.removeItem("user");
                     this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }))
                 }
                 return Promise.reject(error)
