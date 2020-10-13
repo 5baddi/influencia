@@ -44,7 +44,7 @@
                         <label>Assign to campaign</label>
                         <select v-model="campaign_id">
                            <option :value="null" selected>Select a campaign</option>
-                           <option v-for="camp in campaigns" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
+                           <option v-for="camp in campaigns.all" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
                         </select>
                         <p>Assign tracker to a exists campaign</p>
                      </div>
@@ -146,7 +146,7 @@
 
                <div class="modal-form__actions">
                   <button class="btn btn-success" :disabled="disableAction()">Create</button>
-                  <button class="btn btn-danger" @click="dismiss">Cancel</button>
+                  <button class="btn btn-danger" @click="dismiss" type="button">Cancel</button>
                </div>
             </form>
          </div>

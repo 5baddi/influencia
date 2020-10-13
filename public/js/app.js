@@ -6651,6 +6651,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = (_mounted$props$method = {
@@ -6668,25 +6692,81 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     nbr: function nbr() {
       return new number_abbreviate__WEBPACK_IMPORTED_MODULE_0___default.a();
     },
-    createSentimentsChart: function createSentimentsChart(id) {
-      var sentimentsChartEl = document.getElementById(id);
-      var sentimentsChart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(sentimentsChartEl, {
+    createDoughtnutChart: function createDoughtnutChart(id, data) {
+      var chartEl = document.getElementById(id);
+      var chart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(chartEl, {
         type: 'doughnut',
-        data: {
-          datasets: [{
-            data: [//    (this.campaign.comments.positive * 100).toFixed(2),
-              //    (this.campaign.comments.neutral * 100).toFixed(2),
-              //    (this.campaign.comments.negative * 100).toFixed(2),
-            ],
-            backgroundColor: ["#AFD75C", "#999999", "#ED435A"]
-          }],
-          labels: ['Positive', 'Neutral', 'Negative']
-        }
+        data: data //{
+        //    datasets: [{
+        //        data: [
+        //         //    (this.campaign.comments.positive * 100).toFixed(2),
+        //         //    (this.campaign.comments.neutral * 100).toFixed(2),
+        //         //    (this.campaign.comments.negative * 100).toFixed(2),
+        //        ],
+        //        backgroundColor: [
+        //             "#AFD75C",
+        //             "#999999",
+        //             "#ED435A" #d93176
+        //         ],
+        //    }],
+        //    labels: [
+        //         'Positive',
+        //         'Neutral',
+        //         'Negative',
+        //     ]
+        // data
+        //}
+
       });
     }
   }
 }, _defineProperty(_mounted$props$method, "mounted", function mounted() {
-  this.createSentimentsChart('sentiments-chart');
+  //    this.createSentimentsChart('sentiments-chart');
+  this.createDoughtnutChart('communities-chart', {
+    datasets: [{
+      data: [this.campaign.communities],
+      backgroundColor: ['#d93176']
+    }],
+    labels: ['Instagram'],
+    options: {// responsive: false 
+    }
+  });
+  this.createDoughtnutChart('impressions-chart', {
+    datasets: [{
+      data: [this.campaign.impressions],
+      backgroundColor: ['#d93176']
+    }],
+    labels: ['Instagram'],
+    options: {// responsive: false 
+    }
+  });
+  this.createDoughtnutChart('views-chart', {
+    datasets: [{
+      data: [this.campaign.views],
+      backgroundColor: ['#d93176']
+    }],
+    labels: ['Instagram'],
+    options: {// responsive: false 
+    }
+  });
+  this.createDoughtnutChart('engagements-chart', {
+    datasets: [{
+      data: [this.campaign.engagements],
+      backgroundColor: ['#d93176']
+    }],
+    labels: ['Instagram'],
+    options: {// responsive: false 
+    }
+  });
+  this.createDoughtnutChart('posts-chart', {
+    datasets: [{
+      data: [this.campaign.data.posts_count],
+      backgroundColor: ['#d93176']
+    }],
+    labels: ['Instagram: ' + (this.campaign.data.posts_count ? this.campaign.data.posts_count : 0) + ' including ' + (this.campaign.data.stories_count ? this.campaign.data.stories_count : 0) + ' stories'],
+    options: {// responsive: false 
+    }
+  });
 }), _defineProperty(_mounted$props$method, "data", function data() {
   return {
     attrActive: null,
@@ -48270,155 +48350,254 @@ var render = function() {
   return _vm.campaign
     ? _c("div", { staticClass: "p-1 campaign" }, [
         _c("div", { staticClass: "cards statistics" }, [
-          _c("div", { staticClass: "card" }, [
-            _c("div", { staticClass: "title" }, [
-              _c("i", { staticClass: "fas fa-users egg-blue" }),
-              _vm._v(" "),
-              _c("div", { staticClass: "numbers" }, [
-                _c("h4", [
-                  _vm._v(
-                    _vm._s(
-                      _vm.campaign.communities
-                        ? _vm.campaign.communities
-                            .toLocaleString()
-                            .replace(/,/g, " ")
-                        : "---"
-                    )
-                  )
+          _vm.campaign.communities >= 0
+            ? _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "title" }, [
+                  _c("i", { staticClass: "fas fa-users egg-blue" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "numbers" }, [
+                    _c("h4", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.campaign.communities >= 0
+                            ? _vm.campaign.communities
+                                .toLocaleString()
+                                .replace(/,/g, " ")
+                            : "---"
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Total size of activated communities")])
+                  ])
                 ]),
                 _vm._v(" "),
-                _c("span", [_vm._v("Total size of activated communities ")])
+                _c("canvas", { attrs: { id: "communities-chart" } })
               ])
-            ])
-          ]),
+            : _vm._e(),
           _vm._v(" "),
-          _vm._m(0),
+          _vm.campaign.impressions >= 0
+            ? _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "title" }, [
+                  _c("i", { staticClass: "fas fa-bullhorn purple" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "numbers" }, [
+                    _c("h4", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.campaign.impressions >= 0
+                            ? _vm.campaign.impressions
+                                .toLocaleString()
+                                .replace(/,/g, " ")
+                            : "---"
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Total estimated impressions")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("canvas", { attrs: { id: "impressions-chart" } }),
+                _vm._v(" "),
+                _c("span", [
+                  _vm._v(
+                    "Organic impressions " +
+                      _vm._s(_vm.nbr().abbreviate(_vm.campaign.impressions)) +
+                      " (100%)"
+                  )
+                ])
+              ])
+            : _vm._e(),
           _vm._v(" "),
-          _vm._m(1),
+          _vm.campaign.views >= 0
+            ? _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "title" }, [
+                  _c("i", { staticClass: "far fa-eye green" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "numbers" }, [
+                    _c("h4", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.campaign.views >= 0
+                            ? _vm.campaign.views
+                                .toLocaleString()
+                                .replace(/,/g, " ")
+                            : "---"
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Total views")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("canvas", { attrs: { id: "views-chart" } }),
+                _vm._v(" "),
+                _c("span", [
+                  _vm._v(
+                    "Organic views " +
+                      _vm._s(_vm.nbr().abbreviate(_vm.campaign.views)) +
+                      " (100%)"
+                  )
+                ])
+              ])
+            : _vm._e(),
           _vm._v(" "),
-          _vm._m(2),
+          _vm.campaign.engagements >= 0
+            ? _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "title" }, [
+                  _c("i", { staticClass: "fas fa-thumbs-up blue" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "numbers" }, [
+                    _c("h4", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.campaign.engagements >= 0
+                            ? _vm.campaign.engagements
+                                .toLocaleString()
+                                .replace(/,/g, " ")
+                            : "---"
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Total engagements")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("canvas", { attrs: { id: "engagements-chart" } }),
+                _vm._v(" "),
+                _c("span", [
+                  _vm._v(
+                    "Organic engagements " +
+                      _vm._s(_vm.nbr().abbreviate(_vm.campaign.engagements)) +
+                      " (100%)"
+                  )
+                ])
+              ])
+            : _vm._e(),
           _vm._v(" "),
-          _vm._m(3)
+          _vm.campaign.data.posts_count >= 0
+            ? _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "title" }, [
+                  _c("i", { staticClass: "fas fa-hashtag yellow" }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "numbers" }, [
+                    _c("h4", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.campaign.data.posts_count >= 0
+                            ? _vm.campaign.data.posts_count
+                                .toLocaleString()
+                                .replace(/,/g, " ")
+                            : "---"
+                        )
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("span", [_vm._v("Total number of posts")])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("canvas", { attrs: { id: "posts-chart" } })
+              ])
+            : _vm._e()
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "posts-section" }, [
-          _c("h4", [_vm._v("Posts")]),
-          _vm._v(" "),
-          _c("p", [
-            _vm._v(
-              "There are " +
-                _vm._s(
-                  _vm.campaign.data.posts_count
-                    ? _vm.campaign.data.posts_count
-                    : 0
-                ) +
-                " posts for this campaign."
-            )
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            { staticClass: "campaign-posts" },
-            _vm._l(_vm.campaign.data.trackers, function(tracker) {
-              return _c(
+        _vm.campaign.data && _vm.campaign.data.trackers
+          ? _c("div", { staticClass: "posts-section" }, [
+              _c("h4", [_vm._v("Posts")]),
+              _vm._v(" "),
+              _c("p", [
+                _vm._v(
+                  "There are " +
+                    _vm._s(
+                      _vm.campaign.data.posts_count
+                        ? _vm.campaign.data.posts_count
+                        : 0
+                    ) +
+                    " posts for this campaign."
+                )
+              ]),
+              _vm._v(" "),
+              _c(
                 "div",
-                {
-                  key: tracker.id,
-                  staticClass: "campaign-posts-card",
-                  on: {
-                    mouseover: function($event) {
-                      _vm.attrActive = tracker.post.id
-                    },
-                    mouseleave: function($event) {
-                      _vm.attrActive = null
-                    }
-                  }
-                },
-                [
-                  _c("img", {
-                    attrs: { src: tracker.post.thumbnail_url, loading: "lazy" }
-                  }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "campaign-posts-card-icons" }, [
-                    tracker.platform === "instagram"
-                      ? _c("i", { staticClass: "fab fa-instagram" })
-                      : _vm._e(),
-                    _vm._v(" "),
-                    tracker.post.type === "video" ||
-                    tracker.post.type === "sidecar"
-                      ? _c("i", {
-                          class:
-                            "fas fa-" +
-                            (tracker.post.type === "sidecar"
-                              ? "images"
-                              : "video")
-                        })
-                      : _vm._e()
-                  ]),
-                  _vm._v(" "),
-                  _c(
+                { staticClass: "campaign-posts" },
+                _vm._l(_vm.campaign.data.trackers, function(tracker) {
+                  return _c(
                     "div",
                     {
-                      class:
-                        "campaign-posts-card-attr " +
-                        (_vm.attrActive === tracker.post.id ? " active" : "")
+                      key: tracker.id,
+                      staticClass: "campaign-posts-card",
+                      on: {
+                        mouseover: function($event) {
+                          _vm.attrActive = tracker.post.id
+                        },
+                        mouseleave: function($event) {
+                          _vm.attrActive = null
+                        }
+                      }
                     },
                     [
-                      _c("i", { staticClass: "fas fa-heart" }),
-                      _vm._v(
-                        _vm._s(_vm.nbr().abbreviate(tracker.post.likes)) +
-                          "\n                    "
-                      ),
-                      _c("i", { staticClass: "fas fa-comment" }),
-                      _vm._v(
-                        _vm._s(_vm.nbr().abbreviate(tracker.post.comments)) +
-                          "\n                "
+                      _c("img", {
+                        attrs: {
+                          src: tracker.post.thumbnail_url,
+                          loading: "lazy"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "campaign-posts-card-icons" }, [
+                        tracker.platform === "instagram"
+                          ? _c("i", { staticClass: "fab fa-instagram" })
+                          : _vm._e(),
+                        _vm._v(" "),
+                        tracker.post.type === "video" ||
+                        tracker.post.type === "sidecar"
+                          ? _c("i", {
+                              class:
+                                "fas fa-" +
+                                (tracker.post.type === "sidecar"
+                                  ? "images"
+                                  : "video")
+                            })
+                          : _vm._e()
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          class:
+                            "campaign-posts-card-attr " +
+                            (_vm.attrActive === tracker.post.id
+                              ? " active"
+                              : "")
+                        },
+                        [
+                          _c("i", { staticClass: "fas fa-heart" }),
+                          _vm._v(
+                            _vm._s(_vm.nbr().abbreviate(tracker.post.likes)) +
+                              "\n                    "
+                          ),
+                          _c("i", { staticClass: "fas fa-comment" }),
+                          _vm._v(
+                            _vm._s(
+                              _vm.nbr().abbreviate(tracker.post.comments)
+                            ) + "\n                "
+                          )
+                        ]
                       )
                     ]
                   )
-                ]
+                }),
+                0
               )
-            }),
-            0
-          )
-        ])
+            ])
+          : _vm._e()
       ])
     : _vm._e()
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "title" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "title" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "title" })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "card" }, [
-      _c("div", { staticClass: "title" })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -48936,6 +49115,7 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-danger",
+                  attrs: { type: "button" },
                   on: {
                     click: function($event) {
                       $event.preventDefault()
@@ -49204,7 +49384,7 @@ var render = function() {
                           [_vm._v("Select a campaign")]
                         ),
                         _vm._v(" "),
-                        _vm._l(_vm.campaigns, function(camp) {
+                        _vm._l(_vm.campaigns.all, function(camp) {
                           return _c(
                             "option",
                             { key: camp.id, domProps: { value: camp.id } },
@@ -49871,7 +50051,11 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "button",
-                  { staticClass: "btn btn-danger", on: { click: _vm.dismiss } },
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { type: "button" },
+                    on: { click: _vm.dismiss }
+                  },
                   [_vm._v("Cancel")]
                 )
               ])
@@ -50936,8 +51120,8 @@ var render = function() {
           _c("h1", [
             _vm._v(
               _vm._s(
-                _vm.campaign && _vm.campaign.name
-                  ? _vm.campaign.name.toUpperCase()
+                _vm.campaign && _vm.campaign.data.name
+                  ? _vm.campaign.data.name.toUpperCase()
                   : "Campagins"
               )
             )
@@ -52493,8 +52677,8 @@ var render = function() {
             _c("div", { staticClass: "number" }, [
               _vm._v(
                 _vm._s(
-                  _vm.campaigns && _vm.campaigns.length
-                    ? _vm.campaigns.length
+                  _vm.campaigns.all && _vm.campaigns.all.length
+                    ? _vm.campaigns.all.length
                     : 0
                 )
               )
@@ -71425,7 +71609,7 @@ var actions = {
     var commit = _ref4.commit,
         state = _ref4.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/register", data).then(function (response) {
+      _api__WEBPACK_IMPORTED_MODULE_3__["api"].post("/api/v1/users", data).then(function (response) {
         commit('setNewUser', {
           user: response.data
         });
@@ -71651,13 +71835,13 @@ var mutations = (_mutations = {
 }), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref24) {
   var campaign = _ref24.campaign;
 
-  if (!state.campaigns) {
-    state.campaigns = [];
+  if (!state.campaigns.all) {
+    state.campaigns = {
+      all: []
+    };
   }
 
-  state.campaigns.push(campaign); // console.log("%%%%%%%%%%%%%%")
-  // console.log(campaign)
-  // console.log("%%%%%%%%%%%%%%")
+  state.campaigns.all.push(campaign);
 }), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref25) {
   var tracker = _ref25.tracker;
 

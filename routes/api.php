@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Route;
 */
 
 
+// Logout action
+Route::post('/logout', 'AuthenticationController@logout');
+
 Route::group(['middleware' => 'auth:sanctum'], function(){
     // Get User
     Route::get('/user', function (Request $request) {
         return response()->success("User fetched successfully.", $request->user());
     });
-
-    // Logout action
-    Route::post('/logout', 'AuthenticationController@logout');
 });
 
 // API V1 routes
@@ -37,12 +37,14 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     // Campaigns
     Route::get('/campaigns/{brand}', 'CampaignController@byBrand');
     Route::get('/campaigns/{campaign}/analytics', 'CampaignController@analytics');
+    Route::post('/campaigns', 'CampaignController@create');
 
     // Trackers
     Route::post('/trackers', 'TrackerController@create');
 
     // Users
     Route::get('/users', 'UserController@index');
+    Route::post('/users', 'UserController@register');
 
     // Influencers
     Route::get('/influencers', 'InfluencerController@index');

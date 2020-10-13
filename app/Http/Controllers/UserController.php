@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Brand;
 use App\Http\Requests\UserRequest;
-use Illuminate\Http\Request;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 

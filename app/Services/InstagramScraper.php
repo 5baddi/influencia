@@ -95,7 +95,7 @@ class InstagramScraper
         $this->postRepo = $postRepo;
 
         // Init console
-        $this->console = new ConsoleOutput();
+        // $this->console = new ConsoleOutput();
     }
 
     public function setProxy()
@@ -181,14 +181,14 @@ class InstagramScraper
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
                 if(!is_null($existsMedia)){
-                    $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
-                    $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
+                    // $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
+                    // $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
                     $this->postRepo->update($existsMedia, $_media);
                     Log::info("Update post: {$existsMedia->short_code}");
                     continue;
                 }else{
-                    $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
-                    $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
+                    // $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
+                    // $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
                     $this->postRepo->create($_media);
                     Log::info("Create post: {$_media['short_code']}");
                 }
@@ -200,7 +200,7 @@ class InstagramScraper
             return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
-            $this->console->writeln("<fg=red>Something going wrong!</>");
+            // $this->console->writeln("<fg=red>Something going wrong!</>");
 
             if($ex->getCode() === 429)
                 return $data;

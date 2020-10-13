@@ -15,7 +15,7 @@
                </div>
                <div class="modal-form__actions">
                   <button class="btn btn-success" @click.prevent="submit">Create</button>
-                  <button class="btn btn-danger" @click.prevent="dismiss">Cancel</button>
+                  <button class="btn btn-danger" @click.prevent="dismiss" type="button">Cancel</button>
                </div>
             </form>
          </div>
