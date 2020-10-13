@@ -51289,6 +51289,14 @@ var render = function() {
                           _c(
                             "router-link",
                             {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: campaign.trackers_count > 0,
+                                  expression: "campaign.trackers_count > 0"
+                                }
+                              ],
                               staticClass: "icon-link",
                               attrs: {
                                 to: {
