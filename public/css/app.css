@@ -1132,7 +1132,7 @@ span.status-danger {
 
 .influencer-details ul {
   color: #039be5;
-  font-size: 9pt;
+  font-size: 12pt;
 }
 
 .influencer-details ul li {
@@ -1176,13 +1176,13 @@ span.status-danger {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-top: 1rem;
 }
 
 .influencer-posts-card {
   position: relative;
-  flex: 0 0 calc(20% - 1rem);
+  flex: 0 0 calc(25% - .5rem);
   margin-right: auto;
   overflow: hidden;
   border-color: rgba(0, 0, 0, 0.12);
@@ -1370,13 +1370,13 @@ span.status-danger {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 1rem;
+  gap: 0.5rem;
   margin-top: 1rem;
 }
 
 .campaign-posts-card {
   position: relative;
-  flex: 0 0 calc(20% - 1rem);
+  flex: 0 0 calc(25% - .5rem);
   overflow: hidden;
   border-color: rgba(0, 0, 0, 0.12);
   border-radius: 0.5rem;
