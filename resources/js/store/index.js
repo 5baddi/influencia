@@ -53,9 +53,17 @@ const actions = {
             }).catch(error => reject(error))
         })
     },
-    logout({ commit }) {
+    logout({ commit, state }) {
         return new Promise((resolve, reject) => {
+
             localStorage.removeItem("user")
+
+            if (!state.isLogged) {
+                commit('setUser', { user: null });
+                resolve();
+                return;
+            }
+
             api.post('/api/logout')
                 .then(() => {
                     commit('setUser', { user: null });
@@ -242,7 +250,7 @@ const mutations = {
     setActiveBrand: (state, { brand }) => {
         if (!brand) {
             state.brands.forEach((item, index) => {
-                if(item.id == state.user.user.selected_brand_id) {
+                if (item.id == state.user.user.selected_brand_id) {
                     brand = item
                 }
             });
@@ -260,7 +268,7 @@ const mutations = {
         // console.log("%%%%%%%%%%%%%%")
     },
     setNewTracker: (state, { tracker }) => {
-        if(!state.trackers){
+        if (!state.trackers) {
             state.trackers = [];
         }
         state.trackers.push(tracker);
