@@ -86,7 +86,7 @@ class ScrapInstagramInfluencers extends Command
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
-        ScrapInstagramPostJob::dispatchNow(Tracker::create([
+        ScrapInstagramPostJob::dispatch(Tracker::create([
             'name'  =>  'Tracker ' . rand(),
             'type'  =>  'post',
             'user_id'   =>  1,
