@@ -8742,7 +8742,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log("<-- Logged in -->");
 
         _this.showLoginSuccess({
-          message: "Welcome ".concat(response.data.user.name)
+          message: "Welcome ".concat(response.user.name)
         });
 
         _this.$router.push({
@@ -8750,7 +8750,7 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         _this.showLoginError({
-          message: error.response.data.message
+          message: error.response.message
         });
       });
     }
@@ -25455,7 +25455,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".loader {\n  background: white;\n  transition: 0.15s ease-in opacity;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  pointer-events: none;\n  opacity: 1;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 62pt;\n  color: #039be5;\n  overflow: hidden;\n  z-index: 100000;\n}\n.loader--hidden {\n  opacity: 0;\n  pointer-events: all;\n}", ""]);
+exports.push([module.i, ".loader {\n  background: white;\n  transition: 0.15s ease-in opacity;\n  position: absolute;\n  top: 0;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  pointer-events: none;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  font-size: 62pt;\n  color: #039be5;\n  overflow: hidden;\n  z-index: 100000;\n}\n.loader--hidden {\n  display: none;\n  pointer-events: all;\n}", ""]);
 
 // exports
 
@@ -71732,7 +71732,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
 function fatchLocalUser() {
-  if (localStorage.getItem("user")) {
+  if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
     var user = JSON.parse(localStorage.getItem("user"));
     _api__WEBPACK_IMPORTED_MODULE_3__["api"].defaults.headers.common.Authorization = "Bearer ".concat(user.token);
     return user;
@@ -71801,11 +71801,11 @@ var actions = {
         state = _ref.state;
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_3__["api"].post('/login', credentials).then(function (response) {
-        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("user", JSON.stringify(response));
         commit('setUser', {
-          user: response.data
+          user: response
         });
-        _api__WEBPACK_IMPORTED_MODULE_3__["api"].defaults.headers.common.Authorization = "Bearer ".concat(response.data.token);
+        _api__WEBPACK_IMPORTED_MODULE_3__["api"].defaults.headers.common.Authorization = "Bearer ".concat(response.token);
         resolve(response);
       })["catch"](function (error) {
         return reject(error);

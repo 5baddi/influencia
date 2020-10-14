@@ -59,11 +59,11 @@ export default {
             })
             .then((response) => {
                console.log("<-- Logged in -->");
-               this.showLoginSuccess({ message: `Welcome ${response.data.user.name}` });
+               this.showLoginSuccess({ message: `Welcome ${response.user.name}` });
                this.$router.push({ name: "dashboard" });
             })
             .catch((error) => {
-               this.showLoginError({ message: error.response.data.message });
+               this.showLoginError({ message: error.response.message });
             });
       },
    },

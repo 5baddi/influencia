@@ -21,7 +21,6 @@ export default {
     right: 0;
     bottom: 0;
     pointer-events: none;
-    opacity: 1;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -30,7 +29,7 @@ export default {
     overflow: hidden;
     z-index: 100000;
     &--hidden {
-        opacity: 0;
+        display: none;
         pointer-events: all;
     }
 }

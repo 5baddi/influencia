@@ -8,11 +8,13 @@ import { Loader } from './loader';
 Vue.use(Vuex);
 
 function fatchLocalUser() {
-    if (localStorage.getItem("user")) {
+    if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
         const user = JSON.parse(localStorage.getItem("user"));
-        api.defaults.headers.common.Authorization = `Bearer ${user.token}`
+        api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+
         return user;
     }
+
     return null;
 }
 
@@ -48,9 +50,9 @@ const actions = {
 
         return new Promise((resolve, reject) => {
             api.post('/login', credentials).then((response) => {
-                localStorage.setItem("user", JSON.stringify(response.data))
-                commit('setUser', { user: response.data })
-                api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
+                localStorage.setItem("user", JSON.stringify(response))
+                commit('setUser', { user: response })
+                api.defaults.headers.common.Authorization = `Bearer ${response.token}`
                 resolve(response)
             }).catch(error => reject(error))
         })
