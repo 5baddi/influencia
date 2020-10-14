@@ -25,6 +25,18 @@ class InfluencerPost extends Model
      */
     protected $appends = ['hashtags_count', 'sequences', 'image_sequences', 'video_sequences'];
 
+     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'caption_hashtags'       =>  'json',
+        'comments_emojis'        =>  'json',
+        'comments_hashtags'      =>  'json',
+        'location_json'          =>  'json',
+    ];
+
     /**
      * Get Emojis list
      * 

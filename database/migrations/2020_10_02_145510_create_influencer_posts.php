@@ -25,7 +25,7 @@ class CreateInfluencerPosts extends Migration
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();
-            $table->json('caption_hashtags')->nullable();
+            $table->text('caption_hashtags')->nullable();
             $table->text('alttext')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('comments')->nullable();
@@ -33,14 +33,14 @@ class CreateInfluencerPosts extends Migration
             $table->double('comments_positive')->nullable();
             $table->double('comments_neutral')->nullable();
             $table->double('comments_negative')->nullable();
-            $table->json('comments_emojis')->nullable();
-            $table->json('comments_hashtags')->nullable();
+            $table->text('comments_emojis')->nullable();
+            $table->text('comments_hashtags')->nullable();
             $table->integer('video_views')->nullable();
             $table->double('video_duration')->nullable();
             $table->string('location_id')->nullable();
             $table->string('location')->nullable();
             $table->string('location_slug')->nullable();
-            $table->json('location_json')->nullable();
+            $table->text('location_json')->nullable();
             $table->timestamp('published_at')->nullable(false);
             $table->boolean('comments_disabled')->default(false);
             $table->boolean('caption_edited')->default(false);

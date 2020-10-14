@@ -41,7 +41,8 @@ class Influencer extends Model
     protected $casts = [
         'is_business'       =>  'boolean',
         'is_private'        =>  'boolean',
-        'banned'            =>  'boolean'
+        'banned'            =>  'boolean',
+        'business_address'  =>  'json',
     ];
 
     /**
