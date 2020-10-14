@@ -36,7 +36,8 @@ class CreateTrackerTable extends Migration
             $table->integer('link_clicks')->nullable();
             $table->date('posted_date')->nullable();
             $table->time('posted_hour')->nullable();
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->default(true);
+            $table->enum('queued', ['pending', 'progress', 'finished', 'failed'])->default('pending');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

@@ -170,8 +170,7 @@ class ScrapInstagramInfluencers extends Command
                 if(!is_null($post)){
                     $trackerData = [
                         'nbr_replies'   =>  $post->comments,
-                        'nbr_squences'  =>  $post->sequences,
-                        'status'        =>  true
+                        'nbr_squences'  =>  $post->sequences
                     ];
 
                     // Update tracker analytics

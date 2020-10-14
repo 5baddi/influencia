@@ -35,7 +35,7 @@
             </div>
          </button>
          <div class="dropdown" v-if="showDropdown">
-            <ul>
+            <ul v-if="brands">
                <li v-for="(brand, index) in brands" :key="brand.id">
                   <a @click.prevent="switchBrand(brand, index)">
                      <div class="icon">

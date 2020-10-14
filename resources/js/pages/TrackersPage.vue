@@ -56,10 +56,7 @@
                         <p>{{ tracker.name }}</p>
                      </td>
                      <td>
-                        <p>
-                           <span class="status status-success" v-if="tracker.status"></span>
-                           <span class="status status-danger" v-else></span>
-                        </p>
+                        <span :class="'status status-' + (tracker.status ? 'success' : 'danger')" :title="(tracker.status ? 'Enabled' : 'Disabled')">{{ tracker.queued }}</span>
                      </td>
                      <td>
                         <p>{{ tracker.username ? tracker.username : '---' }}</p>
@@ -157,7 +154,7 @@ export default {
                this.createTrackerSuccess({ message: `Tracker ${response.data.name} created successfuly!` });
             })
             .catch(error => {
-               this.createTrackerErrors({ title: "Error", message: `${error.response.data.message}` });
+               this.createTrackerErrors({ title: "Error", message: `${error.response.message}` });
             });
       }
    }

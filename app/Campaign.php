@@ -48,7 +48,10 @@ class Campaign extends Model
     {
         return $this->hasMany(Tracker::class, 'campaign_id')
                 ->with('post')
-                ->where('status', true);
+                ->where([
+                    'status'    => true,
+                    'queued'    =>  'finished'
+                ]);
     }
 
     /**

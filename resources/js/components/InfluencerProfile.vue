@@ -3,7 +3,7 @@
           <div class="card influencer">
               <div class="influencer-details">
                 <div class="influencer-details-picture">
-                    <img :src="influencer.pic_url" alt="Avatar"/>
+                    <a :href="influencer.platform === 'instagram' ? 'https://instagram.com/' + influencer.username : ''" :title="'View on ' + influencer.platform" target="_blank"><img :src="influencer.pic_url" alt="Avatar"/></a>
                 </div>
                 <div class="influencer-details-name">
                     <h4>{{ influencer.name }}</h4>

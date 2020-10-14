@@ -16,7 +16,7 @@
             <span></span>
          </button>
       </header>
-      <div class="dashboard__sidebar__profile">
+      <div class="dashboard__sidebar__profile" v-if="AuthenticatedUser">
          <h2>{{ AuthenticatedUser.name }}</h2>
          <p>{{ AuthenticatedUser.email }}</p>
          <div class="avatar">

@@ -10,6 +10,7 @@ use Unirest\Request;
 use Sentiment\Analyzer;
 use App\Helpers\EmojiParser;
 use App\Repositories\InfluencerPostRepository;
+use App\Tracker;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
@@ -214,7 +215,7 @@ class InstagramScraper
      * @param \InstagramScraper\Model\Media $media
      * @return array
      */
-    public function getMedia(string $mediaShortCode, \InstagramScraper\Model\Media $media = null) : array
+    public function getMedia(string $mediaShortCode, Tracker $tracker = null, \InstagramScraper\Model\Media $media = null) : array
     {
         // Scrap media
         if(is_null($media)){
@@ -261,6 +262,10 @@ class InstagramScraper
             'caption_edited'    =>  $media->isCaptionEdited(),
             'files'             =>  $this->getFiles($media)
         ];
+
+        // Set tracker ID
+        if(!is_null($tracker))
+            $_media['tracker_id'] = $tracker->id;
 
         return array_merge($_media, $comments);
     }

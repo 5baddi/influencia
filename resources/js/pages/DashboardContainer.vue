@@ -6,7 +6,7 @@
             <TopNavItem :is_switch="true" class="nav-switch" v-if="!isLoading"></TopNavItem>
 
             <TopNavItem :is_switch="false">
-               <template v-slot:button>
+               <template v-slot:button v-if="AuthenticatedUser">
                   <div class="avatar">
                      <!-- <img
                         src="https://medgoldresources.com/wp-content/uploads/2018/02/avatar-placeholder.gif"
@@ -62,7 +62,8 @@
             </TopNavItem>
          </div>
          <div class="dashboard__content__page">
-            <loading :active.sync="isLoading" :can-cancel="false" :is-full-page="false"></loading>
+            <!-- <loading :active.sync="isLoading" :can-cancel="false" :is-full-page="false"></loading> -->
+            <Loader :visible="loading"/>
             <router-view></router-view>
          </div>
       </div>
@@ -71,14 +72,14 @@
 <script>
 import MainNav from "../components/navigations/MainNav";
 import TopNavItem from "../components/navigations/TopNavItem";
-import { mapGetters } from "vuex";
-import Loading from "vue-loading-overlay";
+import { mapGetters, mapState } from "vuex";
+import Loader from '../components/Loader';
 import "vue-loading-overlay/dist/vue-loading.css";
 export default {
    components: {
       MainNav,
       TopNavItem,
-      Loading,
+      Loader,
    },
    data() {
       return {
@@ -88,7 +89,11 @@ export default {
    },
    created() {
       if (!this.$store.getters.brands) {
-         this.$store.dispatch("fetchBrands").then(() => (this.isLoading = false));
+         this.$store.dispatch("fetchBrands")
+            .then(() => (this.isLoading = false))
+            .catch(() => {
+               this.$router.push({ name: "login" }).catch(() => {});
+            });
          return;
       }
       this.isLoading = false;
@@ -102,7 +107,7 @@ export default {
       logout() {
          this.$store.dispatch("logout").finally(() => {
             this.showSuccessLogout();
-            this.$router.push({ name: "login" });
+            this.$router.push({ name: "login" }).catch(() => {});
          });
       },
    },
@@ -118,6 +123,7 @@ export default {
    },
    computed: {
       ...mapGetters(["AuthenticatedUser", "brands"]),
+      ...mapState("Loader", ["loading"])
    },
    notifications: {
       showSuccessLogout: {

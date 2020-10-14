@@ -49,7 +49,7 @@ class CreateInfluencerPosts extends Migration
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
             $table->foreign('campaign_id')->references('id')->on('campaigns');
-            $table->foreign('tracker_id')->references('id')->on('trackers');
+            $table->foreign('tracker_id')->references('id')->on('trackers')->onDelete('set null');
         });
     }
 

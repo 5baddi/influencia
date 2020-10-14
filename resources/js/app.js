@@ -7,12 +7,13 @@
 //require('./bootstrap');
 
 //window.Vue = require('vue');
-import Vue from 'vue'
-import { router } from './routes'
-import store from './store'
-import App from './pages/App'
-import { api } from './api/index'
-import './notifications'
+import Vue from 'vue';
+import { router } from './routes';
+import store from './store';
+import App from './pages/App';
+import { api } from './api/index';
+import { setupInterceptors } from './api/httpInterceptors';
+import './notifications';
 
 Vue.prototype.$http = api;
 
@@ -26,12 +27,14 @@ const app = new Vue({
     store,
     router,
     created() {
+        setupInterceptors(store);
+
         api.interceptors.response.use(
             response => response,
             error => {
 
                 if (error.response.status === 401) {
-                    this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }))
+                    this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
                 }
                 return Promise.reject(error)
             }

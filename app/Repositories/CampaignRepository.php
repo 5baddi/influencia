@@ -29,7 +29,7 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+            foreach($campaign->trackers->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
                     
@@ -48,7 +48,7 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+            foreach($campaign->trackers->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
                     
@@ -67,7 +67,7 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+            foreach($campaign->trackers->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
 
@@ -86,7 +86,7 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+            foreach($campaign->trackers->load('post') as $tracker){
                 if(is_null($tracker->post) || $tracker->post->is_ad)
                     continue;
 
@@ -108,7 +108,7 @@ class CampaignRepository extends BaseRepository
             if($campaign->trackers->count() === 0)
                 continue;
 
-            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+            foreach($campaign->trackers->load('post') as $tracker){
                 if(is_null($tracker->post))
                     continue;
 
@@ -137,7 +137,7 @@ class CampaignRepository extends BaseRepository
             if($campaign->trackers->count() === 0)
                 continue;
 
-            foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+            foreach($campaign->trackers->load('post') as $tracker){
                 if(is_null($tracker->post) || $tracker->post->is_ad)
                     continue;
 
@@ -161,7 +161,7 @@ class CampaignRepository extends BaseRepository
             return $comments;
 
         // Calculate comments count
-        foreach($campaign->trackers->where('status', true)->load('post') as $tracker){
+        foreach($campaign->trackers->load('post') as $tracker){
             if(is_null($tracker->post))
                 continue;
 

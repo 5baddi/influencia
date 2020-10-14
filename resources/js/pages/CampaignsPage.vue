@@ -57,10 +57,7 @@
                         {{ campaign.name }}
                      </td>
                      <td>
-                        <p>
-                           <span class="status status-success" v-if="campaign.status"></span>
-                           <span class="status status-danger" v-else></span>
-                        </p>
+                        <span :class="'status status-' + (campaign.status ? 'success' : 'danger')" :title="(campaign.status ? 'Enabled' : 'Disabled')"></span>
                      </td>
                      <td>
                         <p>{{ campaign.trackers_count }}</p>
@@ -110,7 +107,7 @@ export default {
       };
    },
    beforeRouteEnter(to, from, next){
-       next(vm => vm.initData())
+       next(vm => vm.initData());
    },
    beforeRouteUpdate(to, from, next){
        next(vm => vm.fetchCampaign())

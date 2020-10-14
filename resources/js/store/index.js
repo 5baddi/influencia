@@ -1,8 +1,10 @@
 
-import Vue from 'vue'
-import Vuex from 'vuex'
-import axios from 'axios'
-import { api } from '../api'
+import Vue from 'vue';
+import Vuex from 'vuex';
+import axios from 'axios';
+import { api } from '../api';
+import { Loader } from './loader';
+
 Vue.use(Vuex);
 
 function fatchLocalUser() {
@@ -77,8 +79,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/users").then(response => {
                 let res = response.data
-                commit('setUsers', { users: res.data })
-                resolve(response)
+                commit('setUsers', { users: res })
+                resolve(res)
             }).catch(response => reject(response))
         });
     },
@@ -107,7 +109,7 @@ const actions = {
             api.get("/api/v1/influencers/" + uuid).then(response => {
                 let res = response.data
                 commit('setInfluencer', { influencer: res.data })
-                resolve(response)
+                resolve(res)
             }).catch(response => reject(response))
         });
     },
@@ -116,8 +118,8 @@ const actions = {
             api.get("/api/v1/brands").then(response => {
                 //state.brands = response.data
                 let res = response.data
-                commit('setBrands', { brands: res.data })
-                resolve(response)
+                commit('setBrands', { brands: res })
+                resolve(res)
             }).catch(response => reject(response))
         });
     },
@@ -143,7 +145,7 @@ const actions = {
                 .then(response => {
                     let res = response.data
                     commit('setNewCampaign', { campaign: res.data })
-                    resolve(response)
+                    resolve(res)
                 })
                 .catch(response => {
                     reject(response)
@@ -159,7 +161,7 @@ const actions = {
                 .then(response => {
                     let res = response.data
                     commit('setNewTracker', { tracker: res.data })
-                    resolve(response)
+                    resolve(res)
                 })
                 .catch(response => {
                     reject(response)
@@ -175,8 +177,8 @@ const actions = {
                 api.get(`/api/v1/campaigns/${state.activeBrand.uuid}`)
                     .then((response) => {
                         let res = response.data
-                        commit('setCampaigns', { campaigns: res.data })
-                        resolve(response);
+                        commit('setCampaigns', { campaigns: res })
+                        resolve(res);
                     })
                     .catch((error) => {
                         reject(error)
@@ -286,8 +288,11 @@ const mutations = {
 
 
 export default new Vuex.Store({
-    state,
-    getters,
-    actions,
-    mutations
+    state: state,
+    getters: getters,
+    actions: actions,
+    mutations: mutations,
+    modules: {
+        Loader
+    }
 });

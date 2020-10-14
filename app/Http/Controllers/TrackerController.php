@@ -10,6 +10,7 @@ use App\Http\Requests\CreateTrackerRequest;
 use App\Http\Requests\CreateStoryTrackerRequest;
 use App\Jobs\ScrapInstagramPostJob;
 use App\TrackerMedia;
+use Carbon\Carbon;
 
 class TrackerController extends Controller
 {
@@ -50,7 +51,7 @@ class TrackerController extends Controller
 
         // Dispatch scraping job
         if($tracker->platform === 'instagram')
-            ScrapInstagramPostJob::dispatch($tracker);
+            ScrapInstagramPostJob::dispatch($tracker)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
 
         return response()->success(
             "Tracker created successfully.",
