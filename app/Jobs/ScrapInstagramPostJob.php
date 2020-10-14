@@ -93,6 +93,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 return $this->fail();
 
             // Store media analytics
+            // TODO: verify short code parser
             $_media = $scraper->getMedia($shortCode, $this->tracker);
             // Set media influencer ID
             $_media['influencer_id'] = $influencer->id;
