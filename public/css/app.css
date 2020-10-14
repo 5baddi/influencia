@@ -858,6 +858,7 @@ button:disabled {
 
 .dashboard__navigation--item {
   position: relative;
+  z-index: 10000;
 }
 
 .dashboard__navigation--item button {
