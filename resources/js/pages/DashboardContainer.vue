@@ -62,7 +62,6 @@
             </TopNavItem>
          </div>
          <div class="dashboard__content__page">
-            <!-- <loading :active.sync="isLoading" :can-cancel="false" :is-full-page="false"></loading> -->
             <Loader :visible="loading"/>
             <router-view></router-view>
          </div>
@@ -74,7 +73,6 @@ import MainNav from "../components/navigations/MainNav";
 import TopNavItem from "../components/navigations/TopNavItem";
 import { mapGetters, mapState } from "vuex";
 import Loader from '../components/Loader';
-import "vue-loading-overlay/dist/vue-loading.css";
 export default {
    components: {
       MainNav,
@@ -119,7 +117,7 @@ export default {
          if (!newValue) {
             document.body.removeEventListener("click", this.hideDropdown);
          }
-      },
+      }
    },
    computed: {
       ...mapGetters(["AuthenticatedUser", "brands"]),
