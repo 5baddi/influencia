@@ -37,7 +37,7 @@
    background-color: darkgray;
 }
 .show-modal {
-   z-index: 99;
+   z-index: 100000;
    opacity: 1;
    visibility: visible;
    transform: scale(1);
