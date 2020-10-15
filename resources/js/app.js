@@ -4,9 +4,10 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-//require('./bootstrap');
+require('./bootstrap');
 
-//window.Vue = require('vue');
+window.Vue = require('vue');
+
 import Vue from 'vue';
 import { router } from './routes';
 import store from './store';
@@ -50,5 +51,11 @@ const app = new Vue({
             }
             next()
         });
+
+        Echo.private('tracker.updated')
+            .listen('TrackerUpdated', (e) => {
+                // Refresh trackers
+                this.$store.dispatch("fetchTrackers");
+            });
     }
 });

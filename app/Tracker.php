@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Events\TrackeUpdated;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
@@ -10,6 +11,10 @@ class Tracker extends Model
     use HasUuidRouteKey;
 
     protected $guarded = [];
+
+    protected $dispatchesEvents = [
+        'updated' => TrackeUpdated::class,
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -36,7 +41,8 @@ class Tracker extends Model
         'nbr_taps_backward',
         'posted_date',
         'posted_hour',
-        'status'
+        'status',
+        'queued'
     ];
 
      /**
@@ -89,6 +95,6 @@ class Tracker extends Model
      */
     public function post()
     {
-        return $this->hasOne(InfluencerPost::class, 'tracker_id', 'id');
+        return $this->hasOne(InfluencerPost::class, 'tracker_id', 'id')->with('influencer');
     }
 }

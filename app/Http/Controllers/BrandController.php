@@ -17,8 +17,17 @@ class BrandController extends Controller
      */
     public function index()
     {
+        $brands = Brand::all();
+
+        if(Auth::user()->role !== 'SUPPER_ADMIN'){
+            $brands = Brand::whereHas('users', function($query){
+                $query->where('user_id', Auth::id());
+            });
+        }
+        
+
         return response()->success("Brands fetched successfully.", 
-            Brand::withCount(['users', 'campaigns'])
+            $brands->withCount(['users', 'campaigns'])
                 ->with(['users', 'campaigns'])
                 ->get()
         );

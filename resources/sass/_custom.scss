@@ -228,7 +228,7 @@ span.status{
     .cards{
         &.statistics{
             flex-wrap: wrap;
-            gap: .5rem;
+            gap: 1rem;
 
             .card{
                 display: flex;
@@ -346,8 +346,8 @@ span.status{
 
         &-card{
             position: relative;
-            flex: 0 0 calc(25% - .5rem);
-            // margin-right: auto;
+            flex: 0 0 calc(20% - .5rem);
+            margin-right: auto;
             overflow: hidden;
             border-color: rgba(0, 0, 0, 0.12);
             border-radius: .5rem;
@@ -372,6 +372,7 @@ span.status{
                 left: 14px;
                 color: white;
                 font-size: 14pt;
+                cursor: pointer;
             }
 
             &-attr{
@@ -389,8 +390,8 @@ span.status{
                 background: rgba(0, 0, 0, 0.7);
                 cursor: pointer;
 
-                > *{
-                    margin: 0 .5rem;
+                > *, span > *{
+                    margin: 0 .3rem;
                     cursor: pointer;
                 }
 

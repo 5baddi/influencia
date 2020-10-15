@@ -89,7 +89,9 @@ class CampaignController extends Controller
         $communities = $this->campaignRepo->getEstimatedCommunities();
         $organicCommunities = $this->campaignRepo->getEstimatedOrganicCommunities();
         $views = $this->campaignRepo->getViews();
+        $organicViews = $this->campaignRepo->getOrganicViews();
         $engagements = $this->campaignRepo->getEngagements();
+        $organicEngagements = $this->campaignRepo->getOrganicEngagements();
 
         return response()->success(
             "Campaign fetched successfully.",
@@ -100,7 +102,9 @@ class CampaignController extends Controller
                 'views'         =>  $views,
                 'engagements'   =>  $engagements,
                 'organicImpressions'    =>  $organicImpressions,
-                'organicCommunities'    =>  $organicCommunities
+                'organicCommunities'    =>  $organicCommunities,
+                'organicViews'          =>  $organicViews,
+                'organicEngagements'    =>  $organicEngagements
             ]
         );
     }

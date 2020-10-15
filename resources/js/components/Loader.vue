@@ -27,7 +27,7 @@ export default {
     font-size: 62pt;
     color: #039be5;
     overflow: hidden;
-    z-index: 100000;
+    z-index: 100000000;
     &--hidden {
         display: none;
         pointer-events: all;
