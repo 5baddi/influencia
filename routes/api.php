@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/campaigns/{brand}', 'CampaignController@byBrand');
     Route::get('/campaigns/{campaign}/analytics', 'CampaignController@analytics');
     Route::post('/campaigns', 'CampaignController@create');
+    Route::delete('/campaigns/{campaign}', 'CampaignController@destroy');
 
     // Trackers
     Route::post('/trackers', 'TrackerController@create');
