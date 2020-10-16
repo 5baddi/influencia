@@ -51,7 +51,7 @@
                         <p>{{ nbr().abbreviate(influencer.posts) }}</p>
                      </td>
                      <td class="text-center">
-                        <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.platform === 'instagram'">
+                        <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.platform === 'instagram'" :title="influencer.platform">
                            <i class="fab fa-instagram"></i>
                         </a>
                      </td> 

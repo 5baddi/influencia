@@ -32,7 +32,7 @@
                     </div>
                 </div>
                 <canvas id="views-chart"></canvas>
-                <span>Organic views {{ nbr().abbreviate(campaign.views) }} (100%)</span>
+                <span>Organic views {{ nbr().abbreviate(campaign.organicViews) }} ({{ campaign.views > 0 ? ((campaign.organicViews / campaign.views) * 100).toFixed(2) : 0  }}%)</span>
             </div>
             <div class="card" v-if="campaign.engagements >= 0">
                 <div class="title">
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 <canvas id="engagements-chart"></canvas>
-                <span>Organic engagements {{ nbr().abbreviate(campaign.engagements) }} (100%)</span>
+                <span>Organic engagements {{ nbr().abbreviate(campaign.organicEngagements) }} ({{ campaign.engagements > 0 ? ((campaign.organicEngagements / campaign.engagements) * 100).toFixed(2) : 0  }}%)</span>
             </div>
             <div class="card" v-if="campaign.data.posts_count >= 0">
                 <div class="title">
@@ -56,26 +56,8 @@
                 <canvas id="posts-chart"></canvas>
             </div>
         </div>
-        <div class="posts-section" v-if="campaign.data && campaign.data.posts_count > 0">
-            <h4>Posts</h4>
-            <p>There are {{ campaign.data.posts_count ? campaign.data.posts_count : 0 }} posts for this campaign.</p>
-            <div class="campaign-posts">
-                <div @mouseover="attrActive=tracker.post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="tracker in campaign.data.trackers" :key="tracker.id" v-if="tracker.post">
-                    <img :src="tracker.post.thumbnail_url" loading="lazy"/>
-                    <div class="campaign-posts-card-icons">
-                        <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>
-                        <i v-if="tracker.post.type === 'video' || tracker.post.type=== 'sidecar'" :class="'fas fa-' + (tracker.post.type === 'sidecar' ? 'images' : 'video')"></i>
-                    </div>
-                    <div :class="'campaign-posts-card-attr ' + (attrActive === tracker.post.id ? ' active' : '')">
-                        <i class="fas fa-heart"></i>{{ nbr().abbreviate(tracker.post.likes) }}
-                        <i class="fas fa-comment"></i>{{ nbr().abbreviate(tracker.post.comments) }}
-                    </div>
-                    <!-- <a href="#" class="btn">View statistics</a> -->
-                </div>
-          </div>
-        </div>
 
-         <!-- <div class="cards sentiments">
+        <div class="cards sentiments">
             <div class="card">
                 <h5>Comments sentiment</h5>
                 <canvas id="sentiments-chart"></canvas>
@@ -97,7 +79,26 @@
                     </li>
                 </ul>
             </div>
-         </div> -->
+        </div>
+
+        <div class="posts-section" v-if="campaign.data && campaign.data.posts_count > 0">
+            <h4>Posts</h4>
+            <p>There are {{ campaign.trackers_count ? campaign.trackers_count : 0 }} posts for this campaign.</p>
+            <div class="campaign-posts">
+                <a @mouseover="attrActive=tracker.post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="tracker in campaign.data.trackers" :key="tracker.id" :href="tracker.post.link" target="_blank" v-if="tracker.post">
+                    <img :src="tracker.post.thumbnail_url" loading="lazy"/>
+                    <div class="campaign-posts-card-icons">
+                        <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>
+                        <i v-if="tracker.post.type === 'video' || tracker.post.type=== 'sidecar'" :class="'fas fa-' + (tracker.post.type === 'sidecar' ? 'images' : 'video')"></i>
+                    </div>
+                    <div :class="'campaign-posts-card-attr ' + (attrActive === tracker.post.id ? ' active' : '')">
+                        <span v-if="tracker.post.video_views"><i class="fas fa-eye"></i>{{ nbr().abbreviate(tracker.post.video_views) }}</span>
+                        <span v-if="tracker.post.likes"><i class="fas fa-heart"></i>{{ nbr().abbreviate(tracker.post.likes) }}</span>
+                        <span v-if="tracker.post.comments"><i class="fas fa-comment"></i>{{ nbr().abbreviate(tracker.post.comments) }}</span>
+                    </div>
+                </a>
+          </div>
+        </div>
     </div>
 </template>
 <script>
@@ -105,9 +106,6 @@ import abbreviate from 'number-abbreviate';
 import Chart from 'chart.js'
 
 export default {
-    mounted (){
-        // this.renderChart(this.sentimentData, {})
-    },
    props: {
        campaign: {
            type: Object,
@@ -125,40 +123,34 @@ export default {
            const chart = new Chart(chartEl, {
                type: 'doughnut',
                data: data
-               //{
-                //    datasets: [{
-                //        data: [
-                //         //    (this.campaign.comments.positive * 100).toFixed(2),
-                //         //    (this.campaign.comments.neutral * 100).toFixed(2),
-                //         //    (this.campaign.comments.negative * 100).toFixed(2),
-                //        ],
-                //        backgroundColor: [
-                //             "#AFD75C",
-                //             "#999999",
-                //             "#ED435A" #d93176
-                //         ],
-                //    }],
-                //    labels: [
-                //         'Positive',
-                //         'Neutral',
-                //         'Negative',
-                //     ]
-                    // data
-               //}
            });
        }
    },
    mounted(){
-    //    this.createSentimentsChart('sentiments-chart');
+    this.createDoughtnutChart('sentiments-chart', {
+        datasets: [{
+            data: [
+                20, 30, 50
+            ],
+            backgroundColor: [
+                "#AFD75C",
+                "#999999",
+                "#ED435A" //#d93176
+            ],
+        }],
+        labels: [
+            'Positive',
+            'Neutral',
+            'Negative',
+        ]
+    });
+    
     this.createDoughtnutChart('communities-chart', {
         datasets: [{
             data: [this.campaign.communities],
             backgroundColor: ['#d93176']
         }],
-        labels: ['Instagram'],
-        options: {
-            // responsive: false 
-        }
+        labels: ['Instagram']
     });
     
     this.createDoughtnutChart('impressions-chart', {
@@ -166,10 +158,7 @@ export default {
             data: [this.campaign.impressions],
             backgroundColor: ['#d93176']
         }],
-        labels: ['Instagram'],
-        options: {
-            // responsive: false 
-        }
+        labels: ['Instagram']
     });
     
     this.createDoughtnutChart('views-chart', {
@@ -177,10 +166,7 @@ export default {
             data: [this.campaign.views],
             backgroundColor: ['#d93176']
         }],
-        labels: ['Instagram'],
-        options: {
-            // responsive: false 
-        }
+        labels: ['Instagram']
     });
     
     this.createDoughtnutChart('engagements-chart', {
@@ -188,10 +174,7 @@ export default {
             data: [this.campaign.engagements],
             backgroundColor: ['#d93176']
         }],
-        labels: ['Instagram'],
-        options: {
-            // responsive: false 
-        }
+        labels: ['Instagram']
     });
     
     this.createDoughtnutChart('posts-chart', {
@@ -199,10 +182,7 @@ export default {
             data: [this.campaign.data.posts_count],
             backgroundColor: ['#d93176']
         }],
-        labels: ['Instagram: ' + (this.campaign.data.posts_count ? this.campaign.data.posts_count : 0) + ' including ' + (this.campaign.data.stories_count ? this.campaign.data.stories_count : 0) + ' stories'],
-        options: {
-            // responsive: false 
-        }
+        labels: ['Instagram: ' + (this.campaign.data.posts_count ? this.campaign.data.posts_count : 0) + ' including ' + (this.campaign.data.stories_count ? this.campaign.data.stories_count : 0) + ' stories']
     });
    },
    data: () => ({

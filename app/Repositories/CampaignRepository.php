@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Campaign;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class Campaign Repository.
@@ -33,7 +34,26 @@ class CampaignRepository extends BaseRepository
                 if(is_null($tracker->post))
                     continue;
                     
-                $engagements += $tracker->post->likes;
+                $engagements += $tracker->post->likes + $tracker->post->comments;
+            }
+       }
+
+       return $engagements;
+   }
+
+   public function getOrganicEngagements() : int
+   {
+       // Init
+       $campaigns = $this->model->all();
+       $engagements = 0;
+
+       // calculate total estimated engagements
+       foreach($campaigns as $campaign){
+            foreach($campaign->trackers->load('post') as $tracker){
+                if(is_null($tracker->post) || $tracker->post->is_ad)
+                    continue;
+
+                $engagements += $tracker->post->likes + $tracker->post->comments;
             }
        }
 
@@ -52,6 +72,25 @@ class CampaignRepository extends BaseRepository
                 if(is_null($tracker->post))
                     continue;
                     
+                $views += $tracker->post->video_views;
+            }
+       }
+
+       return $views;
+   }
+
+   public function getOrganicViews() : int
+   {
+       // Init
+       $campaigns = $this->model->all();
+       $views = 0;
+
+       // calculate total estimated views
+       foreach($campaigns as $campaign){
+            foreach($campaign->trackers->load('post') as $tracker){
+                if(is_null($tracker->post) || $tracker->post->is_ad)
+                    continue;
+
                 $views += $tracker->post->video_views;
             }
        }
@@ -100,8 +139,10 @@ class CampaignRepository extends BaseRepository
    public function getEstimatedCommunities() : int
    {
        // Init 
-       $campaigns = $this->model->all();
        $communities = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $communities;
 
        // calculate total estimated activated communities
        foreach($campaigns as $campaign){
@@ -109,17 +150,22 @@ class CampaignRepository extends BaseRepository
                 continue;
 
             foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post))
+                if(is_null($tracker->post) || !in_array($tracker->type, ['post', 'story']))
                     continue;
 
-                switch($tracker->type){
-                    case 'post':
-                        $communities += $tracker->post->comments;
-                    break;
-                    case 'story':
-                        $communities += $tracker->nbr_replies;
-                    break;
-                }
+                // Load influencer
+                $tracker->post->load('influencer');
+
+                $communities += $tracker->post->influencer->followers;
+
+                // switch($tracker->type){
+                //     case 'post':
+                //         $communities += $tracker->post->comments;
+                //     break;
+                //     case 'story':
+                //         $communities += $tracker->nbr_replies;
+                //     break;
+                // }
             }
         }
 
@@ -129,8 +175,10 @@ class CampaignRepository extends BaseRepository
    public function getEstimatedOrganicCommunities() : int
    {
        // Init 
-       $campaigns = $this->model->all();
        $communities = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $communities;
 
        // calculate total estimated activated communities
        foreach($campaigns as $campaign){
@@ -138,10 +186,13 @@ class CampaignRepository extends BaseRepository
                 continue;
 
             foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post) || $tracker->post->is_ad)
+                if(is_null($tracker->post) || $tracker->post->is_ad || !in_array($tracker->type, ['post', 'story']))
                     continue;
 
-                $communities += $tracker->post->comments;
+                // Load influencer
+                $tracker->post->load('influencer');
+
+                $communities += $tracker->post->influencer->followers;
             }
         }
 
@@ -172,5 +223,16 @@ class CampaignRepository extends BaseRepository
         }
 
         return $comments;
+    }
+
+    private function selectedBrandCampaigns()
+    {
+        if(!Auth::check())
+            return null;
+
+        // Load data
+        $brand = Auth::user()->selectedBrand->load('campaigns');
+
+        return $brand->campaigns();
     }
 }

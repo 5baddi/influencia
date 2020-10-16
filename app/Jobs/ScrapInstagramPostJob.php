@@ -97,7 +97,6 @@ class ScrapInstagramPostJob implements ShouldQueue
             $_media = $scraper->getMedia($shortCode, $this->tracker);
             // Set media influencer ID
             $_media['influencer_id'] = $influencer->id;
-
             // Store or update media
             $existsMedia = $postRepo->exists($influencer, $_media['post_id']);
             if(!is_null($existsMedia)){

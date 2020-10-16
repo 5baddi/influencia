@@ -40,6 +40,11 @@ class User extends Authenticatable
         'last_login' => 'datetime',
     ];
 
+    public function selectedBrand()
+    {
+        return $this->belongsTo(Brand::class, 'selected_brand_id');
+    }
+    
     public function brands()
     {
         return $this->belongsToMany(Brand::class, 'brand_user');

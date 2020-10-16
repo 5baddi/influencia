@@ -48,6 +48,7 @@ class TrackerController extends Controller
     {
         // Create new tracker row
         $tracker = Tracker::create($request->all());
+        $tracker = $tracker->refresh();
 
         // Dispatch scraping job
         if($tracker->platform === 'instagram')
@@ -68,6 +69,7 @@ class TrackerController extends Controller
     {
         // Create tracker
         $tracker = Tracker::create($request->all());
+        $tracker = $tracker->refresh();
 
         // Upload story
         $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $request->file('story')->getClientOriginalExtension();

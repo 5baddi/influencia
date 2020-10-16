@@ -7,7 +7,7 @@
                 </div>
                 <div class="influencer-details-name">
                     <h4>{{ influencer.name }}</h4>
-                    <p>{{ influencer.biography }}</p>
+                    <p>{{ influencer.biography ? influencer.biography : '&nbsp;' }}</p>
                     <ul>
                         <li v-if="influencer.website">
                             <a :href="influencer.website" target="_blank">

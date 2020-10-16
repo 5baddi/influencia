@@ -26,9 +26,11 @@
     },
     "dependencies": {
         "chart.js": "^2.9.3",
+        "laravel-echo": "^1.9.0",
         "mini-toastr": "^0.8.1",
         "moment": "^2.27.0",
         "number-abbreviate": "^2.0.0",
+        "pusher-js": "^7.0.0",
         "vue-good-table": "^2.21.0",
         "vue-loading-overlay": "^3.4.0",
         "vue-notifications": "^1.0.2",

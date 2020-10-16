@@ -30,11 +30,11 @@
                <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
-               <div class="number">4 933 424</div>
+               <div class="number">{{ campaigns && campaigns.impressions ? campaigns.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
             <div class="card">
-               <div class="number">2 893 283</div>
+               <div class="number">{{ campaigns && campaigns.communities ? campaigns.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
          </header>
@@ -61,7 +61,9 @@
                      <td>
                         <p>{{ tracker.username ? tracker.username : '---' }}</p>
                      </td>
-                     <td></td>
+                     <td>
+                        <i class="fab fa-2 fa-instagram" v-if="tracker.platform === 'instagram'" :title="tracker.platform"></i>
+                     </td>
                      <td>
                         <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
                      </td>
@@ -154,7 +156,10 @@ export default {
                this.createTrackerSuccess({ message: `Tracker ${response.data.name} created successfuly!` });
             })
             .catch(error => {
-               this.createTrackerErrors({ title: "Error", message: `${error.response.message}` });
+               this.createTrackerErrors({ title: "Error", message: `${error.message}` });
+               // error.errors.map((v, i) => {
+               //    console.log(v);
+               // });
             });
       }
    }

@@ -1274,7 +1274,7 @@ span.status-danger::before {
 
 .campaign .cards.statistics {
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 1rem;
 }
 
 .campaign .cards.statistics .card {
@@ -1387,7 +1387,8 @@ span.status-danger::before {
 
 .campaign-posts-card {
   position: relative;
-  flex: 0 0 calc(25% - .5rem);
+  flex: 0 0 calc(20% - .5rem);
+  margin-right: auto;
   overflow: hidden;
   border-color: rgba(0, 0, 0, 0.12);
   border-radius: 0.5rem;
@@ -1414,6 +1415,7 @@ span.status-danger::before {
   left: 14px;
   color: white;
   font-size: 14pt;
+  cursor: pointer;
 }
 
 .campaign-posts-card-attr {
@@ -1432,8 +1434,9 @@ span.status-danger::before {
   cursor: pointer;
 }
 
-.campaign-posts-card-attr > * {
-  margin: 0 0.5rem;
+.campaign-posts-card-attr > *,
+.campaign-posts-card-attr span > * {
+  margin: 0 0.3rem;
   cursor: pointer;
 }
 
