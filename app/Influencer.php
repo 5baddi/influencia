@@ -59,7 +59,7 @@ class Influencer extends Model
      */
     public function getLikesAttribute() : int
     {
-        return $this->statues()->sum('likes');
+        return $this->posts()->sum('likes');
     }
     
     /**
@@ -69,7 +69,7 @@ class Influencer extends Model
      */
     public function getCommentsAttribute() : int
     {
-        return $this->statues()->sum('comments');
+        return $this->posts()->sum('comments');
     }
 
     /**
@@ -79,7 +79,7 @@ class Influencer extends Model
      */
     public function getImageSequencesAttribute() : int
     {
-        return $this->statues()->where('type', 'image')->count();
+        return $this->posts()->where('type', 'image')->count();
     }
     
     /**
@@ -89,7 +89,7 @@ class Influencer extends Model
      */
     public function getVideoSequencesAttribute() : int
     {
-        return $this->statues()->where('type', 'video')->count();
+        return $this->posts()->where('type', 'video')->count();
     }
     
     /**
@@ -99,7 +99,7 @@ class Influencer extends Model
      */
     public function getCarouselSequencesAttribute() : int
     {
-        return $this->statues()->whereIn('type', ['sidecar', 'carousel'])->count();
+        return $this->posts()->whereIn('type', ['sidecar', 'carousel'])->count();
     }
 
     /**
@@ -107,7 +107,7 @@ class Influencer extends Model
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function statues()
+    public function posts()
     {
         return $this->hasMany(InfluencerPost::class);
     }

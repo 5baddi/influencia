@@ -65,10 +65,8 @@ const app = new Vue({
 
             const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user')
 
-
             if (to.matched.some(record => record.meta.auth) && !loggedIn) {
                 next('/login')
-                return
             }
             next()
         });

@@ -49,7 +49,7 @@
               </div>
           </div>
           <div class="influencer-posts">
-             <div @mouseover="attrActive=status.id" @mouseleave="attrActive=null" class="influencer-posts-card" v-for="status in influencer.statues" :key="status.id">
+             <div @mouseover="attrActive=status.id" @mouseleave="attrActive=null" class="influencer-posts-card" v-for="status in influencer.posts" :key="status.id">
                <img :src="status.thumbnail_url" loading="lazy"/>
                <i v-if="status.type === 'video' || status.type === 'sidecar'" :class="'influencer-posts-card-type fas fa-' + (status.type === 'sidecar' ? 'images' : 'video')"></i>
                <div :class="'influencer-posts-card-attr ' + (attrActive === status.id ? ' active' : '')">
@@ -84,7 +84,7 @@ export default {
                    type: Number,
                    default: 0
                },
-               statues: {
+               posts: {
                    type: Array,
                    default: []
                }

@@ -29,7 +29,7 @@ class InfluencerController extends Controller
     {
         return response()->success("Influencer fetched successfully.", 
             $influencer
-                ->load('statues')
+                ->load('posts')
                 ->toArray()
         );
     }

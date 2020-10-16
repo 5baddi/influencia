@@ -118,7 +118,7 @@ class ScrapInstagramInfluencers extends Command
         // Scrap each influencer details
         foreach($influencers as $influencer){
             // Ignore last updated influencer
-            if($this->option('force') === 'false' && $influencer->statues()->count() > 0  && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
+            if($this->option('force') === 'false' && $influencer->posts()->count() > 0  && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
 
             // Scrap account details

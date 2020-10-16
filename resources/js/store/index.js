@@ -51,10 +51,10 @@ const actions = {
 
         return new Promise((resolve, reject) => {
             api.post('/login', credentials).then((response) => {
-                localStorage.setItem("user", JSON.stringify(response))
-                commit('setUser', { user: response })
-                api.defaults.headers.common.Authorization = `Bearer ${response.token}`
-                resolve(response)
+                localStorage.setItem("user", JSON.stringify(response.data))
+                commit('setUser', { user: response.data })
+                api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
+                resolve(response.data)
             }).catch(error => reject(error))
         })
     },
