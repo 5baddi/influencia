@@ -28,7 +28,7 @@
                </template>
                <template v-slot:dropdown>
                   <ul>
-                     <li>
+                     <li v-if="$can('edit-info', 'user') || AuthenticatedUser.is_superadmin">
                         <router-link :to="{ name: 'settings' }">
                            <div class="icon">
                               <svg width="24" height="24" viewBox="0 0 24 24" class="sc-fzoJMP cyFmdx">

@@ -23,7 +23,7 @@ class OAuthController extends Controller
             if(!isset($exploded[0], $exploded[1]))
                 return;
 
-            return ['subject' => $exploded[0], 'action' => $exploded[1]];
+            return ['action' => $exploded[0], 'subject' => $exploded[1]];
         }, $permissions);
 
         return response()->success(

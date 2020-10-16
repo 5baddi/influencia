@@ -1,12 +1,14 @@
 <?php
 
+use App\Role;
+use App\User;
 use App\Brand;
+use App\Tracker;
 use App\Campaign;
 use App\Influencer;
-use App\Services\InstagramScraper;
-use App\Tracker;
-use App\User;
+use App\Permission;
 use Illuminate\Database\Seeder;
+use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Hash;
 
 class DumpDataSeeder extends Seeder
@@ -18,6 +20,34 @@ class DumpDataSeeder extends Seeder
      */
     public function run(InstagramScraper $instagramScraper)
     {
+        // Create default roles
+        $ownerRole = Role::create(['name' => 'owner']);
+
+        // Create permissions
+        $permissions = [
+            'list_campaign',
+            'show_campaign',
+            'analytics_campaign',
+            'create_campaign',
+            'rename_campaign',
+            'disable_campaign',
+            'delete_campaign',
+            'show_tracker',
+            'list_tracker',
+            'create_tracker',
+            'edit_tracker',
+            'delete_tracker',
+            'list_influencer',
+            'show_influencer',
+            'change-password_user',
+            'edit-info_user',
+        ];
+
+        foreach($permissions as $item){
+            $permission = Permission::create(['name' => $item]);
+            $ownerRole->permissions()->attach($permission->id);
+        }
+        
         // Insert data for testing
         $brand = Brand::create([
             'name'  =>  'Promo',
@@ -27,10 +57,17 @@ class DumpDataSeeder extends Seeder
             'name'              =>  'Webmaster',
             'email'             =>  'project@baddi.info',
             'password'          =>  Hash::make('web2020'),
-            // 'role'              =>  'SUPER_ADMIN',
+            'is_superadmin'     =>  true,
             'selected_brand_id' =>  $brand->id
         ]);
-        $brand->users()->attach($user);
+        $owner = User::create([
+            'name'              =>  'Owner',
+            'email'             =>  'owner@baddi.info',
+            'password'          =>  Hash::make('web2020'),
+            'selected_brand_id' =>  $brand->id,
+            'role_id'           =>  $ownerRole->id
+        ]);
+        $brand->users()->attach([$user->id, $owner->id]);
         $campaign = Campaign::create([
             'name'      =>  'Camp 01',
             'user_id'   =>  $user->id,

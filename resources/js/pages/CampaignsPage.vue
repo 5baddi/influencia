@@ -12,7 +12,7 @@
                </li>
             </ul>
          </div>
-         <div class="hero__actions" v-if="!campaign">
+         <div class="hero__actions" v-if="($can('create', 'campaign') || AuthenticatedUser.is_superadmin) && !campaign">
             <button
                :disabled="!activeBrand"
                class="btn btn-success"
@@ -21,7 +21,7 @@
          </div>
       </div>
       <div class="p-1" v-if="!campaign">
-         <header class="cards">
+         <header class="cards" v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin">
             <div class="card">
                <div class="number">{{ (campaigns && campaigns.all && campaigns.all.length > 0) ? campaigns.all.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
@@ -39,7 +39,7 @@
                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
          </header>
-         <div class="datatable-scroll">
+         <div class="datatable-scroll" v-if="$can('list', 'campaign') || AuthenticatedUser.is_superadmin">
             <table class="table campagins-table">
                <thead>
                   <tr class="row">
@@ -71,11 +71,11 @@
                         </p>
                      </td>
                      <td class="text-center">
-                        <router-link v-show="campaign.trackers_count > 0" :to="{name : 'campagins', params: {uuid: campaign.uuid}}" class="icon-link" title="Statistics">
+                        <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="campaign.trackers_count > 0" :to="{name : 'campagins', params: {uuid: campaign.uuid}}" class="icon-link" title="Statistics">
                             <i class="far fa-chart-bar"></i>
                         </router-link>
-                        <a href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a>
-                        <a href="javascript:void(0);" class="icon-link" title="Delete" @click="deleteCampaign(campaign)"><i class="fas fa-trash"></i></a>
+                        <a v-if="$can('rename', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a>
+                        <a v-if="$can('delete', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" class="icon-link" title="Delete" @click="deleteCampaign(campaign)"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
                </tbody>
@@ -159,7 +159,7 @@ export default {
       }
    },
    computed: {
-      ...mapGetters(["activeBrand", "campaigns", "campaign", "trackers"])
+      ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "trackers"])
    },
    notifications: {
       createCampaignErrors: {
