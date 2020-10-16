@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Role;
+use App\Permission;
 use Illuminate\Http\Request;
+use App\Http\Requests\RoleRequest;
+use App\Http\Requests\PermissionRequest;
 
 class OAuthController extends Controller
 {
@@ -30,5 +34,33 @@ class OAuthController extends Controller
             "Abilities feteched successfully.",
             $rules
         );
+    }
+
+    /**
+     * Store new role
+     * 
+     * @param \App\Http\Requests\RoleRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeRole(RoleRequest $request)
+    {
+        // Create new role
+        $role = Role::create($request->all());
+
+        return response()->success("Role '{$role->name}' successfully created.", $role->toArray());
+    }
+    
+    /**
+     * Store new permission
+     * 
+     * @param \App\Http\Requests\PermissionRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storePermission(PermissionRequest $request)
+    {
+        // Create new permission
+        $permission = Permission::create($request->all());
+
+        return response()->success("Permission '{$permission->name}' successfully created.", $permission->toArray());
     }
 }

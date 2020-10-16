@@ -41,7 +41,7 @@
                         <p>{{user.email}}</p>
                      </td>
                      <td>
-                        <span class="badge badge-success">{{ user.role }}</span>
+                        <span class="badge badge-success">{{ user.is_superadmin ? 'Super Admin' : user.role.name }}</span>
                      </td>
                      <td>
                         <p v-if="!user.brands">--</p>

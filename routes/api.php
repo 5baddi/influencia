@@ -50,6 +50,10 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/users', 'UserController@index');
     Route::post('/users', 'UserController@register');
 
+    // Roles & permissions
+    Route::post('/roles', 'OAuthController@storeRole');
+    Route::post('/permissions', 'OAuthController@storePermission');
+
     // Influencers
     Route::get('/influencers', 'InfluencerController@index');
     Route::get('/influencers/{influencer}', 'InfluencerController@show');

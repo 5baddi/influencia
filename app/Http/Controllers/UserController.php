@@ -11,6 +11,9 @@ class UserController extends Controller
 {
     public function register(UserRequest $request)
     {
+        // TODO: check gate
+        // abort_if(Gate::denies());
+
         // Get data
         $data = $request->all();
 
@@ -39,7 +42,7 @@ class UserController extends Controller
 
     public function index()
     {
-        return response()->success("Users fetched successfully.", User::with('brands')->get());
+        return response()->success("Users fetched successfully.", User::with(['brands', 'role'])->get());
     }
 
     public function show(User $user)

@@ -12,6 +12,7 @@ import BrandsPage from "./pages/BrandsPage";
 import UsersPage from "./pages/UsersPage";
 import SettingsPage from "./pages/SettingsPage";
 import InfluencersPage from "./pages/InfluencersPage";
+import RolesPage from "./pages/RolesPage";
 
 Vue.use(VueRouter)
 
@@ -77,6 +78,15 @@ const routes = [
                 name: 'users',
                 path: '/users',
                 component: UsersPage,
+                meta: {
+                    auth: true
+                },
+
+            },
+            {
+                name: 'roles',
+                path: '/roles',
+                component: RolesPage,
                 meta: {
                     auth: true
                 },
