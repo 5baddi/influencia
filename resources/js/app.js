@@ -15,8 +15,16 @@ import App from './pages/App';
 import { api } from './api/index';
 import { setupInterceptors } from './api/httpInterceptors';
 import './notifications';
+import { abilitiesPlugin } from '@casl/vue';
+import ability from './services/ability';
 
 Vue.prototype.$http = api;
+
+// Use plugins
+Vue.use(abilitiesPlugin, ability);
+
+// Register global component
+// Vue.component('can', Can);
 
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -27,8 +35,20 @@ const app = new Vue({
     components: { App },
     store,
     router,
+    watch: {
+        $route: {
+            handler(){
+                api.get("/api/abilities").then(response => {
+                    if(typeof response.data.content !== 'undefined'){
+                        ability.update(response.data.content);
+                    }
+                });
+            },
+            immediate: true
+        }
+    },
     created() {
-        setupInterceptors(store);
+        // setupInterceptors(store);
 
         api.interceptors.response.use(
             response => response,
@@ -40,6 +60,7 @@ const app = new Vue({
                 return Promise.reject(error)
             }
         );
+        
         this.$router.beforeEach((to, from, next) => {
 
             const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user')

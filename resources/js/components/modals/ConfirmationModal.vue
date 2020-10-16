@@ -1,5 +1,5 @@
 <template>
-   <div class="modal">
+   <div class="modal" v-if="show">
       <div class="modal-content">
          <header>
             <h4 class="heading">{{ title }}</h4>
@@ -16,10 +16,23 @@
 <script>
 export default {
     props: {
-        title:{
+        title: {
             type: String,
             default: "Are you sure?"
         }
     },
+    methods: {
+        closeModal(){
+            this.show = false;
+        },
+        openModal(){
+            this.show = true;
+        }
+    },
+    data(){
+        return {
+            show: false
+        }
+    }
 }
 </script>

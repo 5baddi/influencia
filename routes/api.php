@@ -23,6 +23,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
     Route::get('/user', function (Request $request) {
         return response()->success("User fetched successfully.", $request->user());
     });
+
+    // User permissions
+    Route::get('/abilities', 'OAuthController@abilities');
 });
 
 // API V1 routes

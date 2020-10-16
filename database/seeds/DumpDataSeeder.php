@@ -27,7 +27,7 @@ class DumpDataSeeder extends Seeder
             'name'              =>  'Webmaster',
             'email'             =>  'project@baddi.info',
             'password'          =>  Hash::make('web2020'),
-            'role'              =>  'SUPER_ADMIN',
+            // 'role'              =>  'SUPER_ADMIN',
             'selected_brand_id' =>  $brand->id
         ]);
         $brand->users()->attach($user);

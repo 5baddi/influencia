@@ -50,7 +50,9 @@ const routes = [
                 path: '/brands',
                 component: BrandsPage,
                 meta: {
-                    auth: true
+                    auth: true,
+                    actions: ['list'],
+                    subject: 'brand'
                 },
 
             },
@@ -64,7 +66,7 @@ const routes = [
 
             },
             {
-                name: 'campagins',
+                name: 'campaigns',
                 path: '/campaigns/:uuid?',
                 component: CampaignsPage,
                 meta: {

@@ -35,7 +35,6 @@ use Illuminate\Support\Facades\Route;
 //     dd($response->json());
 // });
 
-
 Route::get('/{any}', 'HomeController@index')->where('any', '.*');
 
 Route::post('/login', 'AuthenticationController@login')->name('login');

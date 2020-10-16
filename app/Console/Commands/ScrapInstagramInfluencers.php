@@ -2,10 +2,7 @@
 
 namespace App\Console\Commands;
 
-use Format;
-use App\Tracker;
 use Carbon\Carbon;
-use App\Jobs\ScrapInstagramPostJob;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use App\Repositories\TrackerRepository;

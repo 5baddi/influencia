@@ -12,9 +12,6 @@
                </li>
             </ul>
          </div>
-         <div class="hero__actions">
-            <button class="btn btn-success" @click="showAddInfluencerModal = !showAddInfluencerModal" disabled>Add new Influencer</button>
-         </div>
       </div>
       <div class="p-1" v-if="!influencer">
          <header class="cards">
@@ -90,7 +87,6 @@ export default {
    },
    data() {
       return {
-         showAddInfluencerModal: false,
          isLoading: true,
       };
    },
@@ -136,10 +132,6 @@ export default {
       },
       moment() {
          return moment();
-      },
-      dismissAddInfluencerModal(id) {
-         this.showAddInfluencerModal = false;
-         this.brand = {};
       }
    },
    computed: {

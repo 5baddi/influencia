@@ -25,6 +25,8 @@
         "vue-template-compiler": "^2.6.10"
     },
     "dependencies": {
+        "@casl/ability": "^4.1.6",
+        "@casl/vue": "^1.1.1",
         "chart.js": "^2.9.3",
         "laravel-echo": "^1.9.0",
         "mini-toastr": "^0.8.1",

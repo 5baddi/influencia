@@ -59,4 +59,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Tracker::class);
     }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
 }

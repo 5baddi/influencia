@@ -29,7 +29,7 @@ class ResponseServiceProvider extends ServiceProvider
             $formatedResponse = [
                 'success'   =>  true,
                 'message'   =>  $message,
-                'data'      =>  $data
+                'content'   =>  $data
             ];
 
             return $factory->make($formatedResponse, $httpStatusCode);

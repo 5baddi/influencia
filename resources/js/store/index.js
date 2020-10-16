@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import axios from 'axios';
 import { api } from '../api';
 import { Loader } from './loader';
+import ability from '../services/ability';
 
 Vue.use(Vuex);
 
@@ -80,9 +81,8 @@ const actions = {
     fetchUsers({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/users").then(response => {
-                let res = response.data
-                commit('setUsers', { users: res })
-                resolve(res)
+                commit('setUsers', { users: response.data.content })
+                resolve(response.data)
             }).catch(response => reject(response))
         });
     },
@@ -90,8 +90,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/users", data)
                 .then(response => {
-                    commit('setNewUser', { user: response.data })
-                    resolve(response)
+                    commit('setNewUser', { user: response.data.content })
+                    resolve(response.data)
                 }).catch(error => {
                     reject(error)
                 })
@@ -100,26 +100,24 @@ const actions = {
     fetchInfluencers({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/influencers").then(response => {
-                commit('setInfluencers', { influencers: response.data })
-                resolve(response)
+                commit('setInfluencers', { influencers: response.data.content })
+                resolve(response.data)
             }).catch(response => reject(response))
         });
     },
     fetchInfluencer({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/influencers/" + uuid).then(response => {
-                commit('setInfluencer', { influencer: response.data })
-                resolve(res)
+                commit('setInfluencer', { influencer: response.data.content })
+                resolve(response.data)
             }).catch(response => reject(response))
         });
     },
     fetchBrands({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/brands").then(response => {
-                //state.brands = response.data
-                let res = response.data
-                commit('setBrands', { brands: res })
-                resolve(res)
+                commit('setBrands', { brands: response.data.content })
+                resolve(response.data)
             }).catch(response => reject(response))
         });
     },
@@ -131,8 +129,8 @@ const actions = {
                 }
             })
                 .then(response => {
-                    commit('setBrand', { brand: response.data })
-                    resolve(response)
+                    commit('setBrand', { brand: response.data.content })
+                    resolve(response.data)
                 })
                 .catch(response => {
                     reject(response)
@@ -143,8 +141,8 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/campaigns", data)
                 .then(response => {
-                    commit('setNewCampaign', { campaign: response.data })
-                    resolve(response)
+                    commit('setNewCampaign', { campaign: response.data.content })
+                    resolve(response.data)
                 })
                 .catch(response => {
                     reject(response)
@@ -158,8 +156,8 @@ const actions = {
 
             api.post("/api/v1/trackers" + (isStory ? "/story" : ""), data)
                 .then(response => {
-                    commit('setNewTracker', { tracker: response.data })
-                    resolve(response)
+                    commit('setNewTracker', { tracker: response.data.content })
+                    resolve(response.data)
                 })
                 .catch(error => {
                     reject(error)
@@ -174,8 +172,8 @@ const actions = {
             if (state.activeBrand) {
                 api.get(`/api/v1/campaigns/${state.activeBrand.uuid}`)
                     .then((response) => {
-                        commit('setCampaigns', { campaigns: response.data })
-                        resolve(response);
+                        commit('setCampaigns', { campaigns: response.data.content })
+                        resolve(response.data);
                     })
                     .catch((error) => {
                         reject(error)
@@ -187,8 +185,8 @@ const actions = {
     fetchCampaignAnalytics({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/campaigns/" + uuid + "/analytics").then(response => {
-                commit('setCampaign', { campaign: response.data })
-                resolve(response)
+                commit('setCampaign', { campaign: response.data.content })
+                resolve(response.data)
             }).catch(response => reject(response))
         });
     },
@@ -197,8 +195,8 @@ const actions = {
             if (state.activeBrand) {
                 api.get(`/api/v1/brands/${state.activeBrand.uuid}/trackers`)
                     .then((response) => {
-                        commit('setTrackers', { trackers: response.data })
-                        resolve(response);
+                        commit('setTrackers', { trackers: response.data.content })
+                        resolve(response.data);
                     })
                     .catch((error) => {
                         reject(error)
@@ -281,6 +279,15 @@ const mutations = {
     }
 }
 
+const updateAbilities = (store) => {
+    return store.subscribe((actions) => {
+        switch (actions.type) {
+            case 'logout':
+                ability.update([]);
+            break
+        }
+    });
+}
 
 export default new Vuex.Store({
     state: state,
@@ -289,5 +296,8 @@ export default new Vuex.Store({
     mutations: mutations,
     modules: {
         Loader
-    }
+    },
+    plugins: [
+        updateAbilities
+    ]
 });

@@ -75,7 +75,7 @@
                             <i class="far fa-chart-bar"></i>
                         </router-link>
                         <a href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a>
-                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
+                        <a href="javascript:void(0);" class="icon-link" title="Delete" @click="deleteCampaign(campaign)"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
                </tbody>
@@ -152,6 +152,10 @@ export default {
             this.createCampaignSuccess({ message: "Campaign created successfully" });
             this.dismissAddCampaignModal();
          });
+      },
+      // Delete campaign
+      deleteCampaign(campaign){
+         
       }
    },
    computed: {
