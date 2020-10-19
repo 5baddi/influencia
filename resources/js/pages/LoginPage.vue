@@ -59,24 +59,24 @@ export default {
             })
             .then((response) => {
                console.log("<-- Logged in -->");
-               this.showLoginSuccess({ message: `Welcome ${response.user.name}` });
+               // this.showLoginSuccess({ message: `Welcome ${response.user.name}` });
                this.$router.push({ name: "dashboard" });
             })
             .catch((error) => {
-               this.showLoginError({ message: error.response.message });
+               // this.showLoginError({ message: error.response.message });
             });
       },
    },
-   notifications: {
-      showLoginError: {
-         title: "Login Failed",
-         type: "error",
-      },
-      showLoginSuccess: {
-         title: "Login success",
-         type: "success",
-      },
-   },
+   // notifications: {
+   //    showLoginError: {
+   //       title: "Login Failed",
+   //       type: "error",
+   //    },
+   //    showLoginSuccess: {
+   //       title: "Login success",
+   //       type: "success",
+   //    },
+   // },
    beforeRouteEnter(to, from, next) {
       next((vm) => {
          const loggedIn = !!localStorage.getItem("user");

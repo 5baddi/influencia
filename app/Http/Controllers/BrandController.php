@@ -22,19 +22,17 @@ class BrandController extends Controller
     {
         abort_if(Gate::denies('list_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        $brands = Brand::all();
+        $brands = Brand::withCount(['users', 'campaigns'])
+                        ->with(['users', 'campaigns']);
 
-        if(Auth::user()->role !== 'SUPPER_ADMIN'){
-            $brands = Brand::whereHas('users', function($query){
+        if(!Auth::user()->is_superadmin){
+            $brands = $brands->whereHas('users', function($query){
                 $query->where('user_id', Auth::id());
             });
         }
-        
 
         return response()->success("Brands fetched successfully.", 
-            $brands->withCount(['users', 'campaigns'])
-                ->with(['users', 'campaigns'])
-                ->get()
+            $brands->get()
         );
     }
 

@@ -99,23 +99,23 @@ export default {
             .dispatch("addNewUser", payload)
             .then(response => {
                this.dismissAddUserModal();
-               this.createUserSuccess({ message: `user ${response.data.name} created successfuly!` });
+               // this.createUserSuccess({ message: `user ${response.data.name} created successfuly!` });
             })
             .catch(error => {
-               this.createUserErrors({ title: "Error", message: `${error.response.data.message}` });
+               // this.createUserErrors({ title: "Error", message: `${error.response.data.message}` });
             });
       }
    },
    computed: {
       ...mapGetters(["users"])
    },
-   notifications: {
-      createUserErrors: {
-         type: "error"
-      },
-      createUserSuccess: {
-         type: "success"
-      }
-   }
+   // notifications: {
+   //    createUserErrors: {
+   //       type: "error"
+   //    },
+   //    createUserSuccess: {
+   //       type: "success"
+   //    }
+   // }
 };
 </script>

@@ -62,7 +62,7 @@
             </TopNavItem>
          </div>
          <div class="dashboard__content__page">
-            <Loader :visible="loading"/>
+            <!-- <Loader :visible="loading"/> -->
             <router-view></router-view>
          </div>
       </div>
@@ -72,12 +72,12 @@
 import MainNav from "../components/navigations/MainNav";
 import TopNavItem from "../components/navigations/TopNavItem";
 import { mapGetters, mapState } from "vuex";
-import Loader from '../components/Loader';
+// import Loader from '../components/Loader';
 export default {
    components: {
       MainNav,
       TopNavItem,
-      Loader,
+      // Loader,
    },
    data() {
       return {
@@ -104,7 +104,7 @@ export default {
       },
       logout() {
          this.$store.dispatch("logout").finally(() => {
-            this.showSuccessLogout();
+            // this.showSuccessLogout();
             this.$router.push({ name: "login" }).catch(() => {});
          });
       },
@@ -121,14 +121,14 @@ export default {
    },
    computed: {
       ...mapGetters(["AuthenticatedUser", "brands"]),
-      ...mapState("Loader", ["loading"])
+      // ...mapState("Loader", ["loading"])
    },
-   notifications: {
-      showSuccessLogout: {
-         type: "success",
-         message: "Bye!",
-      },
-   },
+   // notifications: {
+   //    showSuccessLogout: {
+   //       type: "success",
+   //       message: "Bye!",
+   //    },
+   // },
    beforeRouteEnter(to, from, next) {
       next((vm) => {
          const loggedIn = !!vm.$store.getters.isLogged && !!localStorage.getItem("user");

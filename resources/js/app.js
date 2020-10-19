@@ -13,8 +13,8 @@ import { router } from './routes';
 import store from './store';
 import App from './pages/App';
 import { api } from './api/index';
-import { setupInterceptors } from './api/httpInterceptors';
-import './notifications';
+// import { setupInterceptors } from './api/httpInterceptors';
+// import './notifications';
 import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
 
@@ -50,15 +50,19 @@ const app = new Vue({
     created() {
         // setupInterceptors(store);
 
-        api.interceptors.response.use(
-            response => response,
-            error => {
+        api.interceptors.response.use(response => {
+            return response;
+        }, error => {
+            return Promise.reject(error);
+        }
+            // response => response,
+            // error => {
 
-                if (error.response.status === 401) {
-                    this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
-                }
-                return Promise.reject(error)
-            }
+            //     if (error.response.status === 401) {
+            //         this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
+            //     }
+            //     return Promise.reject(error)
+            // }
         );
         
         this.$router.beforeEach((to, from, next) => {

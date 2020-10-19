@@ -33,9 +33,16 @@ class CheckAbilities
             }
 
             foreach($permissions as $name => $roles){
-                Gate::define($name, function(User $user) use ($permissions){
-                    $user = $user->role->load('permissions')->get();
-                    return in_array($user->permissions->pluck('name')->toArray(), $permissions);
+                Gate::define($name, function(User $user) use ($name, $role){
+                    // Super admin
+                    if($user->is_superadmin)
+                        return true;
+
+                    // Set abilities
+                    if($user->role){
+                        $userPermissions = $user->role->permissions->pluck('name')->toArray();
+                        return in_array($name, $userPermissions);
+                    }
                 });
             }
         }

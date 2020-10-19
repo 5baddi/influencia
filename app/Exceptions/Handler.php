@@ -2,8 +2,9 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
@@ -50,6 +51,30 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
+        if($this->isHttpException($exception)){
+            if($request->expectsJson()){
+                switch($exception->getStatusCode()) {
+                    case 404:
+                        return response()->error("Invalid request or url.", [], 404);
+                    break;
+                    case '500':
+                        return response()->error("Internal server error. Please contact admin.", [], 500);
+                    break;
+                    case '429':
+                        return response()->error("Too Many Attempts.", [], 429);
+                    break;
+                    default:
+                        return $this->renderHttpException($exception);
+                    break;
+                }
+            }
+        }elseif($exception instanceof ModelNotFoundException){
+            if($request->expectsJson())
+                return response()->error($exception->getMessage(), [], 404);
+        }{
+            return parent::render($request, $exception);
+        }
+        
         return parent::render($request, $exception);
     }
 }

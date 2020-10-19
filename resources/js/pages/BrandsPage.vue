@@ -122,7 +122,7 @@ export default {
          formData.append("logo", payload.brand.image);
          formData.append("name", payload.brand.name);
          this.$store.dispatch("addBrand", formData).then(() => {
-            this.createBrandSuccess({ message: "Brand created successfully." });
+            // this.createBrandSuccess({ message: "Brand created successfully." });
          });
          this.dismissAddBrandModal();
 
@@ -136,14 +136,14 @@ export default {
    computed: {
       ...mapGetters(["brands"])
    },
-   notifications: {
-      createBrandErrors: {
-         type: "error"
-      },
-      createBrandSuccess: {
-         type: "success"
-      }
-   }
+   // notifications: {
+   //    createBrandErrors: {
+   //       type: "error"
+   //    },
+   //    createBrandSuccess: {
+   //       type: "success"
+   //    }
+   // }
 };
 </script>
 <style scoped>
