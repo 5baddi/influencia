@@ -6,7 +6,9 @@ use App\Brand;
 use App\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Repositories\CampaignRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class CampaignController extends Controller
 {
@@ -28,6 +30,8 @@ class CampaignController extends Controller
      */
     public function byBrand(Brand $brand)
     {
+        abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         // Load data
         $campaigns = $brand->campaigns()
                 ->with('user', 'brand')
@@ -129,6 +133,8 @@ class CampaignController extends Controller
      */
     public function destroy(Campaign $campaign)
     {
+        abort_if(Gate::denies('delete_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         // Delete campaign entity
         $campaign->delete();
 

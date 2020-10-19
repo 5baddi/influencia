@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Brand;
 use Illuminate\Support\Str;
-use App\Http\Requests\BrandRequest;
-use App\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\StoreBrandRequest;
+use App\Http\Requests\UpdateBrandRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class BrandController extends Controller
 {
@@ -17,6 +20,8 @@ class BrandController extends Controller
      */
     public function index()
     {
+        abort_if(Gate::denies('list_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         $brands = Brand::all();
 
         if(Auth::user()->role !== 'SUPPER_ADMIN'){
@@ -38,7 +43,7 @@ class BrandController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(BrandRequest $request)
+    public function create(StoreBrandRequest $request)
     {
         // Set data
         $data = [
@@ -75,6 +80,8 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
+        abort_if(Gate::denies('show_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         return response()->success("Brand fetched successfully.", $brand->load(['users', 'campaigns'])->toArray());
     }
 
@@ -85,7 +92,7 @@ class BrandController extends Controller
      * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function update(Brand $brand, BrandRequest $request)
+    public function update(Brand $brand, UpdateBrandRequest $request)
     {
         // Set data
         $data = [];
@@ -115,6 +122,8 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand)
     {
+        abort_if(Gate::denies('delete_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         // Delete brand
         $brand->delete();
 
