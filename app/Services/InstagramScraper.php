@@ -174,7 +174,7 @@ class InstagramScraper
             
             foreach($instaMedias['medias'] as $media){
                 // Scrap media
-                $_media = $this->getMedia($media->getShortCode(), $media);
+                $_media = $this->getMedia($media->getShortCode(), null, $media);
 
                 // Set media influencer ID
                 $_media['influencer_id'] = $influencer->id;
@@ -414,8 +414,8 @@ class InstagramScraper
 
 
         // Get top 3 emojis
-        if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
-            $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
+        // if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
+        //     $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
 
         return [
             'comments_positive'  => $data['comments_positive'],
@@ -447,7 +447,7 @@ class InstagramScraper
 
         // Slice empty emoji
         array_walk($emojis, function($item, $key) use (&$emojis){
-            if(is_null($item) || empty($item))
+            if(is_null($item) || empty($item) || $item === '#')
                 unset($emojis[$key]);
         });
 
@@ -472,7 +472,9 @@ class InstagramScraper
         $this->emojis = array_flip(array_count_values($emojis));
 
         // Slice top emojis
-        return array_slice($this->emojis, 0, $max, true);
+        // return array_slice($this->emojis, 0, $max, true);
+        // return $this->emojis;
+        return array_flip(array_count_values($emojis));
     }
 
     /**

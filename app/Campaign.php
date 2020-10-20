@@ -17,7 +17,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $appends = ['posts_count', 'stories_count', 'urls_count'];
+    protected $appends = ['posts_count', 'stories_count', 'urls_count', 'all_posts_count', 'sentiments_positive', 'sentiments_neutral', 'sentiments_negative', 'top_three_emojis'];
     
 
     /**
@@ -113,5 +113,99 @@ class Campaign extends Model
         }
 
         return $count;
+    }
+
+    public function getAllPostsCountAttribute() : int
+    {
+        return $this->getStoriesCountAttribute() + $this->getPostsCountAttribute() + $this->getUrlsCountAttribute();
+    }
+
+    public function getSentimentsPositiveAttribute() : float
+    {
+        $semtiments = 0.0;
+        $allCount = $this->getAllPostsCountAttribute();
+        $trackers = $this->trackers()->get();
+
+        foreach($trackers as $tracker){
+            if($tracker->posts->count() === 0)
+                continue;
+
+            foreach($tracker->posts as $post){
+                $semtiments += $post->comments_positive;
+            }
+        }
+
+        return $allCount > 0 ? $semtiments / $allCount : 0;
+    }
+    
+    public function getSentimentsNeutralAttribute() : float
+    {
+        $semtiments = 0.0;
+        $allCount = $this->getAllPostsCountAttribute();
+        $trackers = $this->trackers()->get();
+
+        foreach($trackers as $tracker){
+            if($tracker->posts->count() === 0)
+                continue;
+
+            foreach($tracker->posts as $post){
+                $semtiments += $post->comments_neutral;
+            }
+        }
+
+        return $allCount > 0 ? $semtiments / $allCount : 0;
+    }
+    
+    public function getSentimentsNegativeAttribute() : float
+    {
+        $semtiments = 0.0;
+        $allCount = $this->getAllPostsCountAttribute();
+        $trackers = $this->trackers()->get();
+
+        foreach($trackers as $tracker){
+            if($tracker->posts->count() === 0)
+                continue;
+
+            foreach($tracker->posts as $post){
+                $semtiments += $post->comments_negative;
+            }
+        }
+
+        return $allCount > 0 ? $semtiments / $allCount : 0;
+    }
+
+    public function getTopThreeEmojisAttribute() : array
+    {
+        $topThreeEmojis = [];
+        $emojisCount = 0;
+        $trackers = $this->trackers()->get();
+
+        foreach($trackers as $tracker){
+            if($tracker->posts->count() === 0)
+                continue;
+
+            foreach($tracker->posts as $post){
+                $emojis = json_decode(json_encode($post->comments_emojis), true);
+                if(is_null($emojis) || empty($emojis))
+                    continue;
+
+                $topThreeEmojis = array_merge($topThreeEmojis, $emojis);
+                $emojisCount += sizeof($emojis);
+            }
+        }
+
+        // Ignore empty emojis list
+        if(is_null($topThreeEmojis) || empty($topThreeEmojis))
+            return $topThreeEmojis;
+
+        $topThreeEmojis = array_flip(array_count_values($topThreeEmojis));
+        // Sort emojis desc
+        krsort($topThreeEmojis);
+
+        // Slice top emojis
+        return [
+            'top'   =>  array_slice($topThreeEmojis, 0, 3, true),
+            'all'   =>  $emojisCount
+        ];
     }
 }

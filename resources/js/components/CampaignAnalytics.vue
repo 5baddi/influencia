@@ -65,18 +65,18 @@
             <div class="card">
                 <h5>Top 3 emojis</h5>
                 <ul>
-                    <li>
-                        🖤
-                        <span>38.9%</span>
+                    <li v-for="(emoji, index) in campaign.data.top_three_emojis.top" :key="index">
+                        {{ emoji }}
+                        <span>{{ ((index / (campaign.data.top_three_emojis.all ? campaign.data.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
                     </li>
-                    <li>
+                    <!-- <li>
                         😍
                         <span>21.1%</span>
                     </li>
                     <li>
                         🙏
                         <span>40%</span>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </div>
@@ -130,7 +130,9 @@ export default {
     this.createDoughtnutChart('sentiments-chart', {
         datasets: [{
             data: [
-                20, 30, 50
+                this.campaign.data.sentiments_positive,
+                this.campaign.data.sentiments_neutral,
+                this.campaign.data.sentiments_negative
             ],
             backgroundColor: [
                 "#AFD75C",
