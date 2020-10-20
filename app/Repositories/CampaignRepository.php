@@ -22,11 +22,18 @@ class CampaignRepository extends BaseRepository
        parent::__construct($model);
    }
 
+   public function getInfluencers()
+   {
+        
+   }
+
    public function getEngagements() : int
    {
        // Init
-       $campaigns = $this->model->all();
        $engagements = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $engagements;
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
@@ -46,8 +53,10 @@ class CampaignRepository extends BaseRepository
    public function getOrganicEngagements() : int
    {
        // Init
-       $campaigns = $this->model->all();
        $engagements = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $engagements;
 
        // calculate total estimated engagements
        foreach($campaigns as $campaign){
@@ -70,8 +79,10 @@ class CampaignRepository extends BaseRepository
    public function getViews() : int
    {
        // Init
-       $campaigns = $this->model->all();
        $views = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $views;
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
@@ -91,8 +102,10 @@ class CampaignRepository extends BaseRepository
    public function getOrganicViews() : int
    {
        // Init
-       $campaigns = $this->model->all();
        $views = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $views;
 
        // calculate total estimated views
        foreach($campaigns as $campaign){
@@ -115,8 +128,10 @@ class CampaignRepository extends BaseRepository
    public function getEstimatedImpressions() : int
    {
        // Init
-       $campaigns = $this->model->all();
        $impressions = 0;
+       $campaigns = $this->selectedBrandCampaigns();
+        if(!$campaigns)
+            return $impressions;
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
@@ -170,14 +185,11 @@ class CampaignRepository extends BaseRepository
             if($campaign->trackers->count() === 0)
                 continue;
 
-            foreach($campaign->trackers->load('post') as $tracker){
+            foreach($campaign->trackers->load('posts') as $tracker){
                 if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
                     continue;
 
-                foreach($tracker->posts as $post){
-                    // Load influencer
-                    $post->load('influencer');
-
+                foreach($tracker->posts->load('influencer') as $post){
                     $communities += $post->influencer->followers;   
                 }
 
@@ -194,7 +206,7 @@ class CampaignRepository extends BaseRepository
 
        return $communities;
    }
-   
+
    public function getEstimatedOrganicCommunities() : int
    {
        // Init 
@@ -212,12 +224,9 @@ class CampaignRepository extends BaseRepository
                 if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
                     continue;
 
-                foreach($tracker->posts as $post){
+                foreach($tracker->posts->load('influencer') as $post){
                     if($post->is_ad)
                         continue;
-                        
-                    // Load influencer
-                    $post->load('influencer');
 
                     $communities += $post->influencer->followers;   
                 }
@@ -261,6 +270,6 @@ class CampaignRepository extends BaseRepository
         // Load data
         $brand = Auth::user()->selectedBrand->load('campaigns');
 
-        return $brand->campaigns();
+        return $brand->campaigns;
     }
 }

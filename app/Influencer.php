@@ -50,7 +50,7 @@ class Influencer extends Model
      *
      * @var array
      */
-    protected $appends = ['image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments'];
+    protected $appends = ['image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments', 'posts_count', 'estimated_impressions', 'estimated_communities'];
     
     /**
      * Get likes of an infleuncer
@@ -100,6 +100,39 @@ class Influencer extends Model
     public function getCarouselSequencesAttribute() : int
     {
         return $this->posts()->whereIn('type', ['sidecar', 'carousel'])->count();
+    }
+    
+    /**
+     * Get posts count of an infleuncer
+     * 
+     */
+    public function getPostsCountAttribute()
+    {
+        return $this->posts()->whereNotNull('tracker_id');
+    }
+
+    /**
+     * Get estimated impressions for all posts
+     * 
+     */
+    public function getEstimatedCommunitiesAttribute()
+    {
+        return $this->attributes['followers'];
+    }
+    
+    /**
+     * Get estimated communities for all posts
+     * 
+     */
+    public function getEstimatedImpressionsAttribute()
+    {
+        $impressions = 0;
+
+        foreach($this->posts() as $post){
+            $impressions += ($post->likes + $post->video_views);
+        }
+
+        return $impressions;
     }
 
     /**
