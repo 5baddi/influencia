@@ -59,7 +59,7 @@
                         <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" title="Details">
                             <i class="fas fa-eye"></i>
                         </router-link>
-                        <!-- <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a> -->
+                        <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a>
                         <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
@@ -73,21 +73,25 @@
          </div>
       </div>
       <InfluencerProfile v-if="influencer" :influencer="influencer"/>
+      <EditInfluencerModal v-if="editInfluencerModal" :influencer="influencer"/>
    </div>
 </template>
 <script>
 import InfluencerProfile from "../components/InfluencerProfile";
+import EditInfluencerModal from "../components/modals/EditInfluencerModal";
 import { mapGetters } from "vuex";
 import moment from "moment";
 import abbreviate from 'number-abbreviate';
 
 export default {
    components: {
-      InfluencerProfile
+      InfluencerProfile,
+      EditInfluencerModal
    },
    data() {
       return {
          isLoading: true,
+         editInfluencerModal: false,
       };
    },
    beforeRouteEnter(to, from, next){
@@ -109,6 +113,12 @@ export default {
        '$route': 'initData'
    },
    methods: {
+      dismissEditInfluencerModal(){
+         this.editInfluencerModal = false;
+      },
+      showEditInfluencerModal(influencer){
+         this.editInfluencerModal = true;
+      },
        nbr(){
            return new abbreviate();
        },
