@@ -61,7 +61,17 @@ class Campaign extends Model
      */
     public function getPostsCountAttribute() : int
     {
-        return $this->trackers()->where('type', 'post')->count();
+        $trackers = $this->trackers()->where('type', 'post')->withCount('posts')->get();
+
+        $count = 0;
+        foreach($trackers as $tracker){
+            if(!isset($tracker->posts_count))
+                continue;
+
+            $count += $tracker->posts_count;
+        }
+
+        return $count;
     }
     
     /**
@@ -71,7 +81,17 @@ class Campaign extends Model
      */
     public function getStoriesCountAttribute() : int
     {
-        return $this->trackers()->where('type', 'story')->count();
+        $trackers = $this->trackers()->where('type', 'story')->withCount('posts')->get();
+
+        $count = 0;
+        foreach($trackers as $tracker){
+            if(!isset($tracker->posts_count))
+                continue;
+
+            $count += $tracker->posts_count;
+        }
+
+        return $count;
     }
     
     /**
@@ -81,6 +101,16 @@ class Campaign extends Model
      */
     public function getUrlsCountAttribute() : int
     {
-        return $this->trackers()->where('type', 'url')->count();
+        $trackers = $this->trackers()->where('type', 'url')->withCount('posts')->get();
+
+        $count = 0;
+        foreach($trackers as $tracker){
+            if(!isset($tracker->posts_count))
+                continue;
+
+            $count += $tracker->posts_count;
+        }
+
+        return $count;
     }
 }
