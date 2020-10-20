@@ -23,6 +23,7 @@ class CreateInfluencerTable extends Migration
             $table->text('biography')->nullable();
             $table->string('website')->nullable();
             $table->text('pic_url')->nullable();
+            $table->double('engagement_rate')->nullable();
             $table->integer('followers')->nullable();
             $table->integer('follows')->nullable();
             $table->integer('posts')->nullable();
