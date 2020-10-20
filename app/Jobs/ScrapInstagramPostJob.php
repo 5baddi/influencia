@@ -70,8 +70,19 @@ class ScrapInstagramPostJob implements ShouldQueue
             $this->tracker->update(['queued' => 'progress']);
             $this->tracker = $this->tracker->refresh();
 
-            // Scrap media details
-            $media = $scraper->byMedia($this->tracker->url);
+            // Parse URL
+            $_url = $this->tracker->url;
+            $_urls = [];
+            if(strpos($this->tracker->url, ';') !== false){
+                $_urls = explode(';', $this->tracker->url);
+                if(!isset($_urls[0]) || empty($_urls[0]))
+                    throw new \Exception("Something going wrong with the posts links!");
+
+                $_url = $_urls[0];
+            }
+
+            // Scrap User details
+            $media = $scraper->byMedia($_url);
             if(!is_array($media) || sizeof($media) === 0 || !isset($media['owner']) || is_null($media['owner']->getId()))
                 return $this->fail();
 
@@ -94,31 +105,13 @@ class ScrapInstagramPostJob implements ShouldQueue
             ]);
             $this->tracker = $this->tracker->refresh();
 
-            // Format short code
-            $shortCode = Format::extractInstagarmShortCode($this->tracker->url);
-            if(is_null($shortCode))
-                return $this->fail();
+            // Scrap media details and update on DB
+            foreach($_urls as $url){
+                if(empty($url) || !isset($url))
+                    continue;
 
-            // Store media analytics
-            // TODO: verify short code parser
-            $_media = $scraper->getMedia($shortCode, $this->tracker);
-            // Set media influencer ID
-            $_media['influencer_id'] = $influencer->id;
-            // Store or update media
-            $existsMedia = $postRepo->exists($influencer, $_media['post_id']);
-            if(!is_null($existsMedia)){
-                // $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
-                // $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
-                $postRepo->update($existsMedia, $_media);
-                Log::info("Update post: {$existsMedia->short_code}");
-            }else{
-                // $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
-                // $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
-                $postRepo->create($_media);
-                Log::info("Create post: {$_media['short_code']}");
+                $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
             }
-            // if(is_array($instaMedias) && sizeof($instaMedias) > 0)
-                // $this->console->writeln("<fg=green>Successfully updated " . sizeof($influencerRepo) . " posts</>");
 
             // Set tracker on finished status
             $this->tracker->update(['queued' => 'finished']);
@@ -131,5 +124,34 @@ class ScrapInstagramPostJob implements ShouldQueue
         // Set tracker on failed status
         $this->tracker->update(['queued' => 'failed']);
         $this->tracker = $this->tracker->refresh();
+    }
+
+    private function scrapMediaDetails(string $url, InstagramScraper $scraper, Influencer $influencer, InfluencerPostRepository $postRepo)
+    {
+        // Format short code
+        $shortCode = Format::extractInstagarmShortCode($url);
+        if(is_null($shortCode))
+            return $this->fail();
+
+        // Store media analytics
+        // TODO: verify short code parser
+        $_media = $scraper->getMedia($shortCode, $this->tracker);
+        // Set media influencer ID
+        $_media['influencer_id'] = $influencer->id;
+        // Store or update media
+        $existsMedia = $postRepo->exists($influencer, $_media['post_id']);
+        if(!is_null($existsMedia)){
+            // $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
+            // $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
+            $postRepo->update($existsMedia, $_media);
+            Log::info("Update post: {$existsMedia->short_code}");
+        }else{
+            // $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
+            // $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
+            $postRepo->create($_media);
+            Log::info("Create post: {$_media['short_code']}");
+        }
+        // if(is_array($instaMedias) && sizeof($instaMedias) > 0)
+            // $this->console->writeln("<fg=green>Successfully updated " . sizeof($influencerRepo) . " posts</>");
     }
 }

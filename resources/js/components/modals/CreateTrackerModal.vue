@@ -52,7 +52,8 @@
                   <div class="form-url" v-show="type !== 'story'">
                      <div class="control">
                         <label>{{ type === 'url' ? 'Destination URL' : 'Post URL' }}</label>
-                        <input v-model="url" type="text" placeholder="https://" />
+                        <input v-if="type === 'url'" v-model="url" type="text" placeholder="https://" />
+                        <vue-tags-input v-if="type === 'post'" v-model="url" :placeholder="'Add post URL'" :tags="urls" @tags-changed="newUrls => urls = newUrls"/>
                         <p v-show="type === 'url'">We will generate a shortened URL which will redirect to the destination URL and allow us to track the number and location of visits.</p>
                         <p v-show="type === 'post'">You can specify multiple post URLs on blogs or social media, one URL per line. Several trackers will then be created.</p>
                      </div>
@@ -156,9 +157,12 @@
 <script>
 import {mapGetters} from 'vuex';
 import FileInput from '../FileInput';
+import VueTagsInput from '@johmun/vue-tags-input';
+
 export default {
    components: {
-      FileInput
+      FileInput,
+      VueTagsInput
    },
    props: {
       show: {
@@ -175,7 +179,8 @@ export default {
          type: "url",
          username: null,
          story: null,
-         url: null,
+         url: '',
+         urls: [],
          n_squences: null,
          n_squences_impressions: null,
          n_impressions_first_sequence: null,
@@ -217,6 +222,8 @@ export default {
             return true;
 
          if(this.type === 'url' || this.type === 'post'){
+            // TODO: handle multi URLs
+            return false;
             let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
             '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
@@ -241,10 +248,24 @@ export default {
             platform: this.platform
          };
 
-         // Set URL/POST data
-         if(this.type === 'url' || this.type === 'post'){
+         let _urls = "";
+
+         // Set POST data
+         if(this.type === 'url'){
             _data.url = this.url;
-         }else{
+         }
+         
+         // Set URL data
+         if(this.type === 'post' && this.urls.length > 0){
+            this.urls.map((item, key) => {
+               _urls += item.text + ";";
+            });
+
+            _data.url = _urls;
+         }
+         
+         // Set STORY data
+         if(this.type === 'story'){
             // STORY data
             _data.username = this.username;
             _data.story = this.story;

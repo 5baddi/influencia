@@ -93,8 +93,8 @@ class Tracker extends Model
      * 
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function post()
+    public function posts()
     {
-        return $this->hasOne(InfluencerPost::class, 'tracker_id', 'id')->with('influencer');
+        return $this->hasMany(InfluencerPost::class, 'tracker_id', 'id');
     }
 }

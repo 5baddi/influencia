@@ -23,7 +23,7 @@ class CreateTrackerTable extends Migration
             $table->string('name')->unique()->nullable(false);
             $table->enum('platform', ['instagram', 'snapchat', null])->nullable();
             $table->string('username')->nullable();
-            $table->string('url')->nullable();
+            $table->longText('url')->nullable();
             $table->integer('nbr_squences')->nullable();
             $table->integer('nbr_squences_impressions')->nullable();
             $table->integer('nbr_impressions_first_sequence')->nullable();

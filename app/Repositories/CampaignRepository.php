@@ -30,11 +30,13 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post))
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts))
                     continue;
-                    
-                $engagements += $tracker->post->likes + $tracker->post->comments;
+
+                foreach($tracker->posts as $post){
+                    $engagements += $post->likes + $post->comments;
+                }
             }
        }
 
@@ -49,11 +51,16 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated engagements
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post) || $tracker->post->is_ad)
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts))
                     continue;
 
-                $engagements += $tracker->post->likes + $tracker->post->comments;
+                foreach($tracker->posts as $post){
+                    if($post->is_ad)
+                        continue;
+
+                    $engagements += $post->likes + $post->comments;
+                }
             }
        }
 
@@ -68,11 +75,13 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post))
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts))
                     continue;
                     
-                $views += $tracker->post->video_views;
+                foreach($tracker->posts as $post){
+                    $views += $post->video_views;
+                }
             }
        }
 
@@ -87,11 +96,16 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated views
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post) || $tracker->post->is_ad)
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts))
                     continue;
 
-                $views += $tracker->post->video_views;
+                foreach($tracker->posts as $post){
+                    if($post->is_ad)
+                        continue;
+
+                    $views += $post->video_views;
+                }
             }
        }
 
@@ -106,11 +120,13 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post))
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts))
                     continue;
 
-                $impressions += ($tracker->post->likes + $tracker->post->video_views);
+                foreach($tracker->posts as $post){
+                    $impressions += ($post->likes + $post->video_views);
+                }
             }
        }
 
@@ -125,11 +141,16 @@ class CampaignRepository extends BaseRepository
 
        // calculate total estimated impressions
        foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post) || $tracker->post->is_ad)
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts))
                     continue;
 
-                $impressions += ($tracker->post->likes + $tracker->post->video_views);
+                foreach($tracker->posts as $post){
+                    if($post->is_ad)
+                        continue;
+
+                    $impressions += ($post->likes + $post->video_views);
+                }
             }
        }
 
@@ -150,13 +171,15 @@ class CampaignRepository extends BaseRepository
                 continue;
 
             foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post) || !in_array($tracker->type, ['post', 'story']))
+                if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
                     continue;
 
-                // Load influencer
-                $tracker->post->load('influencer');
+                foreach($tracker->posts as $post){
+                    // Load influencer
+                    $post->load('influencer');
 
-                $communities += $tracker->post->influencer->followers;
+                    $communities += $post->influencer->followers;   
+                }
 
                 // switch($tracker->type){
                 //     case 'post':
@@ -185,14 +208,19 @@ class CampaignRepository extends BaseRepository
             if($campaign->trackers->count() === 0)
                 continue;
 
-            foreach($campaign->trackers->load('post') as $tracker){
-                if(is_null($tracker->post) || $tracker->post->is_ad || !in_array($tracker->type, ['post', 'story']))
+            foreach($campaign->trackers->load('posts') as $tracker){
+                if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
                     continue;
 
-                // Load influencer
-                $tracker->post->load('influencer');
+                foreach($tracker->posts as $post){
+                    if($post->is_ad)
+                        continue;
+                        
+                    // Load influencer
+                    $post->load('influencer');
 
-                $communities += $tracker->post->influencer->followers;
+                    $communities += $post->influencer->followers;   
+                }
             }
         }
 
