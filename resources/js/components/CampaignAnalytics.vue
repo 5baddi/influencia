@@ -83,18 +83,18 @@
 
         <div class="posts-section" v-if="campaign.data && campaign.data.posts_count > 0">
             <h4>Posts</h4>
-            <p>There are {{ campaign.trackers_count ? campaign.trackers_count : 0 }} posts for this campaign.</p>
-            <div class="campaign-posts">
-                <a @mouseover="attrActive=tracker.post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="tracker in campaign.data.trackers" :key="tracker.id" :href="tracker.post.link" target="_blank" v-if="tracker.post">
-                    <img :src="tracker.post.thumbnail_url" loading="lazy"/>
+            <p>There are {{ campaign.data && campaign.data.posts_count ? campaign.data.posts_count : 0 }} posts for this campaign.</p>
+            <div class="campaign-posts" v-for="tracker in campaign.data.trackers" :key="tracker.id">
+                <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
+                    <img :src="post.thumbnail_url" loading="lazy"/>
                     <div class="campaign-posts-card-icons">
                         <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>
-                        <i v-if="tracker.post.type === 'video' || tracker.post.type=== 'sidecar'" :class="'fas fa-' + (tracker.post.type === 'sidecar' ? 'images' : 'video')"></i>
+                        <i v-if="post.type === 'video' || post.type=== 'sidecar'" :class="'fas fa-' + (post.type === 'sidecar' ? 'images' : 'video')"></i>
                     </div>
-                    <div :class="'campaign-posts-card-attr ' + (attrActive === tracker.post.id ? ' active' : '')">
-                        <span v-if="tracker.post.video_views"><i class="fas fa-eye"></i>{{ nbr().abbreviate(tracker.post.video_views) }}</span>
-                        <span v-if="tracker.post.likes"><i class="fas fa-heart"></i>{{ nbr().abbreviate(tracker.post.likes) }}</span>
-                        <span v-if="tracker.post.comments"><i class="fas fa-comment"></i>{{ nbr().abbreviate(tracker.post.comments) }}</span>
+                    <div :class="'campaign-posts-card-attr ' + (attrActive === post.id ? ' active' : '')">
+                        <span v-if="post.video_views"><i class="fas fa-eye"></i>{{ nbr().abbreviate(post.video_views) }}</span>
+                        <span v-if="post.likes"><i class="fas fa-heart"></i>{{ nbr().abbreviate(post.likes) }}</span>
+                        <span v-if="post.comments"><i class="fas fa-comment"></i>{{ nbr().abbreviate(post.comments) }}</span>
                     </div>
                 </a>
           </div>

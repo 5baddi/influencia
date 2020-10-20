@@ -1387,7 +1387,7 @@ span.status-danger::before {
 
 .campaign-posts-card {
   position: relative;
-  flex: 0 0 calc(20% - .5rem);
+  flex: 0 0 calc(25% - .5rem);
   margin-right: auto;
   overflow: hidden;
   border-color: rgba(0, 0, 0, 0.12);

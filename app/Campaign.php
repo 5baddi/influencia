@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class Campaign extends Model
