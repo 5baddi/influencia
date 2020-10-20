@@ -110,14 +110,14 @@ export default {
    computed:{
       ...mapGetters(["campaigns", "trackers"])
    },
-   // notifications: {
-   //    createTrackerErrors: {
-   //       type: "error"
-   //    },
-   //    createTrackerSuccess: {
-   //       type: "success"
-   //    }
-   // },
+   notifications: {
+      createTrackerErrors: {
+         type: "error"
+      },
+      createTrackerSuccess: {
+         type: "success"
+      }
+   },
    methods: {
       moment(){
          return moment();
@@ -153,10 +153,10 @@ export default {
          this.$store.dispatch("addNewTracker", formData)
             .then(response => {
                this.dismissAddTrackerModal();
-               // this.createTrackerSuccess({ message: `Tracker ${response.data.name} created successfuly!` });
+               this.createTrackerSuccess({ message: `Tracker ${response.data.name} created successfuly!` });
             })
             .catch(error => {
-               // this.createTrackerErrors({ title: "Error", message: `${error.message}` });
+               this.createTrackerErrors({ title: "Error", message: `${error.message}` });
                // error.errors.map((v, i) => {
                //    console.log(v);
                // });

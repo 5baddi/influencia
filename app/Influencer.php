@@ -30,7 +30,14 @@ class Influencer extends Model
         'follows',
         'followers',
         'pic_url',
-        'banned'
+        'banned',
+        'engagement_rate',
+        'queued',
+        'highlight_reel',
+        'business_category',
+        'business_email',
+        'business_phone',
+        'business_address'
     ];
 
      /**

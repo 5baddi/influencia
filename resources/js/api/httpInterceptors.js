@@ -2,37 +2,37 @@ import { api } from "./index";
 const actionScope = `Loader`;
 export function setupInterceptors({ dispatch }) {
   let requestsPending = 0;
-const req = {
+  const req = {
     pending: () => {
       requestsPending++;
       dispatch(`${actionScope}/show`);
     },
     done: () => {
       requestsPending--;
-if (requestsPending <= 0) {
+      if(requestsPending <= 0){
         dispatch(`${actionScope}/hide`);
       }
     }
   };
-api.interceptors.request.use(
+  api.interceptors.request.use(
     config => {
       req.pending();
-return config;
+      return config;
     },
     error => {
       requestsPending--;
-req.done();
-return Promise.reject(error);
+      req.done();
+      return Promise.reject(error);
     }
   );
-api.interceptors.response.use(
-    ({ data }) => {
+  api.interceptors.response.use(
+    response => {
       req.done();
-return Promise.resolve(data);
+      return Promise.resolve(response);
     },
     error => {
       req.done();
-return Promise.reject(error);
+      return Promise.reject(error);
     }
   );
 }

@@ -13,8 +13,8 @@ import { router } from './routes';
 import store from './store';
 import App from './pages/App';
 import { api } from './api/index';
-// import { setupInterceptors } from './api/httpInterceptors';
-// import './notifications';
+import { setupInterceptors } from './api/httpInterceptors';
+import './notifications';
 import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
 // import { VuejsDatatableFactory } from 'vuejs-datatable';
@@ -50,30 +50,29 @@ const app = new Vue({
         }
     },
     created() {
-        // setupInterceptors(store);
+        setupInterceptors(store);
 
         api.interceptors.response.use(response => {
-            return response;
-        }, error => {
-            return Promise.reject(error);
-        }
-            // response => response,
-            // error => {
+                return response;
+            }, error => {
+                if(error.response.status === 401){
+                    this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
+                }
+                if(error.response.status === 429){
+                    console.log("Too many requests!");
+                }
 
-            //     if (error.response.status === 401) {
-            //         this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
-            //     }
-            //     return Promise.reject(error)
-            // }
+                return Promise.reject(error);
+            }
         );
         
         this.$router.beforeEach((to, from, next) => {
-
             const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user')
 
-            if (to.matched.some(record => record.meta.auth) && !loggedIn) {
+            if(to.matched.some(record => record.meta.auth) && !loggedIn){
                 next('/login')
             }
+            
             next()
         });
 

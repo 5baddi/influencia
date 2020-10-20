@@ -36,7 +36,7 @@ class CampaignRepository extends BaseRepository
                 if(is_null($tracker->posts))
                     continue;
 
-                foreach($tracker->posts as $post){
+                foreach($tracker->posts->load('influencer') as $post){
                     $engagements += $post->likes + $post->comments;
                 }
             }

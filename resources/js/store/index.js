@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import { api } from '../api';
-// import { Loader } from './loader';
+import { Loader } from './loader';
 import ability from '../services/ability';
 
 Vue.use(Vuex);
@@ -295,7 +295,7 @@ export default new Vuex.Store({
     actions: actions,
     mutations: mutations,
     modules: {
-        // Loader
+        Loader
     },
     plugins: [
         updateAbilities

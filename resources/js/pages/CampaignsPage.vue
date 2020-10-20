@@ -149,7 +149,7 @@ export default {
             brand_id: this.$store.getters.activeBrand && this.$store.getters.activeBrand.id
          };
          this.$store.dispatch("addNewCampaign", payload).then(() => {
-            // this.createCampaignSuccess({ message: "Campaign created successfully" });
+            this.createCampaignSuccess({ message: "Campaign created successfully" });
             this.dismissAddCampaignModal();
          });
       },
@@ -161,13 +161,13 @@ export default {
    computed: {
       ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "trackers"])
    },
-   // notifications: {
-   //    createCampaignErrors: {
-   //       type: "error"
-   //    },
-   //    createCampaignSuccess: {
-   //       type: "success"
-   //    }
-   // }
+   notifications: {
+      createCampaignErrors: {
+         type: "error"
+      },
+      createCampaignSuccess: {
+         type: "success"
+      }
+   }
 };
 </script>
