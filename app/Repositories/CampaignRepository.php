@@ -22,11 +22,6 @@ class CampaignRepository extends BaseRepository
        parent::__construct($model);
    }
 
-   public function getInfluencers()
-   {
-        
-   }
-
    public function getEngagements() : int
    {
        // Init

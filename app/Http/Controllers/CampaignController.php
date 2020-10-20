@@ -96,13 +96,11 @@ class CampaignController extends Controller
         $organicViews = $this->campaignRepo->getOrganicViews();
         $engagements = $this->campaignRepo->getEngagements();
         $organicEngagements = $this->campaignRepo->getOrganicEngagements();
-        $influencers = $this->campaignRepo->getInfluencers();
 
         return response()->success(
             "Campaign fetched successfully.",
             [
                 'data'          =>  $campaign,
-                'influencers'   =>  $influencers,
                 'impressions'   =>  $impressions,
                 'communities'   =>  $communities,
                 'views'         =>  $views,

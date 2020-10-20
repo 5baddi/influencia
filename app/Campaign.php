@@ -17,7 +17,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $appends = ['posts_count', 'stories_count', 'urls_count', 'all_posts_count', 'sentiments_positive', 'sentiments_neutral', 'sentiments_negative', 'top_three_emojis'];
+    protected $appends = ['posts_count', 'stories_count', 'urls_count', 'all_posts_count', 'sentiments_positive', 'sentiments_neutral', 'sentiments_negative', 'top_three_emojis', 'engagements', 'organic_engagements', 'views', 'organic_views', 'impressions', 'organic_impressions', 'communities', 'organic_communities'];
     
 
     /**
@@ -207,5 +207,145 @@ class Campaign extends Model
             'top'   =>  array_slice($topThreeEmojis, 0, 3, true),
             'all'   =>  $emojisCount
         ];
+    }
+
+    public function getEngagementsAttribute()
+    {
+        $engagement = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                $engagement += $post->likes + $post->comments;
+            }
+        }
+
+        return $engagement;
+    }
+    
+    public function getViewsAttribute()
+    {
+        $views = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                $views += $post->video_views;
+            }
+        }
+
+        return $views;
+    }
+    
+    public function getImpressionsAttribute()
+    {
+        $impressions = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                $impressions += $post->likes + $post->video_views;
+            }
+        }
+
+        return $impressions;
+    }
+    
+    public function getCommunitiesAttribute()
+    {
+        $communities = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts->load('influencer') as $post){
+                $communities += $post->influencer->followers;
+            }
+        }
+
+        return $communities;
+    }
+    
+    public function getOrganicCommunitiesAttribute()
+    {
+        $communities = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                if($post->is_ad)
+                    continue;
+
+                $communities += $post->likes + $post->comments;
+            }
+        }
+
+        return $communities;
+    }
+    
+    public function getOrganicEngagementsAttribute()
+    {
+        $engagement = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                if($post->is_ad)
+                    continue;
+
+                $engagement += $post->likes + $post->comments;
+            }
+        }
+
+        return $engagement;
+    }
+    
+    public function getOrganicImpressionsAttribute()
+    {
+        $impressions = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                if($post->is_ad)
+                    continue;
+
+                $impressions += $post->likes + $post->video_views;
+            }
+        }
+
+        return $impressions;
+    }
+    
+    public function getOrganicViewsAttribute()
+    {
+        $views = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                if($post->is_ad)
+                    continue;
+
+                $views += $post->video_views;
+            }
+        }
+
+        return $views;
     }
 }

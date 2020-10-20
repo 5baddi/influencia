@@ -17,11 +17,13 @@ import { api } from './api/index';
 // import './notifications';
 import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
+// import { VuejsDatatableFactory } from 'vuejs-datatable';
 
 Vue.prototype.$http = api;
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
+// Vue.use(VuejsDatatableFactory);
 
 // Register global component
 // Vue.component('can', Can);

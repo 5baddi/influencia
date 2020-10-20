@@ -1353,6 +1353,7 @@ span.status-danger::before {
   text-align: center;
   padding: 1rem;
   font-size: 32pt;
+  cursor: pointer;
 }
 
 .campaign .cards.sentiments .card ul li span {
