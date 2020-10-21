@@ -68,8 +68,8 @@
                         <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
                      </td>
                      <td class="text-center">
-                        <a href="javascript:void(0);" v-show="tracker.id" class="icon-link" :title="'Edit tracker'" @click="showEditTrackerModal(tracker)"><i class="fas fa-pen"></i></a>
-                        <a href="javascript:void(0);" class="icon-link" :title="'Delete tracker'"><i class="fas fa-trash"></i></a>
+                        <!-- <a href="javascript:void(0);" v-show="tracker.id" class="icon-link" :title="'Edit tracker'" @click="showEditTrackerModal(tracker)"><i class="fas fa-pen"></i></a> -->
+                        <!-- <a href="javascript:void(0);" class="icon-link" :title="'Delete tracker'"><i class="fas fa-trash"></i></a> -->
                      </td>
                   </tr>
                   <tr v-show="!trackers || trackers.length == 0">

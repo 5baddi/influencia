@@ -63,26 +63,67 @@
                 <canvas id="sentiments-chart"></canvas>
             </div>
             <div class="card">
-                <h5>Top 3 emojis</h5>
+                <h5>Top emojis</h5>
                 <ul>
                     <li v-for="(emoji, index) in campaign.data.top_three_emojis.top" :key="index">
                         {{ emoji }}
                         <span>{{ ((index / (campaign.data.top_three_emojis.all ? campaign.data.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
                     </li>
-                    <!-- <li>
-                        😍
-                        <span>21.1%</span>
-                    </li>
-                    <li>
-                        🙏
-                        <span>40%</span>
-                    </li> -->
                 </ul>
             </div>
         </div>
 
         <div class="by-influencers">
             <!-- <datatable :columns="columns" :data="rows"></datatable> -->
+            <h4>Performance breakdown by Influencer</h4>
+            <table class="table table-with-profile">
+                <thead>
+                    <tr class="row">
+                        <td>Influencer</td>
+                        <td>Number of posts</td>
+                        <td>Size of activated communities</td>
+                        <td>Estimated impressions</td>
+                        <td>Earned Media Value</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-show="campaign.data.influencers.length > 0" v-for="influencer in campaign.data.influencers" :key="influencer.id">
+                        <td>
+                            <p style="display: inline-flex; align-items: center;"><img :src="influencer.pic_url"/>&nbsp;{{ influencer.name ? influencer.name : influencer.username }}</p>
+                        </td>
+                        <td>{{ influencer.posts }}</td>
+                        <td>{{ influencer.estimated_communities }}</td>
+                        <td>{{ influencer.estimated_impressions }}</td>
+                        <td>--.-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="by-instagram-posts">
+            <h4>Performance breakdown by Influencer</h4>
+            <table class="table table-with-profile">
+                <thead>
+                    <tr class="row">
+                        <td>Influencer</td>
+                        <td>Number of posts</td>
+                        <td>Size of activated communities</td>
+                        <td>Estimated impressions</td>
+                        <td>Earned Media Value</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-show="campaign.data.instagram_posts.length > 0" v-for="post in campaign.data.instagram_posts" :key="post.id">
+                        <td>
+                            <p style="display: inline-flex; align-items: center;"><img :src="post.influencer.pic_url"/>&nbsp;{{ post.influencer.name ? post.influencer.name : post.influencer.username }}</p>
+                        </td>
+                        <!-- <td>{{ influencer.posts }}</td>
+                        <td>{{ influencer.estimated_communities }}</td>
+                        <td>{{ influencer.estimated_impressions }}</td> -->
+                        <td>--.-</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="posts-section" v-if="campaign.data && campaign.data.posts_count > 0">
@@ -134,9 +175,9 @@ export default {
     this.createDoughtnutChart('sentiments-chart', {
         datasets: [{
             data: [
-                this.campaign.data.sentiments_positive,
-                this.campaign.data.sentiments_neutral,
-                this.campaign.data.sentiments_negative
+                this.campaign.data.sentiments_positive.toFixed(2),
+                this.campaign.data.sentiments_neutral.toFixed(2),
+                this.campaign.data.sentiments_negative.toFixed(2)
             ],
             backgroundColor: [
                 "#AFD75C",

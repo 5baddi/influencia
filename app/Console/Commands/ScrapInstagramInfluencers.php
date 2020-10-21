@@ -10,6 +10,7 @@ use App\Jobs\ScrapInstagramPostJob;
 use App\Repositories\TrackerRepository;
 use App\Repositories\InfluencerRepository;
 use App\Repositories\InfluencerPostRepository;
+use Illuminate\Support\Facades\Log;
 
 class ScrapInstagramInfluencers extends Command
 {
@@ -123,19 +124,28 @@ class ScrapInstagramInfluencers extends Command
             if($this->option('force') === 'false' && $influencer->posts()->count() > 0  && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
 
-            // Scrap account details
-            $this->info("Start scraping account @" . $influencer->username);
-            $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+            try{
+                // Scrap account details
+                $this->info("Start scraping account @" . $influencer->username);
+                $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
-            // Update influencer
-            $this->repository->update($influencer, $accountDetails);
-            $this->info("Successfully updated influencer @" . $influencer->username);
-            $influencer->fresh();
+                // Update influencer
+                $this->repository->update($influencer, $accountDetails);
+                $this->info("Successfully updated influencer @" . $influencer->username);
+                $influencer->fresh();
 
-            // Update influencer posts
-            $this->info("Number of posts: " . $influencer->posts);
-            $this->info("Please wait until scraping all medias ...");
-            $this->instagramScraper->getMedias($influencer);
+                // Update influencer posts
+                $this->info("Number of posts: " . $influencer->posts);
+                $this->info("Please wait until scraping all medias ...");
+                $this->instagramScraper->getMedias($influencer);
+
+                // Update influencer queued state
+                $influencer->update(['queued', 'finished']);
+            }catch(\Exception $ex){
+                $influencer->update(['queued' => 'failed']);
+                $this->error("Failed to scrap influencer @{$influencer->username}");
+                Log::error($ex->getMessage());
+            }
         }
     }
 
@@ -156,26 +166,49 @@ class ScrapInstagramInfluencers extends Command
             if($this->option('force') === 'false' && isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
 
-            // TODO: scrap stories details
-            if($tracker->type === 'story')
+            // Ignore failed tracker
+            if($tracker->queued === 'failed')
                 continue;
 
-            if($tracker->type === 'post'){
-                // Get post
-                $post = $this->postRepo->getPostByTracker($tracker);
+            try{
+                // TODO: scrap stories details
+                if($tracker->type === 'story')
+                    continue;
 
-                // TODO: Update username and platform
-                // Scrap post details
-                if(!is_null($post)){
-                    $trackerData = [
-                        'nbr_replies'   =>  $post->comments,
-                        'nbr_squences'  =>  $post->sequences
-                    ];
+                if($tracker->type === 'post'){
+                    // Update trackers & influencers queued state
+                    $tracker = $tracker->load('posts');
+                    foreach($tracker->posts->load('influencer') as $post){
+                        if($post->influencer->queued === 'failed'){
+                            $tracker->update(['queued' => 'failed', 'status' => false]);
+                            $tracker = $tracker->refresh();
 
-                    // Update tracker analytics
-                    $this->info("Updating tracker @" . $tracker->name ?? $tracker->uuid);
-                    $this->trackerRepo->update($tracker, $trackerData);
+                            break;
+                        }
+                        
+                        if($post->influencer->posts()->count() == $post->influencer->posts){
+                            if($post->influencer->queued !== 'finished')
+                                $post->influencer->update(['queued' => 'finished']);
+
+                            $tracker->update(['queued' => 'finished', 'status' => true]);
+                            $tracker = $tracker->refresh();
+
+                            continue;
+                        }
+
+                        $post->influencer->update(['queued' => 'progress']);
+                        $tracker->update(['queued' => 'progress', 'status' => true]);
+                        $tracker = $tracker->refresh();
+
+                        break;
+                    }
                 }
+            }catch(\Exception $ex){
+                $tracker->update(['queued' => 'failed']);
+                $this->error("Failed to scrap tracker {$tracker->uuid}");
+                Log::error($ex->getMessage());
+
+                continue;
             }
         }
     }

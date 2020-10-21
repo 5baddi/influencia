@@ -74,8 +74,8 @@
                      <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="campaign.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: campaign.uuid}}" class="icon-link" title="Statistics">
                             <i class="far fa-chart-bar"></i>
                         </router-link>
-                        <a v-if="$can('rename', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a>
-                        <a v-if="$can('delete', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" class="icon-link" title="Delete" @click="deleteCampaign(campaign)"><i class="fas fa-trash"></i></a>
+                        <!-- <a v-if="$can('rename', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a> -->
+                        <!-- <a v-if="$can('delete', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" class="icon-link" title="Delete" @click="deleteCampaign(campaign)"><i class="fas fa-trash"></i></a> -->
                      </td>
                   </tr>
                </tbody>

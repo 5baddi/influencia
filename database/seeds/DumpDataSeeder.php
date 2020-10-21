@@ -25,6 +25,8 @@ class DumpDataSeeder extends Seeder
 
         // Create permissions
         $permissions = [
+            'list_brand',
+            'show_brand',
             'list_campaign',
             'show_campaign',
             'analytics_campaign',

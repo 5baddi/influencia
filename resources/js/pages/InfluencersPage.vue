@@ -56,11 +56,11 @@
                         <p>{{ moment(influencer.created_at).format('DD/MM/YYYY') }}</p>
                      </td>
                      <td class="text-center">
-                        <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" title="Details">
+                        <router-link v-if="influencer.queued === 'finished'" :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" title="Details">
                             <i class="fas fa-eye"></i>
                         </router-link>
-                        <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a>
-                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
+                        <!-- <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a> -->
+                        <!-- <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a> -->
                      </td>
                   </tr>
                   <tr v-show="!influencers || influencers.length == 0">

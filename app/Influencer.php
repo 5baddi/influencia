@@ -115,7 +115,7 @@ class Influencer extends Model
      */
     public function getPostsCountAttribute()
     {
-        return $this->posts()->whereNotNull('tracker_id');
+        return $this->posts()->whereNotNull('tracker_id')->count();
     }
 
     /**

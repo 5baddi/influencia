@@ -32,7 +32,7 @@ class TrackerRepository extends BaseRepository
     */
    public function getInstagram() : Collection
    {
-       return $this->model->where(['platform' => 'instagram', 'status' => true])
+       return $this->model->where(['platform' => 'instagram'])
                     ->whereIn('type', ['post', 'story'])
                     ->get();
    }

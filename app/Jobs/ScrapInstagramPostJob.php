@@ -113,8 +113,11 @@ class ScrapInstagramPostJob implements ShouldQueue
                 $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
             }
 
+            $influencer = $influencer->refresh();
             // Set tracker on finished status
-            $this->tracker->update(['queued' => 'finished']);
+            if($influencer->posts()->count() == $influencer->posts)
+                $this->tracker->update(['queued' => 'finished']);
+                
             $this->tracker = $this->tracker->refresh();
         }
     }

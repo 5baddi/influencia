@@ -1,3 +1,5 @@
+@import "~material-design-icons-iconfont/dist/material-design-icons";
+
 .text-center{
     text-align: center !important;
 }
@@ -39,6 +41,13 @@ a.icon-link{
 .table-with-profile td img{
     max-width: 36px;
     border-radius: 50%;
+}
+
+.material-table table{
+    width: 100% !important;
+}
+.material-table table th{
+    text-align: left !important;
 }
 
 span.status{
@@ -148,7 +157,7 @@ span.status{
         &-card{
             position: relative;
             flex: 0 0 calc(25% - .5rem);
-            margin-right: auto;
+            // margin-right: auto;
             overflow: hidden;
             border-color: rgba(0, 0, 0, 0.12);
             border-radius: .5rem;
@@ -348,7 +357,7 @@ span.status{
         &-card{
             position: relative;
             flex: 0 0 calc(25% - .5rem);
-            margin-right: auto;
+            // margin-right: auto;
             overflow: hidden;
             border-color: rgba(0, 0, 0, 0.12);
             border-radius: .5rem;
@@ -401,5 +410,24 @@ span.status{
                 }
             }
         }
+    }
+
+    .by-influencers{
+        margin-bottom: 2rem;
+        padding: 1rem;
+        background: #fff;
+        border: 1px solid;
+        border-color: rgba(0, 0, 0, 0.12);
+        border-radius: 4px;
+        box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+
+        table{
+            border: none !important;
+            box-shadow: none !important;
+        }
+    }
+
+    .by-instagram-posts{
+        @extend .by-influencers;
     }
 }

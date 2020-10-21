@@ -66,8 +66,8 @@
                         <p>{{ moment(brand.created_at).format('DD/MM/YYYY') }}</p>
                      </td>
                      <td class="text-center">
-                        <a href="javascript:void(0);" v-show="brand.id" class="icon-link" title="Edit" @click="showEditBrandModal(brand)"><i class="fas fa-pen"></i></a>
-                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
+                        <!-- <a href="javascript:void(0);" v-show="brand.id" class="icon-link" title="Edit" @click="showEditBrandModal(brand)"><i class="fas fa-pen"></i></a> -->
+                        <!-- <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a> -->
                      </td>
                   </tr>
                   <tr v-show="!brands || brands.length == 0">

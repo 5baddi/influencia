@@ -3,7 +3,6 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class Campaign extends Model
@@ -17,7 +16,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    protected $appends = ['posts_count', 'stories_count', 'urls_count', 'all_posts_count', 'sentiments_positive', 'sentiments_neutral', 'sentiments_negative', 'top_three_emojis', 'engagements', 'organic_engagements', 'views', 'organic_views', 'impressions', 'organic_impressions', 'communities', 'organic_communities'];
+    protected $appends = ['posts_count', 'stories_count', 'urls_count', 'all_posts_count', 'instagram_posts', 'sentiments_positive', 'sentiments_neutral', 'sentiments_negative', 'top_three_emojis', 'engagements', 'organic_engagements', 'views', 'organic_views', 'impressions', 'organic_impressions', 'communities', 'organic_communities', 'influencers'];
     
 
     /**
@@ -347,5 +346,52 @@ class Campaign extends Model
         }
 
         return $views;
+    }
+
+    public function getInfluencersAttribute()
+    {
+        $influencers = collect();
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts->load('influencer') as $post){
+                if($influencers->contains('id', $post->influencer->id))
+                    continue;
+
+                $influencers->add($post->influencer);
+            }
+        }
+
+        return $influencers;
+    }
+
+    public function getInstagramPostsAttribute()
+    {
+        $posts = collect();
+
+        foreach($this->trackers->where('platform', 'instagram')->load('posts') as $tracker){
+            if(is_null($tracker->posts) || $tracker->type === 'url')
+                continue;
+
+            if($tracker->type === 'story'){
+                if($posts->contains('id', $tracker->id))
+                    continue;
+                    
+                $posts->add($tracker->load('influencer'));
+
+                continue;
+            }
+
+            foreach($tracker->posts->load('influencer') as $post){
+                if($posts->contains('id', $post->id))
+                    continue;
+
+                $posts->add($post);
+            }
+        }
+
+        return $posts;
     }
 }

@@ -17,6 +17,13 @@ class Tracker extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -42,7 +49,8 @@ class Tracker extends Model
         'posted_date',
         'posted_hour',
         'status',
-        'queued'
+        'queued',
+        'influencer_id'
     ];
 
      /**
@@ -53,6 +61,7 @@ class Tracker extends Model
     protected $casts = [
         'user_id'       =>  'unsignedInteger',
         'campaign_id'   =>  'unsignedInteger',
+        'influencer_id' =>  'unsignedInteger',
         'posted_date'   =>  'date',
         'posted_time'   =>  'time',
         'status'        =>  'boolean'
@@ -77,6 +86,16 @@ class Tracker extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+    
+    /**
+     * Get influencer
+     * 
+     * @return \App\Influencer
+     */
+    public function influencer()
+    {
+        return $this->belongsTo(Influencer::class);
+    }
 
     /**
      * Get tracker media files
@@ -91,7 +110,7 @@ class Tracker extends Model
     /**
      * Get tracker posts
      * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()
     {
