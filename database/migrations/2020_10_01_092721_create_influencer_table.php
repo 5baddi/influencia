@@ -31,7 +31,7 @@ class CreateInfluencerTable extends Migration
             $table->string('business_category')->nullable();
             $table->string('business_email')->nullable();
             $table->string('business_phone')->nullable();
-            $table->longText('business_address')->nullable();
+            $table->json('business_address')->nullable();
             $table->boolean('is_business')->nullable();
             $table->boolean('is_private')->nullable();
             $table->boolean('is_verified')->nullable();

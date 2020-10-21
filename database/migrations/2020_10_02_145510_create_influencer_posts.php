@@ -33,14 +33,14 @@ class CreateInfluencerPosts extends Migration
             $table->double('comments_positive')->nullable();
             $table->double('comments_neutral')->nullable();
             $table->double('comments_negative')->nullable();
-            $table->longText('comments_emojis')->nullable();
-            $table->longText('comments_hashtags')->nullable();
+            $table->json('comments_emojis')->nullable();
+            $table->json('comments_hashtags')->nullable();
             $table->integer('video_views')->nullable();
             $table->double('video_duration')->nullable();
             $table->string('location_id')->nullable();
             $table->string('location')->nullable();
             $table->string('location_slug')->nullable();
-            $table->longText('location_json')->nullable();
+            $table->json('location_json')->nullable();
             $table->timestamp('published_at')->nullable(false);
             $table->boolean('comments_disabled')->default(false);
             $table->boolean('caption_edited')->default(false);
