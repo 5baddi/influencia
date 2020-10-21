@@ -50,6 +50,17 @@ a.icon-link{
     text-align: left !important;
 }
 
+.table thead th{
+    color: rgba(0, 0, 0, 0.54);
+    font-weight: 100;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    padding: 0.8rem 0.6rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    min-height: 64px;
+    text-align: left;
+}
+
 span.status{
     display: flex;
     align-items: center;
@@ -421,6 +432,11 @@ span.status{
         border-radius: 4px;
         box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 
+        h4{
+            margin: 0;
+            margin-bottom: 1rem;
+        }
+
         table{
             border: none !important;
             box-shadow: none !important;
@@ -429,5 +445,7 @@ span.status{
 
     .by-instagram-posts{
         @extend .by-influencers;
+
+        overflow-x: auto;
     }
 }

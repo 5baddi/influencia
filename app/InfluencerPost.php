@@ -23,7 +23,7 @@ class InfluencerPost extends Model
      *
      * @var array
      */
-    protected $appends = ['hashtags_count', 'sequences', 'image_sequences', 'video_sequences'];
+    protected $appends = ['hashtags_count', 'sequences', 'image_sequences', 'video_sequences', 'activated_communities', 'estimated_impressions', 'organic_impressions', 'engagements'];
 
      /**
      * The attributes that should be cast to native types.
@@ -148,6 +148,46 @@ class InfluencerPost extends Model
     public function getVideoSequencesAttribute() : int
     {
         return $this->files()->where('type', 'video')->count();
+    }
+
+    /**
+     * Get activated communities
+     *
+     * @return int
+     */
+    public function getActivatedCommunitiesAttribute() : int
+    {
+        return $this->influencer->followers;
+    }
+
+    /**
+     * Get estimated impressions
+     *
+     * @return int
+     */
+    public function getEstimatedImpressionsAttribute() : int
+    {
+        return ($this->attributes['likes'] ?? 0) + ($this->attributes['video_views'] ?? 0);
+    }
+    
+    /**
+     * Get organic impressions
+     *
+     * @return int|null
+     */
+    public function getOrganicImpressionsAttribute() : ?int
+    {
+        return $this->attributes['is_ad'] ? ($this->attributes['likes'] ?? 0) + ($this->attributes['video_views'] ?? 0) : null;
+    }
+    
+    /**
+     * Get engagements
+     *
+     * @return int
+     */
+    public function getEngagementsAttribute() : int
+    {
+        return ($this->attributes['likes'] ?? 0) + ($this->attributes['comments'] ?? 0);
     }
 
     /**

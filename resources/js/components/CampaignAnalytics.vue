@@ -79,11 +79,11 @@
             <table class="table table-with-profile">
                 <thead>
                     <tr class="row">
-                        <td>Influencer</td>
-                        <td>Number of posts</td>
-                        <td>Size of activated communities</td>
-                        <td>Estimated impressions</td>
-                        <td>Earned Media Value</td>
+                        <th>Influencer</th>
+                        <th>Number of posts</th>
+                        <th>Size of activated communities</th>
+                        <th>Estimated impressions</th>
+                        <th>Earned Media Value</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,15 +101,26 @@
         </div>
         
         <div class="by-instagram-posts">
-            <h4>Performance breakdown by Influencer</h4>
+            <h4>Performance breakdown by post on Instagram</h4>
             <table class="table table-with-profile">
                 <thead>
                     <tr class="row">
-                        <td>Influencer</td>
-                        <td>Number of posts</td>
-                        <td>Size of activated communities</td>
-                        <td>Estimated impressions</td>
-                        <td>Earned Media Value</td>
+                        <th>Influencer</th>
+                        <th width="20%">Post</th>
+                        <th>Media type</th>
+                        <th>Size of activated communities</th>
+                        <th>Estimated impressions</th>
+                        <th>Engagements</th>
+                        <th>Organic impressions (declarative)</th>
+                        <th>Engagements rate (reach)</th>
+                        <th>Likes</th>
+                        <th>Views</th>
+                        <th>Comments</th>
+                        <th>Impressions (first sequence)</th>
+                        <th>Story sequences</th>
+                        <th>Sequence impressions</th>
+                        <th>Post date</th>
+                        <th>Earne</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,10 +128,36 @@
                         <td>
                             <p style="display: inline-flex; align-items: center;"><img :src="post.influencer.pic_url"/>&nbsp;{{ post.influencer.name ? post.influencer.name : post.influencer.username }}</p>
                         </td>
-                        <!-- <td>{{ influencer.posts }}</td>
-                        <td>{{ influencer.estimated_communities }}</td>
-                        <td>{{ influencer.estimated_impressions }}</td> -->
-                        <td>--.-</td>
+                        <td>
+                            <a v-if="post.link && post.caption" :href="post.link" target="_blank">{{ post.caption.substr(1, 100) }}...</a>
+                            <p v-else>---</p>
+                        </td>
+                        <td>
+                            {{ post.type }}
+                        </td>
+                        <td>
+                            {{ post.activated_communities }}
+                        </td>
+                        <td>
+                            {{ post.estimated_impressions }}
+                        </td>
+                        <td>
+                            {{ post.engagements }}
+                        </td>
+                        <td>
+                            {{ post.organic_impressions ? post.organic_impressions : '-' }}
+                        </td>
+                        <td>
+                            {{ (post.influencer.engagement_rate && post.influencer.engagement_rate > 0) ? (post.influencer.engagement_rate * 100).toFixed(2) : '-'}}
+                        </td>
+                        <td>{{ post.likes ? post.likes : '-' }}</td>
+                        <td>{{ post.video_views ? post.video_views : '-' }}</td>
+                        <td>{{ post.comments ? post.comments : '-' }}</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td>{{ post.published_at ? moment(post.published_at).format('DD/MM/YYYY') : '-' }}</td>
+                        <td>-</td>
                     </tr>
                 </tbody>
             </table>
@@ -148,7 +185,8 @@
 </template>
 <script>
 import abbreviate from 'number-abbreviate';
-import Chart from 'chart.js'
+import Chart from 'chart.js';
+import moment from "moment";
 
 export default {
    props: {
@@ -160,6 +198,9 @@ export default {
        }
    },
    methods: {
+       moment() {
+         return moment();
+        },
        nbr(){
            return new abbreviate();
        },
