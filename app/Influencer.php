@@ -57,7 +57,7 @@ class Influencer extends Model
      *
      * @var array
      */
-    protected $appends = ['image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'comments', 'posts_count', 'estimated_impressions', 'estimated_communities'];
+    protected $appends = ['image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'video_views', 'comments', 'posts_count', 'estimated_impressions', 'estimated_communities'];
     
     /**
      * Get likes of an infleuncer
@@ -77,6 +77,16 @@ class Influencer extends Model
     public function getCommentsAttribute() : int
     {
         return $this->posts()->sum('comments');
+    }
+    
+    /**
+     * Get video views of an infleuncer
+     * 
+     * @return int
+     */
+    public function getVideoViewsAttribute() : int
+    {
+        return $this->posts()->sum('video_views');
     }
 
     /**
@@ -133,13 +143,7 @@ class Influencer extends Model
      */
     public function getEstimatedImpressionsAttribute()
     {
-        $impressions = 0;
-
-        foreach($this->posts() as $post){
-            $impressions += ($post->likes + $post->video_views);
-        }
-
-        return $impressions;
+        return  $this->getLikesAttribute() + $this->getVideoViewsAttribute();
     }
 
     /**
