@@ -33,7 +33,7 @@ class CheckAbilities
             }
 
             foreach($permissions as $name => $roles){
-                Gate::define($name, function(User $user) use ($name, $role){
+                Gate::define($name, function(User $user) use ($name){
                     // Super admin
                     if($user->is_superadmin)
                         return true;

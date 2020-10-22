@@ -7,7 +7,6 @@ use App\Tracker;
 use Carbon\Carbon;
 use App\TrackerMedia;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Jobs\ScrapInstagramPostJob;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateTrackerRequest;
