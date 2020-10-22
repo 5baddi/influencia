@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use Format;
 use App\Tracker;
+use Carbon\Carbon;
 use App\Influencer;
 use Illuminate\Bus\Queueable;
 use App\Services\InstagramScraper;
@@ -114,9 +115,11 @@ class ScrapInstagramPostJob implements ShouldQueue
             }
 
             $influencer = $influencer->refresh();
-            // Set tracker on finished status
+            // Set tracker on finished status or launch all posts scraper
             if($influencer->posts()->count() == $influencer->posts)
                 $this->tracker->update(['queued' => 'finished']);
+            else
+                ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
                 
             $this->tracker = $this->tracker->refresh();
         }

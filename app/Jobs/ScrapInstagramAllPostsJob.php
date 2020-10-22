@@ -12,7 +12,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
-class ScrapInstagramProfileJob implements ShouldQueue
+class ScrapInstagramAllPostsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -50,7 +50,7 @@ class ScrapInstagramProfileJob implements ShouldQueue
     {
         try{
             // Verify last fetch
-            if($this->influencer->queued !== 'finished' && isset($this->influencer->updated_at) && $this->influencer->updated_at->diffInDays(Carbon::now()) > 0){
+            if(!in_array($this->influencer->queued, ['finished', 'failed']) && isset($this->influencer->updated_at) && $this->influencer->updated_at->diffInDays(Carbon::now()) > 0){
                 // Set influencer queue as on progress
                 $this->influencer->update(['queued' => 'progress']);
                 $this->influencer = $this->influencer->refresh();
@@ -60,6 +60,8 @@ class ScrapInstagramProfileJob implements ShouldQueue
                 Log::info("Number of posts: " . $this->influencer->posts);
                 Log::info("Please wait until scraping all medias ...");
                 $posts = $scraper->getMedias($this->influencer);
+                if(is_array($posts) && sizeof($posts) > 0)
+                    Log::info("Scraped posts: " . sizeof($posts));
             }
         }catch(\Exception $ex){
             // Trace the error
