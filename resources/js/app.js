@@ -69,6 +69,11 @@ const app = new Vue({
         this.$router.beforeEach((to, from, next) => {
             const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user')
 
+            // let vm = this;
+            // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){
+            //     next('/')
+            // }
+
             if(to.matched.some(record => record.meta.auth) && !loggedIn){
                 next('/login')
             }

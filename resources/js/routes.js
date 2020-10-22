@@ -42,7 +42,8 @@ const routes = [
                 path: '/trackers',
                 component: TrackersPage,
                 meta: {
-                    auth: true
+                    auth: true,
+                    // subject: 'tracker'
                 },
 
             },
