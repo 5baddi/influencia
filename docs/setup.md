@@ -20,7 +20,7 @@ Run database migration and dump demo data.
 ### Run jobs
 Run artisan command that permit to listen and process each job queue.
 
-`php artisan queue:work --queue=default,trackers`
+`php artisan queue:work --queue=default,trackers,influencers`
 
 ### Update DB cron command *
 This command allow the app to update each campaign analytics & details with latest trackers details.
