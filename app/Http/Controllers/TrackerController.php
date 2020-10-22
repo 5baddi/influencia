@@ -4,18 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Brand;
 use App\Tracker;
+use Carbon\Carbon;
+use App\TrackerMedia;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use App\Http\Requests\CreateTrackerRequest;
-use App\Http\Requests\CreateStoryTrackerRequest;
 use App\Jobs\ScrapInstagramPostJob;
-use App\TrackerMedia;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\CreateTrackerRequest;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\CreateStoryTrackerRequest;
 
 class TrackerController extends Controller
 {
     public function index()
     {
+        abort_if(Gate::denies('list_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         return response()->success(
             "Trackers fetched successfully.",
             Tracker::all()
@@ -28,6 +32,8 @@ class TrackerController extends Controller
      */
     public function fetchByBrand(Brand $brand)
     {
+        abort_if(Gate::denies('list_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         return response()->success(
             "Trackers fetched successfully.",
             Tracker::with(['user', 'campaign', 'medias'])
@@ -46,6 +52,8 @@ class TrackerController extends Controller
      */
     public function create(CreateTrackerRequest $request)
     {
+        abort_if(Gate::denies('create_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         // Create new tracker row
         $tracker = Tracker::create($request->all());
         $tracker = $tracker->refresh();
@@ -67,6 +75,8 @@ class TrackerController extends Controller
      */
     public function createStory(CreateStoryTrackerRequest $request)
     {
+        abort_if(Gate::denies('create_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         // Create tracker
         $tracker = Tracker::create($request->all());
         $tracker = $tracker->refresh();
@@ -95,6 +105,8 @@ class TrackerController extends Controller
      */
     public function show(Tracker $tracker)
     {
+        abort_if(Gate::denies('show_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         return response()->success(
             "Tracker fetched successfully.",
             $tracker->toArray()
@@ -105,22 +117,24 @@ class TrackerController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Tracker  $tracker
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Tracker $tracker)
     {
-        //
+        abort_if(Gate::denies('edit_tracker') || Gate::denies('update', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Tracker $tracker
      * @return \Illuminate\Http\Response
      */
     public function destroy(Tracker $tracker)
     {
+        abort_if(Gate::denies('delete_tracker') || Gate::denies('delete', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         // Delete tracker row
         $tracker->delete();
 

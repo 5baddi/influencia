@@ -2,7 +2,7 @@
 
 namespace App;
 
-use App\Events\TrackeUpdated;
+use App\Events\TrackerUpdated;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
@@ -13,7 +13,7 @@ class Tracker extends Model
     protected $guarded = [];
 
     protected $dispatchesEvents = [
-        'updated' => TrackeUpdated::class,
+        'updated' => TrackerUpdated::class,
     ];
 
     /**
