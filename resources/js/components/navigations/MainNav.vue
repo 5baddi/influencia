@@ -29,23 +29,14 @@
       </div>
       <nav class="dashboard__sidebar__navigation">
          <ul>
-            <!-- <li v-if="$can('search', 'scraper') || AuthenticatedUser.is_superadmin" :class="{active : currentRouteName == `search`}">
+            <li v-if="$can('search', 'scraper') || AuthenticatedUser.is_superadmin" :class="{active : currentRouteName == `search`}">
                <router-link :to="{name : 'search'}">
                   <span class="icon">
-                     <svg width="24" height="24" viewBox="0 0 24 24" class="sc-fzoant dBHRFd">
-                        <g fill="none" fill-rule="evenodd">
-                           <circle cx="12" cy="12" r="12" />
-                           <path
-                              fill="#fff"
-                              fill-rule="nonzero"
-                              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
-                           />
-                        </g>
-                     </svg>
+                     <i class="fas fa-search"></i>
                   </span>
                   <span class="text">Search</span>
                </router-link>
-            </li> -->
+            </li>
             <li v-if="$can('list', 'campaign') || AuthenticatedUser.is_superadmin" :class="{active : currentRouteName == `campagins`}">
                <router-link :to="{name : 'campaigns'}">
                   <span class="icon">
