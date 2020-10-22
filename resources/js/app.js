@@ -17,6 +17,7 @@ import { setupInterceptors } from './api/httpInterceptors';
 import './notifications';
 import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
+import DataTable from './components/DataTable.vue';
 
 Vue.prototype.$http = api;
 
@@ -25,7 +26,7 @@ Vue.use(abilitiesPlugin, ability);
 // Vue.use(VuejsDatatableFactory);
 
 // Register global component
-// Vue.component('DataTable', DataTable);
+Vue.component('DataTable', DataTable);
 
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css'

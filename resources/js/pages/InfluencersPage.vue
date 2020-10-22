@@ -21,7 +21,15 @@
             </div>
          </header>
          <div class="datatable-scroll">
-            <table class="table table-with-profile">
+            <DataTable :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
+               <th slot="header">Actions</th>
+               <td slot="body-row" slot-scope="row">
+                  <router-link v-if="row.data.queued === 'finished'" :to="{name : 'influencers', params: {uuid: row.data.uuid}}" class="icon-link" title="Details">
+                     <i class="fas fa-eye"></i>
+                  </router-link>
+               </td>
+            </DataTable>
+            <!-- <table class="table table-with-profile">
                <thead>
                   <tr class="row">
                      <td>&nbsp;</td>
@@ -59,8 +67,8 @@
                         <router-link v-if="influencer.queued === 'finished'" :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" title="Details">
                             <i class="fas fa-eye"></i>
                         </router-link>
-                        <!-- <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a> -->
-                        <!-- <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a> -->
+                        <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a>
+                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
                      </td>
                   </tr>
                   <tr v-show="!influencers || influencers.length == 0">
@@ -69,7 +77,7 @@
                      </td>
                   </tr>
                </tbody>
-            </table>
+            </table> -->
          </div>
       </div>
       <InfluencerProfile v-if="influencer" :influencer="influencer"/>
@@ -92,6 +100,51 @@ export default {
       return {
          isLoading: true,
          editInfluencerModal: false,
+         columns: [
+            {
+               field: "pic_url",
+               callback: function(row){
+                  return '<img src="' + row.pic_url + '"/>';
+               }
+            },
+            {
+               name: "Full name",
+               field: "name",
+               callback: function(row){
+                  return row.name ? row.name : row.username;
+               }
+            },
+            {
+               name: "Followers",
+               field: "followers"
+            },
+            {
+               name: "Posts",
+               field: "posts"
+            },
+            {
+               name: "Platform",
+               field: "platform",
+               callback: function(row){
+                  let link = "";
+                  let icon = "";
+
+                  if(row.platform === "instagram"){
+                     link = "https://instagram.com/" + row.username;
+                     icon = "<i class=\"fab fa-instagram\"></i>";
+                  }
+
+                  return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
+               }
+            },
+            {
+               name: "Added at",
+               field: "created_at",
+               callback: function(row){
+                  return moment(row.created_at).format('DD/MM/YYYY');
+               }
+            }
+         ]
       };
    },
    beforeRouteEnter(to, from, next){
@@ -113,6 +166,9 @@ export default {
        '$route': 'initData'
    },
    methods: {
+      test(row){
+         console.log(row);
+      },
       dismissEditInfluencerModal(){
          this.editInfluencerModal = false;
       },
