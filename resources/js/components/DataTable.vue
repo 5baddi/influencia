@@ -1,16 +1,23 @@
 <template>
     <table :class="cssClasses">
         <thead ref="headercolumns">
-                <th v-for="(column, index) in columns" :key="index">{{ (column.name ? column.name : " ") | headerColumn }}</th>
+                <th v-for="(column, index) in columns" :key="index">
+                    {{ (column.name ? column.name : " ") | headerColumn }}
+                    <span v-if="column.sortable" @click="sortBy(column)">
+                        <i class="fas fa-sort-up"></i>
+                    </span>
+                    <span v-if="column.sortable" @click="sortBy(column)">
+                        <i class="fas fa-sort-down"></i>
+                    </span>
+                </th>
                 <slot name="header"></slot>
         </thead>
         <tbody>
-            <tr v-if="parsedData.length === 0 && !isLoading">
-                <td class="no-data" :colspan="getColumnsCount()"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</td>
-            </tr>
-            <tr v-if="isLoading">
-                <!-- <i class="fas fa-spinner fa-spin"></i>&nbsp; -->
-                <td class="no-data" :colspan="columns.length">Loading...</td>
+            <tr v-if="parsedData.length === 0">
+                <td class="no-data" :colspan="getColumnsCount()">
+                    <span v-show="!isLoading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
+                    <span v-show="isLoading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
+                </td>
             </tr>
             <tr v-show="parsedData.length > 0 && !isLoading" v-for="(obj, index) in parsedData" :key="index">
                 <td v-for="(col, idx) in columns" :key="idx">
@@ -19,6 +26,23 @@
                 <slot name="body-row" :data="obj"></slot>
             </tr>
         </tbody>
+        <tfoot v-if="parsedData.length > 0 && !isLoading">
+            <tr>
+                <td :colspan="getColumnsCount()">
+                    Rows per page:
+                    <select ref="itemsPerPage" @change="perPageOnChange($event)">
+                        <option v-for="value in rowPerPage" :key="value" :value="value" :selected="perPage == value">{{ value }}</option>
+                    </select>
+                    <span>{{ startIndex }} - {{ endIndex ? endIndex : parsedData.length }} of {{ parsedData.length }}</span>
+                    <button v-if="startIndex > 1">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button v-if="endIndex && endIndex < parsedData.length">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </template>
 <style scoped>
@@ -39,10 +63,51 @@
         border-bottom: 1px solid rgba(0, 0, 0, 0.12);
         text-align: left;
     }
+    table thead th svg{
+        margin-left: .2rem;
+        cursor: pointer;
+    }
+    table thead th svg:hover{
+        color: rgba(0, 0, 0, 0.7);
+    }
     table tbody td{
         font-size: 0.8rem;
         padding: 0.8rem 0.6rem;
         color: rgba(0, 0, 0, 0.61);
+    }
+    table tfoot td{
+        font-size: 0.8rem;
+        padding: 0.8rem 0.6rem;
+        color: rgba(0, 0, 0, 0.61);
+        text-align: right;
+        border-top: 1px solid rgba(0, 0, 0, 0.12);
+    }
+    table tfoot td >>> select{
+        background-color: transparent;
+        width: auto;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        height: auto;
+        margin-left: .2rem;
+        outline: 0;
+    }
+    table tfoot td >>> span{
+        margin: 0 1rem;
+    }
+    table tfoot td >>> button{
+        color: rgba(0,0,0,.54);
+        padding: 4px 8px;
+        cursor: pointer;
+        border: none;
+    }
+    table tfoot td >>> button:focus{
+        color: rgba(0,0,0,.9) !important;
+        border: none;
+        outline: none;
+    }
+    table tfoot td >>> button:hover{
+        color: rgba(0,0,0,.7) !important;
     }
     table tbody >>> img{
         max-width: 36px;
@@ -79,6 +144,9 @@ export default {
         fetchMethod: {
             required: true,
             type: String
+        },
+        responseField: {
+            type: String
         }
     },
     filters: {
@@ -97,6 +165,12 @@ export default {
                 let rowData = value;
 
                 vm.columns.map(function(item, key){
+                    // Init sort
+                    vm.columns[key].sortKey = 'asc';
+                    if(typeof vm.columns[key].sortable === "undefined")
+                        vm.columns[key].sortable = true;
+
+                    // Parse data
                     let val = value[item.field];
                     if(val !== "undefined"){
                         if(typeof item.callback === "function")
@@ -110,23 +184,37 @@ export default {
             });
 
             return parsedData;
-        }
+        },
     },
     methods: {
         getColumnsCount(){
-            return typeof this.$refs.headercolumns.childElementCount !== "undefined" ? this.$refs.headercolumns.childElementCount : 1;
+            return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : 1;
+        },
+        sortBy(column){
+            if(this.sortColumn !== column.name)
+                this.sortColumn = column.name;
+
+            column.sortKey = (column.sortKey === 'asc') ? 'desc' : 'asc';
+        },
+        perPageOnChange(event){
+            this.perPage = event.target.value;
         }
     },
     data(){
         return {
             isLoading: true,
-            data: []
+            data: [],
+            perPage: 10,
+            rowPerPage: [10, 25, 50, 100, 'All'],
+            startIndex: 1,
+            endIndex: null,
+            sortColumn: null
         }
     },
     created(){
         this.$store.dispatch(this.fetchMethod).then(response => {
             if(response.success)
-                this.data = response.content;
+                this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
             else
                 this.data = [];
 

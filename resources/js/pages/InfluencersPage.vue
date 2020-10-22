@@ -27,57 +27,10 @@
                   <router-link v-if="row.data.queued === 'finished'" :to="{name : 'influencers', params: {uuid: row.data.uuid}}" class="icon-link" title="Details">
                      <i class="fas fa-eye"></i>
                   </router-link>
+                  <!-- <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(row.data)"><i class="fas fa-pen"></i></a>
+                  <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a> -->
                </td>
             </DataTable>
-            <!-- <table class="table table-with-profile">
-               <thead>
-                  <tr class="row">
-                     <td>&nbsp;</td>
-                     <td>Full name</td>
-                     <td>Followers</td>
-                     <td>Posts</td>
-                     <td class="text-center">Platform</td>
-                     <td>Added at</td>
-                     <td class="text-center">Actions</td>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr v-show="influencers.length > 0" v-for="influencer in influencers" :key="influencer.id">
-                     <td>
-                        <img :src="influencer.pic_url"/>
-                     </td>
-                     <td>
-                        <p>{{ influencer.name ? influencer.name : influencer.username }}</p>
-                     </td>
-                     <td>
-                        <p>{{ nbr().abbreviate(influencer.followers) }}</p>
-                     </td>
-                     <td>
-                        <p>{{ nbr().abbreviate(influencer.posts) }}</p>
-                     </td>
-                     <td class="text-center">
-                        <a :href="'https://instagram.com/' + influencer.username" target="_blank" v-if="influencer.platform === 'instagram'" :title="influencer.platform">
-                           <i class="fab fa-instagram"></i>
-                        </a>
-                     </td> 
-                     <td>
-                        <p>{{ moment(influencer.created_at).format('DD/MM/YYYY') }}</p>
-                     </td>
-                     <td class="text-center">
-                        <router-link v-if="influencer.queued === 'finished'" :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" title="Details">
-                            <i class="fas fa-eye"></i>
-                        </router-link>
-                        <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(influencer)"><i class="fas fa-pen"></i></a>
-                        <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a>
-                     </td>
-                  </tr>
-                  <tr v-show="!influencers || influencers.length == 0">
-                     <td colspan="7">
-                        <p class="info">Looks like you don't have a influencer record, start creating one.</p>
-                     </td>
-                  </tr>
-               </tbody>
-            </table> -->
          </div>
       </div>
       <InfluencerProfile v-if="influencer" :influencer="influencer"/>
@@ -105,7 +58,8 @@ export default {
                field: "pic_url",
                callback: function(row){
                   return '<img src="' + row.pic_url + '"/>';
-               }
+               },
+               sortable: false
             },
             {
                name: "Full name",

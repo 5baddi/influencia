@@ -40,46 +40,14 @@
             </div>
          </header>
          <div class="datatable-scroll" v-if="$can('list', 'campaign') || AuthenticatedUser.is_superadmin">
-            <table class="table campagins-table">
-               <thead>
-                  <tr class="row">
-                     <td>Campaign name</td>
-                     <td>Campaign status</td>
-                     <td>Number of trackers</td>
-                     <td>Created on</td>
-                     <td>Created by</td>
-                     <td class="text-center">Actions</td>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr v-for="campaign in campaigns.all" :key="campaign.id">
-                     <td>
-                        {{ campaign.name }}
-                     </td>
-                     <td>
-                        <span :class="'status status-' + (campaign.status ? 'success' : 'danger')" :title="(campaign.status ? 'Enabled' : 'Disabled')"></span>
-                     </td>
-                     <td>
-                        <p>{{ campaign.trackers_count }}</p>
-                     </td>
-                     <td>
-                        <p>{{ moment(campaign.created_at).format('DD/MM/YYYY h:mm') }}</p>
-                     </td>
-                     <td>
-                        <p>
-                           <span class="badge badge-success">{{ campaign.user.name }}</span>
-                        </p>
-                     </td>
-                     <td class="text-center">
-                     <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="campaign.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: campaign.uuid}}" class="icon-link" title="Statistics">
-                            <i class="far fa-chart-bar"></i>
-                        </router-link>
-                        <!-- <a v-if="$can('rename', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" v-show="campaign.id" class="icon-link" title="Edit" @click="showEditCampaignModal(campaign)"><i class="fas fa-pen"></i></a> -->
-                        <!-- <a v-if="$can('delete', 'campaign') || AuthenticatedUser.is_superadmin" href="javascript:void(0);" class="icon-link" title="Delete" @click="deleteCampaign(campaign)"><i class="fas fa-trash"></i></a> -->
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
+            <DataTable :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
+               <th slot="header">Actions</th>
+               <td slot="body-row" slot-scope="row">
+                  <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.uuid}}" class="icon-link" title="Statistics">
+                     <i class="far fa-chart-bar"></i>
+                  </router-link>
+               </td>
+            </DataTable>
          </div>
       </div>
       <CreateCampaignModal
@@ -103,7 +71,38 @@ export default {
    data() {
       return {
          showAddCampaignModal: false,
-         isLoading: true
+         isLoading: true,
+         columns: [
+            {
+               name: "Campaign name",
+               field: "name"
+            },
+            {
+               name: "Campaign status",
+               field: "status",
+               callback: function(row){
+                  return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '"></span>';
+               }
+            },
+            {
+               name: "Number of trackers",
+               field: "trackers_count"
+            },
+            {
+               name: "Created by",
+               field: "user_id",
+               callback: function(row){
+                  return '<span class="badge badge-success">' + row.user.name + '</span>';
+               }
+            },
+            {
+               name: "Created at",
+               field: "created_at",
+               callback: function(row){
+                  return moment(row.created_at).format('DD/MM/YYYY');
+               }
+            }
+         ]
       };
    },
    beforeRouteEnter(to, from, next){
