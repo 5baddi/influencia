@@ -5,25 +5,11 @@ namespace App\Policies;
 use App\Brand;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Laravel\Ui\Presets\React;
 
 class BrandPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\User  $user
-     * @return mixed
-     */
-    public function viewAny(User $user)
-    {
-        // TODO:
-        // $related = $brand->load('users')->find($user);
-
-        // return !is_null($related) || $user->is_superadmin;
-        return true;
-    }
 
     /**
      * Determine whether the user can view the model.
@@ -72,20 +58,6 @@ class BrandPolicy
      * @return mixed
      */
     public function delete(User $user, Brand $brand)
-    {
-        $related = $brand->load('users')->find($user);
-
-        return !is_null($related) || $user->is_superadmin;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\User  $user
-     * @param  \App\Brand  $brand
-     * @return mixed
-     */
-    public function forceDelete(User $user, Brand $brand)
     {
         $related = $brand->load('users')->find($user);
 

@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     // Brands
     Route::get('/brands', 'BrandController@index');
     Route::post('/brands', 'BrandController@create');
+    Route::get('/brands/{brand}', 'BrandController@show');
     Route::put('/brands/{brand}', 'BrandController@update');
     Route::delete('/brands/{brand}', 'BrandController@destroy');
     Route::get('/brands/{brand}/trackers', 'TrackerController@fetchByBrand');

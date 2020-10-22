@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use App\TrackerMedia;
 use Illuminate\Support\Str;
 use App\Jobs\ScrapInstagramPostJob;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,7 +32,7 @@ class TrackerController extends Controller
      */
     public function fetchByBrand(Brand $brand)
     {
-        abort_if(Gate::denies('list_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('list_tracker') || Auth::user()->cannot('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return response()->success(
             "Trackers fetched successfully.",
@@ -104,7 +105,7 @@ class TrackerController extends Controller
      */
     public function show(Tracker $tracker)
     {
-        abort_if(Gate::denies('show_tracker'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('show_tracker') || Auth::user()->cannot('view', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return response()->success(
             "Tracker fetched successfully.",
@@ -121,7 +122,7 @@ class TrackerController extends Controller
      */
     public function update(Tracker $tracker)
     {
-        abort_if(Gate::denies('edit_tracker') || Gate::denies('update', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('edit_tracker') || Auth::user()->cannot('update', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
     }
 
     /**
@@ -132,7 +133,7 @@ class TrackerController extends Controller
      */
     public function destroy(Tracker $tracker)
     {
-        abort_if(Gate::denies('delete_tracker') || Gate::denies('delete', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('delete_tracker') || Auth::user()->cannot('delete', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Delete tracker row
         $tracker->delete();
