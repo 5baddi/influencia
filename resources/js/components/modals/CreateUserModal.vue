@@ -26,15 +26,13 @@
                      >{{brand.name}}</option>
                   </select>
                </div>
-               <div class="radio-group">
-                  <label for="role_brand">
-                     <input type="radio" id="role_brand" value="BRAND_OWNER" v-model="role" />
-                     <span>Brand owner</span>
-                  </label>
-                  <label for="role_admin">
-                     <input type="radio" id="role_admin" value="SUPER_ADMIN" v-model="role" />
-                     <span>Super Admin</span>
-                  </label>
+               <div class="control">
+                  <label for="role">Role</label>
+                  <select id="role" v-model="role">
+                     <option value selected disabled>Select a role</option>
+                     <option value="super">Super Admin</option>
+                     <option :value="role.id" v-for="role in roles" :key="role.id">{{ role.name }}</option>
+                  </select>
                </div>
                <div class="modal-form__actions">
                   <button class="btn btn-success" @click.prevent="submit" type="button">Create</button>
@@ -59,8 +57,8 @@ export default {
          email: "",
          password: "",
          name: "",
-         role: "BRAND_OWNER",
-         brand: null
+         role: null,
+         brand: null,
       };
    },
    created() {
@@ -86,7 +84,7 @@ export default {
       }
    },
    computed: {
-      ...mapGetters(["brands"])
+      ...mapGetters(["brands", "roles"])
    }
 };
 </script>

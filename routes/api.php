@@ -52,6 +52,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::post('/users', 'UserController@register');
 
     // Roles & permissions
+    Route::get('/roles', 'OAuthController@roles');
     Route::post('/roles', 'OAuthController@storeRole');
     Route::post('/permissions', 'OAuthController@storePermission');
 

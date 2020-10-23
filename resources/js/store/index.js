@@ -28,7 +28,8 @@ const state = () => ({
     campaign: null,
     trackers: null,
     influencers: null,
-    influencer: null
+    influencer: null,
+    roles: [],
 })
 
 const getters = {
@@ -43,7 +44,8 @@ const getters = {
     trackers: state => state.trackers,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
-    activeBrand: state => state.activeBrand
+    activeBrand: state => state.activeBrand,
+    roles: state => state.roles,
 };
 
 const actions = {
@@ -204,7 +206,15 @@ const actions = {
             }
 
         });
-    }
+    },
+    fetchRoles({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/roles").then(response => {
+                commit('setRoles', { roles: response.data.content })
+                resolve(response.data)
+            }).catch(response => reject(response))
+        });
+    },
 };
 
 const mutations = {
@@ -276,7 +286,10 @@ const mutations = {
     },
     setTrackers: (state, { trackers }) => {
         state.trackers = trackers;
-    }
+    },
+    setRoles: (state, { roles }) => {
+        state.roles = roles
+    },
 }
 
 const updateAbilities = (store) => {

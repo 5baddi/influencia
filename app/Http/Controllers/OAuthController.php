@@ -63,4 +63,17 @@ class OAuthController extends Controller
 
         return response()->success("Permission '{$permission->name}' successfully created.", $permission->toArray());
     }
+
+    /**
+     * List roles
+     * 
+     * @return \Illuminate\Http\Response
+     */
+    public function roles()
+    {
+        return response()->success(
+            "Roles fetched successfully.",
+            Role::all()
+        );
+    }
 }
