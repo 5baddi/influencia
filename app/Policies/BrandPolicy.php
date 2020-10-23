@@ -5,11 +5,21 @@ namespace App\Policies;
 use App\Brand;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Laravel\Ui\Presets\React;
 
 class BrandPolicy
 {
     use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function viewAny(User $user)
+    {
+        return $user->is_superadmin;
+    }
 
     /**
      * Determine whether the user can view the model.

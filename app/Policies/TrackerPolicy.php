@@ -11,6 +11,17 @@ class TrackerPolicy
     use HandlesAuthorization;
 
     /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function viewAny(User $user)
+    {
+        return $user->is_superadmin;
+    }
+
+    /**
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
@@ -20,6 +31,17 @@ class TrackerPolicy
     public function view(User $user, Tracker $tracker)
     {
         return ($user->id === $tracker->user_id || $user->is_superadmin);
+    }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function create(User $user)
+    {
+        return $user->is_superadmin;
     }
 
     /**

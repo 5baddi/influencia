@@ -131,7 +131,7 @@ class CampaignController extends Controller
      * @param  \App\Campaign  $campaign
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Campaign $campaign)
+    public function delete(Campaign $campaign)
     {
         abort_if(Gate::denies('delete_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 

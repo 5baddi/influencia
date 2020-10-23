@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Rules\UserRoleRule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,7 +17,7 @@ class CreateUserRequest extends FormRequest
      */
     public function authorize()
     {
-        abort_if(Gate::denies('create_user') || Auth()->user()->cannot('create'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('create_user') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return true;
     }

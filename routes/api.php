@@ -35,21 +35,23 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::post('/brands', 'BrandController@create');
     Route::get('/brands/{brand}', 'BrandController@show');
     Route::put('/brands/{brand}', 'BrandController@update');
-    Route::delete('/brands/{brand}', 'BrandController@destroy');
+    Route::delete('/brands/{brand}', 'BrandController@delete');
     Route::get('/brands/{brand}/trackers', 'TrackerController@fetchByBrand');
 
     // Campaigns
     Route::get('/campaigns/{brand}', 'CampaignController@byBrand');
     Route::get('/campaigns/{campaign}/analytics', 'CampaignController@analytics');
     Route::post('/campaigns', 'CampaignController@create');
-    Route::delete('/campaigns/{campaign}', 'CampaignController@destroy');
+    Route::delete('/campaigns/{campaign}', 'CampaignController@delete');
 
     // Trackers
     Route::post('/trackers', 'TrackerController@create');
 
     // Users
     Route::get('/users', 'UserController@index');
-    Route::post('/users', 'UserController@register');
+    Route::get('/users/{user}', 'UserController@show');
+    Route::post('/users', 'UserController@store');
+    Route::delete('/users/{user}', 'UserController@delete');
 
     // Roles & permissions
     Route::get('/roles', 'OAuthController@roles');

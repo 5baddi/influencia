@@ -20,7 +20,7 @@ class BrandController extends Controller
      */
     public function index()
     {
-        abort_if(Gate::denies('list_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('list_brand') && Gate::denies('viewAny', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         $brands = Brand::withCount(['users', 'campaigns'])
                         ->with(['users', 'campaigns']);
@@ -43,6 +43,8 @@ class BrandController extends Controller
      */
     public function create(StoreBrandRequest $request)
     {
+        abort_if(Gate::denies('create_brand') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        
         // Set data
         $data = [
             'name'  =>  $request->input('name')
@@ -78,7 +80,7 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
-        abort_if(Gate::denies('show_brand') || Auth::user()->cannot('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('show_brand') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return response()->success("Brand fetched successfully.", $brand->load(['users', 'campaigns'])->toArray());
     }
@@ -92,7 +94,7 @@ class BrandController extends Controller
      */
     public function update(Brand $brand, UpdateBrandRequest $request)
     {
-        abort_if(Gate::denies('edit_brand') || Auth::user()->cannot('update', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('edit_brand') && Gate::denies('update', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Set data
         $data = [];
@@ -120,9 +122,9 @@ class BrandController extends Controller
      * @param  \App\Brand  $brand
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Brand $brand)
+    public function delete(Brand $brand)
     {
-        abort_if(Gate::denies('delete_brand') || Auth::user()->cannot('delete', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('delete_brand') && Gate::denies('delete', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Delete brand
         $brand->delete();

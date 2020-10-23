@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Brand;
-use App\Http\Requests\CreateUserRequest;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CreateUserRequest;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
@@ -54,7 +56,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        abort_if(Gate::denies('list_user') || Auth()->user()->cannot('viewAny', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('viewAny', Auth::user()) && Gate::denies('list_user'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return response()->success("Users fetched successfully.", User::with(['brands', 'role'])->get());
     }
@@ -67,7 +69,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        abort_if(Gate::denies('show_user') || Auth()->user()->cannot('view', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('show_user') && Gate::denies('view', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return response()->success("User fetched successfully.", $user->load('brands'));
     }
@@ -80,7 +82,7 @@ class UserController extends Controller
      */
     public function delete(User $user)
     {
-        abort_if(Gate::denies('delete_user') || Auth()->user()->cannot('delete', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('delete_user') && Gate::denies('delete', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Delete user row
         $user->delete();
