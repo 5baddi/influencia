@@ -77,8 +77,9 @@ class TrackerController extends Controller
     {
         abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
+        dd($request->file('story'));
         // Create tracker
-        $tracker = Tracker::create($request->all());
+        $tracker = Tracker::create($request->validated());
         $tracker = $tracker->refresh();
 
         // Upload story

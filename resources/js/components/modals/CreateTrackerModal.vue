@@ -221,21 +221,17 @@ export default {
          if(!this.campaign_id || !this.name)
             return true;
 
-         if(this.type === 'url' || this.type === 'post'){
-            // TODO: handle multi URLs
-            return false;
-            let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+         let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
             '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
             '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i');
 
-            if(this.url && urlPattern.test(this.url))
-               return false;
-         }else{
+         if(this.type === 'url' && urlPattern.test(this.url))
+            return false;
+         else
             return !(this.story && this.username);
-         }
 
          return true;
       },

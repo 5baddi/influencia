@@ -104,10 +104,14 @@ export default {
             // Verify duplicate file then push the file
             let existsIndex = this.files.findIndex(i => i.name === ref.files[0].name);
             if(existsIndex === -1){
-                if(this.multiple)
-                    this.files.push(ref.files[0]);
-                else
+                if(this.multiple){
+                    let vm = this;
+                    Array.from(ref.files).forEach(file => {
+                        vm.files.push(file);
+                    });
+                }else{
                     this.files = [ref.files[0]];
+                }
 
                 // Is image
                 if(this.isImage){
