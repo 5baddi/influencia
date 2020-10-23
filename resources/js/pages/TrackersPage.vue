@@ -144,7 +144,9 @@ export default {
          if(data.type === "story"){
             // Append form data
             formData.append("username", data.username);
-            formData.append("story", data.story);
+            Array.from(data.story).forEach(file => {
+               formData.append("story[]", file);
+            });
          }else{
             formData.append("url", data.url);
          }

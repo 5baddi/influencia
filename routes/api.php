@@ -46,6 +46,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Trackers
     Route::post('/trackers', 'TrackerController@create');
+    Route::post('/trackers/story', 'TrackerController@createStory');
 
     // Users
     Route::get('/users', 'UserController@index');

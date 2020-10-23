@@ -77,20 +77,25 @@ class TrackerController extends Controller
     {
         abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        dd($request->file('story'));
         // Create tracker
         $tracker = Tracker::create($request->validated());
         $tracker = $tracker->refresh();
 
-        // Upload story
-        $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $request->file('story')->getClientOriginalExtension();
-        $storyFilePath = $request->file('story')->storeAs('uploads', $storyFileName, 'public');
-        $media = TrackerMedia::create([
-            'tracker_id'    =>  $tracker->id,
-            'name'          =>  $storyFileName,
-            'type'          =>  'media',
-            'media_path'    =>  '/storage/' . $storyFilePath
-        ]);
+        // Upload story sequences
+        $medias = [];
+        if($request->hasFile('story')){
+            foreach($request->file('story') as $file){
+                $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $file->getClientOriginalExtension();
+                $storyFilePath = $file->storeAs('uploads', $storyFileName, 'public');
+                $medias[] = TrackerMedia::create([
+                    'tracker_id'    =>  $tracker->id,
+                    'name'          =>  $storyFileName,
+                    'type'          =>  'media',
+                    'media_path'    =>  '/storage/' . $storyFilePath
+                ]);
+            }
+        }
+        
 
         return response()->success(
             "Story tracker created successfully.",

@@ -77,7 +77,7 @@
                   </div>
                   <div class="form-url" v-show="type === 'story'">
                      <div class="control">
-                        <label>Story medias</label>
+                        <label>Story sequences</label>
                         <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="true"></FileInput>
                         <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
                      </div>
@@ -212,10 +212,10 @@ export default {
          this.$emit("dismiss");
       },
       handleStoryUpload(files){
-         if(typeof files[0] === "undefined")
+         if(typeof files === "undefined" && files.length > 0)
             return;
 
-         this.story = files[0];
+         this.story = files;
       },
       disableAction(){
          if(!this.campaign_id || !this.name)
