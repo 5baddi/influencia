@@ -449,3 +449,27 @@ span.status{
         overflow-x: auto;
     }
 }
+
+.vue-tags-input{
+    max-width: unset !important;
+    width: 100%;
+
+    .ti-input{
+        padding: 0 8px !important;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        outline: none;
+        transition: all 0.3s ease-in-out;
+        font-size: 0.9rem;
+        font-weight: 100;
+        color: #212121;
+
+        &:focus{
+            border-color: #1e212a;
+        }
+
+        .ti-tag{
+            background-color: #039be5 !important;
+        }
+    }
+}
