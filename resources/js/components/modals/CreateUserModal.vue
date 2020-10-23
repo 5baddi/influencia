@@ -18,20 +18,16 @@
                <div class="control">
                   <label for="brand">Brand</label>
                   <select id="brand" v-model="brand">
-                     <option value selected disabled>Select a brand</option>
-                     <option
-                        :value="brand.id"
-                        v-for="brand in brands"
-                        :key="brand.id"
-                     >{{brand.name}}</option>
+                     <option value="-1" :selected="brand">Select a brand</option>
+                     <option :value="item.id" :selected="brand" v-for="item in brands" :key="item.id">{{item.name}}</option>
                   </select>
                </div>
                <div class="control">
                   <label for="role">Role</label>
                   <select id="role" v-model="role">
-                     <option value selected disabled>Select a role</option>
-                     <option value="super">Super Admin</option>
-                     <option :value="role.id" v-for="role in roles" :key="role.id">{{ role.name }}</option>
+                     <option value="-1" :selected="role">Select a role</option>
+                     <option value="super" :selected="role">Super Admin</option>
+                     <option :value="role.id" :selected="role" v-for="role in roles" :key="role.id">{{ role.name }}</option>
                   </select>
                </div>
                <div class="modal-form__actions">
@@ -57,8 +53,8 @@ export default {
          email: "",
          password: "",
          name: "",
-         role: null,
-         brand: null,
+         role: -1,
+         brand: -1,
       };
    },
    created() {
@@ -67,6 +63,9 @@ export default {
             this.dismiss();
          }
       });
+
+      // Load roles
+      this.$store.dispatch("fetchRoles");
    },
    methods: {
       dismiss() {
