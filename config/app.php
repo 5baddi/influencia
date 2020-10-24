@@ -236,6 +236,7 @@ return [
         'Transformation' => Flugg\Responder\Facades\Transformation::class,
 
         'Agent'     => Jenssegers\Agent\Facades\Agent::class,
+        'IP2LocationLaravel'     => Ip2location\IP2LocationLaravel\Facade\IP2LocationLaravel::class,
 
         'Format'    =>  App\Helpers\FormatHelper::class,
 

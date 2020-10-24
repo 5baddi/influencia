@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\LinkVisit;
 use App\ShortLink;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Request;
 use Jenssegers\Agent\Agent;
+use IP2LocationLaravel as IPLookup;
+use Illuminate\Support\Facades\Request;
 
 class ShortLinkController extends Controller
 {
@@ -17,13 +18,10 @@ class ShortLinkController extends Controller
      */
     private $agent;
 
-    private $visitor;
-
     public function __construct(Agent $agent)
     {
         // Init
         $this->agent = $agent;
-        // $this->visitor = Tracker::currentSession();
     }
 
     /**
@@ -40,6 +38,8 @@ class ShortLinkController extends Controller
 
         // Get statistics
         if(!is_null(Request::ip())){
+            $ipLookup = IPLookup::get(Request::ip(), \Ip2location\IP2LocationLaravel\IP2LocationLaravel::QUERY_BIN);
+            dd($ipLookup);
             $shortLinkID = $shortedLink->id;
             $ip = Request::ip();
             $visit = LinkVisit::where('ip', $ip)->whereDate('created_at', Carbon::today())->latest()->first();

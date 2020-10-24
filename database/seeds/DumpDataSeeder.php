@@ -24,7 +24,7 @@ class DumpDataSeeder extends Seeder
         // Create default application setting
         ApplicationSetting::create([
             'key'   =>  'usd2eur',
-            'name'  =>  'USD to EUR',
+            'name'  =>  'USD/EUR',
             'value' =>  0.84
         ]);
         // Create default roles
