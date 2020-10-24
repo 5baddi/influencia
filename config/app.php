@@ -164,6 +164,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Jenssegers\Agent\AgentServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -232,6 +233,8 @@ return [
 
         'Responder' => Flugg\Responder\Facades\Responder::class,
         'Transformation' => Flugg\Responder\Facades\Transformation::class,
+
+        'Agent'     => Jenssegers\Agent\Facades\Agent::class,
 
         'Format'    =>  App\Helpers\FormatHelper::class,
 

@@ -112,8 +112,10 @@ class InstagramScraper
         
         // Set proxy
         $this->instagram->setProxy([
-            'address' => $proxy['ip'],
-            'port'    => $proxy['port']
+            // 'address' => $proxy['ip'],
+            'address' => '46.246.26.10',
+            // 'port'    => $proxy['port']
+            'port'    => '3128'
         ]);
     }
 
@@ -125,6 +127,9 @@ class InstagramScraper
      */
     public function byUsername(string $username) : array
     {
+        // Set proxy
+        $this->setProxy();
+
         // Scrap user
         $account = collect($this->instagram->getAccount($username));
         sleep(self::SLEEP_REQUEST);
@@ -147,6 +152,9 @@ class InstagramScraper
      */
     public function byMedia(string $link) : array
     {
+        // Set proxy
+        $this->setProxy();
+
         // Scrap media
         $media = collect($this->instagram->getMediaByUrl($link));
         sleep(self::SLEEP_REQUEST);
@@ -167,6 +175,9 @@ class InstagramScraper
      */
     public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
     {
+        // Set proxy
+        $this->setProxy();
+
         try{
             // Scrap medias
             $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
@@ -217,6 +228,9 @@ class InstagramScraper
      */
     public function getMedia(string $mediaShortCode, Tracker $tracker = null, \InstagramScraper\Model\Media $media = null) : array
     {
+        // Set proxy
+        $this->setProxy();
+        
         // Scrap media
         if(is_null($media)){
             $media = $this->instagram->getMediaByCode($mediaShortCode);

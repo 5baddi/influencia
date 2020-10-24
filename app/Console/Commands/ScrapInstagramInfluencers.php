@@ -2,13 +2,16 @@
 
 namespace App\Console\Commands;
 
+use App\Tracker;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use App\Jobs\ScrapURLContentJob;
 use App\Services\InstagramScraper;
+use Illuminate\Support\Facades\Log;
 use App\Repositories\TrackerRepository;
 use App\Repositories\InfluencerRepository;
 use App\Repositories\InfluencerPostRepository;
-use Illuminate\Support\Facades\Log;
+use App\ShortLink;
 
 class ScrapInstagramInfluencers extends Command
 {
@@ -85,14 +88,8 @@ class ScrapInstagramInfluencers extends Command
         $startTaskAt = microtime(true);
 
         // ScrapInstagramPostJob::dispatchNow(Tracker::create([
-        //     'name'  =>  'Tracker ' . rand(),
-        //     'type'  =>  'post',
-        //     'user_id'   =>  1,
-        //     'campaign_id'   =>  1,
-        //     'platform'  =>  'instagram',
-        //     'url'           =>  'https://www.instagram.com/p/CGkUPvGoFW5/;https://www.instagram.com/p/CF15DhMI8Zg/;'
-        // ]));
-        // die();
+        ScrapURLContentJob::dispatchNow(ShortLink::find(1));
+        die();
 
         // Scrap influencers details & posts
         $this->scrapInfluencers();

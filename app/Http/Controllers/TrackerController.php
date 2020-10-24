@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
+use App\Jobs\ScrapURLContentJob;
+use App\ShortLink;
 
 class TrackerController extends Controller
 {
@@ -55,8 +57,20 @@ class TrackerController extends Controller
         abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Create new tracker row
-        $tracker = Tracker::create($request->all());
+        $tracker = Tracker::create($request->validated());
         $tracker = $tracker->refresh();
+
+        // Handle URL Tracker 
+        if($tracker->type === 'url'){
+            $ShortLink = ShortLink::create([
+                'tracker_id'    =>  $tracker->id,
+                'link'          =>  $tracker->url,
+                'code'          =>  Str::random(env('SHORTLINK_LENGTH'))
+            ]);
+            
+            // Dispatch scraping job
+            ScrapURLContentJob::dispatch($ShortLink)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
+        }
 
         // Dispatch scraping job
         if($tracker->platform === 'instagram')
