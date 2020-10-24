@@ -1,5 +1,6 @@
 <?php
 
+use App\ApplicationSetting;
 use App\Role;
 use App\User;
 use App\Brand;
@@ -20,6 +21,12 @@ class DumpDataSeeder extends Seeder
      */
     public function run(InstagramScraper $instagramScraper)
     {
+        // Create default application setting
+        ApplicationSetting::create([
+            'key'   =>  'usd2eur',
+            'name'  =>  'USD to EUR',
+            'value' =>  0.84
+        ]);
         // Create default roles
         $ownerRole = Role::create(['name' => 'owner']);
 
