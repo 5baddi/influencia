@@ -165,7 +165,6 @@ return [
          * Package Service Providers...
          */
         Jenssegers\Agent\AgentServiceProvider::class,
-        Ip2location\IP2LocationLaravel\IP2LocationLaravelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -236,7 +235,6 @@ return [
         'Transformation' => Flugg\Responder\Facades\Transformation::class,
 
         'Agent'     => Jenssegers\Agent\Facades\Agent::class,
-        'IP2LocationLaravel'     => Ip2location\IP2LocationLaravel\Facade\IP2LocationLaravel::class,
 
         'Format'    =>  App\Helpers\FormatHelper::class,
 

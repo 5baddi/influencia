@@ -32,6 +32,10 @@ class LinkVisit extends Model
         'is_mobile',
         'views',
         'last_visit',
+        'country_code',
+        'country_name',
+        'city_name',
+        'zip_code',
     ];
 
     /**

@@ -6,8 +6,8 @@ use App\LinkVisit;
 use App\ShortLink;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
-use IP2LocationLaravel as IPLookup;
 use Illuminate\Support\Facades\Request;
+use ipinfo\ipinfo\IPinfo;
 
 class ShortLinkController extends Controller
 {
@@ -38,8 +38,6 @@ class ShortLinkController extends Controller
 
         // Get statistics
         if(!is_null(Request::ip())){
-            $ipLookup = IPLookup::get(Request::ip(), \Ip2location\IP2LocationLaravel\IP2LocationLaravel::QUERY_BIN);
-            dd($ipLookup);
             $shortLinkID = $shortedLink->id;
             $ip = Request::ip();
             $visit = LinkVisit::where('ip', $ip)->whereDate('created_at', Carbon::today())->latest()->first();
@@ -56,9 +54,22 @@ class ShortLinkController extends Controller
 
             // Create new record or update exists one
             if(is_null($visit)){
+                // IP lookup
+                if($ip !== '127.0.0.1'){
+                    $ipLookup = new Ipinfo(env('IPINFOIO_TOKEN'));
+                    $ipInfo = $ipLookup->getDetails("105.148.116.84");
+
+                    $data = array_merge($data, [
+                        'country_code'  =>  $ipInfo->country,
+                        'country_name'  =>  $ipInfo->country_name,
+                        'city_name'     =>  $ipInfo->city,
+                        // 'zip_code'      =>  $ipInfo->postal
+                    ]);
+                }
+
                 $data = array_merge($data, [
                     'ip'            =>  $ip,
-                    'short_link_id' =>  $shortLinkID
+                    'short_link_id' =>  $shortLinkID,
                 ]);
                 LinkVisit::create($data);
             }else{
