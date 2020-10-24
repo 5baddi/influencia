@@ -17,6 +17,10 @@ class CreateLinkVisits extends Migration
             $table->id();
             $table->unsignedBigInteger('short_link_id');
             $table->string('ip', 25)->nullable(false);
+            $table->string('country_code')->nullable();
+            $table->string('country_name')->nullable();
+            $table->string('city_name')->nullable();
+            $table->string('zip_code')->nullable();
             $table->string('device')->nullable();
             $table->string('os')->nullable();
             $table->string('os_version')->nullable();
