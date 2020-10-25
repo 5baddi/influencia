@@ -27,6 +27,11 @@ class DumpDataSeeder extends Seeder
             'name'  =>  'USD/EUR',
             'value' =>  0.84
         ]);
+        ApplicationSetting::create([
+            'key'   =>  'fbcostperimpressions',
+            'name'  =>  'Facebook cost per impressions',
+            'value' =>  7.19
+        ]);
         // Create default roles
         $ownerRole = Role::create(['name' => 'owner']);
 

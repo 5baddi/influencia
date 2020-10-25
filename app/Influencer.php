@@ -57,7 +57,7 @@ class Influencer extends Model
      *
      * @var array
      */
-    protected $appends = ['image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'video_views', 'comments', 'posts_count', 'estimated_impressions', 'estimated_communities'];
+    protected $appends = ['calculated_engagement_rate', 'image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'video_views', 'comments', 'posts_count', 'estimated_impressions', 'estimated_communities'];
     
     /**
      * Get likes of an infleuncer
@@ -144,6 +144,21 @@ class Influencer extends Model
     public function getEstimatedImpressionsAttribute()
     {
         return  $this->getLikesAttribute() + $this->getVideoViewsAttribute();
+    }
+
+    /**
+     * Get calculated or inserted engagement rate
+     * 
+     * @return float
+     */
+    public function getCalculatedEngagementRateAttribute() : float
+    {
+        // Get manually inserted value
+        if(!is_null($this->attributes['engagement_rate']))
+            return $this->attributes['engagement_rate'];
+
+        // Calculate engagement rate
+        return ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100);
     }
 
     /**

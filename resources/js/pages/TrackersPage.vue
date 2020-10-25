@@ -63,6 +63,7 @@
                      </td>
                      <td>
                         <i class="fab fa-2 fa-instagram" v-if="tracker.platform === 'instagram'" :title="tracker.platform"></i>
+                        <i class="fas fa-2 fa-globe" v-if="tracker.type === 'url'" :title="tracker.type"></i>
                      </td>
                      <td>
                         <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
@@ -155,7 +156,7 @@ export default {
          this.$store.dispatch("addNewTracker", formData)
             .then(response => {
                this.dismissAddTrackerModal();
-               this.createTrackerSuccess({ message: `Tracker ${response.data.name} created successfuly!` });
+               this.createTrackerSuccess({ message: `Tracker ${response.content.name} created successfuly!` });
             })
             .catch(error => {
                this.createTrackerErrors({ title: "Error", message: `${error.message}` });

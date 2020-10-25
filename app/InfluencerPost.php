@@ -23,7 +23,17 @@ class InfluencerPost extends Model
      *
      * @var array
      */
-    protected $appends = ['hashtags_count', 'sequences', 'image_sequences', 'video_sequences', 'activated_communities', 'estimated_impressions', 'organic_impressions', 'engagements'];
+    protected $appends = [
+        'hashtags_count', 
+        'sequences', 
+        'image_sequences',
+        'video_sequences',
+        'activated_communities', 
+        'estimated_impressions', 
+        'organic_impressions', 
+        'engagements',
+        'calculated_engagement_rate'
+    ];
 
      /**
      * The attributes that should be cast to native types.
@@ -128,6 +138,37 @@ class InfluencerPost extends Model
     public function getSequencesAttribute() : int
     {
         return $this->files()->count();
+    }
+
+    /**
+     * Get calculated or inserted engagement rate
+     * 
+     * @return float
+     */
+    public function getCalculatedEngagementRateAttribute() : float
+    {
+        // Get manually inserted value
+        if(!is_null($this->attributes['engagement_rate']))
+            return $this->attributes['engagement_rate'];
+
+        // Calculate engagement rate
+        return ((($this->attributes['likes'] + $this->attributes['comments']) / $this->getEstimatedImpressionsAttribute()) * 100);
+    }
+
+    /**
+     * Get EMV
+     * 
+     * @return float
+     */
+    public function getEarnedMediaValueAttribute() : float
+    {
+        // Get USD/EUR exchange value
+        $defaultUSDTOEURValue = env('USD2EUR');
+        $USDTOEURValue = ApplicationSetting::where('key', 'usd2eur')->first();
+        $defaultFacebookCostPerImpressions = env('FBCOSTPERIMPRESSIONS');
+        $FacebookCostPerImpressions = ApplicationSetting::where('key', 'fbcostperimpressions')->first();
+
+        return ($this->getEstimatedImpressionsAttribute() * ((isset($FacebookCostPerImpressions->value) ? $FacebookCostPerImpressions->value : $defaultFacebookCostPerImpressions) * (isset($USDTOEURValue->value) ? $USDTOEURValue->value : $defaultUSDTOEURValue))) / 1000;
     }
     
     /**

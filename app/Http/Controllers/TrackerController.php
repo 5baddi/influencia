@@ -69,11 +69,11 @@ class TrackerController extends Controller
             ]);
             
             // Dispatch scraping job
-            ScrapURLContentJob::dispatch($ShortLink)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
+            ScrapURLContentJob::dispatch($ShortLink->load('tracker'))->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
         }
 
         // Dispatch scraping job
-        if($tracker->platform === 'instagram')
+        if($tracker->platform === 'instagram' && $tracker->type === 'post')
             ScrapInstagramPostJob::dispatch($tracker)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
 
         return response()->success(

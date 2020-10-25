@@ -65,14 +65,15 @@ class ScrapInstagramAllPostsJob implements ShouldQueue
             }
         }catch(\Exception $ex){
             // Trace the error
-            Log::error($ex->getMessage());
-            $this->fail();
+            $this->fail($ex);
         }
     }
 
-    public function fail()
+    public function fail($exception = null)
     {
         $this->influencer->update(['queued' => 'failed']);
         Log::info("Fail to scrap influencer ID: {$this->influencer->id}");
+
+        Log::error($exception->getMessage());
     }
 }

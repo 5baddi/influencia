@@ -230,8 +230,12 @@ export default {
 
          if(this.type === 'url' && urlPattern.test(this.url))
             return false;
-         else
-            return !(this.story && this.username);
+         
+         if(this.type === 'story' && this.story.length > 0 && this.username)
+            return false;
+
+         if(this.type === 'post' && this.urls.length > 0)
+            return false;
 
          return true;
       },
@@ -241,7 +245,7 @@ export default {
             type: this.type,
             campaign_id: this.campaign_id,
             user_id: this.AuthenticatedUser.id,
-            platform: this.platform
+            platform: this.type !== 'url' ? this.platform : null
          };
 
          let _urls = "";
@@ -265,7 +269,6 @@ export default {
             // STORY data
             _data.username = this.username;
             _data.story = this.story;
-            _data.platform = this.platform;
             _data.n_squences = this.n_squences;
             _data.n_squences_impressions = this.n_squences_impressions;
             _data.n_impressions_first_sequence = this.n_impressions_first_sequence;

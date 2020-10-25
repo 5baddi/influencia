@@ -63,7 +63,8 @@ class ShortLinkController extends Controller
                         'country_code'  =>  $ipInfo->country,
                         'country_name'  =>  $ipInfo->country_name,
                         'city_name'     =>  $ipInfo->city,
-                        // 'zip_code'      =>  $ipInfo->postal
+                        // 'zip_code'      =>  $ipInfo->postal,
+                        'referer'       =>  Request::server('HTTP_REFERER')
                     ]);
                 }
 
@@ -80,8 +81,6 @@ class ShortLinkController extends Controller
             }
         }
         
-
-        dd("done.");
         return redirect($shortedLink->link);
     }
 }

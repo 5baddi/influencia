@@ -42,4 +42,14 @@ class ShortLink extends Model
     protected $casts = [
         'tracker_id'       =>  'unsignedInteger',
     ];
+
+    /**
+     * Get tracker
+     * 
+     * @return \App\Tracker
+     */
+    public function tracker()
+    {
+        return $this->belongsTo(Tracker::class);
+    }
 }

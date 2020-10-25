@@ -2,16 +2,12 @@
 
 namespace App\Console\Commands;
 
-use App\Tracker;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use App\Jobs\ScrapURLContentJob;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\TrackerRepository;
 use App\Repositories\InfluencerRepository;
-use App\Repositories\InfluencerPostRepository;
-use App\ShortLink;
 
 class ScrapInstagramInfluencers extends Command
 {
@@ -20,7 +16,7 @@ class ScrapInstagramInfluencers extends Command
      *
      * @var string
      */
-    protected $signature = 'scrap:instagram {--force=false} {post?}';
+    protected $signature = 'scrap:instagram {--force=false}';
 
     /**
      * The console command description.
@@ -42,14 +38,7 @@ class ScrapInstagramInfluencers extends Command
      * @var \App\Repositories\InfluencerRepository
      */
     private $repository;
-    
-    /**
-     * Influencer post repository
-     * 
-     * @var \App\Repositories\InfluencerPostRepository
-     */
-    private $postRepo;
-    
+
     /**
      * Tracker repository
      * 
@@ -65,7 +54,6 @@ class ScrapInstagramInfluencers extends Command
     public function __construct(
         InstagramScraper $instagramScraper, 
         InfluencerRepository $repository, 
-        InfluencerPostRepository $postRepo,
         TrackerRepository $trackerRepo)
     {
         parent::__construct();
@@ -73,7 +61,6 @@ class ScrapInstagramInfluencers extends Command
         // Init
         $this->instagramScraper = $instagramScraper;
         $this->repository = $repository;
-        $this->postRepo = $postRepo;
         $this->trackerRepo = $trackerRepo;
     }
 
@@ -86,10 +73,6 @@ class ScrapInstagramInfluencers extends Command
     {
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
-
-        // ScrapInstagramPostJob::dispatchNow(Tracker::create([
-        ScrapURLContentJob::dispatchNow(ShortLink::find(1));
-        die();
 
         // Scrap influencers details & posts
         $this->scrapInfluencers();

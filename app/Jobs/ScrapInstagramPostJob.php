@@ -65,63 +65,67 @@ class ScrapInstagramPostJob implements ShouldQueue
         // Refresh tracker
         $this->tracker->refresh();
 
-        // Update analytics for instagram media
-        if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
-            // Set tracker on progress status
-            $this->tracker->update(['queued' => 'progress']);
-            $this->tracker = $this->tracker->refresh();
+        try{
+            // Update analytics for instagram media
+            if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
+                // Set tracker on progress status
+                $this->tracker->update(['queued' => 'progress']);
+                $this->tracker = $this->tracker->refresh();
 
-            // Parse URL
-            $_url = $this->tracker->url;
-            $_urls = [];
-            if(strpos($this->tracker->url, ';') !== false){
-                $_urls = explode(';', $this->tracker->url);
-                if(!isset($_urls[0]) || empty($_urls[0]))
-                    throw new \Exception("Something going wrong with the posts links!");
+                // Parse URL
+                $_url = $this->tracker->url;
+                $_urls = [];
+                if(strpos($this->tracker->url, ';') !== false){
+                    $_urls = explode(';', $this->tracker->url);
+                    if(!isset($_urls[0]) || empty($_urls[0]))
+                        throw new \Exception("Something going wrong with the posts links!");
 
-                $_url = $_urls[0];
+                    $_url = $_urls[0];
+                }
+
+                // Scrap User details
+                $media = $scraper->byMedia($_url);
+                if(!is_array($media) || sizeof($media) === 0 || !isset($media['owner']) || is_null($media['owner']->getId()))
+                    return $this->fail();
+
+                // Check influencer if already exists
+                $influencer = Influencer::where('account_id', $media['owner']->getId())->first();
+                // Parse owner data
+                $owner = $scraper->byUsername($media['owner']->getUsername());
+                // Store influencer if not exists
+                if(is_null($influencer)){
+                    $influencer = $influencerRepo->create($owner);
+                    // $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
+                }else{
+                    $influencer = $influencerRepo->update($influencer, $owner);
+                    // $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");
+                }
+
+                // Update tracker details
+                $this->tracker->update([
+                    'username'  =>  $influencer->username
+                ]);
+                $this->tracker = $this->tracker->refresh();
+
+                // Scrap media details and update on DB
+                foreach($_urls as $url){
+                    if(empty($url) || !isset($url))
+                        continue;
+
+                    $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
+                }
+
+                $influencer = $influencer->refresh();
+                // Set tracker on finished status or launch all posts scraper
+                if($influencer->posts()->count() == $influencer->posts)
+                    $this->tracker->update(['queued' => 'finished']);
+                else
+                    ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
+                    
+                $this->tracker = $this->tracker->refresh();
             }
-
-            // Scrap User details
-            $media = $scraper->byMedia($_url);
-            if(!is_array($media) || sizeof($media) === 0 || !isset($media['owner']) || is_null($media['owner']->getId()))
-                return $this->fail();
-
-            // Check influencer if already exists
-            $influencer = Influencer::where('account_id', $media['owner']->getId())->first();
-            // Parse owner data
-            $owner = $scraper->byUsername($media['owner']->getUsername());
-            // Store influencer if not exists
-            if(is_null($influencer)){
-                $influencer = $influencerRepo->create($owner);
-                // $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
-            }else{
-                $influencer = $influencerRepo->update($influencer, $owner);
-                // $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");
-            }
-
-            // Update tracker details
-            $this->tracker->update([
-                'username'  =>  $influencer->username
-            ]);
-            $this->tracker = $this->tracker->refresh();
-
-            // Scrap media details and update on DB
-            foreach($_urls as $url){
-                if(empty($url) || !isset($url))
-                    continue;
-
-                $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
-            }
-
-            $influencer = $influencer->refresh();
-            // Set tracker on finished status or launch all posts scraper
-            if($influencer->posts()->count() == $influencer->posts)
-                $this->tracker->update(['queued' => 'finished']);
-            else
-                ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
-                
-            $this->tracker = $this->tracker->refresh();
+        }catch(\Exception $ex){
+            $this->fail($ex);
         }
     }
 
@@ -129,7 +133,8 @@ class ScrapInstagramPostJob implements ShouldQueue
     {
         // Set tracker on failed status
         $this->tracker->update(['queued' => 'failed']);
-        $this->tracker = $this->tracker->refresh();
+
+        Log::error("Failed to extract Post info | " . $exception->getMessage());
     }
 
     private function scrapMediaDetails(string $url, InstagramScraper $scraper, Influencer $influencer, InfluencerPostRepository $postRepo)

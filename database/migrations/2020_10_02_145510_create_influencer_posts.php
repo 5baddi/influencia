@@ -29,6 +29,7 @@ class CreateInfluencerPosts extends Migration
             $table->text('alttext')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('comments')->nullable();
+            $table->float('engagement_rate')->nullable();
             $table->integer('emojis')->nullable();
             $table->double('comments_positive')->nullable();
             $table->double('comments_neutral')->nullable();
