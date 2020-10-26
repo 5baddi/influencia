@@ -79,14 +79,14 @@
                   <div class="text">Users</div>
                </router-link>
             </li>
-            <li v-if="$can('assign-role', 'user') || AuthenticatedUser.is_superadmin" :class="{active : currentRouteName == `roles`}">
+            <!-- <li v-if="$can('assign-role', 'user') || AuthenticatedUser.is_superadmin" :class="{active : currentRouteName == `roles`}">
                <router-link :to="{name: 'roles'}">
                   <div class="icon">
                      <i class="fas fa-key"></i>
                   </div>
                   <div class="text">Roles</div>
                </router-link>
-            </li>
+            </li> -->
          </ul>
       </nav>
    </aside>

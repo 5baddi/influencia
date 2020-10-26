@@ -62,8 +62,8 @@
                         <p>{{ tracker.username ? tracker.username : '---' }}</p>
                      </td>
                      <td>
-                        <i class="fab fa-2 fa-instagram" v-if="tracker.platform === 'instagram'" :title="tracker.platform"></i>
-                        <i class="fas fa-2 fa-globe" v-if="tracker.type === 'url'" :title="tracker.type"></i>
+                        <i class="fab fa-2 fa-instagram" v-show="tracker.platform === 'instagram'" :title="tracker.platform"></i>
+                        <i class="fas fa-2 fa-globe" v-show="tracker.type === 'url'" :title="tracker.type"></i>
                      </td>
                      <td>
                         <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
@@ -138,7 +138,8 @@ export default {
          formData.append("campaign_id", data.campaign_id);
          formData.append("name", data.name);
          formData.append("type", data.type);
-         formData.append("platform", data.platform);
+         if(data.type !== 'url')
+            formData.append("platform", data.platform);
 
 
          // Create story tracker

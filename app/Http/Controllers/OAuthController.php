@@ -45,7 +45,7 @@ class OAuthController extends Controller
     public function storeRole(RoleRequest $request)
     {
         // Create new role
-        $role = Role::create($request->all());
+        $role = Role::create($request->validated());
 
         return response()->success("Role '{$role->name}' successfully created.", $role->toArray());
     }
@@ -59,7 +59,7 @@ class OAuthController extends Controller
     public function storePermission(PermissionRequest $request)
     {
         // Create new permission
-        $permission = Permission::create($request->all());
+        $permission = Permission::create($request->validated());
 
         return response()->success("Permission '{$permission->name}' successfully created.", $permission->toArray());
     }

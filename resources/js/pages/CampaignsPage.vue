@@ -98,9 +98,8 @@ export default {
             {
                name: "Created at",
                field: "created_at",
-               callback: function(row){
-                  return moment(row.created_at).format('DD/MM/YYYY');
-               }
+               isData: true,
+               format: "DD/MM/YYYY"
             }
          ]
       };

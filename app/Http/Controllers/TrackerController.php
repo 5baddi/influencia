@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
+use App\Influencer;
+use App\Jobs\ScrapInstagramAllPostsJob;
 use App\Jobs\ScrapURLContentJob;
+use App\Services\InstagramScraper;
 use App\ShortLink;
 
 class TrackerController extends Controller
@@ -87,7 +90,7 @@ class TrackerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function createStory(CreateStoryTrackerRequest $request)
+    public function createStory(CreateStoryTrackerRequest $request, InstagramScraper $scraper)
     {
         abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
@@ -110,6 +113,12 @@ class TrackerController extends Controller
             }
         }
         
+        // Srap Influencer
+        $instagramUser = $scraper->byUsername($request->input('username')); 
+        $influencer = Influencer::create($instagramUser);
+        // Dispatch scraping job
+        ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
+
 
         return response()->success(
             "Story tracker created successfully.",

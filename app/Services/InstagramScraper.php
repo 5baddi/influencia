@@ -102,21 +102,21 @@ class InstagramScraper
     public function setProxy()
     {
         // Get random proxies list
-        $proxies = file_get_contents("https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=5000&country=US&anonymity=elite&ssl=yes");
-        $list = explode(PHP_EOL, trim($proxies));
+        // $proxies = file_get_contents("https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=5000&country=US&anonymity=elite&ssl=yes");
+        // $list = explode(PHP_EOL, trim($proxies));
 
-        // Test and get valid proxy
-        $proxy = $this->testProxy($list);
-        if(!isset($proxy['ip'], $proxy['port']))
-            return;
+        // // Test and get valid proxy
+        // $proxy = $this->testProxy($list);
+        // if(!isset($proxy['ip'], $proxy['port']))
+        //     return;
         
-        // Set proxy
-        $this->instagram->setProxy([
-            // 'address' => $proxy['ip'],
-            'address' => '46.246.26.10',
-            // 'port'    => $proxy['port']
-            'port'    => '3128'
-        ]);
+        // // Set proxy
+        // $this->instagram->setProxy([
+        //     // 'address' => $proxy['ip'],
+        //     'address' => '46.246.26.10',
+        //     // 'port'    => $proxy['port']
+        //     'port'    => '3128'
+        // ]);
     }
 
     /**

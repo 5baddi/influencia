@@ -14,12 +14,13 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Repositories\InfluencerRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Repositories\InfluencerPostRepository;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ScrapInstagramPostJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DispatchesJobs;
 
     /**
      * The number of times the job may be attempted.
@@ -120,9 +121,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 if($influencer->posts()->count() == $influencer->posts)
                     $this->tracker->update(['queued' => 'finished']);
                 else
-                    ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
-                    
-                $this->tracker = $this->tracker->refresh();
+                    $this->dispatch(new ScrapInstagramAllPostsJob($influencer))->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
             }
         }catch(\Exception $ex){
             $this->fail($ex);

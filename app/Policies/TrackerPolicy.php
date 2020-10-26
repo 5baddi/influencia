@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Campaign;
 use App\Tracker;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -39,9 +40,12 @@ class TrackerPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(User $user, $campaignID)
     {
-        return $user->is_superadmin;
+        // Get Campaign
+        $campaign = Campaign::find($campaignID);
+
+        return $user->can('update', $campaign);
     }
 
     /**

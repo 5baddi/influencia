@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateStoryTrackerRequest extends FormRequest
@@ -13,7 +15,7 @@ class CreateStoryTrackerRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        return $this->user()->can('create', $this->request->get('campaign_id')) || Gate::allows('create_tracker');
     }
 
     /**

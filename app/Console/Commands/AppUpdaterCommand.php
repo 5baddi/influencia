@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\ApplicationSetting;
+use App\Campaign;
 use Swap\Builder;
 use Illuminate\Console\Command;
 

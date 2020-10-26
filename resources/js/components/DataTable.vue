@@ -3,12 +3,12 @@
         <thead ref="headercolumns">
                 <th v-for="(column, index) in columns" :key="index">
                     {{ (column.name ? column.name : " ") | headerColumn }}
-                    <span v-if="column.sortable" @click="sortBy(column)">
+                    <!-- <span v-show="column.sortable && this.sortKey == 'desc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
                         <i class="fas fa-sort-up"></i>
                     </span>
-                    <span v-if="column.sortable" @click="sortBy(column)">
+                    <span v-show="column.sortable && this.sortKey == 'asc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
                         <i class="fas fa-sort-down"></i>
-                    </span>
+                    </span> -->
                 </th>
                 <slot name="header"></slot>
         </thead>
@@ -26,18 +26,18 @@
                 <slot name="body-row" :data="obj"></slot>
             </tr>
         </tbody>
-        <tfoot v-if="parsedData.length > 0 && !isLoading">
+        <tfoot v-if="data.length > 0 && !isLoading">
             <tr>
                 <td :colspan="getColumnsCount()">
                     Rows per page:
                     <select ref="itemsPerPage" @change="perPageOnChange($event)">
-                        <option v-for="value in rowPerPage" :key="value" :value="value" :selected="perPage == value">{{ value }}</option>
+                        <option v-for="value in rowPerPage" :key="value" :value="(value !== 'All') ? value : data.length" :selected="perPage == value">{{ value }}</option>
                     </select>
-                    <span>{{ startIndex }} - {{ endIndex ? endIndex : parsedData.length }} of {{ parsedData.length }}</span>
-                    <button v-if="startIndex > 1">
+                    <span>{{ startIndex }} - {{ parsedData.length }} of {{ data.length }}</span>
+                    <button v-if="startIndex > perPage" @click="previousPage()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button v-if="endIndex && endIndex < parsedData.length">
+                    <button v-if="(data.length - startIndex) > 0" @click="nextPage()">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </td>
@@ -130,6 +130,8 @@
     }
 </style>
 <script>
+import moment from "moment";
+
 export default {
     name: 'DataTable',
     props: {
@@ -161,12 +163,12 @@ export default {
 
             let vm = this;
             let parsedData = [];
-            vm.data.map(function(value, key){
+            let _data = vm.data.slice(vm.startIndex - 1, vm.perPage);
+            _data.map(function(value, key){
                 let rowData = value;
 
                 vm.columns.map(function(item, key){
                     // Init sort
-                    vm.columns[key].sortKey = 'asc';
                     if(typeof vm.columns[key].sortable === "undefined")
                         vm.columns[key].sortable = true;
 
@@ -175,6 +177,8 @@ export default {
                     if(val !== "undefined"){
                         if(typeof item.callback === "function")
                             rowData[item.field] = item.callback.call(item, value);
+                        else if(typeof item.isDate !== "undefined")
+                            rowData[item.field] = moment(val).format((typeof item.format !== "undefined" ? item.format : "DD/MM/YYYY"));
                         else
                             rowData[item.field] = val;
                     }
@@ -190,14 +194,20 @@ export default {
         getColumnsCount(){
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : 1;
         },
-        sortBy(column){
+        sortBy(column, key){
             if(this.sortColumn !== column.name)
                 this.sortColumn = column.name;
 
-            column.sortKey = (column.sortKey === 'asc') ? 'desc' : 'asc';
+            this.sortKey = key;
         },
         perPageOnChange(event){
             this.perPage = event.target.value;
+        },
+        nextPage(){
+            this.startIndex = this.startIndex + this.perPage;
+        },
+        previousPage(){
+            this.startIndex = this.startIndex - this.perPage;
         }
     },
     data(){
@@ -207,14 +217,15 @@ export default {
             perPage: 10,
             rowPerPage: [10, 25, 50, 100, 'All'],
             startIndex: 1,
-            endIndex: null,
+            endIndex: this.perPage,
+            sortKey: 'asc',
             sortColumn: null
         }
     },
     created(){
         this.$store.dispatch(this.fetchMethod).then(response => {
             if(response.success)
-                this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
+                this.data = (typeof this.responseField === "undefined") ? [...response.content] : [...response.content[this.responseField]];
             else
                 this.data = [];
 

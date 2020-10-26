@@ -141,8 +141,11 @@ const actions = {
     },
     addNewCampaign({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            api.post("/api/v1/campaigns", data)
-                .then(response => {
+            api.post("/api/v1/campaigns", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(response => {
                     commit('setNewCampaign', { campaign: response.data.content })
                     resolve(response.data)
                 })

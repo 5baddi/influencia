@@ -50,18 +50,18 @@ class ScrapInstagramAllPostsJob implements ShouldQueue
     {
         try{
             // Verify last fetch
-            if(!in_array($this->influencer->queued, ['finished', 'failed']) && isset($this->influencer->updated_at) && $this->influencer->updated_at->diffInDays(Carbon::now()) > 0){
+            if(!in_array($this->influencer->queued, ['finished', 'failed'])){
                 // Set influencer queue as on progress
                 $this->influencer->update(['queued' => 'progress']);
-                $this->influencer = $this->influencer->refresh();
                 Log::info("Progress influencer ID: {$this->influencer->id}");
 
                 // Update influencer posts
                 Log::info("Number of posts: " . $this->influencer->posts);
                 Log::info("Please wait until scraping all medias ...");
-                $posts = $scraper->getMedias($this->influencer);
-                if(is_array($posts) && sizeof($posts) > 0)
-                    Log::info("Scraped posts: " . sizeof($posts));
+                $scraper->getMedias($this->influencer);
+
+                if($this->influencer->posts()->count() == $this->influencer->posts)
+                    $this->tracker->update(['queued' => 'finished']);
             }
         }catch(\Exception $ex){
             // Trace the error
