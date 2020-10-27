@@ -35,9 +35,9 @@ use Illuminate\Support\Facades\Route;
 //     dd($response->json());
 // });
 
-Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|login|u).*$');
+Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|oauth|u).*$');
 
-Route::post('/login', 'AuthenticationController@login')->name('login');
+Route::post('/oauth', 'AuthenticationController@login')->name('login');
 
 // Short links
 Route::get('/u/{code}', 'ShortLinkController@shortenLink')->name('shorten.link');

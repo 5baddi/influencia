@@ -39,11 +39,17 @@
             </div>
          </header>
          <div class="datatable-scroll" v-if="$can('list', 'tracker') || AuthenticatedUser.is_superadmin">
-            <DataTable ref="trackerssDT" :columns="columns" fetchMethod="fetchTrackers" responseField="all" cssClasses="table-card">
+            <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" cssClasses="table-card">
                <th slot="header">Actions</th>
-               <!-- <td slot="body-row" slot-scope="row">
-
-               </td> -->
+               <td slot="body-row" slot-scope="row">
+                  <button v-if="($can('change-status', 'tracker') || AuthenticatedUser.is_superadmin)" class="btn icon-link" title="Stop tracker" @click="enableTracker(row.data.original)">
+                     <span v-show="row.data.original.status">
+                        <svg data-v-4b997e69="" class="svg-inline--fa fa-stop-circle fa-w-16" aria-hidden="true" focusable="false" data-prefix="far" data-icon="stop-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256s111 248 248 248 248-111 248-248zm-448 0c0-110.5 89.5-200 200-200s200 89.5 200 200-89.5 200-200 200S56 366.5 56 256zm296-80v160c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V176c0-8.8 7.2-16 16-16h160c8.8 0 16 7.2 16 16z"></path></svg>
+                     </span>
+                     <span v-show="!row.data.original.status">
+                     </span>
+                  </button>
+               </td>
             </DataTable>
          </div>
       </div>
@@ -92,7 +98,7 @@ export default {
                         return '<i class="fab fa-2 fa-instagram" title="' + row.platform + '"></i>';
                      break;
                      default:
-                        return '<i class="fab fa-2 fa-globe" title="' + row.type + '"></i>';
+                        return '<i class="fas fa-2 fa-globe" title="' + row.type + '"></i>';
                      break;
                   }
                }
@@ -121,14 +127,28 @@ export default {
       },
       createTrackerSuccess: {
          type: "success"
+      },
+      showError: {
+         type: "error",
+         title: "Error",
+         message: "Something going wrong! Please try again.."
+      },
+      showSuccess: {
+         type: "success",
       }
    },
    methods: {
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
       },
-      showEditTrackerModal(){
-
+      enableTracker(tracker){
+         this.$store.dispatch("changeTrackerStatus", tracker.uuid)
+            .then(response => {
+               this.$refs.trackersDT.reloadData();
+               this.showSuccess({message: response.message});
+            }).catch(error => {
+               this.showError({message: error.message});
+            });
       },
       create(payload) {
          let data = payload.data;

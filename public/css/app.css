@@ -7329,15 +7329,16 @@ button:disabled {
   text-align: center !important;
 }
 
-a.icon-link {
+button.icon-link a.icon-link {
+  color: #039be5;
   margin-right: 8px;
 }
 
-a.icon-link:hover {
+button.icon-link a.icon-link:hover {
   opacity: 0.7;
 }
 
-a.icon-link:last-child {
+button.icon-link a.icon-link:last-child {
   margin-right: 0;
 }
 

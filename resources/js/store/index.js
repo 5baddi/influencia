@@ -5,6 +5,7 @@ import axios from 'axios';
 import { api } from '../api';
 import { Loader } from './loader';
 import ability from '../services/ability';
+import { reject } from 'lodash';
 
 Vue.use(Vuex);
 
@@ -52,7 +53,7 @@ const actions = {
     login({ commit, state }, credentials) {
 
         return new Promise((resolve, reject) => {
-            api.post('/login', credentials).then((response) => {
+            api.post('/oauth', credentials).then((response) => {
                 localStorage.setItem("user", JSON.stringify(response.data))
                 commit('setUser', { user: response.data })
                 api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
@@ -168,6 +169,19 @@ const actions = {
                     reject(error)
                 })
         })
+    },
+    changeTrackerStatus({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.get(`/api/v1/trackers/${uuid}/status`)
+                .then(response => {
+                    if(response.data.success)
+                        resolve(response.data);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                })
+        });
     },
     setActiveBrand({ commit, state }, brand) {
         commit("setActiveBrand", { brand })

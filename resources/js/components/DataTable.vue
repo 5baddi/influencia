@@ -38,7 +38,7 @@
                     <button v-if="startIndex > perPage" @click="previousPage()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
-                    <button v-if="(data.length - startIndex) > 0" @click="nextPage()">
+                    <button v-if="(data.length - perPage) > 0" @click="nextPage()">
                         <i class="fas fa-chevron-right"></i>
                     </button>
                 </td>
@@ -167,7 +167,7 @@ export default {
             let vm = this;
             let parsedData = [];
             _data.map(function(value, key){
-                let rowData = value;
+                let rowData = {original: value};
 
                 vm.columns.map(function(item, key){
                     // Init sort
@@ -215,12 +215,14 @@ export default {
         reloadData(){
             this.$store.dispatch(this.fetchMethod).then(response => {
                 if(response.success)
-                    this.data = (typeof this.responseField === "undefined") ? [...response.content] : [...response.content[this.responseField]];
+                    this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
                 else
                     this.data = [];
 
                 this.isLoading = false;
             }).catch(error => {
+                console.log("DataTable Error: ");
+                console.log(error);
                 this.data = [];
                 this.isLoading = false;
             });

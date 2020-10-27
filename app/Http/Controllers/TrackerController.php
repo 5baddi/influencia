@@ -41,13 +41,32 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias'])
+            Tracker::with(['user', 'campaign', 'medias', 'influencer'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
                     })
                     ->get()
                     // ->paginate(Application::DEFAULT_PAGINATION)
         );
+    }
+
+    /**
+     * Enable/Disable tracker
+     * 
+     * @param \App\Tracker $tracker
+     * @return \Illuminate\Http\Response
+     */
+    public function changeStatus(Tracker $tracker)
+    {
+        $updated = $tracker->update([
+            'status'    =>  !$tracker->status
+        ]);
+
+        if($updated)
+            return response()->success("Tracker {$tracker->name} status changed successfully.", $tracker->refresh());
+
+            
+        return response()->error("Something going wrong! Please try again or contact the support..");
     }
 
     /**

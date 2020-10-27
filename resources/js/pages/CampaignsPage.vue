@@ -40,7 +40,7 @@
             </div>
          </header>
          <div class="datatable-scroll" v-if="$can('list', 'campaign') || AuthenticatedUser.is_superadmin">
-            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" cssClasses="table-card">
+            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
                   <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.uuid}}" class="icon-link" title="Statistics">

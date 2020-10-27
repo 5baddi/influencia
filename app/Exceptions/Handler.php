@@ -57,10 +57,10 @@ class Handler extends ExceptionHandler
                     case 404:
                         return response()->error("Invalid request or url.", [], 404);
                     break;
-                    case '500':
+                    case 500:
                         return response()->error("Internal server error. Please contact admin.", [], 500);
                     break;
-                    case '429':
+                    case 429:
                         return response()->error("Too Many Attempts.", [], 429);
                     break;
                     default:
@@ -71,8 +71,6 @@ class Handler extends ExceptionHandler
         }elseif($exception instanceof ModelNotFoundException){
             if($request->expectsJson())
                 return response()->error($exception->getMessage(), [], 404);
-        }{
-            return parent::render($request, $exception);
         }
         
         return parent::render($request, $exception);
