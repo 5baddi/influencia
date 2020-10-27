@@ -88,27 +88,27 @@ class CampaignController extends Controller
     {
         // Load data
         $campaign = $campaign->load('trackers');
-        $impressions = $this->campaignRepo->getEstimatedImpressions();
-        $organicImpressions = $this->campaignRepo->getEstimatedOrganicImpressions();
-        $communities = $this->campaignRepo->getEstimatedCommunities();
-        $organicCommunities = $this->campaignRepo->getEstimatedOrganicCommunities();
-        $views = $this->campaignRepo->getViews();
-        $organicViews = $this->campaignRepo->getOrganicViews();
-        $engagements = $this->campaignRepo->getEngagements();
-        $organicEngagements = $this->campaignRepo->getOrganicEngagements();
+        // $impressions = $this->campaignRepo->getEstimatedImpressions();
+        // $organicImpressions = $this->campaignRepo->getEstimatedOrganicImpressions();
+        // $communities = $this->campaignRepo->getEstimatedCommunities();
+        // $organicCommunities = $this->campaignRepo->getEstimatedOrganicCommunities();
+        // $views = $this->campaignRepo->getViews();
+        // $organicViews = $this->campaignRepo->getOrganicViews();
+        // $engagements = $this->campaignRepo->getEngagements();
+        // $organicEngagements = $this->campaignRepo->getOrganicEngagements();
 
         return response()->success(
             "Campaign fetched successfully.",
             [
                 'data'          =>  $campaign,
-                'impressions'   =>  $impressions,
-                'communities'   =>  $communities,
-                'views'         =>  $views,
-                'engagements'   =>  $engagements,
-                'organicImpressions'    =>  $organicImpressions,
-                'organicCommunities'    =>  $organicCommunities,
-                'organicViews'          =>  $organicViews,
-                'organicEngagements'    =>  $organicEngagements
+                // 'impressions'   =>  $impressions,
+                // 'communities'   =>  $communities,
+                // 'views'         =>  $views,
+                // 'engagements'   =>  $engagements,
+                // 'organicImpressions'    =>  $organicImpressions,
+                // 'organicCommunities'    =>  $organicCommunities,
+                // 'organicViews'          =>  $organicViews,
+                // 'organicEngagements'    =>  $organicEngagements
             ]
         );
     }

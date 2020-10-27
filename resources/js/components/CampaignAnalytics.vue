@@ -1,7 +1,7 @@
 <template>
     <div class="p-1 campaign" v-if="campaign">
         <div class="cards statistics">
-            <div class="card" v-if="campaign.communities >= 0">
+            <div class="card" v-if="campaign.data.communities >= 0">
                 <div class="title">
                     <i class="fas fa-users egg-blue"></i>
                     <div class="numbers">
@@ -12,7 +12,7 @@
                 <canvas id="communities-chart"></canvas>
                 <span>Organic communities {{ nbr().abbreviate(campaign.data.organic_communities) }} ({{ campaign.data.communities > 0 ? ((campaign.data.organic_communities / campaign.data.communities) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.impressions >= 0">
+            <div class="card" v-if="campaign.data.impressions >= 0">
                 <div class="title">
                     <i class="fas fa-bullhorn purple"></i>
                     <div class="numbers">
@@ -23,7 +23,7 @@
                 <canvas id="impressions-chart"></canvas>
                 <span>Organic impressions {{ nbr().abbreviate(campaign.data.organic_impressions) }} ({{ campaign.data.impressions > 0 ? ((campaign.data.organic_impressions / campaign.data.impressions) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.views >= 0">
+            <div class="card" v-if="campaign.data.views >= 0">
                 <div class="title">
                     <i class="far fa-eye green"></i>
                     <div class="numbers">
@@ -34,7 +34,7 @@
                 <canvas id="views-chart"></canvas>
                 <span>Organic views {{ nbr().abbreviate(campaign.data.organic_views) }} ({{ campaign.data.views > 0 ? ((campaign.data.organic_views / campaign.data.views) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.engagements >= 0">
+            <div class="card" v-if="campaign.data.engagements >= 0">
                 <div class="title">
                     <i class="fas fa-thumbs-up blue"></i>
                     <div class="numbers">
@@ -235,7 +235,7 @@ export default {
     
     this.createDoughtnutChart('communities-chart', {
         datasets: [{
-            data: [this.campaign.communities],
+            data: [this.campaign.data.communities],
             backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -243,7 +243,7 @@ export default {
     
     this.createDoughtnutChart('impressions-chart', {
         datasets: [{
-            data: [this.campaign.impressions],
+            data: [this.campaign.data.impressions],
             backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -251,7 +251,7 @@ export default {
     
     this.createDoughtnutChart('views-chart', {
         datasets: [{
-            data: [this.campaign.views],
+            data: [this.campaign.data.views],
             backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -259,7 +259,7 @@ export default {
     
     this.createDoughtnutChart('engagements-chart', {
         datasets: [{
-            data: [this.campaign.engagements],
+            data: [this.campaign.data.engagements],
             backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
