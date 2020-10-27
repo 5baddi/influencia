@@ -4,7 +4,7 @@
          <div class="dashboard__sidebar--content">
             <div class="logo">
                <img
-                  src="http://angular-material.fusetheme.com/assets/images/logos/fuse.svg"
+                  src="../../../assets/img/logo.svg"
                   alt="logo"
                />
             </div>

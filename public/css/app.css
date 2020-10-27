@@ -626,7 +626,7 @@ button:disabled {
 .login {
   width: 100%;
   overflow: hidden;
-  background: url(http://angular-material.fusetheme.com/assets/images/backgrounds/dark-material-bg.jpg) no-repeat;
+  background: url(/images/bg.jpg?d914334bfb315da0efe344d78c78b40c) no-repeat;
   background-size: cover;
   min-width: 0;
   min-height: 100vh;

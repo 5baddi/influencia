@@ -24,7 +24,7 @@
             <DataTable :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
-                  <router-link v-if="row.data.queued === 'finished'" :to="{name : 'influencers', params: {uuid: row.data.uuid}}" class="icon-link" title="Details">
+                  <router-link v-if="row.data.original.queued === 'finished'" :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Details">
                      <i class="fas fa-eye"></i>
                   </router-link>
                   <!-- <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(row.data)"><i class="fas fa-pen"></i></a>
@@ -94,9 +94,8 @@ export default {
             {
                name: "Added at",
                field: "created_at",
-               callback: function(row){
-                  return moment(row.created_at).format('DD/MM/YYYY');
-               }
+               isDate: true,
+               format: "DD/MM/YYYY"
             }
          ]
       };
