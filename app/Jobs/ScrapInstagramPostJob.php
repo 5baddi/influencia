@@ -20,7 +20,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ScrapInstagramPostJob implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DispatchesJobs;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
      * The number of times the job may be attempted.

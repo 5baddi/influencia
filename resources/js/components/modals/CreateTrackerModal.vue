@@ -171,23 +171,7 @@ export default {
       }
    },
    data() {
-      this.init();
-   },
-   created() {
-      document.addEventListener("keydown", e => {
-         if (e.key == "Escape" && this.show) {
-            this.dismiss();
-         }
-      });
-
-      this.$store.dispatch("fetchCampaigns");
-   },
-   computed: {
-      ...mapGetters(["campaigns", "AuthenticatedUser"])
-   },
-   methods: {
-      init(){
-         return {
+      return {
             user_id: null,
             campaign_id: null,
             platform: "instagram",
@@ -210,6 +194,42 @@ export default {
             time_story: null,
             date_story: null,
          };
+   },
+   created() {
+      document.addEventListener("keydown", e => {
+         if (e.key == "Escape" && this.show) {
+            this.dismiss();
+         }
+      });
+
+      this.$store.dispatch("fetchCampaigns");
+   },
+   computed: {
+      ...mapGetters(["campaigns", "AuthenticatedUser"])
+   },
+   methods: {
+      init(){
+         this.campaign_id = null;
+         this.user_id = null;
+         this.platform = "instagram";
+         this.name = null;
+         this.type = "url";
+         this.username = null;
+         this.story = null;
+         this.url = '';
+         this.urls = [];
+         this.n_squences = null;
+         this.n_squences_impressions = null;
+         this.n_impressions_first_sequence = null;
+         this.reach_first_sequence = null;
+         this.sticker_taps_mentions = null;
+         this.sticker_taps_hashtags = null;
+         this.link_clicks = null;
+         this.n_replies = null;
+         this.n_taps_forward = null;
+         this.n_taps_backward = null;
+         this.time_story = null;
+         this.date_story = null;
       },
       dismiss() {
          this.$emit("dismiss");

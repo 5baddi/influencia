@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use Carbon\Carbon;
 use App\Influencer;
 use Illuminate\Bus\Queueable;
 use App\Services\InstagramScraper;

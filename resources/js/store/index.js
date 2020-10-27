@@ -141,11 +141,8 @@ const actions = {
     },
     addNewCampaign({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            api.post("/api/v1/campaigns", data, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                }).then(response => {
+            api.post("/api/v1/campaigns", data)
+                .then(response => {
                     commit('setNewCampaign', { campaign: response.data.content })
                     resolve(response.data)
                 })
@@ -159,8 +156,11 @@ const actions = {
             // Verify is a story tracker
             let isStory = data.get('type') === "story";
 
-            api.post("/api/v1/trackers" + (isStory ? "/story" : ""), data)
-                .then(response => {
+            api.post("/api/v1/trackers" + (isStory ? "/story" : ""), data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(response => {
                     commit('setNewTracker', { tracker: response.data.content })
                     resolve(response.data)
                 })

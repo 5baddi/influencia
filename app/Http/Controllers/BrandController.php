@@ -46,9 +46,7 @@ class BrandController extends Controller
         abort_if(Gate::denies('create_brand') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
         
         // Set data
-        $data = [
-            'name'  =>  $request->input('name')
-        ];
+        $data = $request->validated();
 
         // Generate file name
         if($request->file('logo')){

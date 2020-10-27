@@ -209,6 +209,19 @@ export default {
         },
         previousPage(){
             this.startIndex = this.startIndex - this.perPage;
+        },
+        reloadData(){
+            this.$store.dispatch(this.fetchMethod).then(response => {
+                if(response.success)
+                    this.data = (typeof this.responseField === "undefined") ? [...response.content] : [...response.content[this.responseField]];
+                else
+                    this.data = [];
+
+                this.isLoading = false;
+            }).catch(error => {
+                this.data = [];
+                this.isLoading = false;
+            });
         }
     },
     data(){
@@ -224,17 +237,7 @@ export default {
         }
     },
     created(){
-        this.$store.dispatch(this.fetchMethod).then(response => {
-            if(response.success)
-                this.data = (typeof this.responseField === "undefined") ? [...response.content] : [...response.content[this.responseField]];
-            else
-                this.data = [];
-
-            this.isLoading = false;
-        }).catch(error => {
-            this.data = [];
-            this.isLoading = false;
-        });
+        this.reloadData();
     }
 }
 </script>

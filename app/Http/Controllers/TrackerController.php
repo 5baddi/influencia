@@ -117,7 +117,7 @@ class TrackerController extends Controller
         $instagramUser = $scraper->byUsername($request->input('username')); 
         $influencer = Influencer::create($instagramUser);
         // Dispatch scraping job
-        ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
+        ScrapInstagramAllPostsJob::dispatch($influencer->refresh())->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
 
 
         return response()->success(
