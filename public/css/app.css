@@ -7332,6 +7332,9 @@ button:disabled {
 .icon-link {
   color: #039be5 !important;
   margin-right: 8px;
+  display: unset;
+  font-size: unset;
+  padding: unset;
 }
 
 .icon-link:hover {

@@ -1,37 +1,36 @@
 <template>
-   <div class="modal" v-if="show">
+   <div class="modal" :class="{'show-modal': show}">
       <div class="modal-content">
-         <header>
-            <h4 class="heading">{{ title }}</h4>
-         </header>
-         <div class="modal-form">
-            <div class="modal-form__actions">
-                <!-- <button class="btn btn-success" @click.prevent="submit" type="submit">{{ brand.id ? "Update" : "Create" }}</button> -->
-                <!-- <button class="btn btn-danger" @click.prevent="dismiss" type="button">Cancel</button> -->
-            </div>
-         </div>
+        <h4 class="heading">{{ title }}</h4>
+        <div class="modal-form">
+            <button class="btn btn-success" @click.prevent="confirm" type="submit">Yes</button>
+            <button class="btn btn-danger" @click.prevent="close" type="button">Cancel</button>
+        </div>
       </div>
    </div>
 </template>
 <script>
 export default {
     props: {
-        title: {
-            type: String,
-            default: "Are you sure?"
-        }
+        
     },
     methods: {
-        closeModal(){
+        close(){
             this.show = false;
+            this.title = null;
         },
-        openModal(){
+        open(title){
             this.show = true;
+            this.title = title;
+        },
+        confirm(){
+
         }
     },
     data(){
         return {
-            show: false
+            show: false,
+            title: null
         }
     }
 }
