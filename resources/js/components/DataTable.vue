@@ -3,6 +3,7 @@
         <thead ref="headercolumns">
                 <th v-for="(column, index) in columns" :key="index">
                     {{ (column.name ? column.name : " ") | headerColumn }}
+                    <!-- TODO: fix sotring -->
                     <!-- <span v-show="column.sortable && this.sortKey == 'desc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
                         <i class="fas fa-sort-up"></i>
                     </span>
@@ -161,10 +162,10 @@ export default {
             if(this.data.length === 0)
                 return [];
 
+            let _data = this.data.slice(this.startIndex - 1, this.perPage);
+            // TODO: fix pagination...
             let vm = this;
             let parsedData = [];
-            let _data = vm.data.slice(vm.startIndex - 1, vm.perPage);
-            // TODO: fix pagination...
             _data.map(function(value, key){
                 let rowData = value;
 
@@ -179,7 +180,8 @@ export default {
                         if(typeof item.callback === "function")
                             rowData[item.field] = item.callback.call(item, value);
                         else if(typeof item.isDate !== "undefined")
-                            rowData[item.field] = moment(val, (typeof item.format !== "undefined") ? item.format : "DD MM YYYY");
+                            // TODO: fix DataTime format
+                            rowData[item.field] = moment(new Date(val), (typeof item.format !== "undefined") ? item.format : "DD MM YYYY");
                         else
                             rowData[item.field] = val;
                     }

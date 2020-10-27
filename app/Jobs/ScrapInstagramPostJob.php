@@ -96,7 +96,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 // Store influencer if not exists
                 if(is_null($influencer)){
                     $influencer = $influencerRepo->create($owner);
-                    // $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
+                    $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
                 }else{
                     $influencer = $influencerRepo->update($influencer, $owner);
                     // $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");

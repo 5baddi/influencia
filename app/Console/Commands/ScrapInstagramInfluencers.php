@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Influencer;
+use App\Jobs\ScrapInstagramAllPostsJob;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;

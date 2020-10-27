@@ -38,48 +38,13 @@
                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
          </header>
-         <div class="datatable-scroll">
-            <table class="table campagins-table">
-               <thead>
-                  <tr class="row">
-                     <td>Tracker name</td>
-                     <td>Tracker status</td>
-                     <td>Tracker influencer</td>
-                     <td>Tracker meduim</td>
-                     <td>Created on</td>
-                     <td class="text-center">Actions</td>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr v-show="trackers.length > 0" v-for="tracker in trackers" :key="tracker.id">
-                     <td>
-                        <p>{{ tracker.name }}</p>
-                     </td>
-                     <td>
-                        <span :class="'status status-' + (tracker.status ? 'success' : 'danger')" :title="(tracker.status ? 'Enabled' : 'Disabled')">{{ tracker.queued }}</span>
-                     </td>
-                     <td>
-                        <p>{{ tracker.username ? tracker.username : '---' }}</p>
-                     </td>
-                     <td>
-                        <i class="fab fa-2 fa-instagram" v-show="tracker.platform === 'instagram'" :title="tracker.platform"></i>
-                        <i class="fas fa-2 fa-globe" v-show="tracker.type === 'url'" :title="tracker.type"></i>
-                     </td>
-                     <td>
-                        <p>{{ moment(tracker.created_at).format('DD/MM/YYYY h:mm') }}</p>
-                     </td>
-                     <td class="text-center">
-                        <!-- <a href="javascript:void(0);" v-show="tracker.id" class="icon-link" :title="'Edit tracker'" @click="showEditTrackerModal(tracker)"><i class="fas fa-pen"></i></a> -->
-                        <!-- <a href="javascript:void(0);" class="icon-link" :title="'Delete tracker'"><i class="fas fa-trash"></i></a> -->
-                     </td>
-                  </tr>
-                  <tr v-show="!trackers || trackers.length == 0">
-                     <td colspan="6">
-                        <p class="info">Looks like you don't have a tracker record, start creating one.</p>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
+         <div class="datatable-scroll" v-if="$can('list', 'tracker') || AuthenticatedUser.is_superadmin">
+            <DataTable ref="trackerssDT" :columns="columns" fetchMethod="fetchTrackers" responseField="all" cssClasses="table-card">
+               <th slot="header">Actions</th>
+               <td slot="body-row" slot-scope="row">
+
+               </td>
+            </DataTable>
          </div>
       </div>
       <CreateTrackerModal
@@ -92,24 +57,63 @@
 <script>
 import { mapGetters } from "vuex";
 import CreateTrackerModal from "../components/modals/CreateTrackerModal";
-import moment from "moment";
 export default {
    components: {
       CreateTrackerModal
    },
    data() {
       return {
-         showAddTrackerModal: false
+         showAddTrackerModal: false,
+         columns: [
+            {
+               name: "Name",
+               field: "name"
+            },
+            {
+               name: "Status",
+               field: "status",
+               callback: function(row){
+                  return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + row.queued + '</span>';
+               }
+            },
+            {
+               name: "Influencer",
+               field: "influencer_id",
+               callback: function(row){
+                  return row.influencer!== null ? (row.influencer.name ? row.influencer.name : row.influencer.username) : '---';
+               }
+            },
+            {
+               name: "Meduim",
+               field: "platform",
+               callback: function(row){
+                  switch(row.platform){
+                     case "instagram":
+                        return '<i class="fab fa-2 fa-instagram" title="' + row.platform + '"></i>';
+                     break;
+                     default:
+                        return '<i class="fab fa-2 fa-globe" title="' + row.type + '"></i>';
+                     break;
+                  }
+               }
+            },
+            {
+               name: "Created at",
+               field: "created_at",
+               isData: true,
+               format: "DD/MM/YYYY"
+            }
+         ]
       };
    },
    created(){
       // Fetch brand compaigns
       this.$store.dispatch("fetchCampaigns");
       // Fetch brand trackers
-      this.$store.dispatch("fetchTrackers");
+      // this.$store.dispatch("fetchTrackers");
    },
    computed:{
-      ...mapGetters(["campaigns", "trackers"])
+      ...mapGetters(["AuthenticatedUser", "campaigns", "trackers"])
    },
    notifications: {
       createTrackerErrors: {
@@ -120,9 +124,6 @@ export default {
       }
    },
    methods: {
-      moment(){
-         return moment();
-      },
       dismissAddTrackerModal() {
          this.showAddTrackerModal = false;
       },

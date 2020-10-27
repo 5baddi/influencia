@@ -40,7 +40,7 @@
             </div>
          </header>
          <div class="datatable-scroll" v-if="$can('list', 'campaign') || AuthenticatedUser.is_superadmin">
-            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
+            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
                   <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.uuid}}" class="icon-link" title="Statistics">
@@ -124,17 +124,15 @@ export default {
       initData(){
          this.$store.dispatch("fetchCampaigns");
          this.$store.dispatch("fetchTrackers");
-
-         this.fetchCampaign();
-
-         this.isLoading = false;
       },
       fetchCampaign(){
          // Load user by UUID
-         if(typeof this.$route.params.uuid !== 'undefined')
-               this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
-         else
-               this.$store.commit("setCampaign", {campaign: null});
+         if(typeof this.$route.params.uuid !== 'undefined'){
+            this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
+         }else{
+            this.$store.commit("setCampaign", {campaign: null});
+            this.initData();
+         }
       },
       moment() {
          return moment();
@@ -153,7 +151,7 @@ export default {
          this.$store.dispatch("addNewCampaign", payload).then(() => {
             // Reload DataTable
             this.$refs.campaignsDT.reloadData();
-            
+
             this.createCampaignSuccess({ message: "Campaign created successfully" });
             this.dismissAddCampaignModal();
          });
