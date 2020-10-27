@@ -171,29 +171,7 @@ export default {
       }
    },
    data() {
-      return {
-         user_id: null,
-         campaign_id: null,
-         platform: "instagram",
-         name: null,
-         type: "url",
-         username: null,
-         story: null,
-         url: '',
-         urls: [],
-         n_squences: null,
-         n_squences_impressions: null,
-         n_impressions_first_sequence: null,
-         reach_first_sequence: null,
-         sticker_taps_mentions: null,
-         sticker_taps_hashtags: null,
-         link_clicks: null,
-         n_replies: null,
-         n_taps_forward: null,
-         n_taps_backward: null,
-         time_story: null,
-         date_story: null,
-      };
+      this.init();
    },
    created() {
       document.addEventListener("keydown", e => {
@@ -208,6 +186,31 @@ export default {
       ...mapGetters(["campaigns", "AuthenticatedUser"])
    },
    methods: {
+      init(){
+         return {
+            user_id: null,
+            campaign_id: null,
+            platform: "instagram",
+            name: null,
+            type: "url",
+            username: null,
+            story: null,
+            url: '',
+            urls: [],
+            n_squences: null,
+            n_squences_impressions: null,
+            n_impressions_first_sequence: null,
+            reach_first_sequence: null,
+            sticker_taps_mentions: null,
+            sticker_taps_hashtags: null,
+            link_clicks: null,
+            n_replies: null,
+            n_taps_forward: null,
+            n_taps_backward: null,
+            time_story: null,
+            date_story: null,
+         };
+      },
       dismiss() {
          this.$emit("dismiss");
       },
@@ -285,7 +288,8 @@ export default {
 
          this.$emit("create", {
             data: _data
-         });
+         })
+         this.init();
       }
    }
 };

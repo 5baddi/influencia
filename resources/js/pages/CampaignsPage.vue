@@ -46,6 +46,9 @@
                   <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.uuid}}" class="icon-link" title="Statistics">
                      <i class="far fa-chart-bar"></i>
                   </router-link>
+                  <button class="btn" @click="disableCampaign(row.data)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || AuthenticatedUser.is_superadmin">
+                     <i class="far fa-stop-circle"></i>
+                  </button>
                </td>
             </DataTable>
          </div>

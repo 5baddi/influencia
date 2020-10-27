@@ -164,6 +164,7 @@ export default {
             let vm = this;
             let parsedData = [];
             let _data = vm.data.slice(vm.startIndex - 1, vm.perPage);
+            // TODO: fix pagination...
             _data.map(function(value, key){
                 let rowData = value;
 
@@ -178,7 +179,7 @@ export default {
                         if(typeof item.callback === "function")
                             rowData[item.field] = item.callback.call(item, value);
                         else if(typeof item.isDate !== "undefined")
-                            rowData[item.field] = moment(val).format((typeof item.format !== "undefined" ? item.format : "DD/MM/YYYY"));
+                            rowData[item.field] = moment(val, (typeof item.format !== "undefined") ? item.format : "DD MM YYYY");
                         else
                             rowData[item.field] = val;
                     }
