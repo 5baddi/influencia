@@ -58,6 +58,9 @@ class TrackerController extends Controller
      */
     public function changeStatus(Tracker $tracker)
     {
+        // Check ability
+        abort_if(Gate::denies('changeStatus', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
         $updated = $tracker->update([
             'status'    =>  !$tracker->status
         ]);

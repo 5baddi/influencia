@@ -22,3 +22,8 @@ Allowed to use all actions and page Front-End or API
 - Owner
     - Email: owner@baddi.info
     - Password: web2020
+
+### Abilities
+- change-status_tracker
+
+    <sub>Allow change the status for a tracker to enabled/disabled</sub>

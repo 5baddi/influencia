@@ -6,6 +6,7 @@ use App\Campaign;
 use App\Tracker;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Gate;
 
 class TrackerPolicy
 {
@@ -32,6 +33,19 @@ class TrackerPolicy
     public function view(User $user, Tracker $tracker)
     {
         return ($user->id === $tracker->user_id || $user->is_superadmin);
+    }
+
+
+    /**
+     * Determine whether the user can change model status.
+     *
+     * @param  \App\User  $user
+     * @param \App\Tracker $tracker
+     * @return mixed
+     */
+    public function changeStatus(User $user, Tracker $tracker)
+    {
+        return ($user->id === $tracker->user_id && Gate::allows('change-status_tracker')) || $user->is_superadmin;
     }
 
     /**

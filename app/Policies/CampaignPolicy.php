@@ -2,8 +2,9 @@
 
 namespace App\Policies;
 
-use App\Campaign;
 use App\User;
+use App\Campaign;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CampaignPolicy
@@ -31,6 +32,18 @@ class CampaignPolicy
     public function view(User $user, Campaign $campaign)
     {
         //
+    }
+
+    /**
+     * Determine whether the user can change model status.
+     *
+     * @param  \App\User  $user
+     * @param \App\Campaign $campaign
+     * @return mixed
+     */
+    public function changeStatus(User $user, Campaign $campaign)
+    {
+        return ($user->id === $campaign->user_id && Gate::allows('change-status_campaign')) || $user->is_superadmin;
     }
 
     /**

@@ -114,6 +114,28 @@ class CampaignController extends Controller
     }
 
     /**
+     * Enable/Disable campaign
+     * 
+     * @param \App\Campaign $campaign
+     * @return \Illuminate\Http\Response
+     */
+    public function changeStatus(Campaign $campaign)
+    {
+        // Check ability
+        abort_if(Gate::denies('changeStatus', $campaign), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        $updated = $campaign->update([
+            'status'    =>  !$campaign->status
+        ]);
+
+        if($updated)
+            return response()->success("Campaign {$campaign->name} status changed successfully.", $campaign->refresh());
+
+            
+        return response()->error("Something going wrong! Please try again or contact the support..");
+    }
+
+    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
