@@ -43,7 +43,7 @@
             <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
-                  <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.uuid}}" class="icon-link" title="Statistics">
+                  <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                      <i class="far fa-chart-bar"></i>
                   </router-link>
                   <!-- <button class="btn icon-link" @click="disableCampaign(row.data)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || AuthenticatedUser.is_superadmin">
@@ -124,15 +124,14 @@ export default {
       initData(){
          this.$store.dispatch("fetchCampaigns");
          this.$store.dispatch("fetchTrackers");
+         this.fetchCampaign();
       },
       fetchCampaign(){
          // Load user by UUID
-         if(typeof this.$route.params.uuid !== 'undefined'){
-            this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
-         }else{
-            this.$store.commit("setCampaign", {campaign: null});
-            this.initData();
-         }
+         if(typeof this.$route.params.uuid !== 'undefined')
+               this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
+         else
+               this.$store.commit("setCampaign", {campaign: null});
       },
       moment() {
          return moment();

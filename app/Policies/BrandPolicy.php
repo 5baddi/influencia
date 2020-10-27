@@ -2,8 +2,9 @@
 
 namespace App\Policies;
 
-use App\Brand;
 use App\User;
+use App\Brand;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class BrandPolicy
@@ -43,7 +44,7 @@ class BrandPolicy
      */
     public function create(User $user)
     {
-        return $user->is_superadmin;
+        return Gate::allows('create_brand') ||$user->is_superadmin;
     }
 
     /**

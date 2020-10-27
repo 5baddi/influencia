@@ -157,7 +157,7 @@
                         <td>-</td>
                         <td>-</td>
                         <td>{{ post.published_at ? moment(post.published_at).format('DD/MM/YYYY') : '-' }}</td>
-                        <td>-</td>
+                        <td>{{ post.earned_media_value.toFixed(2) }} €</td>
                     </tr>
                 </tbody>
             </table>

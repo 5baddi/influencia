@@ -9,6 +9,21 @@
       </div>
    </div>
 </template>
+<style scoped>
+    .modal .modal-content{
+        padding: 1rem !important;
+    }
+    .modal .heading{
+        border-bottom: none !important;
+    }
+    .modal .modal-form{
+        float: right;
+    }
+    .modal .modal-form button{
+        display: inline;
+        font-size: 0.6rem !important;
+    }
+</style>
 <script>
 export default {
     props: {
@@ -24,7 +39,10 @@ export default {
             this.title = title;
         },
         confirm(){
+            this.close();
 
+            // Emit on change method
+            this.$emit("action", this.files);
         }
     },
     data(){

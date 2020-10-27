@@ -32,7 +32,8 @@ class InfluencerPost extends Model
         'estimated_impressions', 
         'organic_impressions', 
         'engagements',
-        'calculated_engagement_rate'
+        'calculated_engagement_rate',
+        'earned_media_value'
     ];
 
      /**

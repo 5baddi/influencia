@@ -43,8 +43,6 @@ class BrandController extends Controller
      */
     public function create(StoreBrandRequest $request)
     {
-        abort_if(Gate::denies('create_brand') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
-        
         // Set data
         $data = $request->validated();
 

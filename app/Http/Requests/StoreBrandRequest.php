@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class StoreBrandRequest extends FormRequest
@@ -15,7 +16,7 @@ class StoreBrandRequest extends FormRequest
      */
     public function authorize()
     {
-        abort_if(Gate::denies('create_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return true;
     }
