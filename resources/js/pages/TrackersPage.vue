@@ -41,9 +41,9 @@
          <div class="datatable-scroll" v-if="$can('list', 'tracker') || AuthenticatedUser.is_superadmin">
             <DataTable ref="trackerssDT" :columns="columns" fetchMethod="fetchTrackers" responseField="all" cssClasses="table-card">
                <th slot="header">Actions</th>
-               <td slot="body-row" slot-scope="row">
+               <!-- <td slot="body-row" slot-scope="row">
 
-               </td>
+               </td> -->
             </DataTable>
          </div>
       </div>
