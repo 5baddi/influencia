@@ -39,7 +39,7 @@
             </div>
          </header>
          <div class="datatable-scroll" v-if="$can('list', 'tracker') || AuthenticatedUser.is_superadmin">
-            <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" cssClasses="table-card">
+            <DataTable ref="trackersDT" :columns="columns" :endPoint="'/api/v1/stream/' + activeBrand.uuid + '/trackers'" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
                   <button v-if="($can('change-status', 'tracker') || AuthenticatedUser.is_superadmin)" class="btn icon-link" :title="(row.data.original.status ? 'Stop' : 'Start') + ' tracker'" @click="enableTracker(row.data.original)">
@@ -122,7 +122,7 @@ export default {
       // this.$store.dispatch("fetchTrackers");
    },
    computed:{
-      ...mapGetters(["AuthenticatedUser", "campaigns", "trackers"])
+      ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "trackers"])
    },
    notifications: {
       createTrackerErrors: {
@@ -131,14 +131,14 @@ export default {
       createTrackerSuccess: {
          type: "success"
       },
-      showError: {
-         type: "error",
-         title: "Error",
-         message: "Something going wrong! Please try again.."
-      },
-      showSuccess: {
-         type: "success",
-      }
+      // showError: {
+      //    type: "error",
+      //    title: "Error",
+      //    message: "Something going wrong! Please try again.."
+      // },
+      // showSuccess: {
+      //    type: "success",
+      // }
    },
    methods: {
       dismissAddTrackerModal() {

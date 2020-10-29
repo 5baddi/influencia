@@ -1,5 +1,5 @@
 <template>
-   <div class="users" v-if="!isLoading">
+   <div class="users">
       <div class="hero">
          <div class="hero__intro">
             <h1>Users</h1>
@@ -21,47 +21,7 @@
       </div>
       <div class="p-1">
          <div class="datatable-scroll">
-            <table class="table campagins-table">
-               <thead>
-                  <tr class="row">
-                     <td>Name</td>
-                     <td>Email</td>
-                     <td>Account type</td>
-                     <td>Brand</td>
-                     <td>Last login</td>
-                     <td>Created on</td>
-                  </tr>
-               </thead>
-               <tbody>
-                  <tr v-for="user in users" :key="user.id">
-                     <td>
-                        <p>{{ user.name }}</p>
-                     </td>
-                     <td>
-                        <p>{{user.email}}</p>
-                     </td>
-                     <td>
-                        <span class="badge badge-success">{{ user.is_superadmin ? 'Super Admin' : user.role.name }}</span>
-                     </td>
-                     <td>
-                        <p v-if="!user.brands">--</p>
-                        <ul v-else>
-                           <li v-for="brand in user.brands" :key="brand.id">
-                              <span class="badge badge-info">{{ brand.name }}</span>
-                           </li>
-                        </ul>
-                     </td>
-                     <td>
-                        <p v-if="user.last_login">{{ moment(user.last_login).format('DD/MM/YYYY h:mm') }}</p>
-                        <p v-else>-</p>
-                     </td>
-                     <td>
-                        <p v-if="user.created_at">{{ moment(user.created_at).format('DD/MM/YYYY') }}</p>
-                        <p v-else>-</p>
-                     </td>
-                  </tr>
-               </tbody>
-            </table>
+            <DataTable fetchMethod="fetchUsers" :columns="columns" cssClasses="table-card"/>
          </div>
       </div>
       <CreateUserModal :show="showAddUserModal" @create="create" @dismiss="dismissAddUserModal" />
@@ -77,15 +37,47 @@ export default {
    },
    data() {
       return {
+         columns: [
+            {
+               name: 'name',
+               field: 'name'
+            },{
+               name: 'email',
+               field: 'email'
+            },{
+               name: 'account type',
+               field: 'is_superadmin',
+               callback: function(row){
+                  return row.is_superadmin ? 'Super Admin' : row.role.name.toUpperCase();
+               }
+            },
+            {
+               name: 'brands',
+               field: 'brands',
+               callback: function(row){
+                  if(!row.brands)
+                     return '-';
+                  
+                  let html = '<ul style="list-style: square;">';
+                  row.brands.map(function(item, index){
+                     html += '<li>' + item.name.toUpperCase() + '</li>';
+                  });
+
+                  return html += '</ul>';
+               }
+            },{
+               name: 'last login',
+               field: 'last_login',
+               isDate: true,
+               format: 'DD-MMMM-YYYY HH:mm'
+            },{
+               name: 'Joined at',
+               field: 'created_at',
+               isDate: true
+            },
+         ],
          showAddUserModal: false,
-         isLoading: true
       };
-   },
-   created() {
-      if (!this.$store.getters.users) {
-         this.$store.dispatch("fetchUsers").then(() => (this.isLoading = false));
-      }
-      this.isLoading = false;
    },
    methods: {
       moment() {

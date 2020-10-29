@@ -22,13 +22,30 @@ Run artisan command that permit to listen and process each job queue.
 
 `php artisan queue:work --queue=default,trackers,influencers`
 
-### Update DB cron command *
+### Update Schedules commands *
 This command allow the app to update each campaign analytics & details with latest trackers details.
 
 `php artisan scrap:{platform}`
 
 platforms: `[instagram]`
 
-You can set the run time from .env file **INSTAGRAM_SCHEDULE=00:00**
+You can set the run time from .env file
+
+<sub>**INSTAGRAM_SCHEDULE=00:00**</sub>
 
 `* This cron command need a setup on the server for automatically execution`
+
+You need to update the cron jobs on the server by following this commands.
+
+- Enter to the cron jobs manager
+
+    <sub>`crontab -e`</sub>
+
+- Add the schedules run command to the end of file
+
+    1. <sub>Enable editing pressing the <kbd>a</kbd>
+
+    3. <sub>`* * * * * cd /path_to_project && php artisan schedule:run >> /dev/null 2>&1`</sub>
+
+    2. <sub>Save modification pressing the <kbd>:</kbd> & tap wq + <kbd>enter</kbd>
+

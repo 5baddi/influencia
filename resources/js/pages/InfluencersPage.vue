@@ -24,11 +24,9 @@
             <DataTable :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
-                  <router-link v-if="row.data.original.queued === 'finished'" :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Details">
+                  <router-link v-if="row.data.original.queued === 'finished'" :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Influencer details">
                      <i class="fas fa-eye"></i>
                   </router-link>
-                  <!-- <a href="javascript:void(0);" class="icon-link" title="Edit" @click="showEditInfluencerModal(row.data)"><i class="fas fa-pen"></i></a>
-                  <a href="javascript:void(0);" class="icon-link" title="Delete"><i class="fas fa-trash"></i></a> -->
                </td>
             </DataTable>
          </div>
@@ -65,16 +63,18 @@ export default {
                name: "Full name",
                field: "name",
                callback: function(row){
-                  return row.name ? row.name : row.username;
+                  return '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';
                }
             },
             {
                name: "Followers",
-               field: "followers"
+               field: "followers",
+               isNbr: true
             },
             {
                name: "Posts",
-               field: "posts"
+               field: "posts",
+               isNbr: true
             },
             {
                name: "Platform",

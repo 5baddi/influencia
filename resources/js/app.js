@@ -23,7 +23,6 @@ Vue.prototype.$http = api;
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
-// Vue.use(VuejsDatatableFactory);
 
 // Register global component
 Vue.component('DataTable', DataTable);
@@ -80,11 +79,5 @@ const app = new Vue({
             
             next()
         });
-
-        Echo.private('tracker.updated')
-            .listen('TrackerUpdated', (e) => {
-                // Refresh trackers
-                this.$store.dispatch("fetchTrackers");
-            });
     }
 });

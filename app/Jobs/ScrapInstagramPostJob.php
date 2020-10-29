@@ -121,7 +121,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 if($influencer->posts()->count() == $influencer->posts)
                     $this->tracker->update(['queued' => 'finished']);
                 else
-                    $this->dispatch(new ScrapInstagramAllPostsJob($influencer))->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
+                    ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
             }
         }catch(\Exception $ex){
             $this->fail($ex);

@@ -12,11 +12,41 @@ class Campaign extends Model
     protected $guarded = [];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        // 'updated_at'  =>  'datetime:Y-m-d H:s',
+        // 'created_at'  =>  'datetime:Y-m-d H:s',
+    ];
+
+    /**
      * The accessors to append to the model's array form.
      *
      * @var array
      */
-    protected $appends = ['posts_count', 'stories_count', 'urls_count', 'all_posts_count', 'instagram_posts', 'sentiments_positive', 'sentiments_neutral', 'sentiments_negative', 'top_three_emojis', 'engagements', 'organic_engagements', 'views', 'organic_views', 'impressions', 'organic_impressions', 'communities', 'organic_communities', 'influencers'];
+    protected $appends = [
+        'posts_count', 
+        'stories_count', 
+        'urls_count', 
+        'all_posts_count', 
+        'instagram_posts', 
+        'sentiments_positive', 
+        'sentiments_neutral', 
+        'sentiments_negative', 
+        'top_three_emojis', 
+        'engagements', 
+        'organic_engagements', 
+        'views', 
+        'organic_views', 
+        'impressions', 
+        'organic_impressions', 
+        'communities', 
+        'organic_communities', 
+        'influencers',
+        'comments_count'
+    ];
     
 
     /**
@@ -109,6 +139,27 @@ class Campaign extends Model
                 continue;
 
             $count += $tracker->posts_count;
+        }
+
+        return $count;
+    }
+    
+    /**
+     * Get comments count
+     * 
+     * @return int
+     */
+    public function getCommentsCountAttribute() : int
+    {
+        $count = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                $count += $post->comments;
+            }
         }
 
         return $count;

@@ -461,7 +461,7 @@ class InstagramScraper
 
         // Slice empty emoji
         array_walk($emojis, function($item, $key) use (&$emojis){
-            if(is_null($item) || empty($item) || $item === '#')
+            if(is_null($item) || empty($item) || $item === '#' || $item === '')
                 unset($emojis[$key]);
         });
 

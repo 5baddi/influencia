@@ -1,55 +1,61 @@
 <template>
-    <div class="p-1 campaign" v-if="campaign">
+    <div class="campaign" v-if="campaign">
+        <ul v-show="typeof campaign.influencers !== 'undefined' && campaign.influencers.length > 0" class="influencers-avatars">
+            <h4>influencers</h4>
+            <li v-for="influencer in campaign.influencers" :key="influencer.id">
+                <img :src="influencer.pic_url" loading="lazy"/>
+            </li>
+        </ul>
         <div class="cards statistics">
-            <div class="card" v-if="campaign.data.communities >= 0">
+            <div class="card" v-if="campaign.communities > 0">
                 <div class="title">
                     <i class="fas fa-users egg-blue"></i>
                     <div class="numbers">
-                        <h4>{{ campaign.data.communities >= 0 ? campaign.data.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                        <h4>{{ campaign.communities >= 0 ? campaign.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                         <span>Total size of activated communities</span>
                     </div>
                 </div>
                 <canvas id="communities-chart"></canvas>
-                <span>Organic communities {{ nbr().abbreviate(campaign.data.organic_communities) }} ({{ campaign.data.communities > 0 ? ((campaign.data.organic_communities / campaign.data.communities) * 100).toFixed(2) : 0  }}%)</span>
+                <span>Organic communities {{ nbr().abbreviate(campaign.organic_communities) }} ({{ campaign.communities > 0 ? ((campaign.organic_communities / campaign.communities) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.data.impressions >= 0">
+            <div class="card" v-if="campaign.impressions > 0">
                 <div class="title">
                     <i class="fas fa-bullhorn purple"></i>
                     <div class="numbers">
-                        <h4>{{ campaign.data.impressions >= 0 ? campaign.data.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                        <h4>{{ campaign.impressions >= 0 ? campaign.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                         <span>Total estimated impressions</span>
                     </div>
                 </div>
                 <canvas id="impressions-chart"></canvas>
-                <span>Organic impressions {{ nbr().abbreviate(campaign.data.organic_impressions) }} ({{ campaign.data.impressions > 0 ? ((campaign.data.organic_impressions / campaign.data.impressions) * 100).toFixed(2) : 0  }}%)</span>
+                <span>Organic impressions {{ nbr().abbreviate(campaign.organic_impressions) }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.data.views >= 0">
+            <div class="card" v-if="campaign.views > 0">
                 <div class="title">
                     <i class="far fa-eye green"></i>
                     <div class="numbers">
-                        <h4>{{ campaign.data.views >= 0 ? campaign.data.views.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
-                        <span>Total views</span>
+                        <h4>{{ campaign.views >= 0 ? campaign.views.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                        <span>Total videos views</span>
                     </div>
                 </div>
                 <canvas id="views-chart"></canvas>
-                <span>Organic views {{ nbr().abbreviate(campaign.data.organic_views) }} ({{ campaign.data.views > 0 ? ((campaign.data.organic_views / campaign.data.views) * 100).toFixed(2) : 0  }}%)</span>
+                <span>Organic videos views {{ nbr().abbreviate(campaign.organic_views) }} ({{ campaign.views > 0 ? ((campaign.organic_views / campaign.views) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.data.engagements >= 0">
+            <div class="card" v-if="campaign.engagements > 0">
                 <div class="title">
                     <i class="fas fa-thumbs-up blue"></i>
                     <div class="numbers">
-                        <h4>{{ campaign.data.engagements >= 0 ? campaign.data.engagements.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                        <h4>{{ campaign.engagements >= 0 ? campaign.engagements.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                         <span>Total engagements</span>
                     </div>
                 </div>
                 <canvas id="engagements-chart"></canvas>
-                <span>Organic engagements {{ nbr().abbreviate(campaign.data.organic_engagements) }} ({{ campaign.data.engagements > 0 ? ((campaign.data.organic_engagements / campaign.data.engagements) * 100).toFixed(2) : 0  }}%)</span>
+                <span>Organic engagements {{ nbr().abbreviate(campaign.organic_engagements) }} ({{ campaign.engagements > 0 ? ((campaign.organic_engagements / campaign.engagements) * 100).toFixed(2) : 0  }}%)</span>
             </div>
-            <div class="card" v-if="campaign.data.posts_count >= 0">
+            <div class="card" v-if="campaign.posts_count > 0">
                 <div class="title">
                     <i class="fas fa-hashtag yellow"></i>
                     <div class="numbers">
-                        <h4>{{ campaign.data.posts_count >= 0 ? campaign.data.posts_count.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                        <h4>{{ campaign.posts_count >= 0 ? campaign.posts_count.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                         <span>Total number of posts</span>
                     </div>
                 </div>
@@ -58,115 +64,37 @@
         </div>
 
         <div class="cards sentiments">
-            <div class="card">
+            <div class="card" v-if="campaign.comments_count > 0">
                 <h5>Comments sentiment</h5>
                 <canvas id="sentiments-chart"></canvas>
+                <span>Based on {{ campaign.comments_count }} comments</span>
             </div>
-            <div class="card">
-                <h5>Top emojis</h5>
+            <div class="card emojis" v-if="campaign.top_three_emojis">
+                <h5>Top {{ Object.values(campaign.top_three_emojis.top).length > 1 ? Object.values(campaign.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
                 <ul>
-                    <li v-for="(emoji, index) in campaign.data.top_three_emojis.top" :key="index">
+                    <li v-for="(emoji, index) in campaign.top_three_emojis.top" :key="index">
                         {{ emoji }}
-                        <span>{{ ((index / (campaign.data.top_three_emojis.all ? campaign.data.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
+                        <span>{{ ((index / (campaign.top_three_emojis.all ? campaign.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
                     </li>
                 </ul>
+                <span>Based on {{ campaign.top_three_emojis.all }} emojis</span>
             </div>
         </div>
 
         <div class="by-influencers">
-            <!-- <datatable :columns="columns" :data="rows"></datatable> -->
             <h4>Performance breakdown by Influencer</h4>
-            <table class="table table-with-profile">
-                <thead>
-                    <tr class="row">
-                        <th>Influencer</th>
-                        <th>Number of posts</th>
-                        <th>Size of activated communities</th>
-                        <th>Estimated impressions</th>
-                        <th>Earned Media Value</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-show="campaign.data.influencers.length > 0" v-for="influencer in campaign.data.influencers" :key="influencer.id">
-                        <td>
-                            <p style="display: inline-flex; align-items: center;"><img :src="influencer.pic_url"/>&nbsp;{{ influencer.name ? influencer.name : influencer.username }}</p>
-                        </td>
-                        <td>{{ influencer.posts }}</td>
-                        <td>{{ influencer.estimated_communities }}</td>
-                        <td>{{ influencer.estimated_impressions }}</td>
-                        <td>--.-</td>
-                    </tr>
-                </tbody>
-            </table>
+            <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers"/>
         </div>
         
         <div class="by-instagram-posts">
             <h4>Performance breakdown by post on Instagram</h4>
-            <table class="table table-with-profile">
-                <thead>
-                    <tr class="row">
-                        <th>Influencer</th>
-                        <th width="20%">Post</th>
-                        <th>Media type</th>
-                        <th>Size of activated communities</th>
-                        <th>Estimated impressions</th>
-                        <th>Engagements</th>
-                        <th>Organic impressions (declarative)</th>
-                        <th>Engagements rate (reach)</th>
-                        <th>Likes</th>
-                        <th>Views</th>
-                        <th>Comments</th>
-                        <th>Impressions (first sequence)</th>
-                        <th>Story sequences</th>
-                        <th>Sequence impressions</th>
-                        <th>Post date</th>
-                        <th>Earne</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-show="campaign.data.instagram_posts.length > 0" v-for="post in campaign.data.instagram_posts" :key="post.id">
-                        <td>
-                            <p style="display: inline-flex; align-items: center;"><img :src="post.influencer.pic_url"/>&nbsp;{{ post.influencer.name ? post.influencer.name : post.influencer.username }}</p>
-                        </td>
-                        <td>
-                            <a v-if="post.link && post.caption" :href="post.link" target="_blank">{{ post.caption.substr(1, 100) }}...</a>
-                            <p v-else>---</p>
-                        </td>
-                        <td>
-                            {{ post.type }}
-                        </td>
-                        <td>
-                            {{ post.activated_communities }}
-                        </td>
-                        <td>
-                            {{ post.estimated_impressions }}
-                        </td>
-                        <td>
-                            {{ post.engagements }}
-                        </td>
-                        <td>
-                            {{ post.organic_impressions ? post.organic_impressions : '-' }}
-                        </td>
-                        <td>
-                            {{ (post.influencer.engagement_rate && post.influencer.engagement_rate > 0) ? (post.influencer.engagement_rate * 100).toFixed(2) : '-'}}
-                        </td>
-                        <td>{{ post.likes ? post.likes : '-' }}</td>
-                        <td>{{ post.video_views ? post.video_views : '-' }}</td>
-                        <td>{{ post.comments ? post.comments : '-' }}</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>{{ post.published_at ? moment(post.published_at).format('DD/MM/YYYY') : '-' }}</td>
-                        <td>{{ post.earned_media_value.toFixed(2) }} €</td>
-                    </tr>
-                </tbody>
-            </table>
+            <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_posts"/>
         </div>
 
-        <div class="posts-section" v-if="campaign.data && campaign.data.posts_count > 0">
+        <div class="posts-section" v-if="campaign && campaign.posts_count > 0">
             <h4>Posts</h4>
-            <p>There are {{ campaign.data && campaign.data.posts_count ? campaign.data.posts_count : 0 }} posts for this campaign.</p>
-            <div class="campaign-posts" v-for="tracker in campaign.data.trackers" :key="tracker.id">
+            <p>There are {{ campaign && campaign.posts_count ? campaign.posts_count : 0 }} posts for this campaign.</p>
+            <div class="campaign-posts" v-for="tracker in campaign.trackers" :key="tracker.id">
                 <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
                     <img :src="post.thumbnail_url" loading="lazy"/>
                     <div class="campaign-posts-card-icons">
@@ -186,7 +114,6 @@
 <script>
 import abbreviate from 'number-abbreviate';
 import Chart from 'chart.js';
-import moment from "moment";
 
 export default {
    props: {
@@ -198,9 +125,6 @@ export default {
        }
    },
    methods: {
-       moment() {
-         return moment();
-        },
        nbr(){
            return new abbreviate();
        },
@@ -213,74 +137,183 @@ export default {
        }
    },
    mounted(){
-    this.createDoughtnutChart('sentiments-chart', {
-        datasets: [{
-            data: [
-                this.campaign.data.sentiments_positive.toFixed(2),
-                this.campaign.data.sentiments_neutral.toFixed(2),
-                this.campaign.data.sentiments_negative.toFixed(2)
-            ],
-            backgroundColor: [
-                "#AFD75C",
-                "#999999",
-                "#ED435A" //#d93176
-            ],
-        }],
-        labels: [
-            'Positive',
-            'Neutral',
-            'Negative',
-        ]
-    });
+    // Comments sentiments 
+    if(this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative){
+        this.createDoughtnutChart('sentiments-chart', {
+            datasets: [{
+                data: [
+                    this.campaign.sentiments_positive.toFixed(2),
+                    this.campaign.sentiments_neutral.toFixed(2),
+                    this.campaign.sentiments_negative.toFixed(2)
+                ],
+                backgroundColor: [
+                    "#AFD75C",
+                    "#999999",
+                    "#ED435A" //#d93176
+                ],
+            }],
+            labels: [
+                'Positive',
+                'Neutral',
+                'Negative',
+            ]
+        });
+    }
     
-    this.createDoughtnutChart('communities-chart', {
-        datasets: [{
-            data: [this.campaign.data.communities],
-            backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-    });
+    // Communities
+    if(this.campaign.communities && this.campaign.communities > 0){
+        this.createDoughtnutChart('communities-chart', {
+            datasets: [{
+                data: [this.campaign.communities],
+                backgroundColor: ['#d93176']
+            }],
+            labels: ['Instagram']
+        });
+    }
     
-    this.createDoughtnutChart('impressions-chart', {
-        datasets: [{
-            data: [this.campaign.data.impressions],
-            backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-    });
+    // Impressions
+    if(this.campaign.impressions && this.campaign.impressions > 0){
+        this.createDoughtnutChart('impressions-chart', {
+            datasets: [{
+                data: [this.campaign.impressions],
+                backgroundColor: ['#d93176']
+            }],
+            labels: ['Instagram']
+        });
+    }
     
-    this.createDoughtnutChart('views-chart', {
-        datasets: [{
-            data: [this.campaign.data.views],
-            backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-    });
-    
-    this.createDoughtnutChart('engagements-chart', {
-        datasets: [{
-            data: [this.campaign.data.engagements],
-            backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-    });
-    
-    let postsAndStoriesLabel = 'Instagram: ' + (this.campaign.data.posts_count ? this.campaign.data.posts_count : 0) + ' including ' + (this.campaign.data.stories_count ? this.campaign.data.stories_count : 0) + ' stories';
-    this.createDoughtnutChart('posts-chart', {
-        datasets: [{
-            data: [this.campaign.data.posts_count],
-            backgroundColor: ['#d93176']
-        }],
-        labels: [postsAndStoriesLabel]
-    });
+    // Videos views
+    if(this.campaign.views && this.campaign.views > 0){
+        this.createDoughtnutChart('views-chart', {
+            datasets: [{
+                data: [this.campaign.views],
+                backgroundColor: ['#d93176']
+            }],
+            labels: ['Instagram']
+        });
+    }
+
+    // Engagements
+    if(this.campaign.engagements && this.campaign.engagements > 0){
+        this.createDoughtnutChart('engagements-chart', {
+            datasets: [{
+                data: [this.campaign.engagements],
+                backgroundColor: ['#d93176']
+            }],
+            labels: ['Instagram']
+        });
+    }
+
+    // Posts
+    if(this.campaign.posts_count && this.campaign.posts_count > 0){
+        let postsAndStoriesLabel = 'Instagram: ' + (this.campaign.posts_count ? this.campaign.posts_count : 0) + ' including ' + (this.campaign.stories_count ? this.campaign.stories_count : 0) + ' stories';
+        this.createDoughtnutChart('posts-chart', {
+            datasets: [{
+                data: [this.campaign.posts_count],
+                backgroundColor: ['#d93176']
+            }],
+            labels: [postsAndStoriesLabel]
+        });
+    }
    },
    data: () => ({
-        columns: [
-            {label: 'Influencer', field: 'name'},
-            {label: 'Number of posts', field: 'posts_count'},
-            // {label: 'Address', representedAs: ({address, city, state}) => `${address}<br />${city}, ${state}`, interpolate: true}
-        ],
-        rows: [],
+       influencersColumns: [
+           {
+               name: 'Influencer',
+               field: 'id',
+               callback: function(row){
+                   return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
+               }
+           },{
+               name: 'Number of posts',
+               field: 'posts',
+               isNbr: true
+           },{
+               name: 'Size of activated communities',
+               field: 'estimated_communities',
+               isNbr: true
+           },{
+               name: 'Estimated impressions',
+               field: 'estimated_impressions',
+               isNbr: true
+           },{
+               name: 'Earned Media Value',
+               field: 'earned_media_value',
+               currency: '€'
+           }
+       ],
+       instaPostsColumns: [
+           {
+               name: 'Influencer',
+               field: 'influencer_id',
+               callback: function(row){
+                   return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+               }
+           },{
+               name: 'Post',
+               field: 'link',
+               callback: function(row){
+                   if(!row.link || !row.caption)
+                        return '<p>---</p>';
+                   
+                   return '<a href="' + row.link + '" target="_blank">' + row.caption.substr(1, 100) + '...</a>';
+               }
+           },{
+               name: 'Media type',
+               field: 'type'
+           },
+           {
+               name: 'Size of activated communities',
+               field: 'activated_communities',
+               isNbr: true
+           },{
+               name: 'Estimated impressions',
+               field: 'estimated_impressions',
+               isNbr: true
+           },
+           {
+               name: 'Engagements',
+               field: 'engagements',
+               isNbr: true
+           },{
+               name: 'Organic impressions (declarative)',
+               field: 'organic_impressions',
+               isNbr: true
+           },{
+               name: 'Engagements rate (reach)',
+               field: 'engagement_rate',
+               callback: function(row){
+                   return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
+               }
+           },{
+               name: 'Likes',
+               field: 'likes',
+               isNbr: true
+           },{
+               name: 'Views',
+               field: 'video_views',
+               isNbr: true
+           },{
+               name: 'Comments',
+               field: 'comments',
+               isNbr: true
+           },{
+               name: 'Impressions (first sequence)'
+           },{
+               name: 'Story sequences'
+           },{
+               name: 'Sequence impressions'
+           },{
+               name: 'Posted at',
+               field: 'published_at',
+               isDate: true,
+               format: 'DD/MM/YYYY'
+           },{
+               name: 'Earned Media Value',
+               field: 'earned_media_value',
+               currency: '€'
+           }
+       ],
        attrActive: null,
        sentimentData: {
            labels: [

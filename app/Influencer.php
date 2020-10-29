@@ -57,7 +57,19 @@ class Influencer extends Model
      *
      * @var array
      */
-    protected $appends = ['calculated_engagement_rate', 'image_sequences', 'video_sequences', 'carousel_sequences', 'likes', 'video_views', 'comments', 'posts_count', 'estimated_impressions', 'estimated_communities'];
+    protected $appends = [
+        'calculated_engagement_rate', 
+        'image_sequences', 
+        'video_sequences', 
+        'carousel_sequences', 
+        'likes', 
+        'video_views', 
+        'comments', 
+        'posts_count', 
+        'estimated_impressions', 
+        'estimated_communities',
+        'earned_media_value'
+    ];
     
     /**
      * Get likes of an infleuncer
@@ -159,6 +171,22 @@ class Influencer extends Model
 
         // Calculate engagement rate
         return ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100);
+    }
+
+     /**
+     * Get EMV
+     * 
+     * @return float
+     */
+    public function getEarnedMediaValueAttribute() : float
+    {
+        // Get USD/EUR exchange value
+        $defaultUSDTOEURValue = env('USD2EUR');
+        $USDTOEURValue = ApplicationSetting::where('key', 'usd2eur')->first();
+        $defaultFacebookCostPerImpressions = env('FBCOSTPERIMPRESSIONS');
+        $FacebookCostPerImpressions = ApplicationSetting::where('key', 'fbcostperimpressions')->first();
+
+        return ($this->getEstimatedImpressionsAttribute() * ((isset($FacebookCostPerImpressions->value) ? $FacebookCostPerImpressions->value : $defaultFacebookCostPerImpressions) * (isset($USDTOEURValue->value) ? $USDTOEURValue->value : $defaultUSDTOEURValue))) / 1000;
     }
 
     /**

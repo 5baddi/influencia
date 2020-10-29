@@ -7579,6 +7579,33 @@ span.status-danger::before {
   background-color: rgba(246, 204, 39, 0.25);
 }
 
+.campaign {
+  padding: 0 1rem;
+}
+
+.campaign .influencers-avatars {
+  list-style: none;
+}
+
+.campaign .influencers-avatars h4 {
+  margin: 0;
+  margin-bottom: 1rem;
+  text-transform: capitalize;
+}
+
+.campaign .influencers-avatars li {
+  display: inline;
+}
+
+.campaign .influencers-avatars li img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 1px solid;
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+}
+
 .campaign .cards.statistics {
   flex-wrap: wrap;
   gap: 1rem;
@@ -7647,15 +7674,15 @@ span.status-danger::before {
   color: #333;
 }
 
-.campaign .cards.sentiments .card ul {
+.campaign .cards.sentiments .card.emojis ul {
   display: flex;
   gap: 5rem;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  height: calc(100% - 3.7rem);
 }
 
-.campaign .cards.sentiments .card ul li {
+.campaign .cards.sentiments .card.emojis ul li {
   display: grid;
   text-align: center;
   padding: 1rem;
@@ -7663,13 +7690,20 @@ span.status-danger::before {
   cursor: pointer;
 }
 
-.campaign .cards.sentiments .card ul li span {
+.campaign .cards.sentiments .card.emojis ul li span {
   margin-top: 1rem;
   font-weight: bold;
   font-style: normal;
   background: #F2F5FC;
   padding: 6px;
   border-radius: 12px;
+  color: #333;
+}
+
+.campaign .cards.sentiments .card.emojis span {
+  float: right;
+  font-size: 8pt;
+  font-style: italic;
   color: #333;
 }
 

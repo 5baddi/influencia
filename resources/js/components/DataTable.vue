@@ -131,7 +131,14 @@
     }
 </style>
 <script>
-import moment from "moment";
+import { mapGetters } from "vuex";
+import dayjs from "dayjs";
+import { EventSourcePolyfill } from 'event-source-polyfill';
+import abbreviate from 'number-abbreviate';
+
+// Setup DayJS formater
+var customParseFormat = require('dayjs/plugin/customParseFormat');
+dayjs.extend(customParseFormat);
 
 export default {
     name: 'DataTable',
@@ -145,11 +152,16 @@ export default {
             type: Array
         },
         fetchMethod: {
-            required: true,
             type: String
         },
         responseField: {
             type: String
+        },
+        endPoint: {
+            type: String
+        },
+        nativeData: {
+            type: Array
         }
     },
     filters: {
@@ -158,6 +170,8 @@ export default {
         }
     },
     computed: {
+        ...mapGetters(["Token"]),
+
         parsedData(){
             if(this.data.length === 0)
                 return [];
@@ -177,13 +191,29 @@ export default {
                     // Parse data
                     let val = value[item.field];
                     if(val !== "undefined"){
+                        // DataTime format
+                        if(typeof item.isDate === "boolean" && item.isDate){
+                            let date = dayjs(val, item.format !== "undefined" ? item.format : 'DD/MM/YYYY', true);
+
+                            if(date.isValid())
+                                rowData[item.field] = date.toString();
+                        }
+
+                        // Callback
                         if(typeof item.callback === "function")
                             rowData[item.field] = item.callback.call(item, value);
-                        else if(typeof item.isDate !== "undefined")
-                            // TODO: fix DataTime format
-                            rowData[item.field] = moment(new Date(val), (typeof item.format !== "undefined") ? item.format : "DD MM YYYY");
+                        // Currency symbol
+                        else if(typeof item.currency === "string" && item.currency !== '')
+                            rowData[item.field] = val.toFixed(2) + ' ' + item.currency;
+                        // Format number to K
+                        else if(typeof item.isNbr === "boolean" && item.isNbr)
+                            rowData[item.field] = String(abbreviate(val)).toUpperCase();
                         else
                             rowData[item.field] = val;
+
+                         // Ignore zero or empty
+                        if((val == null || val == 0) && typeof item.callback === "undefined")
+                            rowData[item.field] = '-';
                     }
                 });
 
@@ -193,9 +223,35 @@ export default {
             return parsedData;
         },
     },
+    notifications: {
+        // showError: {
+        //     type: "error",
+        //     title: "Error",
+        //     message: "Something going wrong! Please try again.."
+        // }
+    },
     methods: {
+        setupStream(){
+            // Init Event source
+            this.es = new EventSource(this.endPoint);
+
+            // Listen to data
+            this.es.addEventListener('ping', event => {
+                let _data = JSON.parse(event.data);
+                console.log(_data);
+                // this.data = _data;
+            }, false);
+            
+            // Catch error
+            this.es.addEventListener('error', event => {
+                if(event.readyState == EventSource.CLOSED)
+                    this.showError({message: 'lost connection... giving up!'});
+            }, false);
+
+            this.isLoading = false;
+        },
         getColumnsCount(){
-            return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : 1;
+            return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
         sortBy(column, key){
             if(this.sortColumn !== column.name)
@@ -213,6 +269,20 @@ export default {
             this.startIndex = this.startIndex - this.perPage;
         },
         reloadData(){
+            // Using native data
+            if(typeof this.nativeData !== "undefined"){
+                this.isLoading = false;
+                
+                return this.data = this.nativeData;
+            }
+            // Using Event source
+            if(typeof this.endPoint !== "undefined")
+                return this.setupStream();
+
+            // Using vuex
+            if(typeof this.fetchMethod === "undefined")
+                return;
+
             this.$store.dispatch(this.fetchMethod).then(response => {
                 if(response.success)
                     this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
@@ -231,6 +301,7 @@ export default {
     data(){
         return {
             isLoading: true,
+            es: null,
             data: [],
             perPage: 10,
             rowPerPage: [10, 25, 50, 100, 'All'],
@@ -241,7 +312,12 @@ export default {
         }
     },
     created(){
+        // Load data via vuex
         this.reloadData();
+    },
+    destroyed(){
+        if(this.es !== null)
+            this.es.close();
     }
 }
 </script>

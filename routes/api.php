@@ -65,6 +65,12 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/influencers/{influencer}', 'InfluencerController@show');
 });
 
+// Streamed data
+Route::group(['prefix' => 'v1/stream'], function(){
+    // Trackers
+    Route::get('/{brand}/trackers', 'StreamController@trackers');
+});
+
 // Scraper
 Route::group(['prefix' => '/v1/scraper/insta/'], function(){
     Route::get('/{username}', 'ScraperController@instagramByUsername');

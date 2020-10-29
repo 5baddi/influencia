@@ -249,6 +249,30 @@ span.status{
 }
 
 .campaign{
+    padding: 0 1rem;
+    
+    .influencers-avatars{
+        list-style: none;
+
+        h4{
+            margin: 0;
+            margin-bottom: 1rem;
+            text-transform: capitalize;
+        }
+        
+        li{
+            display: inline;
+            
+            img{
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                border: 1px solid;
+                border-color: rgba(0, 0, 0, 0.12);
+                box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+            }
+        }
+    }
     .cards{
         &.statistics{
             flex-wrap: wrap;
@@ -319,29 +343,39 @@ span.status{
                     font-style: italic;
                     color: #333;
                 }
-                ul{
-                    display: flex;
-                    gap: 5rem;
-                    align-items: center;
-                    justify-content: center;
-                    height: 100%;
 
-                    li{
-                        display: grid;
-                        text-align: center;
-                        padding: 1rem;
-                        font-size: 32pt;
-                        cursor: pointer;
-
-                        span{
-                            margin-top: 1rem;
-                            font-weight: bold;
-                            font-style: normal;
-                            background: #F2F5FC;
-                            padding: 6px;
-                            border-radius: 12px;
-                            color: #333;
+                &.emojis{
+                    ul{
+                        display: flex;
+                        gap: 5rem;
+                        align-items: center;
+                        justify-content: center;
+                        height: calc(100% - 3.7rem);
+        
+                        li{
+                            display: grid;
+                            text-align: center;
+                            padding: 1rem;
+                            font-size: 32pt;
+                            cursor: pointer;
+        
+                            span{
+                                margin-top: 1rem;
+                                font-weight: bold;
+                                font-style: normal;
+                                background: #F2F5FC;
+                                padding: 6px;
+                                border-radius: 12px;
+                                color: #333;
+                            }
                         }
+                    }
+                    
+                    span{
+                        float: right;
+                        font-size: 8pt;
+                        font-style: italic;
+                        color: #333;
                     }
                 }
             }

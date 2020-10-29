@@ -2,7 +2,7 @@
    <div class="campaigns">
       <div class="hero">
          <div class="hero__intro">
-            <h1>{{ (campaign && campaign.data.name) ? campaign.data.name.toUpperCase() : 'Campagins' }}</h1>
+            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'Campagins' }}</h1>
             <ul class="breadcrumbs">
                <li>
                   <a href="#">Dashboard</a>
@@ -46,7 +46,7 @@
                   <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                      <i class="far fa-chart-bar"></i>
                   </router-link>
-                  <!-- <button class="btn icon-link" @click="disableCampaign(row.data)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || AuthenticatedUser.is_superadmin">
+                  <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || AuthenticatedUser.is_superadmin">
                      <i class="far fa-stop-circle"></i>
                   </button> -->
                </td>
@@ -102,7 +102,7 @@ export default {
             {
                name: "Created at",
                field: "created_at",
-               isData: true,
+               isDate: true,
                format: "DD/MM/YYYY"
             }
          ]

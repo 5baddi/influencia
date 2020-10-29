@@ -35,7 +35,7 @@ use Illuminate\Support\Facades\Route;
 //     dd($response->json());
 // });
 
-Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|oauth|u).*$');
+Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|oauth|u/).*$');
 
 Route::post('/oauth', 'AuthenticationController@login')->name('login');
 
