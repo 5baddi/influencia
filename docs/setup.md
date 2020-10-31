@@ -3,7 +3,28 @@
 
 This application require a linux server with good performance there's no minimum requirements.
 
-First you need to download projects dependencies using composer
+First you need to update the `.env` file, set the queue connection to database
+`QUEUE_CONNECTION=database`
+
+then add the default configuration.
+`INSTAGRAM_ACCOUNT=influenciaapp`
+
+`INSTAGRAM_PASSWORD=inf2020@`
+
+`INSTAGRAM_SCHEDULE=00:00`
+
+`SHORTLINK_LENGTH=8`
+
+`CURRENCYLAYER_SECRET=f23640fa274417096f2b076f4d3d0e41`
+
+`IPINFOIO_TOKEN=d22d5a4ece26c2`
+
+`USD2EUR=0.84`
+
+`FBCOSTPERIMPRESSIONS=7.19`
+
+
+Then download projects dependencies using composer
 
 `composer install`
 
