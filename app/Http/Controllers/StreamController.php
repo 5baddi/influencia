@@ -31,7 +31,7 @@ class StreamController extends Controller
                 ->get()->toArray();
 
                 // set data
-                echo 'id:' . uniqid() . PHP_EOL . 'data: ' . json_encode($trackers, JSON_PRETTY_PRINT) . PHP_EOL;
+                echo 'id:' . uniqid() . PHP_EOL . 'data: ' . json_encode($trackers) . PHP_EOL;
                 ob_flush();
                 flush();
                 usleep(200000); // 0.2s
