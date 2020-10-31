@@ -255,6 +255,9 @@ export default {
     },
     methods: {
         setupStream() {
+            if (typeof this.endPoint === "undefined")
+                return;
+
             // Init Event source
             this.es = new EventSource(this.endPoint);
 
@@ -304,7 +307,7 @@ export default {
                 return this.data = this.nativeData;
             }
             // Using Event source
-            if (typeof this.endPoint !== "undefined")
+            if (typeof this.endPoint !== "undefined" && this.es === null)
                 return this.setupStream();
 
             // Using vuex
