@@ -152,14 +152,7 @@ import {
     mapGetters
 } from "vuex";
 import dayjs from "dayjs";
-import {
-    EventSourcePolyfill
-} from 'event-source-polyfill';
 import abbreviate from 'number-abbreviate';
-
-// Setup DayJS formater
-var customParseFormat = require('dayjs/plugin/customParseFormat');
-dayjs.extend(customParseFormat);
 
 export default {
     name: 'DataTable',
@@ -216,10 +209,10 @@ export default {
                     if (val !== "undefined") {
                         // DataTime format
                         if (typeof item.isDate === "boolean" && item.isDate) {
-                            let date = dayjs(val, item.format !== "undefined" ? item.format : 'DD/MM/YYYY', true);
+                            let date = dayjs(val).format(item.format !== "undefined" ? item.format : 'DD/MM/YYYY');
 
-                            if (date.isValid())
-                                rowData[item.field] = date.toString();
+                            // if (date.isValid())
+                            //     rowData[item.field] = date.toString();
                         }
 
                         // Callback
@@ -307,8 +300,8 @@ export default {
                 return this.data = this.nativeData;
             }
             // Using Event source
-            if (typeof this.endPoint !== "undefined" && this.es === null)
-                return this.setupStream();
+            // if (typeof this.endPoint !== "undefined" && this.es === null)
+            // return this.setupStream();
 
             // Using vuex
             if (typeof this.fetchMethod === "undefined")
