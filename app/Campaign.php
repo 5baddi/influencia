@@ -8,7 +8,7 @@ use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 class Campaign extends Model
 {
     use HasUuidRouteKey;
-    
+
     protected $guarded = [];
 
     /**
@@ -17,8 +17,8 @@ class Campaign extends Model
      * @var array
      */
     protected $casts = [
-        // 'updated_at'  =>  'datetime:Y-m-d H:s',
-        // 'created_at'  =>  'datetime:Y-m-d H:s',
+        'updated_at'  =>  'datetime:Y-m-d H:s',
+        'created_at'  =>  'datetime:Y-m-d H:s',
     ];
 
     /**
@@ -27,31 +27,31 @@ class Campaign extends Model
      * @var array
      */
     protected $appends = [
-        'posts_count', 
-        'stories_count', 
-        'urls_count', 
-        'all_posts_count', 
-        'instagram_posts', 
-        'sentiments_positive', 
-        'sentiments_neutral', 
-        'sentiments_negative', 
-        'top_three_emojis', 
-        'engagements', 
-        'organic_engagements', 
-        'views', 
-        'organic_views', 
-        'impressions', 
-        'organic_impressions', 
-        'communities', 
-        'organic_communities', 
+        'posts_count',
+        'stories_count',
+        'urls_count',
+        'all_posts_count',
+        'instagram_posts',
+        'sentiments_positive',
+        'sentiments_neutral',
+        'sentiments_negative',
+        'top_three_emojis',
+        'engagements',
+        'organic_engagements',
+        'views',
+        'organic_views',
+        'impressions',
+        'organic_impressions',
+        'communities',
+        'organic_communities',
         'influencers',
         'comments_count'
     ];
-    
+
 
     /**
      * Get user
-     * 
+     *
      * @return \App\User
      */
     public function user()
@@ -61,7 +61,7 @@ class Campaign extends Model
 
     /**
      * Get brand
-     * 
+     *
      * @return \App\Brand
      */
     public function brand()
@@ -71,7 +71,7 @@ class Campaign extends Model
 
     /**
      * Get campaign trackers
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function trackers()
@@ -86,7 +86,7 @@ class Campaign extends Model
 
     /**
      * Get posts count
-     * 
+     *
      * @return int
      */
     public function getPostsCountAttribute() : int
@@ -103,10 +103,10 @@ class Campaign extends Model
 
         return $count;
     }
-    
+
     /**
      * Get stories count
-     * 
+     *
      * @return int
      */
     public function getStoriesCountAttribute() : int
@@ -123,10 +123,10 @@ class Campaign extends Model
 
         return $count;
     }
-    
+
     /**
      * Get urls count
-     * 
+     *
      * @return int
      */
     public function getUrlsCountAttribute() : int
@@ -143,10 +143,10 @@ class Campaign extends Model
 
         return $count;
     }
-    
+
     /**
      * Get comments count
-     * 
+     *
      * @return int
      */
     public function getCommentsCountAttribute() : int
@@ -187,7 +187,7 @@ class Campaign extends Model
 
         return $allCount > 0 ? $semtiments / $allCount : 0;
     }
-    
+
     public function getSentimentsNeutralAttribute() : float
     {
         $semtiments = 0.0;
@@ -205,7 +205,7 @@ class Campaign extends Model
 
         return $allCount > 0 ? $semtiments / $allCount : 0;
     }
-    
+
     public function getSentimentsNegativeAttribute() : float
     {
         $semtiments = 0.0;
@@ -274,7 +274,7 @@ class Campaign extends Model
 
         return $engagement;
     }
-    
+
     public function getViewsAttribute()
     {
         $views = 0;
@@ -290,7 +290,7 @@ class Campaign extends Model
 
         return $views;
     }
-    
+
     public function getImpressionsAttribute()
     {
         $impressions = 0;
@@ -306,7 +306,7 @@ class Campaign extends Model
 
         return $impressions;
     }
-    
+
     public function getCommunitiesAttribute()
     {
         $communities = 0;
@@ -322,7 +322,7 @@ class Campaign extends Model
 
         return $communities;
     }
-    
+
     public function getOrganicCommunitiesAttribute()
     {
         $communities = 0;
@@ -341,7 +341,7 @@ class Campaign extends Model
 
         return $communities;
     }
-    
+
     public function getOrganicEngagementsAttribute()
     {
         $engagement = 0;
@@ -360,7 +360,7 @@ class Campaign extends Model
 
         return $engagement;
     }
-    
+
     public function getOrganicImpressionsAttribute()
     {
         $impressions = 0;
@@ -379,7 +379,7 @@ class Campaign extends Model
 
         return $impressions;
     }
-    
+
     public function getOrganicViewsAttribute()
     {
         $views = 0;
@@ -429,7 +429,7 @@ class Campaign extends Model
             if($tracker->type === 'story'){
                 if($posts->contains('id', $tracker->id))
                     continue;
-                    
+
                 $posts->add($tracker->load('influencer'));
 
                 continue;

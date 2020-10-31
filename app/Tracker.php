@@ -64,32 +64,34 @@ class Tracker extends Model
         'influencer_id' =>  'unsignedInteger',
         'posted_date'   =>  'date',
         'posted_time'   =>  'time',
-        'status'        =>  'boolean'
+        'status'        =>  'boolean',
+        'updated_at'    =>  'datetime:Y-m-d H:s',
+        'created_at'    =>  'datetime:Y-m-d H:s',
     ];
 
     /**
      * Get user
-     * 
+     *
      * @return \App\User
      */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
-    
+
     /**
      * Get campaign
-     * 
+     *
      * @return \App\Campaign
      */
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
     }
-    
+
     /**
      * Get influencer
-     * 
+     *
      * @return \App\Influencer
      */
     public function influencer()
@@ -99,17 +101,17 @@ class Tracker extends Model
 
     /**
      * Get tracker media files
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function medias()
     {
         return $this->hasMany(TrackerMedia::class);
     }
-    
+
     /**
      * Get tracker posts
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()

@@ -11,7 +11,7 @@ class StreamController extends Controller
 {
     /**
      * Streamed the trackers data
-     * 
+     *
      * @param \App\Brand $brand
      * @return \Illuminate\Http\Response
      */
@@ -28,13 +28,13 @@ class StreamController extends Controller
                 ->whereHas('campaign', function($camp) use($brand){
                     $camp->where('brand_id', $brand->id);
                 })
-                ->get();
+                ->get()->toArray();
 
                 // set data
-                echo 'event:ping\n data: ' . json_encode($trackers) . '\n\n';
+                echo 'id:' . uniqid() . PHP_EOL . 'data: ' . json_encode($trackers, JSON_PRETTY_PRINT) . PHP_EOL;
                 ob_flush();
                 flush();
-                sleep(5); // 5s
+                usleep(200000); // 0.2s
             }
         }, 200, [
             'Content-Type'  =>  'text/event-stream',
