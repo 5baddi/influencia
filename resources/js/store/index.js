@@ -89,16 +89,76 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
-    addNewUser({ commit, state }, data) {
+    addNewUser({ commit, state }, user) {
         return new Promise((resolve, reject) => {
-            api.post("/api/v1/users", data)
+            api.post("/api/v1/users", user)
                 .then(response => {
-                    commit('setNewUser', { user: response.data.content })
-                    resolve(response.data)
+                    if(response.status === 201 && response.data.success){
+                        commit('setNewUser', { user: response.data.content });
+                        resolve(response.data);
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
                 }).catch(error => {
                     reject(error)
                 })
         })
+    },
+    editUser({ commit, state }, user) {
+        return new Promise((resolve, reject) => {
+            api.put("/api/v1/users/" + user.uuid, user)
+                .then(response => {
+                    if(response.data.success){
+                        commit('setNewUser', { user: response.data.content });
+                        resolve(response.data);
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+        })
+    },
+    resetUser({ commit, state }, user) {
+        return new Promise((resolve, reject) => {
+            api.put("/api/v1/users/" + user.uuid + "/reset", user)
+                .then(response => {
+                    if(response.data.success){
+                        commit('setNewUser', { user: response.data.content });
+                        resolve(response.data);
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+        })
+    },
+    banUser({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.get(`/api/v1/users/${uuid}/status`)
+                .then(response => {
+                    if(response.data.success)
+                        resolve(response.data);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                })
+        });
+    },
+    deleteUser({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.delete("/api/v1/users/" + uuid)
+                .then(response => {
+                    if(response.status === 204)
+                        resolve(response);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                });
+        });
     },
     fetchInfluencers({ commit, state }) {
         return new Promise((resolve, reject) => {
@@ -139,6 +199,19 @@ const actions = {
                     reject(response)
                 })
         })
+    },
+    deleteBrand({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.delete("/api/v1/brands/" + uuid)
+                .then(response => {
+                    if(response.status === 204)
+                        resolve(response);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                });
+        });
     },
     addNewCampaign({ commit, state }, data) {
         return new Promise((resolve, reject) => {

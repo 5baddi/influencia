@@ -65,8 +65,8 @@ class Tracker extends Model
         'posted_date'   =>  'date',
         'posted_time'   =>  'time',
         'status'        =>  'boolean',
-        'updated_at'    =>  'datetime:Y-m-d H:s',
-        'created_at'    =>  'datetime:Y-m-d H:s',
+        'updated_at'    =>  'datetime:Y-m-d H:i',
+        'created_at'    =>  'datetime:Y-m-d H:i',
     ];
 
     /**

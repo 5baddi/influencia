@@ -17,8 +17,8 @@ class Campaign extends Model
      * @var array
      */
     protected $casts = [
-        'updated_at'  =>  'datetime:Y-m-d H:s',
-        'created_at'  =>  'datetime:Y-m-d H:s',
+        'updated_at'  =>  'datetime:Y-m-d H:i',
+        'created_at'  =>  'datetime:Y-m-d H:i',
     ];
 
     /**

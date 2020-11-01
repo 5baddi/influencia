@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
@@ -18,13 +19,14 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 
-        'email', 
-        'password', 
-        'role_id', 
-        'last_login', 
+        'name',
+        'email',
+        'password',
+        'role_id',
+        'last_login',
         'selected_brand_id',
-        'is_superadmin'
+        'is_superadmin',
+        'banned'
     ];
 
     /**
@@ -33,7 +35,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 
+        'password',
         'remember_token',
     ];
 
@@ -43,16 +45,24 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'last_login'        => 'datetime',
+        'email_verified_at' => 'datetime:Y-m-d H:i',
+        'last_login'        => 'datetime:Y-m-d H:i',
+        'created_at'        => 'datetime:Y-m-d H:i',
+        'updated_at'        => 'datetime:Y-m-d H:i',
         'is_superadmin'     => 'boolean',
+        'banned'            => 'boolean',
     ];
+
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
 
     public function selectedBrand()
     {
         return $this->belongsTo(Brand::class, 'selected_brand_id');
     }
-    
+
     public function brands()
     {
         return $this->belongsToMany(Brand::class, 'brand_user');

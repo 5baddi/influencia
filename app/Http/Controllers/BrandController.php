@@ -31,7 +31,7 @@ class BrandController extends Controller
             });
         }
 
-        return response()->success("Brands fetched successfully.", 
+        return response()->success("Brands fetched successfully.",
             $brands->get()
         );
     }
@@ -50,10 +50,10 @@ class BrandController extends Controller
         if($request->file('logo')){
             $fileName = Str::slug($data['name']) . '_' . time() . '.' . $request->file('logo')->getClientOriginalExtension();
             $path = $request->file('logo')->storeAs('uploads', $fileName, 'public');
-            
+
             if($path)
-                $data['logo'] = "/storage/". $path;
-        }   
+                $data['logo'] = $path;
+        }
 
         // Get current user
         $user = User::find(Auth::id());
@@ -65,7 +65,7 @@ class BrandController extends Controller
             'selected_brand_id' => $brand->id
         ]);
 
-        return response()->success("Brand created successfully.", $brand->load(['users', 'campaigns'])->toArray(), 201);
+        return response()->success("Brand created successfully.", Brand::with(['users', 'campaigns'])->find($brand->id), 201);
     }
 
     /**
@@ -78,7 +78,7 @@ class BrandController extends Controller
     {
         abort_if(Gate::denies('show_brand') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("Brand fetched successfully.", $brand->load(['users', 'campaigns'])->toArray());
+        return response()->success("Brand fetched successfully.", Brand::with(['users', 'campaigns'])->find($brand->id));
     }
 
     /**
@@ -101,15 +101,15 @@ class BrandController extends Controller
         if($request->file('logo')){
             $fileName = Str::slug($data['name']) . '_' . time() . '.' . $request->file('logo')->getClientOriginalExtension();
             $path = $request->file('logo')->storeAs('uploads', $fileName, 'public');
-            
+
             if($path)
-                $data['logo'] = "/storage/". $path;
-        }   
+                $data['logo'] = $path;
+        }
 
         // Update the brand
         $brand->update($data);
 
-        return response()->success("Brands fetched successfully.", $brand->load('users')->toArray());
+        return response()->success("Brands fetched successfully.", Brand::with(['users', 'campaigns'])->find($brand->id));
     }
 
     /**
@@ -120,14 +120,11 @@ class BrandController extends Controller
      */
     public function delete(Brand $brand)
     {
-        abort_if(Gate::denies('delete_brand') && Gate::denies('delete', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('delete', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Delete brand
         $brand->delete();
 
-        return response()->json([
-            'success'   =>  true,
-            'message'   =>  'Brand deleted successfully.'
-        ]);
+        return response()->success("Brand deleted successfully.", [], 204);
     }
 }

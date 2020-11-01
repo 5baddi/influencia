@@ -50,6 +50,8 @@ class Influencer extends Model
         'is_private'        =>  'boolean',
         'banned'            =>  'boolean',
         'business_address'  =>  'json',
+        'updated_at'        =>  'datetime:Y-m-d H:i',
+        'created_at'        =>  'datetime:Y-m-d H:i',
     ];
 
     /**
@@ -58,42 +60,42 @@ class Influencer extends Model
      * @var array
      */
     protected $appends = [
-        'calculated_engagement_rate', 
-        'image_sequences', 
-        'video_sequences', 
-        'carousel_sequences', 
-        'likes', 
-        'video_views', 
-        'comments', 
-        'posts_count', 
-        'estimated_impressions', 
+        'calculated_engagement_rate',
+        'image_sequences',
+        'video_sequences',
+        'carousel_sequences',
+        'likes',
+        'video_views',
+        'comments',
+        'posts_count',
+        'estimated_impressions',
         'estimated_communities',
         'earned_media_value'
     ];
-    
+
     /**
      * Get likes of an infleuncer
-     * 
+     *
      * @return int
      */
     public function getLikesAttribute() : int
     {
         return $this->posts()->sum('likes');
     }
-    
+
     /**
      * Get comments of an infleuncer
-     * 
+     *
      * @return int
      */
     public function getCommentsAttribute() : int
     {
         return $this->posts()->sum('comments');
     }
-    
+
     /**
      * Get video views of an infleuncer
-     * 
+     *
      * @return int
      */
     public function getVideoViewsAttribute() : int
@@ -103,37 +105,37 @@ class Influencer extends Model
 
     /**
      * Get image status sequences of an infleuncer
-     * 
+     *
      * @return int
      */
     public function getImageSequencesAttribute() : int
     {
         return $this->posts()->where('type', 'image')->count();
     }
-    
+
     /**
      * Get video status sequences of an infleuncer
-     * 
+     *
      * @return int
      */
     public function getVideoSequencesAttribute() : int
     {
         return $this->posts()->where('type', 'video')->count();
     }
-    
+
     /**
      * Get carousel status sequences of an infleuncer
-     * 
+     *
      * @return int
      */
     public function getCarouselSequencesAttribute() : int
     {
         return $this->posts()->whereIn('type', ['sidecar', 'carousel'])->count();
     }
-    
+
     /**
      * Get posts count of an infleuncer
-     * 
+     *
      */
     public function getPostsCountAttribute()
     {
@@ -142,16 +144,16 @@ class Influencer extends Model
 
     /**
      * Get estimated impressions for all posts
-     * 
+     *
      */
     public function getEstimatedCommunitiesAttribute()
     {
         return $this->attributes['followers'];
     }
-    
+
     /**
      * Get estimated communities for all posts
-     * 
+     *
      */
     public function getEstimatedImpressionsAttribute()
     {
@@ -160,7 +162,7 @@ class Influencer extends Model
 
     /**
      * Get calculated or inserted engagement rate
-     * 
+     *
      * @return float
      */
     public function getCalculatedEngagementRateAttribute() : float
@@ -175,7 +177,7 @@ class Influencer extends Model
 
      /**
      * Get EMV
-     * 
+     *
      * @return float
      */
     public function getEarnedMediaValueAttribute() : float
@@ -191,7 +193,7 @@ class Influencer extends Model
 
     /**
      * Get post medias
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()

@@ -44,7 +44,7 @@ class BrandPolicy
      */
     public function create(User $user)
     {
-        return Gate::allows('create_brand') ||$user->is_superadmin;
+        return Gate::allows('create_brand') || $user->is_superadmin;
     }
 
     /**
@@ -58,7 +58,7 @@ class BrandPolicy
     {
         $related = $brand->load('users')->find($user);
 
-        return !is_null($related) || $user->is_superadmin;
+        return (Gate::allows('edit_brand') && !is_null($related)) || $user->is_superadmin;
     }
 
     /**
@@ -72,6 +72,6 @@ class BrandPolicy
     {
         $related = $brand->load('users')->find($user);
 
-        return !is_null($related) || $user->is_superadmin;
+        return (Gate::allows('delete_brand') && !is_null($related)) || $user->is_superadmin;
     }
 }

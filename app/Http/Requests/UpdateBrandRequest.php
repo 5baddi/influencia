@@ -15,8 +15,6 @@ class UpdateBrandRequest extends FormRequest
      */
     public function authorize()
     {
-        abort_if(Gate::denies('edit_brand'), Response::HTTP_FORBIDDEN, "403 Forbidden");
-
         return true;
     }
 

@@ -4,17 +4,18 @@ namespace App\Http\Controllers;
 
 use App\User;
 use App\Brand;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Requests\CreateUserRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
+use App\Http\Requests\CreateUserRequest;
+use App\Http\Requests\ResetUserPasswordRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
     /**
      * Create new user
-     * 
+     *
      * @param \App\Http\Requests\CreateUserRequest $request
      * @return \Illuminate\Http\Response
      */
@@ -22,9 +23,6 @@ class UserController extends Controller
     {
         // Get data
         $data = $request->validated();
-
-        // Hash the password
-        $data['password'] = Hash::make($data['password']);
 
         // Set user role
         if(is_string($request->input('role')) && $request->input('role') == "super")
@@ -35,7 +33,7 @@ class UserController extends Controller
         // Create user row
         $user = User::create($data);
 
-        // Attach brand 
+        // Attach brand
         if($request->get('brand_id') && !$user->is_superadmin){
             $brand = Brand::find($request->get('brand_id'));
             $user->brands()->attach($brand);
@@ -46,24 +44,111 @@ class UserController extends Controller
         if($user->is_superadmin)
             $user->brands()->attach(Brand::all());
 
-        return response()->success("User created successfully.", $user->load('brands'), 201);
+        return response()->success("User created successfully.", User::with(['role', 'brands'])->find($user->id), 201);
+    }
+
+    /**
+     * Update exists user
+     *
+     * @param \App\User $user
+     * @param \App\Http\Requests\UpdateUserRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(User $user, UpdateUserRequest $request)
+    {
+        abort_if(Gate::denies('update', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Get data
+        $data = $request->validated();
+
+        // Set user role
+        if(is_string($request->input('role')) && $request->input('role') == "super")
+            $data['is_superadmin'] = true;
+        else
+            $data['role_id'] = $request->input('role');
+
+        // Update user row
+        $updated = $user->update($data);
+
+        if($updated){
+            // Attach brand
+            if($request->get('brand_id') && !$user->is_superadmin){
+                $brand = Brand::find($request->get('brand_id'));
+                $user->brands()->attach($brand);
+                $user->update(['selected_brand_id' => $brand->id]);
+            }
+
+            // Attach all brands to Admin
+            if($user->is_superadmin)
+                $user->brands()->attach(Brand::all());
+
+            return response()->success("User updated successfully.", User::with(['role', 'brands'])->find($user->id));
+        }
+
+        return response()->error("Something going wrong! Please try again or contact the support..");
+    }
+
+    /**
+     * Reset exists user password
+     *
+     * @param \App\User $user
+     * @param \App\Http\Requests\ResetUserPasswordRequest $request
+     * @return \Illuminate\Http\Response
+     */
+    public function resetPassword(User $user, ResetUserPasswordRequest $request)
+    {
+        abort_if(Gate::denies('update', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Get data
+        $data = $request->validated();
+
+        // Update user row
+        $updated = $user->update($data);
+
+        if($updated)
+            return response()->success("User password reseted successfully.", User::with(['role', 'brands'])->find($user->id));
+
+        return response()->error("Something going wrong! Please try again or contact the support..");
+    }
+
+    /**
+     * Ban/UnBan user
+     *
+     * @param \App\User $user
+     * @return \Illuminate\Http\Response
+     */
+    public function ban(User $user)
+    {
+        // Check ability
+        abort_if(Gate::denies('ban', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        $updated = $user->update([
+            'banned'    =>  !$user->banned
+        ]);
+        $user = $user->refresh();
+
+        if($updated)
+            return response()->success("User {$user->name} " . ($user->banned ? "banned" : "unbanned") . " successfully.", User::with(['role', 'brands'])->find($user->id));
+
+
+        return response()->error("Something going wrong! Please try again or contact the support..");
     }
 
     /**
      * List users
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        abort_if(Gate::denies('viewAny', Auth::user()) && Gate::denies('list_user'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('viewAny', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return response()->success("Users fetched successfully.", User::with(['brands', 'role'])->get());
     }
 
     /**
      * View user
-     * 
+     *
      * @param \App\User $users
      * @return \Illuminate\Http\Response
      */
@@ -76,13 +161,13 @@ class UserController extends Controller
 
     /**
      * Delete user
-     * 
+     *
      * @param \App\User $user
      * @return \Illuminate\Http\Response
      */
     public function delete(User $user)
     {
-        abort_if(Gate::denies('delete_user') && Gate::denies('delete', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('delete', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Delete user row
         $user->delete();

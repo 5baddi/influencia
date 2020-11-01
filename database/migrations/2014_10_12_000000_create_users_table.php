@@ -48,6 +48,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('avatar')->nullable();
             $table->boolean('is_superadmin')->index()->default(false);
+            $table->boolean('banned')->default(false);
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamp('last_login')->nullable();

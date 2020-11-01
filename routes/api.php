@@ -53,7 +53,10 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/users', 'UserController@index');
     Route::get('/users/{user}', 'UserController@show');
     Route::post('/users', 'UserController@store');
+    Route::put('/users/{user}', 'UserController@update');
+    Route::put('/users/{user}/reset', 'UserController@resetPassword');
     Route::delete('/users/{user}', 'UserController@delete');
+    Route::get('/users/{user}/status', 'UserController@ban');
 
     // Roles & permissions
     Route::get('/roles', 'OAuthController@roles');

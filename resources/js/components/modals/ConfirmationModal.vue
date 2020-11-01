@@ -1,55 +1,67 @@
 <template>
-   <div class="modal" :class="{'show-modal': show}">
-      <div class="modal-content">
+<div class="modal" :class="{'show-modal': show}">
+    <div class="modal-content">
         <h4 class="heading">{{ title }}</h4>
         <div class="modal-form">
             <button class="btn btn-success" @click.prevent="confirm" type="submit">Yes</button>
             <button class="btn btn-danger" @click.prevent="close" type="button">Cancel</button>
         </div>
-      </div>
-   </div>
+    </div>
+</div>
 </template>
+
 <style scoped>
-    .modal .modal-content{
-        padding: 1rem !important;
-    }
-    .modal .heading{
-        border-bottom: none !important;
-    }
-    .modal .modal-form{
-        float: right;
-    }
-    .modal .modal-form button{
-        display: inline;
-        font-size: 0.6rem !important;
-    }
+.modal .modal-content {
+    padding: 1rem !important;
+}
+
+.modal .heading {
+    border-bottom: none !important;
+}
+
+.modal .modal-form {
+    float: right;
+}
+
+.modal .modal-form button {
+    display: inline;
+    font-size: 0.6rem !important;
+}
 </style>
+
 <script>
 export default {
-    props: {
-        
-    },
     methods: {
-        close(){
+        close() {
             this.show = false;
             this.title = null;
         },
-        open(title){
+        open(title, obj) {
             this.show = true;
             this.title = title;
+            this.obj = obj;
         },
-        confirm(){
+        confirm() {
             this.close();
 
-            // Emit on change method
-            this.$emit("action", this.files);
+            // Emit on confirm action
+            if (this.obj !== "undefined")
+                this.$emit("custom", this.obj);
         }
     },
-    data(){
+    data() {
         return {
             show: false,
-            title: null
+            title: null,
+            obj: {}
         }
+    },
+    created() {
+        document.addEventListener("keydown", e => {
+            if (e.key == "Escape" && this.show) {
+                this.close();
+            }
+        });
     }
 }
 </script>

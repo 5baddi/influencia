@@ -18,6 +18,7 @@ import './notifications';
 import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
+import ConfirmationModal from "./components/modals/ConfirmationModal";
 
 Vue.prototype.$http = api;
 
@@ -26,6 +27,7 @@ Vue.use(abilitiesPlugin, ability);
 
 // Register global component
 Vue.component('DataTable', DataTable);
+Vue.component('ConfirmationModal', ConfirmationModal);
 
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css'
@@ -64,7 +66,7 @@ const app = new Vue({
                 return Promise.reject(error);
             }
         );
-        
+
         this.$router.beforeEach((to, from, next) => {
             const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user')
 
@@ -76,7 +78,7 @@ const app = new Vue({
             if(to.matched.some(record => record.meta.auth) && !loggedIn){
                 next('/login')
             }
-            
+
             next()
         });
     }

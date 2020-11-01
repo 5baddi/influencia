@@ -64,11 +64,9 @@ import {
     mapGetters
 } from "vuex";
 import CreateTrackerModal from "../components/modals/CreateTrackerModal";
-import ConfirmationModal from "../components/modals/ConfirmationModal";
 export default {
     components: {
         CreateTrackerModal,
-        ConfirmationModal
     },
     data() {
         return {
@@ -130,14 +128,14 @@ export default {
         createTrackerSuccess: {
             type: "success"
         },
-        // showError: {
-        //    type: "error",
-        //    title: "Error",
-        //    message: "Something going wrong! Please try again.."
-        // },
-        // showSuccess: {
-        //    type: "success",
-        // }
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        }
     },
     methods: {
         dismissAddTrackerModal() {

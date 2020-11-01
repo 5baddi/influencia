@@ -240,11 +240,11 @@ export default {
         },
     },
     notifications: {
-        // showError: {
-        //     type: "error",
-        //     title: "Error",
-        //     message: "Something going wrong! Please try again.."
-        // }
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        }
     },
     methods: {
         setupStream() {

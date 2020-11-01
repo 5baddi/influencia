@@ -70,7 +70,7 @@ class CampaignRepository extends BaseRepository
 
        return $engagements;
    }
-   
+
    public function getViews() : int
    {
        // Init
@@ -84,7 +84,7 @@ class CampaignRepository extends BaseRepository
             foreach($campaign->trackers->load('posts') as $tracker){
                 if(is_null($tracker->posts))
                     continue;
-                    
+
                 foreach($tracker->posts as $post){
                     $views += $post->video_views;
                 }
@@ -119,7 +119,7 @@ class CampaignRepository extends BaseRepository
 
        return $views;
    }
-   
+
    public function getEstimatedImpressions() : int
    {
        // Init
@@ -142,7 +142,7 @@ class CampaignRepository extends BaseRepository
 
        return $impressions;
    }
-   
+
    public function getEstimatedOrganicImpressions() : int
    {
        // Init
@@ -169,7 +169,7 @@ class CampaignRepository extends BaseRepository
 
    public function getEstimatedCommunities() : int
    {
-       // Init 
+       // Init
        $communities = 0;
        $campaigns = $this->selectedBrandCampaigns();
         if(!$campaigns)
@@ -185,7 +185,7 @@ class CampaignRepository extends BaseRepository
                     continue;
 
                 foreach($tracker->posts->load('influencer') as $post){
-                    $communities += $post->influencer->followers;   
+                    $communities += $post->influencer->followers;
                 }
 
                 // switch($tracker->type){
@@ -204,7 +204,7 @@ class CampaignRepository extends BaseRepository
 
    public function getEstimatedOrganicCommunities() : int
    {
-       // Init 
+       // Init
        $communities = 0;
        $campaigns = $this->selectedBrandCampaigns();
         if(!$campaigns)
@@ -223,7 +223,7 @@ class CampaignRepository extends BaseRepository
                     if($post->is_ad)
                         continue;
 
-                    $communities += $post->influencer->followers;   
+                    $communities += $post->influencer->followers;
                 }
             }
         }
@@ -233,7 +233,7 @@ class CampaignRepository extends BaseRepository
 
    /**
      * Get comments analytics of all trackers
-     * 
+     *
      * @return array
      */
     public function getComments(Campaign $campaign) : array
@@ -263,7 +263,10 @@ class CampaignRepository extends BaseRepository
             return null;
 
         // Load data
-        $brand = Auth::user()->selectedBrand->load('campaigns');
+        $selectedBrand = Auth::user()->selectedBrand;
+        if(is_null($selectedBrand))
+            return null;
+        $brand = $selectedBrand->load('campaigns');
 
         return $brand->campaigns;
     }

@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
@@ -17,7 +18,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->is_superadmin;
+        return $user->is_superadmin || Gate::allows('list_user');
     }
 
     /**
@@ -29,7 +30,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return $user->is_superadmin || ($user->id === $model->id);
+        return $user->is_superadmin || (Gate::allows('show_user') && ($user->id === $model->id));
     }
 
     /**
@@ -40,7 +41,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return $user->is_superadmin;
+        return $user->is_superadmin || Gate::allows('create_user');
     }
 
     /**
@@ -52,7 +53,19 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->is_superadmin || ($user->id === $model->id);
+        return $user->is_superadmin || (Gate::allows('edit_user') && ($user->id === $model->id));
+    }
+
+    /**
+     * Determine whether the user can ban the model.
+     *
+     * @param  \App\User  $user
+     * @param  \App\User  $model
+     * @return mixed
+     */
+    public function ban(User $user, User $model)
+    {
+        return $user->is_superadmin || (Gate::allows('ban_user') && ($user->id !== $model->id));
     }
 
     /**
@@ -64,6 +77,6 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return $user->is_superadmin || ($user->id === $model->id);
+        return (Gate::allows('delete_user') || $user->is_superadmin) && ($user->id !== $model->id);
     }
 }
