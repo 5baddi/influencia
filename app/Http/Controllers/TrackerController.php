@@ -41,7 +41,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'influencer'])
+            Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
                     })
@@ -52,7 +52,7 @@ class TrackerController extends Controller
 
     /**
      * Enable/Disable tracker
-     * 
+     *
      * @param \App\Tracker $tracker
      * @return \Illuminate\Http\Response
      */
@@ -66,9 +66,9 @@ class TrackerController extends Controller
         ]);
 
         if($updated)
-            return response()->success("Tracker {$tracker->name} status changed successfully.", $tracker->refresh());
+            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])->find($tracker->id));
 
-            
+
         return response()->error("Something going wrong! Please try again or contact the support..");
     }
 
@@ -85,14 +85,14 @@ class TrackerController extends Controller
         $tracker = Tracker::create($request->validated());
         $tracker = $tracker->refresh();
 
-        // Handle URL Tracker 
+        // Handle URL Tracker
         if($tracker->type === 'url'){
             $ShortLink = ShortLink::create([
                 'tracker_id'    =>  $tracker->id,
                 'link'          =>  $tracker->url,
                 'code'          =>  Str::random(env('SHORTLINK_LENGTH'))
             ]);
-            
+
             // Dispatch scraping job
             ScrapURLContentJob::dispatch($ShortLink->load('tracker'))->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
         }
@@ -103,10 +103,10 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker created successfully.",
-            $tracker
+            Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])->find($tracker->id)
         );
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -134,9 +134,9 @@ class TrackerController extends Controller
                 ]);
             }
         }
-        
+
         // Srap Influencer
-        $instagramUser = $scraper->byUsername($request->input('username')); 
+        $instagramUser = $scraper->byUsername($request->input('username'));
         $influencer = Influencer::create($instagramUser);
         // Dispatch scraping job
         ScrapInstagramAllPostsJob::dispatch($influencer->refresh())->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
@@ -144,7 +144,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Story tracker created successfully.",
-            $tracker->load('medias')
+            Tracker::with(['user', 'campaign', 'medias', 'influencer'])->find($tracker->id)
         );
     }
 
@@ -160,7 +160,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker fetched successfully.",
-            $tracker->toArray()
+            Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])->find($tracker->id)
         );
     }
 
@@ -182,9 +182,9 @@ class TrackerController extends Controller
      * @param  \App\Tracker $tracker
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tracker $tracker)
+    public function delete(Tracker $tracker)
     {
-        abort_if(Gate::denies('delete_tracker') && Gate::denies('delete', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('delete', $tracker), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Delete tracker row
         $tracker->delete();

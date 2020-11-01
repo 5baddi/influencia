@@ -39,6 +39,9 @@
             <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" :endPoint="'/api/v1/stream/' + activeBrand.uuid + '/trackers'" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
+                    <button v-if="(($can('view', 'tracker') || AuthenticatedUser.is_superadmin)) && row.data.original.type == 'url'" class="btn icon-link" title="Copy shortlink" @click="copyShortlink(row.data.original)">
+                        <i class="fas fa-link"></i>
+                    </button>
                     <button v-if="($can('change-status', 'tracker') || AuthenticatedUser.is_superadmin)" class="btn icon-link" :title="(row.data.original.status ? 'Stop' : 'Start') + ' tracker'" @click="enableTracker(row.data.original)">
                         <svg v-show="row.data.original.status" data-v-4b997e69="" class="svg-inline--fa fa-stop-circle fa-w-16" aria-hidden="true" focusable="false" data-prefix="far" data-icon="stop-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
                             <path fill="currentColor" d="M504 256C504 119 393 8 256 8S8 119 8 256s111 248 248 248 248-111 248-248zm-448 0c0-110.5 89.5-200 200-200s200 89.5 200 200-89.5 200-200 200S56 366.5 56 256zm296-80v160c0 8.8-7.2 16-16 16H176c-8.8 0-16-7.2-16-16V176c0-8.8 7.2-16 16-16h160c8.8 0 16 7.2 16 16z"></path>
@@ -55,7 +58,7 @@
         </div>
     </div>
     <CreateTrackerModal :show="showAddTrackerModal" @create="create" @dismiss="dismissAddTrackerModal" />
-    <ConfirmationModal ref="confirmModal" />
+    <ConfirmationModal ref="confirmModal" v-on:custom="deleteAction" />
 </div>
 </template>
 
@@ -141,6 +144,20 @@ export default {
         dismissAddTrackerModal() {
             this.showAddTrackerModal = false;
         },
+        copyShortlink(tracker) {
+            if (typeof tracker.shortlink.fulllink === "undefined")
+                this.showError();
+
+            let input = docuement.createElement("textarea");
+            document.body.appendChild(input);
+            input.value = tracker.shortlink.fulllink;
+            input.select();
+            document.execCommand("copy");
+            document.body.removeChild(input);
+            this.showSucces({
+                message: "Link copied."
+            });
+        },
         enableTracker(tracker) {
             this.$store.dispatch("changeTrackerStatus", tracker.uuid)
                 .then(response => {
@@ -154,8 +171,24 @@ export default {
                     });
                 });
         },
-        deleteTracker() {
-            this.$refs.confirmModal.open("Are sure to delete this tracker?");
+        deleteTracker(tracker) {
+            this.$refs.confirmModal.open("Are sure to delete this tracker?", tracker);
+        },
+        deleteAction(tracker) {
+            if (typeof tracker.uuid === "undefined")
+                this.showError();
+
+            this.$store.dispatch("deleteTracker", tracker.uuid)
+                .then(response => {
+                    this.$refs.trackersDT.reloadData();
+                    this.showSuccess({
+                        message: "Successfully deleted tracker '" + tracker.name + "'"
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.message
+                    });
+                });
         },
         create(payload) {
             let data = payload.data;

@@ -83,6 +83,6 @@ class TrackerPolicy
      */
     public function delete(User $user, Tracker $tracker)
     {
-        return ($user->id === $tracker->user_id || $user->is_superadmin);
+        return (Gate::allows('delete_tracker') && $user->id === $tracker->user_id) || $user->is_superadmin;
     }
 }

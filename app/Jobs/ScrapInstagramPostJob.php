@@ -14,7 +14,6 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Repositories\InfluencerRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Repositories\InfluencerPostRepository;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
@@ -38,7 +37,7 @@ class ScrapInstagramPostJob implements ShouldQueue
 
     /**
      * Console output
-     * 
+     *
      * @var \Symfony\Component\Console\Output\ConsoleOutput
      */
     private $console;
@@ -121,7 +120,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 if($influencer->posts()->count() == $influencer->posts)
                     $this->tracker->update(['queued' => 'finished']);
                 else
-                    ScrapInstagramAllPostsJob::dispatch($influencer)->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
+                    ScrapInstagramAllPostsJob::dispatchNow($influencer);
             }
         }catch(\Exception $ex){
             $this->fail($ex);

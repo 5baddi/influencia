@@ -227,6 +227,10 @@ export default {
                         else
                             rowData[item.field] = val;
 
+                        // Capitalize string
+                        if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
+                            rowData[item.field] = val.charAt(0).toUpperCase() + val.slice(1);
+
                         // Ignore zero or empty
                         if ((val == null || val == 0) && typeof item.callback === "undefined")
                             rowData[item.field] = '-';

@@ -44,12 +44,31 @@ class ShortLink extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'fulllink'
+    ];
+
+    /**
      * Get tracker
-     * 
+     *
      * @return \App\Tracker
      */
     public function tracker()
     {
         return $this->belongsTo(Tracker::class);
+    }
+
+    /**
+     * Get full shortlink
+     *
+     * @return string
+     */
+    public function getFulllinkAttribute() : ?string
+    {
+        return url('/u/' . $this->attributes['code']);
     }
 }

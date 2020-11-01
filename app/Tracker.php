@@ -118,4 +118,14 @@ class Tracker extends Model
     {
         return $this->hasMany(InfluencerPost::class, 'tracker_id', 'id');
     }
+
+    /**
+     * Get shortlink
+     *
+     * @return \App\Tracker
+     */
+    public function shortlink()
+    {
+        return $this->hasOne(ShortLink::class, 'tracker_id', 'id');
+    }
 }

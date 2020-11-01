@@ -256,6 +256,19 @@ const actions = {
                 })
         });
     },
+    deleteTracker({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.delete("/api/v1/trackers/" + uuid)
+                .then(response => {
+                    if(response.status === 204)
+                        resolve(response);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                });
+        });
+    },
     setActiveBrand({ commit, state }, brand) {
         commit("setActiveBrand", { brand })
     },
@@ -349,7 +362,6 @@ const mutations = {
                     brand = item
                 }
             });
-            // console.log(brand);
         }
         state.activeBrand = brand
     },

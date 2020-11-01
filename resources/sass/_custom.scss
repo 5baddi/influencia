@@ -250,7 +250,7 @@ span.status{
 
 .campaign{
     padding: 0 1rem;
-    
+
     .influencers-avatars{
         list-style: none;
 
@@ -259,10 +259,11 @@ span.status{
             margin-bottom: 1rem;
             text-transform: capitalize;
         }
-        
+
         li{
             display: inline;
-            
+            cursor: pointer;
+
             img{
                 width: 60px;
                 height: 60px;
@@ -312,7 +313,7 @@ span.status{
                         }
                     }
                 }
-                
+
                 // canvas{
                 //     width: 540px !important;
                 //     height: 270px !important;
@@ -351,14 +352,14 @@ span.status{
                         align-items: center;
                         justify-content: center;
                         height: calc(100% - 3.7rem);
-        
+
                         li{
                             display: grid;
                             text-align: center;
                             padding: 1rem;
                             font-size: 32pt;
                             cursor: pointer;
-        
+
                             span{
                                 margin-top: 1rem;
                                 font-weight: bold;
@@ -370,7 +371,7 @@ span.status{
                             }
                         }
                     }
-                    
+
                     span{
                         float: right;
                         font-size: 8pt;
@@ -387,7 +388,7 @@ span.status{
             margin: 0;
             font-size: 16pt;
         }
-    
+
         p{
             margin: .5rem 0;
             font-size: 10pt;

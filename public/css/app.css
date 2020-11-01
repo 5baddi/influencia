@@ -7595,6 +7595,7 @@ span.status-danger::before {
 
 .campaign .influencers-avatars li {
   display: inline;
+  cursor: pointer;
 }
 
 .campaign .influencers-avatars li img {

@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Influencer;
-use App\Jobs\ScrapInstagramAllPostsJob;
+use App\Tracker;
 use Carbon\Carbon;
+use App\Influencer;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -29,21 +29,21 @@ class ScrapInstagramInfluencers extends Command
 
     /**
      * Instagram scraper
-     * 
+     *
      * @var \App\Services\InstagramScraper
      */
     private $instagramScraper;
 
     /**
      * Influencer account repository
-     * 
+     *
      * @var \App\Repositories\InfluencerRepository
      */
     private $repository;
 
     /**
      * Tracker repository
-     * 
+     *
      * @var \App\Repositories\TrackerRepository
      */
     private $trackerRepo;
@@ -54,8 +54,8 @@ class ScrapInstagramInfluencers extends Command
      * @return void
      */
     public function __construct(
-        InstagramScraper $instagramScraper, 
-        InfluencerRepository $repository, 
+        InstagramScraper $instagramScraper,
+        InfluencerRepository $repository,
         TrackerRepository $trackerRepo)
     {
         parent::__construct();
@@ -89,7 +89,7 @@ class ScrapInstagramInfluencers extends Command
 
     /**
      * Scrap influencers details and medias
-     * 
+     *
      * @return void
      */
     private function scrapInfluencers() : void
@@ -131,7 +131,7 @@ class ScrapInstagramInfluencers extends Command
 
     /**
      * Scrap trackers details and analytics
-     * 
+     *
      * @return void
      */
     private function scrapTrackers() : void
@@ -165,7 +165,7 @@ class ScrapInstagramInfluencers extends Command
 
                             break;
                         }
-                        
+
                         if($post->influencer->posts()->count() == $post->influencer->posts){
                             if($post->influencer->queued !== 'finished')
                                 $post->influencer->update(['queued' => 'finished']);
