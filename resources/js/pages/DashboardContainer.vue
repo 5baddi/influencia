@@ -105,7 +105,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "brands", "activeBrand"]),
+        ...mapGetters(["AuthenticatedUser", "brands"]),
         ...mapState("Loader", ["loading"])
     },
     notifications: {

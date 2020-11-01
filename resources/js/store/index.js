@@ -356,13 +356,14 @@ const mutations = {
         state.users.push(user)
     },
     setActiveBrand: (state, { brand }) => {
-        if (!brand) {
+        if (!brand && state.brands) {
             state.brands.forEach((item, index) => {
                 if (item.id == state.user.user.selected_brand_id) {
                     brand = item
                 }
             });
         }
+
         state.activeBrand = brand
     },
     setNewCampaign: (state, { campaign }) => {

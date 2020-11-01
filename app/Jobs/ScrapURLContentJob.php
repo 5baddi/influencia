@@ -3,7 +3,6 @@
 namespace App\Jobs;
 
 use App\ShortLink;
-use App\Tracker;
 use Goose\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,7 +24,7 @@ class ScrapURLContentJob implements ShouldQueue
 
     /**
      * Goose client
-     * 
+     *
      * @var \Goose\Client
      */
     private $goose;

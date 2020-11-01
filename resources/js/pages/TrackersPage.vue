@@ -148,13 +148,13 @@ export default {
             if (typeof tracker.shortlink.fulllink === "undefined")
                 this.showError();
 
-            let input = docuement.createElement("textarea");
+            let input = document.createElement("textarea");
             document.body.appendChild(input);
             input.value = tracker.shortlink.fulllink;
             input.select();
             document.execCommand("copy");
             document.body.removeChild(input);
-            this.showSucces({
+            this.showSuccess({
                 message: "Link copied."
             });
         },
