@@ -14,7 +14,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        ScrapInstagramInfluencers::class
+        ScrapInstagramInfluencers::class,
+        AppUpdaterCommand::class
     ];
 
     /**
@@ -28,6 +29,11 @@ class Kernel extends ConsoleKernel
         // Instagram scraper
         $schedule->command('scrap:instagram --force=true')
             ->dailyAt(env('INSTAGRAM_SCHEDULE'))
+            ->withoutOverlapping();
+
+        // Updater
+        $schedule->command('updater:app')
+            ->dailyAt('00:00')
             ->withoutOverlapping();
     }
 

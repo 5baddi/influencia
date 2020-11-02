@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Tracker;
 use Carbon\Carbon;
-use App\Influencer;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -138,7 +137,7 @@ class ScrapInstagramInfluencers extends Command
     private function scrapTrackers() : void
     {
         // Get trackers
-        $trackers = $this->trackerRepo->getInstagram();
+        $trackers = Tracker::with(['posts'])->all();
         $this->info("Number of trackers to sync: " . $trackers->count());
 
         // Scrap each tracker details
@@ -147,41 +146,24 @@ class ScrapInstagramInfluencers extends Command
             if($this->option('force') === 'false' && isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
 
-            // Ignore failed tracker
-            if($tracker->queued === 'failed')
-                continue;
-
             try{
                 // TODO: scrap stories details
-                if($tracker->type === 'story')
+                if($tracker->platform === "instagram" && $tracker->type === "story")
                     continue;
 
-                if($tracker->type === 'post'){
+                if($tracker->platform === "instagram" && $tracker->type === "post"){
                     // Update trackers & influencers queued state
-                    $tracker = $tracker->load('posts');
                     foreach($tracker->posts->load('influencer') as $post){
-                        if($post->influencer->queued === 'failed'){
-                            $tracker->update(['queued' => 'failed', 'status' => false]);
-                            $tracker = $tracker->refresh();
-
-                            break;
-                        }
-
                         if($post->influencer->posts()->count() == $post->influencer->posts){
                             if($post->influencer->queued !== 'finished')
                                 $post->influencer->update(['queued' => 'finished']);
 
-                            $tracker->update(['queued' => 'finished', 'status' => true]);
-                            $tracker = $tracker->refresh();
-
+                            $tracker->update([
+                                'queued' => 'finished',
+                                'status' => true
+                            ]);
                             continue;
                         }
-
-                        $post->influencer->update(['queued' => 'progress']);
-                        $tracker->update(['queued' => 'progress', 'status' => true]);
-                        $tracker = $tracker->refresh();
-
-                        break;
                     }
                 }
             }catch(\Exception $ex){
