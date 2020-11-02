@@ -2,8 +2,9 @@
 
 namespace App\Console;
 
-use App\Console\Commands\ScrapInstagramInfluencers;
+use App\Console\Commands\AppUpdaterCommand;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\ScrapInstagramInfluencers;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel

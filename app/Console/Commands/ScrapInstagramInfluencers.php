@@ -76,7 +76,7 @@ class ScrapInstagramInfluencers extends Command
         $startTaskAt = microtime(true);
 
         // Scrap influencers details & posts
-        $this->scrapInfluencers();
+        // $this->scrapInfluencers();
 
         // Scrap trackers details & analytics
         $this->scrapTrackers();
@@ -137,7 +137,7 @@ class ScrapInstagramInfluencers extends Command
     private function scrapTrackers() : void
     {
         // Get trackers
-        $trackers = Tracker::with(['posts'])->all();
+        $trackers = Tracker::with(['posts'])->get();
         $this->info("Number of trackers to sync: " . $trackers->count());
 
         // Scrap each tracker details
