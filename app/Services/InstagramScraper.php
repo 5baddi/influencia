@@ -102,24 +102,24 @@ class InstagramScraper
     public function setProxy()
     {
         // Get random proxies list
-        $request = file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&country=fr,us,uk,es,in,ae,ma&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
-        $proxies = json_decode($request, true);
+        // $request = file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&country=fr,us,uk,es,in,ae,ma&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
+        // $proxies = json_decode($request, true);
 
-        if(sizeof($proxies) === 0)
-            return $this->instagram->disableProxy();
+        // if(sizeof($proxies) === 0)
+        //     return $this->instagram->disableProxy();
 
-        // Test and get valid proxy
-        $proxy = $this->testProxy($proxies);
+        // // Test and get valid proxy
+        // $proxy = $this->testProxy($proxies);
 
-        // Set proxy
-        $this->instagram->setProxy([
-            'port'          => $proxy['port'],
-            'address'       => $proxy['ip'],
-            'type'          => $proxy['type'],
-            'tunnel'        => true,
-            'timeout'       => 60,
-            'verifyPeer'    => false
-        ]);
+        // // Set proxy
+        // $this->instagram->setProxy([
+        //     'port'          => $proxy['port'],
+        //     'address'       => $proxy['ip'],
+        //     'type'          => $proxy['type'],
+        //     'tunnel'        => true,
+        //     'timeout'       => 60,
+        //     'verifyPeer'    => false
+        // ]);
     }
 
     /**
@@ -130,19 +130,20 @@ class InstagramScraper
      */
     public function byUsername(string $username) : array
     {
-        // Set proxy
-        $this->setProxy();
+        try{
+            // Scrap user
+            $account = collect($this->instagram->getAccount($username));
+            sleep(self::SLEEP_REQUEST);
 
-        // Scrap user
-        $account = collect($this->instagram->getAccount($username));
-        sleep(self::SLEEP_REQUEST);
+            // Format account
+            $data = Format::parseArrayASCIIKey($account);
 
-        // Format account
-        $data = Format::parseArrayASCIIKey($account);
-
-        // Remove no needed data
-        unset($data['medias']);
-        unset($data['data']);
+            // Remove no needed data
+            unset($data['medias']);
+            unset($data['data']);
+        }catch(\Exception $ex){
+            dd($ex);
+        }
 
         return $data->toArray();
     }
@@ -223,6 +224,9 @@ class InstagramScraper
 
             if($ex->getCode() === 429)
                 return $data;
+
+            if(strpos("OpenSSL SSL_connect", $ex->getMessage()) !== false)
+                throw new \Exception("Lost connection to Instagram");
 
             throw new \Exception("Failed to scrap all medias!");
         }
