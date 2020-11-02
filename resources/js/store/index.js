@@ -81,6 +81,14 @@ const actions = {
         })
 
     },
+    fetchUser({ commit, state }, uuid) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/users/" + uuid).then(response => {
+                commit('setUser', { user: response.data.content })
+                resolve(response.data)
+            }).catch(response => reject(response))
+        });
+    },
     fetchUsers({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/users").then(response => {

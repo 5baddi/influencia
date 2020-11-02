@@ -156,7 +156,7 @@ class UserController extends Controller
     {
         abort_if(Gate::denies('show_user') && Gate::denies('view', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("User fetched successfully.", $user->load('brands'));
+        return response()->success("User fetched successfully.", User::with(['brands', 'selectedBrand'])->find($user->id));
     }
 
     /**

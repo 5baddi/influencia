@@ -52,9 +52,13 @@ const app = new Vue({
                     }
                 });
 
-                // Re-set active brand
-                if(typeof this.AuthenticatedUser.selected_brand === "object")
+                if(typeof this.AuthenticatedUser === "object"){
+                    // Refresh User
+                    this.$store.dispatch("fetchUser", this.AuthenticatedUser.uuid);
+
+                    // Re-set active brand
                     this.$store.dispatch("setActiveBrand");
+                }
             },
             immediate: true
         }
