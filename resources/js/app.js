@@ -20,6 +20,7 @@ import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
+import { mapGetters } from "vuex";
 
 Vue.prototype.$http = api;
 
@@ -50,9 +51,16 @@ const app = new Vue({
                         ability.update(response.data.content);
                     }
                 });
+
+                // Re-set active brand
+                if(typeof this.AuthenticatedUser.selected_brand === "object")
+                    this.$store.dispatch("setActiveBrand");
             },
             immediate: true
         }
+    },
+    computed: {
+        ...mapGetters(["AuthenticatedUser"])
     },
     created() {
         setupInterceptors(store);

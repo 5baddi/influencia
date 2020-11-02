@@ -30,7 +30,7 @@
                 <li v-for="(brand, index) in brands" :key="brand.id">
                     <a @click.prevent="switchBrand(brand, index)">
                         <div class="icon">
-                            <img :src="brand.logo" />
+                            <img :src="brand.public_logo" />
                         </div>
                         <div class="text">{{ brand.name }}</div>
                     </a>

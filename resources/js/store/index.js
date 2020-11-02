@@ -37,7 +37,7 @@ const getters = {
     AuthenticatedUser: state => state.user && state.user.user,
     Token: state => state.user.token,
     isLogged: state => !!state.user,
-    isAdmin: state => state.user && state.user.user.role == 'SUPER_ADMIN',
+    isAdmin: state => state.user && state.user.user.is_superadmin,
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
@@ -356,12 +356,16 @@ const mutations = {
         state.users.push(user)
     },
     setActiveBrand: (state, { brand }) => {
-        if (!brand && state.brands) {
-            state.brands.forEach((item, index) => {
-                if (item.id == state.user.user.selected_brand_id) {
-                    brand = item
-                }
-            });
+        if (!brand) {
+            if(typeof state.user.user.selected_brand === "object"){
+                brand = state.user.user.selected_brand;
+            }else{
+                state.brands.forEach((item, index) => {
+                    if (item.id == state.user.user.selected_brand_id) {
+                        brand = item
+                    }
+                });
+            }
         }
 
         state.activeBrand = brand
