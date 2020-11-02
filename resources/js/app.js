@@ -20,7 +20,6 @@ import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
-import { mapGetters } from "vuex";
 
 Vue.prototype.$http = api;
 
@@ -50,21 +49,22 @@ const app = new Vue({
                     if(typeof response.data.content !== 'undefined'){
                         ability.update(response.data.content);
                     }
-                });
+                }).catch(error => {});
 
-                if(typeof this.AuthenticatedUser === "object"){
+                // Refresh user and active brand
+                if(typeof this.$store.AuthenticatedUser === "object" && this.$store.AuthenticatedUser !== null){
                     // Refresh User
-                    this.$store.dispatch("fetchUser", this.AuthenticatedUser.uuid);
-
-                    // Re-set active brand
-                    this.$store.dispatch("setActiveBrand");
+                    this.$store.dispatch("fetchUser", this.$store.AuthenticatedUser.uuid)
+                        .then(() => {
+                            // Re-set active brand
+                            this.$store.dispatch("setActiveBrand")
+                                .catch(error => {});
+                        })
+                        .catch(error => {});
                 }
             },
             immediate: true
         }
-    },
-    computed: {
-        ...mapGetters(["AuthenticatedUser"])
     },
     created() {
         setupInterceptors(store);
@@ -84,7 +84,7 @@ const app = new Vue({
         );
 
         this.$router.beforeEach((to, from, next) => {
-            const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user')
+            const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user');
 
             // let vm = this;
             // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){
@@ -92,10 +92,10 @@ const app = new Vue({
             // }
 
             if(to.matched.some(record => record.meta.auth) && !loggedIn){
-                next('/login')
+                next('/login');
             }
 
-            next()
+            next();
         });
     }
 });

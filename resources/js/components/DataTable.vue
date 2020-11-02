@@ -1,53 +1,77 @@
 <template>
-<table :class="cssClasses">
-    <thead ref="headercolumns">
-        <th v-for="(column, index) in columns" :key="index">
-            {{ (column.name ? column.name : " ") | headerColumn }}
-            <!-- TODO: fix sotring -->
-            <!-- <span v-show="column.sortable && this.sortKey == 'desc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
-                        <i class="fas fa-sort-up"></i>
-                    </span>
-                    <span v-show="column.sortable && this.sortKey == 'asc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
-                        <i class="fas fa-sort-down"></i>
-                    </span> -->
-        </th>
-        <slot name="header"></slot>
-    </thead>
-    <tbody>
-        <tr v-if="parsedData.length === 0">
-            <td class="no-data" :colspan="getColumnsCount()">
-                <span v-show="!isLoading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
-                <span v-show="isLoading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
-            </td>
-        </tr>
-        <tr v-show="parsedData.length > 0 && !isLoading" v-for="(obj, index) in parsedData" :key="index">
-            <td v-for="(col, idx) in columns" :key="idx">
-                <div v-if="typeof obj[col.field] !== 'undefined'" v-html="obj[col.field]"></div>
-            </td>
-            <slot name="body-row" :data="obj"></slot>
-        </tr>
-    </tbody>
-    <tfoot v-if="data.length > 0 && !isLoading">
-        <tr>
-            <td :colspan="getColumnsCount()">
-                Rows per page:
-                <select ref="itemsPerPage" @change="perPageOnChange($event)">
-                    <option v-for="value in rowPerPage" :key="value" :value="(value !== 'All') ? value : data.length" :selected="perPage == value">{{ value }}</option>
-                </select>
-                <span>{{ startIndex }} - {{ parsedData.length }} of {{ data.length }}</span>
-                <button v-if="startIndex > perPage" @click="previousPage()">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button v-if="(data.length - perPage) > 0" @click="nextPage()">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-            </td>
-        </tr>
-    </tfoot>
-</table>
+<div :class="cssClasses">
+    <ul v-show="exportable">
+        <li>
+            <a :href="excelLink" class="btn btn-excel" target="_blank"><i class="fas fa-file-excel"></i></a>
+        </li>
+    </ul>
+    <table>
+        <thead ref="headercolumns">
+            <th v-for="(column, index) in columns" :key="index">
+                {{ (column.name ? column.name : " ") | headerColumn }}
+                <!-- TODO: fix sotring -->
+                <!-- <span v-show="column.sortable && this.sortKey == 'desc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
+                            <i class="fas fa-sort-up"></i>
+                        </span>
+                        <span v-show="column.sortable && this.sortKey == 'asc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
+                            <i class="fas fa-sort-down"></i>
+                        </span> -->
+            </th>
+            <slot name="header"></slot>
+        </thead>
+        <tbody>
+            <tr v-if="parsedData.length === 0">
+                <td class="no-data" :colspan="getColumnsCount()">
+                    <span v-show="!isLoading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
+                    <span v-show="isLoading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
+                </td>
+            </tr>
+            <tr v-show="parsedData.length > 0 && !isLoading" v-for="(obj, index) in parsedData" :key="index">
+                <td v-for="(col, idx) in columns" :key="idx">
+                    <div v-if="typeof obj[col.field] !== 'undefined'" v-html="obj[col.field]"></div>
+                </td>
+                <slot name="body-row" :data="obj"></slot>
+            </tr>
+        </tbody>
+        <tfoot v-if="data.length > 0 && !isLoading">
+            <tr>
+                <td :colspan="getColumnsCount()">
+                    Rows per page:
+                    <select ref="itemsPerPage" @change="perPageOnChange($event)">
+                        <option v-for="value in rowPerPage" :key="value" :value="(value !== 'All') ? value : data.length" :selected="perPage == value">{{ value }}</option>
+                    </select>
+                    <span>{{ startIndex }} - {{ parsedData.length }} of {{ data.length }}</span>
+                    <button v-if="startIndex > perPage" @click="previousPage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button v-if="(data.length - perPage) > 0" @click="nextPage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
 </template>
 
 <style scoped>
+ul {
+    padding: 0 1rem;
+    float: right;
+}
+
+ul li>>>a {
+    color: white;
+    font-size: 10pt;
+    padding: .5rem 2rem;
+    border-radius: 2px;
+}
+
+.btn-excel {
+    background-color: #1D6F42;
+    border: 1px solid #1D6F42;
+}
+
 table {
     background: #fff;
     border-radius: 4px;
@@ -176,6 +200,13 @@ export default {
         },
         nativeData: {
             type: Array
+        },
+        exportable: {
+            type: Boolean,
+            default: false
+        },
+        excelLink: {
+            type: String
         }
     },
     filters: {

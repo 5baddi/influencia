@@ -36,7 +36,7 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'tracker') || AuthenticatedUser.is_superadmin">
-            <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" :endPoint="'/api/v1/stream/' + activeBrand.uuid + '/trackers'" cssClasses="table-card">
+            <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" :exportable="true" :excelLink="'/api/v1/export/excel/' + activeBrand.uuid + '/trackers'" :endPoint="'/api/v1/stream/' + activeBrand.uuid + '/trackers'" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <button v-if="(($can('view', 'tracker') || AuthenticatedUser.is_superadmin)) && row.data.original.type == 'url'" class="btn icon-link" title="Copy shortlink" @click="copyShortlink(row.data.original)">

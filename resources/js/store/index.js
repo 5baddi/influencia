@@ -34,10 +34,10 @@ const state = () => ({
 })
 
 const getters = {
-    AuthenticatedUser: state => state.user && state.user.user,
+    AuthenticatedUser: state => state.user,
     Token: state => state.user.token,
     isLogged: state => !!state.user,
-    isAdmin: state => state.user && state.user.user.is_superadmin,
+    isAdmin: state => state.user.is_superadmin,
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
@@ -54,8 +54,8 @@ const actions = {
 
         return new Promise((resolve, reject) => {
             api.post('/oauth', credentials).then((response) => {
-                localStorage.setItem("user", JSON.stringify(response.data))
-                commit('setUser', { user: response.data })
+                localStorage.setItem("user", JSON.stringify(response.data.user))
+                commit('setUser', { user: response.data.user })
                 api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
                 resolve(response.data)
             }).catch(error => reject(error))
@@ -365,11 +365,11 @@ const mutations = {
     },
     setActiveBrand: (state, { brand }) => {
         if (!brand) {
-            if(typeof state.user.user.selected_brand === "object"){
-                brand = state.user.user.selected_brand;
+            if(typeof state.user.selected_brand === "object"){
+                brand = state.user.selected_brand;
             }else{
                 state.brands.forEach((item, index) => {
-                    if (item.id == state.user.user.selected_brand_id) {
+                    if (item.id == state.user.selected_brand_id) {
                         brand = item
                     }
                 });
