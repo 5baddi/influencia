@@ -12,7 +12,7 @@
                </li>
             </ul>
          </div>
-         <div class="hero__actions" v-if="($can('create', 'campaign') || AuthenticatedUser.is_superadmin) && !campaign">
+         <div class="hero__actions" v-if="($can('create', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && !campaign">
             <button
                :disabled="!activeBrand"
                class="btn btn-success"
@@ -21,7 +21,7 @@
          </div>
       </div>
       <div class="p-1" v-if="!campaign">
-         <header class="cards" v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin">
+         <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <div class="card">
                <div class="number">{{ (campaigns && campaigns.all && campaigns.all.length > 0) ? campaigns.all.length : 0 }}</div>
                <p class="description">NUMBER OF CAMPAIGNS</p>
@@ -39,14 +39,14 @@
                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
          </header>
-         <div class="datatable-scroll" v-if="$can('list', 'campaign') || AuthenticatedUser.is_superadmin">
+         <div class="datatable-scroll" v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
                <th slot="header">Actions</th>
                <td slot="body-row" slot-scope="row">
-                  <router-link  v-if="$can('analytics', 'campaign') || AuthenticatedUser.is_superadmin" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
+                  <router-link  v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                      <i class="far fa-chart-bar"></i>
                   </router-link>
-                  <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || AuthenticatedUser.is_superadmin">
+                  <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
                      <i class="far fa-stop-circle"></i>
                   </button> -->
                </td>
@@ -157,7 +157,7 @@ export default {
       },
       // Delete campaign
       deleteCampaign(campaign){
-         
+
       }
    },
    computed: {

@@ -84,7 +84,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            const loggedIn = !!localStorage.getItem("user");
+            const loggedIn = localStorage.getItem("user");
             if (loggedIn) {
                 next("/dashboard");
                 return;

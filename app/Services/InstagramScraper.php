@@ -102,7 +102,7 @@ class InstagramScraper
     public function setProxy()
     {
         // Get random proxies list
-        // $request = file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&country=fr,us,uk,es,in,ae,ma&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
+        // $request = file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
         // $proxies = json_decode($request, true);
 
         // if(sizeof($proxies) === 0)

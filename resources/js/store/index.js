@@ -22,6 +22,7 @@ function fatchLocalUser() {
 
 const state = () => ({
     user: fatchLocalUser(),
+    token: null,
     brands: null,
     activeBrand: null,
     users: null,
@@ -35,8 +36,8 @@ const state = () => ({
 
 const getters = {
     AuthenticatedUser: state => state.user,
-    Token: state => state.user.token,
-    isLogged: state => !!state.user,
+    Token: state => state.token,
+    isLogged: state => typeof state.user !== "undefined" && state.user !== null,
     isAdmin: state => state.user.is_superadmin,
     brands: state => state.brands,
     users: state => state.users,
@@ -45,7 +46,7 @@ const getters = {
     trackers: state => state.trackers,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
-    activeBrand: state => state.activeBrand,
+    activeBrand: state => state.user && state.user.selected_brand ? state.user.selected_brand : state.activeBrand,
     roles: state => state.roles,
 };
 
@@ -54,20 +55,27 @@ const actions = {
 
         return new Promise((resolve, reject) => {
             api.post('/oauth', credentials).then((response) => {
-                localStorage.setItem("user", JSON.stringify(response.data.user))
-                commit('setUser', { user: response.data.user })
-                api.defaults.headers.common.Authorization = `Bearer ${response.data.token}`
-                resolve(response.data)
-            }).catch(error => reject(error))
+                let user = response.data.user;
+                user.token = response.data.token;
+                localStorage.setItem("user", JSON.stringify(user));
+
+                commit('setUser', { user: response.data.user });
+                commit('setToken', { token: response.data.token });
+
+                api.defaults.headers.common.Authorization = `Bearer ${state.token}`;
+
+                resolve(response.data);
+            }).catch(error => reject(error));
         })
     },
     logout({ commit, state }) {
         return new Promise((resolve, reject) => {
 
-            localStorage.removeItem("user")
+            localStorage.removeItem("user");
 
             if (!state.isLogged) {
                 commit('setUser', { user: null });
+                commit('setUser', { token: null });
                 resolve();
                 return;
             }
@@ -75,9 +83,10 @@ const actions = {
             api.post('/api/logout')
                 .then(() => {
                     commit('setUser', { user: null });
+                    commit('setUser', { token: null });
                     resolve();
                 })
-                .catch(error => reject(error))
+                .catch(error => reject(error));
         })
 
     },
@@ -329,9 +338,11 @@ const actions = {
 };
 
 const mutations = {
+    setToken: (state, { token }) => {
+        state.token = token;
+    },
     setUser: (state, { user }) => {
         state.user = user;
-        if (user && state.user) axios.defaults.headers.common.Authorization = `Bearer ${state.user.token}`;
     },
     setUsers: (state, { users }) => {
         state.users = users
@@ -364,16 +375,12 @@ const mutations = {
         state.users.push(user)
     },
     setActiveBrand: (state, { brand }) => {
-        if (!brand) {
-            if(typeof state.user.selected_brand === "object"){
-                brand = state.user.selected_brand;
-            }else{
-                state.brands.forEach((item, index) => {
-                    if (item.id == state.user.selected_brand_id) {
-                        brand = item
-                    }
-                });
-            }
+        if (!brand && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
+            state.brands.forEach((item, index) => {
+                if (item.id == state.user.selected_brand_id) {
+                    brand = item
+                }
+            });
         }
 
         state.activeBrand = brand

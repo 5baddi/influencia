@@ -23,14 +23,14 @@
                 <p class="description">NUMBER OF BRANDS</p>
             </div>
         </header>
-        <div class="datatable-scroll" v-if="$can('list', 'brand') || AuthenticatedUser.is_superadmin">
+        <div class="datatable-scroll" v-if="$can('list', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <DataTable ref="brandsDT" fetchMethod="fetchBrands" :columns="columns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
-                    <button v-if="($can('edit', 'brand') || AuthenticatedUser.is_superadmin)" class="btn icon-link" title="Edit brand" @click="editBrand(row.data.original)">
+                    <button v-if="($can('edit', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit brand" @click="editBrand(row.data.original)">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button v-if="($can('delete', 'brand') || AuthenticatedUser.is_superadmin) && AuthenticatedUser.selected_brand_id !== row.data.original.id" class="btn icon-link" title="Delete brand" @click="deleteBrand(row.data.original)">
+                    <button v-if="($can('delete', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && AuthenticatedUser.selected_brand_id !== row.data.original.id" class="btn icon-link" title="Delete brand" @click="deleteBrand(row.data.original)">
                         <i class="far fa-trash-alt"></i>
                     </button>
                 </td>

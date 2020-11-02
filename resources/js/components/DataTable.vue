@@ -1,10 +1,10 @@
 <template>
 <div :class="cssClasses">
-    <ul v-show="exportable">
+    <!--<ul v-show="exportable">
         <li>
             <a :href="excelLink" class="btn btn-excel" target="_blank"><i class="fas fa-file-excel"></i></a>
         </li>
-    </ul>
+    </ul>-->
     <table>
         <thead ref="headercolumns">
             <th v-for="(column, index) in columns" :key="index">
@@ -275,7 +275,7 @@ export default {
         },
     },
     notifications: {
-        showError: {
+        showErrorDT: {
             type: "error",
             title: "Error",
             message: "Something going wrong! Please try again.."
@@ -297,7 +297,7 @@ export default {
             // Catch error
             this.es.addEventListener('error', event => {
                 if (event.readyState == EventSource.CLOSED)
-                    this.showError({
+                    this.showErrorDT({
                         message: 'lost connection... giving up!'
                     });
             }, false);

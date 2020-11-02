@@ -52,9 +52,9 @@ const app = new Vue({
                 }).catch(error => {});
 
                 // Refresh user and active brand
-                if(typeof this.$store.AuthenticatedUser === "object" && this.$store.AuthenticatedUser !== null){
+                if(typeof this.$store.getters.AuthenticatedUser === "object" && this.$store.getters.AuthenticatedUser !== null){
                     // Refresh User
-                    this.$store.dispatch("fetchUser", this.$store.AuthenticatedUser.uuid)
+                    this.$store.dispatch("fetchUser", this.$store.getters.AuthenticatedUser.uuid)
                         .then(() => {
                             // Re-set active brand
                             this.$store.dispatch("setActiveBrand")
@@ -84,7 +84,7 @@ const app = new Vue({
         );
 
         this.$router.beforeEach((to, from, next) => {
-            const loggedIn = !!this.$store.getters.isLogged && !!localStorage.getItem('user');
+            const loggedIn = this.$store.getters.isLogged && localStorage.getItem('user');
 
             // let vm = this;
             // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){

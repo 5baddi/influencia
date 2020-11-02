@@ -28,7 +28,7 @@
                 </template>
                 <template v-slot:dropdown>
                     <ul>
-                        <li v-if="$can('edit-info', 'user') || AuthenticatedUser.is_superadmin">
+                        <li v-if="$can('edit-info', 'user') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
                             <router-link :to="{ name: 'settings' }">
                                 <div class="icon">
                                     <i class="fas fa-user-cog"></i>
@@ -77,7 +77,8 @@ export default {
     },
     created() {
         // Fetch brands
-        this.$store.dispatch("fetchBrands");
+        this.$store.dispatch("fetchBrands")
+            .catch(error => {});
     },
     methods: {
         hideDropdown(e) {
@@ -116,11 +117,13 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            const loggedIn = !!vm.$store.getters.isLogged && !!localStorage.getItem("user");
+            const loggedIn = vm.$store.getters.isLogged && localStorage.getItem("user");
             if (!loggedIn) {
-                next("/login");
+                this.logout();
+                // next("/login");
                 return;
             }
+
             next();
         });
     },
