@@ -122,6 +122,7 @@ class ScrapInstagramInfluencers extends Command
                 // Update influencer queued state
                 $influencer->update(['queued', 'finished']);
             }catch(\Exception $ex){
+                dd($ex);
                 $influencer->update(['queued' => 'failed']);
                 $this->error("Failed to scrap influencer @{$influencer->username}");
                 Log::error($ex->getMessage());

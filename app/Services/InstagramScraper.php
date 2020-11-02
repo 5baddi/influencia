@@ -28,46 +28,46 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = 2;
+    const SLEEP_REQUEST = 5;
 
     /**
      * Instagram scraper
-     * 
+     *
      * @var \InstagramScraper\Instagram
      */
     private $instagram;
 
     /**
      * Emoji parser
-     * 
+     *
      * @var \App\Helpers\EmojiParser
      */
     private $emojiParser;
 
     /**
      * Influencer Post repository
-     * 
+     *
      * @var \App\Repositories\InfluencerPostRepository
      */
     private $postRepo;
 
     /**
      * Console output
-     * 
+     *
      * @var \Symfony\Component\Console\Output\ConsoleOutput
      */
     private $console;
 
     /**
      * All emojis used in media comments
-     * 
+     *
      * @var array
      */
     public $emojis = [];
-    
+
     /**
      * All hashags used in media
-     * 
+     *
      * @var array
      */
     public $hashtags = [];
@@ -102,26 +102,29 @@ class InstagramScraper
     public function setProxy()
     {
         // Get random proxies list
-        // $proxies = file_get_contents("https://api.proxyscrape.com/?request=getproxies&proxytype=http&timeout=5000&country=US&anonymity=elite&ssl=yes");
-        // $list = explode(PHP_EOL, trim($proxies));
+        $request = file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&country=fr,us,uk,es,in,ae,ma&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
+        $proxies = json_decode($request, true);
 
-        // // Test and get valid proxy
-        // $proxy = $this->testProxy($list);
-        // if(!isset($proxy['ip'], $proxy['port']))
-        //     return;
-        
-        // // Set proxy
-        // $this->instagram->setProxy([
-        //     // 'address' => $proxy['ip'],
-        //     'address' => '46.246.26.10',
-        //     // 'port'    => $proxy['port']
-        //     'port'    => '3128'
-        // ]);
+        if(sizeof($proxies) === 0)
+            return $this->instagram->disableProxy();
+
+        // Test and get valid proxy
+        $proxy = $this->testProxy($proxies);
+
+        // Set proxy
+        $this->instagram->setProxy([
+            'port'          => $proxy['port'],
+            'address'       => $proxy['ip'],
+            'type'          => $proxy['type'],
+            'tunnel'        => true,
+            'timeout'       => 60,
+            'verifyPeer'    => false
+        ]);
     }
 
     /**
      * Scrap user details by username
-     * 
+     *
      * @param string $username
      * @return array
      */
@@ -167,7 +170,7 @@ class InstagramScraper
 
     /**
      * Scrap user medias
-     * 
+     *
      * @param Influencer $influencer
      * @param int $maxID
      * @param array $data
@@ -175,15 +178,18 @@ class InstagramScraper
      */
     public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
     {
-        // Set proxy
-        $this->setProxy();
-
         try{
+            // Set proxy
+            $this->setProxy();
+
             // Scrap medias
             $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
             sleep(self::SLEEP_REQUEST);
-            
+
             foreach($instaMedias['medias'] as $media){
+                // Set proxy
+                $this->setProxy();
+
                 // Scrap media
                 $_media = $this->getMedia($media->getShortCode(), null, $media);
 
@@ -207,6 +213,7 @@ class InstagramScraper
 
                 // Format data
                 array_push($data, $_media);
+                sleep(self::SLEEP_REQUEST);
             }
 
             return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
@@ -216,12 +223,14 @@ class InstagramScraper
 
             if($ex->getCode() === 429)
                 return $data;
+
+            throw new \Exception("Failed to scrap all medias!");
         }
     }
 
     /**
      * Scrap media details
-     * 
+     *
      * @param string $mediaShortCode
      * @param \InstagramScraper\Model\Media $media
      * @return array
@@ -230,7 +239,7 @@ class InstagramScraper
     {
         // Set proxy
         $this->setProxy();
-        
+
         // Scrap media
         if(is_null($media)){
             $media = $this->instagram->getMediaByCode($mediaShortCode);
@@ -245,8 +254,8 @@ class InstagramScraper
         if($media->getCommentsCount() > 0){
             $comments['comments_positive'] = round($comments['comments_positive'] / $media->getCommentsCount(), 2);
             $comments['comments_neutral'] = round($comments['comments_neutral'] / $media->getCommentsCount(), 2);
-            $comments['comments_negative'] = round($comments['comments_negative'] / $media->getCommentsCount(), 2); 
-        }       
+            $comments['comments_negative'] = round($comments['comments_negative'] / $media->getCommentsCount(), 2);
+        }
 
         // Count hashtags on media caption
         $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
@@ -286,7 +295,7 @@ class InstagramScraper
 
     /**
      * Scrap instagram stories for an username
-     * 
+     *
      * @param string $username
      * @return array
      */
@@ -303,13 +312,13 @@ class InstagramScraper
 
     /**
      * Get files for a media
-     * 
+     *
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
     private function getFiles(\InstagramScraper\Model\Media $media) : ?array
     {
-        // Get media files 
+        // Get media files
         $files = [];
         if(in_array($media->getType(), ['sidecar', 'carousel'])){
             $files = array_map(function($file){
@@ -321,10 +330,10 @@ class InstagramScraper
 
         return $files;
     }
-    
+
     /**
      * Get file from media
-     * 
+     *
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
@@ -351,7 +360,7 @@ class InstagramScraper
 
     /**
      * Get video duration
-     * 
+     *
      * @param \InstagramScraper\Model\Media $media
      * @return null|int
      */
@@ -389,7 +398,7 @@ class InstagramScraper
 
     /**
      * Get media sentiments and emojis from comments
-     * 
+     *
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
@@ -406,7 +415,7 @@ class InstagramScraper
         // Load comments
         $comments = $this->instagram->getPaginateMediaCommentsById($media->getId(), $max);
         sleep(self::SLEEP_REQUEST);
-            
+
         foreach($comments['comments'] as $comment){
             // Analyze sentiment
             $analyzer = new Analyzer();
@@ -437,12 +446,12 @@ class InstagramScraper
             'comments_negative'  => $data['comments_negative'],
             'comments_emojis'    => $data['comments_emojis'],
             'comments_hashtags'  => $data['comments_hashtags']
-        ]; 
+        ];
     }
 
     /**
      * Get Emojis from comment text
-     * 
+     *
      * @param string $comment
      * @return array
      */
@@ -457,7 +466,7 @@ class InstagramScraper
 
         // Ignore empty emojis list
         if(empty($emojis))
-            return [];        
+            return [];
 
         // Slice empty emoji
         array_walk($emojis, function($item, $key) use (&$emojis){
@@ -470,7 +479,7 @@ class InstagramScraper
 
     /**
      * Get top emojis
-     * 
+     *
      * @param array $emojis
      * @param int $max
      * @return null|array
@@ -481,8 +490,8 @@ class InstagramScraper
         if(is_null($emojis) || empty($emojis))
             return null;
 
-           
-        // Extract occurrence of each duplicate emoji and set values as keys 
+
+        // Extract occurrence of each duplicate emoji and set values as keys
         $this->emojis = array_flip(array_count_values($emojis));
 
         // Slice top emojis
@@ -493,30 +502,49 @@ class InstagramScraper
 
     /**
      * Test proxy is online
-     * 
+     *
      * @param array $proxiesList
      * @return array
      */
     private function testProxy(array $proxiesList)
     {
+        // Random list sorting
+        shuffle($proxiesList);
+
         // Validate proxies
-        foreach($proxiesList as $proxy){
-            if(!preg_match('/^\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b:\d{2,5}/', $proxy))
+        foreach($proxiesList as $value){
+            // if(!preg_match('/^\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b:\d{2,5}/', $proxy))
+            //     continue;
+
+            $waitTimeoutInSeconds = 60;
+            $fp = stream_socket_client($value['Ip'] . ':' . $value['Port'], $errCode, $errStr, $waitTimeoutInSeconds);
+            if(!$fp)
                 continue;
 
-            $proxy = explode(':', $proxy);
-            if(!isset($proxy[0], $proxy[1]))
-                continue;
+            // Set proxy type
+            switch($value['Type'][0]){
+                case "HTTPS":
+                    $type = CURLPROXY_HTTPS;
+                break;
+                case "SOCKS4":
+                    $type = CURLPROXY_SOCKS4;
+                break;
+                case "SOCKS5":
+                    $type = CURLPROXY_SOCKS5;
+                break;
+                default:
+                    $type = CURLPROXY_HTTP;
+                break;
 
-            $waitTimeoutInSeconds = 60; 
-            if($fp = @fsockopen($proxy[0], $proxy[1], $errCode, $errStr, $waitTimeoutInSeconds)){   
-                return [
-                    'ip'    =>  $proxy[0],
-                    'port'  =>  $proxy[0]
-                ];
             }
+
+            return [
+                'ip'    =>  $value['Ip'],
+                'port'  =>  $value['Port'],
+                'type'  =>  $type
+            ];
         }
 
-        return [];
+        throw new \Exception("Unable to connect to the proxy!");
     }
 }
