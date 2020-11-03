@@ -25,7 +25,7 @@ class CreateInfluencerPosts extends Migration
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();
-            $table->text('caption_hashtags')->nullable();
+            $table->longText('caption_hashtags')->nullable();
             $table->text('alttext')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('comments')->nullable();

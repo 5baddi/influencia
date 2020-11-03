@@ -11,7 +11,7 @@
     <template v-else>
         <button class="btn" @click="showDropdown = !showDropdown" v-if="activeBrand">
             <div class="avatar">
-                <img :src="activeBrand.logo" alt />
+                <img :src="activeBrand.public_logo" alt />
             </div>
             <div class="text">
                 <p>{{ activeBrand.name }}</p>

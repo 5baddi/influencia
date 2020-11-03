@@ -69,7 +69,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/influencers/{influencer}', 'InfluencerController@show');
 
     // Export
-    Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
+    //Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
 });
 
 // Streamed data
@@ -98,3 +98,5 @@ Route::middleware('auth:sanctum')->post('/search', 'SearchController@search');
 // Route::middleware('auth:sanctum')->get('/campaigns/{brand}', 'CampaignController@index');
 // Route::middleware('auth:sanctum')->post('/trackers', 'TrackerController@create');
 // Route::middleware('auth:sanctum')->post('/trackers/story', 'TrackerController@createStory');
+
+Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');

@@ -52,7 +52,7 @@ class ScrapInstagramPostJob implements ShouldQueue
         $this->tracker = $tracker;
 
         // Init console
-        $this->console = new ConsoleOutput();
+        // $this->console = new ConsoleOutput();
     }
 
     /**
@@ -95,7 +95,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 // Store influencer if not exists
                 if(is_null($influencer)){
                     $influencer = $influencerRepo->create($owner);
-                    $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
+                    // $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
                 }else{
                     $influencer = $influencerRepo->update($influencer, $owner);
                     // $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");
@@ -123,6 +123,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                     ScrapInstagramAllPostsJob::dispatchNow($influencer);
             }
         }catch(\Exception $ex){
+        dd($ex);
             $this->fail($ex);
         }
     }
@@ -160,7 +161,5 @@ class ScrapInstagramPostJob implements ShouldQueue
             $postRepo->create($_media);
             Log::info("Create post: {$_media['short_code']}");
         }
-        // if(is_array($instaMedias) && sizeof($instaMedias) > 0)
-            // $this->console->writeln("<fg=green>Successfully updated " . sizeof($influencerRepo) . " posts</>");
     }
 }

@@ -90,7 +90,7 @@ export default {
             },
             {
                name: "Number of trackers",
-               field: "trackers_count"
+               field: "all_trackers_count"
             },
             {
                name: "Created by",

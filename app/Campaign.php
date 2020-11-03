@@ -45,7 +45,8 @@ class Campaign extends Model
         'communities',
         'organic_communities',
         'influencers',
-        'comments_count'
+        'comments_count',
+        'all_trackers_count'
     ];
 
 
@@ -82,6 +83,16 @@ class Campaign extends Model
                     'status'    => true,
                     'queued'    =>  'finished'
                 ]);
+    }
+
+    /**
+     * Get all trackers count
+     *
+     * @return int
+     */
+    public function getAllTrackersCountAttribute() : int
+    {
+        return $this->hasMany(Tracker::class, 'campaign_id')->count();
     }
 
     /**

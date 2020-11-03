@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Role;
 use App\Permission;
-use Illuminate\Http\Request;
 use App\Http\Requests\RoleRequest;
 use App\Http\Requests\PermissionRequest;
 

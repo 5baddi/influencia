@@ -70,11 +70,11 @@ const app = new Vue({
         setupInterceptors(store);
 
         api.interceptors.response.use(response => {
-                return response;
+                return Promise.resolve(response);
             }, error => {
-                if(error.response.status === 401){
-                    this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
-                }
+                // if(error.response.status === 401){
+                //     this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
+                // }
                 if(error.response.status === 429){
                     console.log("Too many requests!");
                 }

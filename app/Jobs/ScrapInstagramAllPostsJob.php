@@ -63,6 +63,7 @@ class ScrapInstagramAllPostsJob implements ShouldQueue
                     $this->tracker->update(['queued' => 'finished']);
             }
         }catch(\Exception $ex){
+            dd($ex);
             // Trace the error
             $this->fail($ex);
         }

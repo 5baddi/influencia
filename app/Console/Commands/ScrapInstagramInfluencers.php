@@ -99,9 +99,12 @@ class ScrapInstagramInfluencers extends Command
 
         // Scrap each influencer details
         foreach($influencers as $influencer){
-            // Ignore last updated influencer
-            if($this->option('force') === 'false' && $influencer->posts()->count() > 0  && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
+            // Ignore last updated influencers
+            if($this->option('force') === 'false' && $influencer->posts()->count() == $influencer->posts && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
+
+            // Update influencer queued state
+            $influencer->update(['queued' => 'progress']);
 
             try{
                 // Scrap account details
@@ -111,20 +114,25 @@ class ScrapInstagramInfluencers extends Command
                 // Update influencer
                 $this->repository->update($influencer, $accountDetails);
                 $this->info("Successfully updated influencer @" . $influencer->username);
-                $influencer->fresh();
 
                 // Update influencer posts
                 $this->info("Number of posts: " . $influencer->posts);
                 $this->info("Please wait until scraping all medias ...");
                 $this->instagramScraper->getMedias($influencer);
 
+                // Check posts has been scraped
+                $influencer->refresh();
+               if($influencer->posts()->count() != $influencer->posts)
+                   throw new \Exception("Failed to scrap all medias for @" . $influencer->username);
+
                 // Update influencer queued state
-                $influencer->update(['queued', 'finished']);
+                $influencer->update(['queued' => 'finished']);
             }catch(\Exception $ex){
-                dd($ex);
-                $influencer->update(['queued' => 'failed']);
+                $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");
                 Log::error($ex->getMessage());
+
+                $influencer->update(['queued' => 'failed']);
             }
         }
     }

@@ -4,19 +4,20 @@ namespace App\Services;
 
 use Format;
 use Exception;
+use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
 use Unirest\Request;
 use Sentiment\Analyzer;
 use App\Helpers\EmojiParser;
-use App\Repositories\InfluencerPostRepository;
-use App\Tracker;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\InfluencerPostRepository;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class InstagramScraper
@@ -28,7 +29,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = 5;
+    const SLEEP_REQUEST = 3;
 
     /**
      * Instagram scraper
@@ -57,6 +58,13 @@ class InstagramScraper
      * @var \Symfony\Component\Console\Output\ConsoleOutput
      */
     private $console;
+
+    /**
+     * List of proxies
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    private $proxiess;
 
     /**
      * All emojis used in media comments
@@ -97,29 +105,49 @@ class InstagramScraper
 
         // Init console
         // $this->console = new ConsoleOutput();
+
+        // Init proxies list
+        $this->proxies = new Collection();
     }
 
     public function setProxy()
     {
-        // Get random proxies list
-        // $request = file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
-        // $proxies = json_decode($request, true);
+        try{
+            // Get random proxies list
+            $request = @file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
+            if($request){
+                $proxies = json_decode($request, true);
+                foreach($proxies as $proxy){
+                    if($this->proxies->contains('Ip', $proxy['Ip']))
+                        continue;
 
-        // if(sizeof($proxies) === 0)
-        //     return $this->instagram->disableProxy();
+                    print_r($proxy);
+                    $this->proxies->add($proxy);
+                }
+            }
 
-        // // Test and get valid proxy
-        // $proxy = $this->testProxy($proxies);
+            if($this->proxies->count() === 0)
+                return $this->instagram->disableProxy();
 
-        // // Set proxy
-        // $this->instagram->setProxy([
-        //     'port'          => $proxy['port'],
-        //     'address'       => $proxy['ip'],
-        //     'type'          => $proxy['type'],
-        //     'tunnel'        => true,
-        //     'timeout'       => 60,
-        //     'verifyPeer'    => false
-        // ]);
+            // Test and get valid proxy
+            $proxy = $this->testProxy();
+
+            // Set proxy
+            $this->instagram->setProxy([
+                'port'          => $proxy['port'],
+                'address'       => $proxy['ip'],
+                'type'          => $proxy['type'],
+                'tunnel'        => true,
+                'timeout'       => 60,
+                'verifyPeer'    => false
+            ]);
+
+            // $this->console->writeln("<fg=yellow>Connect using proxy: {$proxy['ip']}:{$proxy['port']}</>");
+        }catch(\Exception $ex){
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::error($ex->getMessage());
+            throw new \Exception("Failed to connect using a proxy!");
+        }
     }
 
     /**
@@ -134,15 +162,26 @@ class InstagramScraper
             // Scrap user
             $account = collect($this->instagram->getAccount($username));
             sleep(self::SLEEP_REQUEST);
-
+            
             // Format account
             $data = Format::parseArrayASCIIKey($account);
+            // $this->console->writeln("<fg=green>Account ID: {$data['id']}</>");
 
             // Remove no needed data
             unset($data['medias']);
             unset($data['data']);
         }catch(\Exception $ex){
-            dd($ex);
+            // Use proxy
+            if($this->isTooManyRequests($ex)){
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->setProxy();
+
+                return $this->byUsername($username);
+            }
+
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::error($ex->getMessage());
+            throw $ex;
         }
 
         return $data->toArray();
@@ -156,9 +195,6 @@ class InstagramScraper
      */
     public function byMedia(string $link) : array
     {
-        // Set proxy
-        $this->setProxy();
-
         // Scrap media
         $media = collect($this->instagram->getMediaByUrl($link));
         sleep(self::SLEEP_REQUEST);
@@ -180,17 +216,18 @@ class InstagramScraper
     public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
     {
         try{
-            // Set proxy
-            $this->setProxy();
+            // Start from latest scraper post TODO: start from last scraped post
+            // if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0 && $influencer->posts()->count() > 0){
+            //     $lastPost = $influencer->posts()->latest()->first();
+            //     $maxID = !is_null($lastPost) ? $lastPost->post_id : null;
+            // }
 
             // Scrap medias
             $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
+            // $this->console->writeln("<fg=green>Start scraping next " . sizeof($instaMedias['medias']) . " posts...</>");
             sleep(self::SLEEP_REQUEST);
 
             foreach($instaMedias['medias'] as $media){
-                // Set proxy
-                $this->setProxy();
-
                 // Scrap media
                 $_media = $this->getMedia($media->getShortCode(), null, $media);
 
@@ -219,16 +256,20 @@ class InstagramScraper
 
             return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
         }catch(\Exception $ex){
-            Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>Something going wrong!</>");
+            // Use proxy
+            if($this->isTooManyRequests($ex)){
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->setProxy();
 
-            if($ex->getCode() === 429)
-                return $data;
+                return $this->getMedias($influencer, $instaMedias['maxId'] ?? null, $data, $max);
+            }
 
-            if(strpos("OpenSSL SSL_connect", $ex->getMessage()) !== false)
+            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
-
-            throw new \Exception("Failed to scrap all medias!");
+            
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::error($ex->getMessage());
+            throw $ex;
         }
     }
 
@@ -241,13 +282,27 @@ class InstagramScraper
      */
     public function getMedia(string $mediaShortCode, Tracker $tracker = null, \InstagramScraper\Model\Media $media = null) : array
     {
-        // Set proxy
-        $this->setProxy();
+        try{
+            // Scrap media
+            if(is_null($media)){
+                $media = $this->instagram->getMediaByCode($mediaShortCode);
+                sleep(self::SLEEP_REQUEST);
+            }
+        }catch(\Exception $ex){
+            // Use proxy
+            if($this->isTooManyRequests($ex)){
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->setProxy();
 
-        // Scrap media
-        if(is_null($media)){
-            $media = $this->instagram->getMediaByCode($mediaShortCode);
-            sleep(self::SLEEP_REQUEST);
+                return $this->getMedia($mediaShortCode, $tracker, $media);
+            }
+
+            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
+                throw new \Exception("Lost connection to Instagram");
+            
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::error($ex->getMessage());
+            throw $ex;
         }
 
         // Fetch comments sentiments
@@ -507,23 +562,25 @@ class InstagramScraper
     /**
      * Test proxy is online
      *
-     * @param array $proxiesList
      * @return array
      */
-    private function testProxy(array $proxiesList)
+    private function testProxy()
     {
         // Random list sorting
-        shuffle($proxiesList);
+        $this->proxies->shuffle();
 
         // Validate proxies
-        foreach($proxiesList as $value){
+        foreach($this->proxies->toArray() as $value){
             // if(!preg_match('/^\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b:\d{2,5}/', $proxy))
             //     continue;
 
             $waitTimeoutInSeconds = 60;
-            $fp = stream_socket_client($value['Ip'] . ':' . $value['Port'], $errCode, $errStr, $waitTimeoutInSeconds);
-            if(!$fp)
+            $fp = @stream_socket_client($value['Ip'] . ':' . $value['Port'], $errCode, $errStr, $waitTimeoutInSeconds);
+            if(!$fp){
+                // $this->console->writeln("<fg=red>Proxy dead!</>");
+
                 continue;
+            }
 
             // Set proxy type
             switch($value['Type'][0]){
@@ -549,6 +606,21 @@ class InstagramScraper
             ];
         }
 
-        throw new \Exception("Unable to connect to the proxy!");
+        throw new \Exception("Unable to connect using the proxy!");
+    }
+
+    /**
+     * Verify exception is too many requests exception
+     *
+     * @param \Exception $ex
+     * @return boolean
+     */
+    private function isTooManyRequests(\Exception $ex)
+    {
+        return get_class($ex) === \Unirest\Exception::class 
+                || $ex->getCode() === 429 
+                || strpos($ex->getMessage(), "unable to connect to") !== false 
+                || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false 
+                || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false;
     }
 }

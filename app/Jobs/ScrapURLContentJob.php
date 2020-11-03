@@ -69,6 +69,7 @@ class ScrapURLContentJob implements ShouldQueue
 
     public function fail($exception = null)
     {
+        dd($exception);
         // Set tracker on failed status
         $this->shortLink->tracker->update(['queued' => 'failed']);
 

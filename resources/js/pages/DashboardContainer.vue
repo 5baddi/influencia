@@ -119,8 +119,7 @@ export default {
         next((vm) => {
             const loggedIn = vm.$store.getters.isLogged && localStorage.getItem("user");
             if (!loggedIn) {
-                this.logout();
-                // next("/login");
+                next("/login");
                 return;
             }
 
