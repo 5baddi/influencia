@@ -120,8 +120,7 @@ class InstagramScraper
                 foreach($proxies as $proxy){
                     if($this->proxies->contains('Ip', $proxy['Ip']))
                         continue;
-
-                    print_r($proxy);
+                        
                     $this->proxies->add($proxy);
                 }
             }
