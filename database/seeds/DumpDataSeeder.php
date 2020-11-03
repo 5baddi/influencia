@@ -4,12 +4,8 @@ use App\ApplicationSetting;
 use App\Role;
 use App\User;
 use App\Brand;
-use App\Tracker;
-use App\Campaign;
-use App\Influencer;
 use App\Permission;
 use Illuminate\Database\Seeder;
-use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Hash;
 
 class DumpDataSeeder extends Seeder
@@ -19,7 +15,7 @@ class DumpDataSeeder extends Seeder
      *
      * @return void
      */
-    public function run(InstagramScraper $instagramScraper)
+    public function run()
     {
         // Create default application setting
         ApplicationSetting::create([
@@ -65,8 +61,9 @@ class DumpDataSeeder extends Seeder
         // Insert data for testing
         $brand = Brand::create([
             'name'  =>  'Promo',
-            'logo'  =>  '/storage/uploads/promo.png'
+            'logo'  =>  '/uploads/promo.png'
         ]);
+
         $user = User::create([
             'name'              =>  'Webmaster',
             'email'             =>  'project@baddi.info',
@@ -74,59 +71,7 @@ class DumpDataSeeder extends Seeder
             'is_superadmin'     =>  true,
             'selected_brand_id' =>  $brand->id
         ]);
-        $owner = User::create([
-            'name'              =>  'Owner',
-            'email'             =>  'owner@baddi.info',
-            'password'          =>  Hash::make('web2020'),
-            'selected_brand_id' =>  $brand->id,
-            'role_id'           =>  $ownerRole->id
-        ]);
-        $brand->users()->attach([$user->id, $owner->id]);
-        $campaign = Campaign::create([
-            'name'      =>  'Camp 01',
-            'user_id'   =>  $user->id,
-            'brand_id'  =>  $brand->id,
-            'status'    =>  true
-        ]);
-        // Tracker::create([
-        //     'name'  =>  'Tracker 1',
-        //     'type'  =>  'post',
-        //     'platform'  =>  'instagram',
-        //     'user_id'   =>  $user->id,
-        //     'campaign_id'   =>  $campaign->id,
-        //     'url'           =>  'https://www.instagram.com/p/CB5zGnmomWp/'
-        // ]);
 
-        // Influencers
-        // $demoAccount = $instagramScraper->byUsername("autoservicesrouen76");
-        // $demoAccount2 = $instagramScraper->byUsername("exotics.worldwide");
-        // Influencer::create([
-        //     'account_id'    =>  $demoAccount['id'],
-        //     'username'      =>  $demoAccount['username'],
-        //     'name'          =>  $demoAccount['fullName'],
-        //     'pic_url'       =>  $demoAccount['profilePicUrlHd'],
-        //     'biography'     =>  $demoAccount['biography'],
-        //     'website'       =>  $demoAccount['externalUrl'],
-        //     'followers'     =>  $demoAccount['followedByCount'],
-        //     'follows'       =>  $demoAccount['followsCount'],
-        //     'posts'         =>  $demoAccount['mediaCount'],
-        //     'is_business'   =>  $demoAccount['isBusinessAccount'],
-        //     'is_private'    =>  $demoAccount['isPrivate'],
-        //     'is_verified'   =>  $demoAccount['isVerified'],
-        // ]);
-        // Influencer::create([
-        //     'account_id'    =>  $demoAccount2['id'],
-        //     'username'      =>  $demoAccount2['username'],
-        //     'name'          =>  $demoAccount2['fullName'],
-        //     'pic_url'       =>  $demoAccount2['profilePicUrlHd'],
-        //     'biography'     =>  $demoAccount2['biography'],
-        //     'website'       =>  $demoAccount2['externalUrl'],
-        //     'followers'     =>  $demoAccount2['followedByCount'],
-        //     'follows'       =>  $demoAccount2['followsCount'],
-        //     'posts'         =>  $demoAccount2['mediaCount'],
-        //     'is_business'   =>  $demoAccount2['isBusinessAccount'],
-        //     'is_private'    =>  $demoAccount2['isPrivate'],
-        //     'is_verified'   =>  $demoAccount2['isVerified'],
-        // ]);
+        $brand->users()->attach([$user->id]);
     }
 }
