@@ -74,12 +74,13 @@ export default {
                     if (!row.users)
                         return '-';
 
-                    let html = '<ul style="list-style: square;">';
+                    let html = '';
                     row.users.map(function (item, index) {
-                        html += '<li>' + item.name.toUpperCase() + '</li>';
+                        // html += '<li>' + item.name.toUpperCase() + '</li>';
+                        html += '<span class="badge badge-success">' + item.name.toUpperCase() + '</span>';
                     });
 
-                    return html += '</ul>';
+                    return html;
                 }
             }, {
                 name: "Number of campaigns",
