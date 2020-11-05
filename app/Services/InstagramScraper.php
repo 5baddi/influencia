@@ -138,12 +138,17 @@ class InstagramScraper
             //     // 'address'       => $proxy['ip'],
             //     'address'       => '83.149.70.159',
             //     // 'type'          => $proxy['type'],
+            //     'type'          => CURLPROXY_HTTP,
             //     // 'tunnel'        => true,
             //     // 'timeout'       => 60,
             //     // 'verifyPeer'    => false
             // ]);
 
-            Request::proxy('83.149.70.159', '13042', CURLPROXY_HTTP, false);
+            Request::proxy('37.48.118.90', '13042', CURLPROXY_HTTP, true);
+            Request::timeout(35);
+            Request::curlOpt(CURLOPT_CONNECTTIMEOUT , 35);
+            Request::curlOpt(CURLOPT_FOLLOWLOCATION, true);
+            Request::curlOpt(CURLOPT_MAXREDIRS , 5);
 
             // $this->console->writeln("<fg=yellow>Connect using proxy: {$proxy['ip']}:{$proxy['port']}</>");
         }catch(\Exception $ex){
@@ -263,6 +268,8 @@ class InstagramScraper
 
             return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
         }catch(\Exception $ex){
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
@@ -274,7 +281,6 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
             
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
             throw $ex;
         }
