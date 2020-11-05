@@ -237,6 +237,10 @@ class InstagramScraper
                 // Set media influencer ID
                 $_media['influencer_id'] = $influencer->id;
 
+                // Set end cursor
+                if($key === array_key_last($instaMedias['medias']) && $instaMedias['hasNextPage'])
+                    $_media['next_cursor'] = $instaMedias['maxId'];
+
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
                 if(!is_null($existsMedia)){
@@ -251,10 +255,6 @@ class InstagramScraper
                     $this->postRepo->create($_media);
                     Log::info("Create post: {$_media['short_code']}");
                 }
-
-                // Set end cursor
-                if($key === array_key_last($instaMedias['medias']) && $instaMedias['hasNextPage'])
-                    $_media['next_cursor'] = $instaMedias['maxId'];
 
                 // Format data
                 array_push($data, $_media);
