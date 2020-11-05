@@ -133,6 +133,28 @@ class UserController extends Controller
 
         return response()->error("Something going wrong! Please try again or contact the support..");
     }
+    
+    /**
+     * Change active brand
+     *
+     * @param \App\Brand $brand
+     * @return \Illuminate\Http\Response
+     */
+    public function changeActiveBrand(Brand $brand)
+    {
+        // Check ability
+        // abort_if(Gate::denies('ban', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        $user = Auth::user();
+        $updated = $user->update([
+            'selected_brand_id' => $brand->id
+        ]);
+
+        if($updated)
+            return response()->success("User {$user->name} selected brand changed successfully.", User::with(['selectedBrand'])->find($user->id));
+
+        return response()->error("Something going wrong! Please try again or contact the support..");
+    }
 
     /**
      * List users

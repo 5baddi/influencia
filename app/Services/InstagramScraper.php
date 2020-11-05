@@ -114,28 +114,30 @@ class InstagramScraper
     {
         try{
             // Get random proxies list
-            $request = @file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
-            if($request){
-                $proxies = json_decode($request, true);
-                foreach($proxies as $proxy){
-                    if($this->proxies->contains('Ip', $proxy['Ip']))
-                        continue;
+            // $request = @file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
+            // if($request){
+            //     $proxies = json_decode($request, true);
+            //     foreach($proxies as $proxy){
+            //         if($this->proxies->contains('Ip', $proxy['Ip']))
+            //             continue;
                         
-                    $this->proxies->add($proxy);
-                }
-            }
+            //         $this->proxies->add($proxy);
+            //     }
+            // }
 
-            if($this->proxies->count() === 0)
-                return $this->instagram->disableProxy();
+            // if($this->proxies->count() === 0)
+            //     return $this->instagram->disableProxy();
 
-            // Test and get valid proxy
-            $proxy = $this->testProxy();
+            // // Test and get valid proxy
+            // $proxy = $this->testProxy();
 
             // Set proxy
             $this->instagram->setProxy([
-                'port'          => $proxy['port'],
-                'address'       => $proxy['ip'],
-                'type'          => $proxy['type'],
+                // 'port'          => $proxy['port'],
+                'port'          => '13042',
+                // 'address'       => $proxy['ip'],
+                'address'       => '83.149.70.159',
+                // 'type'          => $proxy['type'],
                 'tunnel'        => true,
                 'timeout'       => 60,
                 'verifyPeer'    => false

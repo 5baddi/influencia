@@ -53,6 +53,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     // Users
     Route::get('/users', 'UserController@index');
     Route::get('/users/{user}', 'UserController@show');
+    Route::get('/users/active-brand/{brand}', 'UserController@changeActiveBrand');
     Route::post('/users', 'UserController@store');
     Route::put('/users/{user}', 'UserController@update');
     Route::put('/users/{user}/reset', 'UserController@resetPassword');

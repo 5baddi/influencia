@@ -311,7 +311,20 @@ const actions = {
         });
     },
     setActiveBrand({ commit, state }, brand) {
-        commit("setActiveBrand", { brand })
+        return new Promise((resolve, reject) => {
+            api.get(`/api/v1/users/active-brand/${brand.uuid}`)
+                .then((response) => {
+                    if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined")
+                        commit("setActiveBrand", {brand: response.data.content.selected_brand});
+                    else
+                        throw new Error("Something going wrong!");
+
+                    resolve(response.data);
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        });
     },
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {
