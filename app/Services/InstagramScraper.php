@@ -144,11 +144,18 @@ class InstagramScraper
             //     // 'verifyPeer'    => false
             // ]);
 
-            Request::proxy('37.48.118.90', '13042', CURLPROXY_HTTP, true);
-            Request::timeout(35);
-            Request::curlOpt(CURLOPT_CONNECTTIMEOUT , 35);
+            // Request::proxy('37.48.118.90', '13042', CURLPROXY_HTTP, true);
+            // Request::timeout(35);
+            Request::curlOpt(CURLOPT_PROXY, '37.48.118.90');
+            Request::curlOpt(CURLOPT_PROXYPORT, '13042');
+            Request::curlOpt(CURLOPT_TIMEOUT, 300);
+            Request::curlOpt(CURLOPT_CONNECTTIMEOUT, 35);
             Request::curlOpt(CURLOPT_FOLLOWLOCATION, true);
-            Request::curlOpt(CURLOPT_MAXREDIRS , 5);
+            Request::curlOpt(CURLOPT_MAXREDIRS, 5);
+            Request::curlOpt(CURLOPT_HTTPPROXYTUNNEL, 1);
+            Request::curlOpt(CURLOPT_SSLVERSION, 3);
+            Request::curlOpt(CURLOPT_SSL_VERIFYPEER, false);
+            Request::curlOpt(CURLOPT_SSL_VERIFYHOST, false);
 
             // $this->console->writeln("<fg=yellow>Connect using proxy: {$proxy['ip']}:{$proxy['port']}</>");
         }catch(\Exception $ex){
