@@ -109,7 +109,7 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                 // Scrap media details and update on DB
                 foreach($_urls as $url){
-                    if(empty($url) || !isset($url))
+                    if(empty($url) || !isset($url) || $url === "")
                         continue;
 
                     $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
@@ -123,7 +123,6 @@ class ScrapInstagramPostJob implements ShouldQueue
                     ScrapInstagramAllPostsJob::dispatchNow($influencer);
             }
         }catch(\Exception $ex){
-        dd($ex);
             $this->fail($ex);
         }
     }
