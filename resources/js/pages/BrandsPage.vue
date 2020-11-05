@@ -37,7 +37,7 @@
             </DataTable>
         </div>
     </div>
-    <CreateBrandModal ref="brandFormModal" @create="create" />
+    <CreateBrandModal ref="brandFormModal" @create="create" @update="update" />
     <ConfirmationModal ref="confirmDeleteBrandModal" v-on:custom="deleteBrandAction" />
 </div>
 </template>

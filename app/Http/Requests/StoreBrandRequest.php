@@ -16,7 +16,7 @@ class StoreBrandRequest extends FormRequest
      */
     public function authorize()
     {
-        abort_if(Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        // abort_if(Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         return true;
     }
@@ -31,7 +31,7 @@ class StoreBrandRequest extends FormRequest
         return [
             // 'id'        =>  'nullable|integer|exists:brands,id',
             'name'      =>  'required|string|unique:brands,name',
-            'image'     =>  'nullable|image|mimes:jpeg,png,jpg,gif',
+            'logo'      =>  'nullable|image|mimes:jpeg,png,jpg,gif',
         ];
     }
 }

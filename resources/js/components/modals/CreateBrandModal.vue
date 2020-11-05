@@ -71,7 +71,16 @@ export default {
             };
         },
         submit() {
-            this.$emit((typeof this.brand.id === "undefined") ? "create" : "update", this.brand);
+            let action = (typeof this.brand.id === "undefined" || this.brand.id === null) ? "create" : "update";
+
+            // Set base brand info
+            let formData = new FormData();
+            formData.append("name", this.brand.name);
+            formData.append("logo", this.brand.image);
+            if(this.brand.id !== null)
+                formData.append("id", this.brand.id);
+
+            this.$emit(action, formData);
 
             this.close();
         }

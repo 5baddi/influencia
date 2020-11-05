@@ -209,8 +209,32 @@ const actions = {
                 }
             })
                 .then(response => {
-                    commit('setBrand', { brand: response.data.content })
-                    resolve(response.data)
+                    if(response.status === 201){
+                        commit('setBrand', { brand: response.data.content })
+                        resolve(response.data)
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
+                })
+                .catch(response => {
+                    reject(response)
+                })
+        })
+    },
+    updateBrand({ commit, state }, data) {
+        return new Promise((resolve, reject) => {
+            api.put("/api/v1/brands", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+                .then(response => {
+                    if(response.status === 200){
+                        commit('setBrand', { brand: response.data.content })
+                        resolve(response.data)
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
                 })
                 .catch(response => {
                     reject(response)
