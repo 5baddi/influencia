@@ -60,7 +60,7 @@ class InfluencerPostRepository extends BaseRepository
         // Parse files
         $files = isset($scraperAttributes['files']) ? $scraperAttributes['files'] : [];
         unset($scraperAttributes['files']);
-
+        
         // Update post record
         $entity->update($scraperAttributes);
 
