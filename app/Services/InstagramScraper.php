@@ -219,11 +219,11 @@ class InstagramScraper
     public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
     {
         try{
-            // Start from latest scraper post TODO: start from last scraped post
-            // if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0 && $influencer->posts()->count() > 0){
-            //     $lastPost = $influencer->posts()->latest()->first();
-            //     $maxID = !is_null($lastPost) ? $lastPost->post_id : null;
-            // }
+            // Start from latest scraper post
+            if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0 && $influencer->posts()->count() > 0){
+                $lastPost = $influencer->posts()->latest()->first();
+                $maxID = !is_null($lastPost) ? $lastPost->next_cursor : null;
+            }
 
             // Scrap medias
             $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
