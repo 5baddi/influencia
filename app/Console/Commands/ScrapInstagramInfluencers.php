@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Tracker;
 use Carbon\Carbon;
+use App\Influencer;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +13,11 @@ use App\Repositories\InfluencerRepository;
 
 class ScrapInstagramInfluencers extends Command
 {
+    /**
+     * Max scraping calls by hour for Instagram
+     */
+    const MAX_HOUR_CALLS = 200;
+
     /**
      * The name and signature of the console command.
      *
@@ -93,6 +99,11 @@ class ScrapInstagramInfluencers extends Command
      */
     private function scrapInfluencers() : void
     {
+        // Verify the max requests calls
+        $lastHourUpdatedRows = Influencer::where('updated_at', '>=', Carbon::now()->subHour())->count();
+        if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
+            return;
+
         // Get influencers
         $influencers = $this->repository->all();
         $this->info("Number of account to sync: " . $influencers->count());

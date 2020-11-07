@@ -26,10 +26,11 @@ class InstagramScraper
      * Max request by each fetch
      */
     const MAX_REQUEST = 10;
+
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = 0;
+    const SLEEP_REQUEST = 3;
 
     /**
      * Instagram scraper
