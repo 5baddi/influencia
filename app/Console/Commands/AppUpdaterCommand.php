@@ -3,8 +3,9 @@
 namespace App\Console\Commands;
 
 use App\ApplicationSetting;
-use Swap\Builder;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Swap;
 
 class AppUpdaterCommand extends Command
 {
@@ -39,10 +40,10 @@ class AppUpdaterCommand extends Command
         parent::__construct();
 
         // Build Swap
-        $this->swap = (new Builder())
+        // $this->swap = (new Builder())
         // Use the currencylayer.com service as first fallback
-        ->add('currency_layer', ['access_key' => env('CURRENCYLAYER_SECRET'), 'enterprise' => false])
-        ->build();
+        // ->add('currency_layer', ['access_key' => env('CURRENCYLAYER_SECRET'), 'enterprise' => false])
+        // ->build();
     }
 
     /**
@@ -52,21 +53,24 @@ class AppUpdaterCommand extends Command
      */
     public function handle()
     {
-        // Exchange USD to EUR
-        $usdToEur = $this->swap->latest('USD/EUR')->getValue();
-        if(isset($usdToEur)){
+        try{
+            // Exchange USD to EUR
+            $usdToEur = Swap::latest('USD/EUR');
+            // Update DB
             $usdToEurSetting = ApplicationSetting::where('key', 'usd2eur')->first();
             if(is_null($usdToEurSetting)){
                 ApplicationSetting::create([
                     'key'   =>  'usd2eur',
                     'name'  =>  'USD to EUR',
-                    'value' =>  $usdToEur
+                    'value' =>  $usdToEur->getValue()
                 ]);
             }else{
                 $usdToEurSetting->update([
-                    'value' =>  $usdToEur
+                    'value' =>  $usdToEur->getValue()
                 ]);
             }
+        }catch(\Exception $ex){
+            Log::error($ex->getMessage());
         }
     }
 }

@@ -119,8 +119,8 @@ class ScrapInstagramPostJob implements ShouldQueue
                 // Set tracker on finished status or launch all posts scraper
                 if($influencer->posts()->count() == $influencer->posts)
                     $this->tracker->update(['queued' => 'finished']);
-                else
-                    ScrapInstagramAllPostsJob::dispatchNow($influencer);
+                // else
+                //     ScrapInstagramAllPostsJob::dispatchNow($influencer);
             }
         }catch(\Exception $ex){
             $this->fail($ex);

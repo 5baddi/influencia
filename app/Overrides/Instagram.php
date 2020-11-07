@@ -170,6 +170,17 @@ class Instagram
         if (isset($config['timeout'])) {
             Request::timeout((int) $config['timeout']);
         }
+
+        // Set Curl options
+        Request::curlOpt(CURLOPT_SSL_VERIFYPEER, 0);
+        Request::curlOpt(CURLOPT_SSL_VERIFYHOST, 0);
+        Request::curlOpt(CURLOPT_CONNECTTIMEOUT, 35);
+        Request::curlOpt(CURLOPT_FOLLOWLOCATION, 1);
+        Request::curlOpt(CURLOPT_MAXREDIRS, 5);
+        Request::curlOpt(CURLOPT_HTTPPROXYTUNNEL, 1);
+        Request::curlOpt(CURLOPT_RETURNTRANSFER, 1);
+        Request::curlOpt(CURLOPT_HEADER, 1);
+        // Request::curlOpt(CURLOPT_SSLVERSION, 3);
     }
 
     /**

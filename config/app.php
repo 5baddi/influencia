@@ -165,6 +165,7 @@ return [
          * Package Service Providers...
          */
         Jenssegers\Agent\AgentServiceProvider::class,
+        Swap\Laravel\SwapServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -235,6 +236,7 @@ return [
         'Transformation' => Flugg\Responder\Facades\Transformation::class,
 
         'Agent'     => Jenssegers\Agent\Facades\Agent::class,
+        'Swap' => Swap\Laravel\Facades\Swap::class,
 
         'Format'    =>  App\Helpers\FormatHelper::class,
 

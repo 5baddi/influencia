@@ -25,11 +25,11 @@ class InstagramScraper
     /**
      * Max request by each fetch
      */
-    const MAX_REQUEST = 100;
+    const MAX_REQUEST = 10;
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = 3;
+    const SLEEP_REQUEST = 0;
 
     /**
      * Instagram scraper
@@ -113,51 +113,16 @@ class InstagramScraper
     public function setProxy()
     {
         try{
-            // Get random proxies list
-            // $request = @file_get_contents("https://www.proxyscan.io/api/proxy?last_check=3600&uptime=50&ping=30&limit=10&type=http,https,socks4,socks5");
-            // if($request){
-            //     $proxies = json_decode($request, true);
-            //     foreach($proxies as $proxy){
-            //         if($this->proxies->contains('Ip', $proxy['Ip']))
-            //             continue;
-                        
-            //         $this->proxies->add($proxy);
-            //     }
-            // }
-
-            // if($this->proxies->count() === 0)
-            //     return $this->instagram->disableProxy();
-
-            // // Test and get valid proxy
-            // $proxy = $this->testProxy();
-
             // Set proxy
-            // $this->instagram->setProxy([
-            //     // 'port'          => $proxy['port'],
-            //     'port'          => '13042',
-            //     // 'address'       => $proxy['ip'],
-            //     'address'       => '83.149.70.159',
-            //     // 'type'          => $proxy['type'],
-            //     'type'          => CURLPROXY_HTTP,
-            //     // 'tunnel'        => true,
-            //     // 'timeout'       => 60,
-            //     // 'verifyPeer'    => false
-            // ]);
+            $this->instagram->setProxy([
+                'port'          => env('MAIN_PROXY_PORT'),
+                'address'       => env('MAIN_PROXY_IP'),
+                'type'          => CURLPROXY_HTTP,
+                'timeout'       => 300
+            ]);
 
-            // Request::proxy('37.48.118.90', '13042', CURLPROXY_HTTP, true);
-            // Request::timeout(35);
-            Request::curlOpt(CURLOPT_PROXY, '37.48.118.90');
-            Request::curlOpt(CURLOPT_PROXYPORT, '13042');
-            Request::curlOpt(CURLOPT_TIMEOUT, 300);
-            Request::curlOpt(CURLOPT_CONNECTTIMEOUT, 35);
-            Request::curlOpt(CURLOPT_FOLLOWLOCATION, true);
-            Request::curlOpt(CURLOPT_MAXREDIRS, 5);
-            Request::curlOpt(CURLOPT_HTTPPROXYTUNNEL, 1);
-            Request::curlOpt(CURLOPT_SSLVERSION, 3);
-            Request::curlOpt(CURLOPT_SSL_VERIFYPEER, false);
-            Request::curlOpt(CURLOPT_SSL_VERIFYHOST, false);
 
-            // $this->console->writeln("<fg=yellow>Connect using proxy: {$proxy['ip']}:{$proxy['port']}</>");
+            $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
@@ -177,7 +142,7 @@ class InstagramScraper
             // Scrap user
             $account = collect($this->instagram->getAccount($username));
             sleep(self::SLEEP_REQUEST);
-            
+
             // Format account
             $data = Format::parseArrayASCIIKey($account);
             $this->console->writeln("<fg=green>Account ID: {$data['id']}</>");
@@ -228,30 +193,34 @@ class InstagramScraper
      * @param array $data
      * @return array
      */
-    public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], int $max = self::MAX_REQUEST) : array
+    public function getMedias(Influencer $influencer, $maxID = null, array &$data = [], array $fetchedMedias = [], int $max = self::MAX_REQUEST) : array
     {
         try{
-            // Start from latest scraper post
-            if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0 && $influencer->posts()->count() > 0){
-                $lastPost = $influencer->posts()->latest()->first();
-                $maxID = !is_null($lastPost) ? $lastPost->next_cursor : null;
+            if(sizeof($fetchedMedias) === 0){
+                // Start from latest scraper post
+                if(isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0 && $influencer->posts()->count() > 0){
+                    $lastPost = $influencer->posts()->whereNotNull('next_cursor')->latest()->first();
+                    $maxID = !is_null($lastPost) ? $lastPost->next_cursor : null;
+                }
+
+                // Scrap medias
+                $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
+                $fetchedMedias = $instaMedias;
+                $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
+
+                sleep(self::SLEEP_REQUEST);
             }
 
-            // Scrap medias
-            $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
-            $this->console->writeln("<fg=green>Start scraping next " . sizeof($instaMedias['medias']) . " posts...</>");
-            sleep(self::SLEEP_REQUEST);
-
-            foreach($instaMedias['medias'] as $key => $media){
+            foreach($fetchedMedias['medias'] as $key => $media){
                 // Scrap media
-                $_media = $this->getMedia($media->getShortCode(), null, $media);
+                $_media = $this->getMedia($media->getShortCode(), $media);
 
                 // Set media influencer ID
                 $_media['influencer_id'] = $influencer->id;
 
                 // Set end cursor
-                if($key === array_key_last($instaMedias['medias']) && $instaMedias['hasNextPage'])
-                    $_media['next_cursor'] = $instaMedias['maxId'];
+                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'])
+                    $_media['next_cursor'] = $fetchedMedias['maxId'];
 
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
@@ -270,24 +239,24 @@ class InstagramScraper
 
                 // Format data
                 array_push($data, $_media);
-                sleep(self::SLEEP_REQUEST);
+                unset($fetchedMedias['medias'][$key]);
             }
 
-            return $instaMedias['hasNextPage'] ? $this->getMedias($influencer, $instaMedias['maxId'], $data, $max) : $data;
+            return $fetchedMedias['hasNextPage'] ? $this->getMedias($influencer, $fetchedMedias['maxId'], $data, $fetchedMedias ?? [], $max) : $data;
         }catch(\Exception $ex){
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
-            
+
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
 
-                return $this->getMedias($influencer, $instaMedias['maxId'] ?? null, $data, $max);
+                return $this->getMedias($influencer, $fetchedMedias['maxId'] ?? null, $data, $fetchedMedias ?? [], $max);
             }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
-            
+
             Log::error($ex->getMessage());
             throw $ex;
         }
@@ -298,9 +267,10 @@ class InstagramScraper
      *
      * @param string $mediaShortCode
      * @param \InstagramScraper\Model\Media $media
+     * @param \App\Tracker $tracker
      * @return array
      */
-    public function getMedia(string $mediaShortCode, Tracker $tracker = null, \InstagramScraper\Model\Media $media = null) : array
+    public function getMedia(string $mediaShortCode, \InstagramScraper\Model\Media $media = null, Tracker $tracker = null) : array
     {
         try{
             // Scrap media
@@ -314,12 +284,12 @@ class InstagramScraper
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
 
-                return $this->getMedia($mediaShortCode, $tracker, $media);
+                return $this->getMedia($mediaShortCode, $media, $tracker);
             }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
-            
+
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
             throw $ex;
@@ -482,7 +452,7 @@ class InstagramScraper
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, int $nextComment = null, $max = self::MAX_REQUEST) : ?array
+    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, array $fetchedComments = [], int $nextComment = null, $max = self::MAX_REQUEST) : ?array
     {
         // init
         $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
@@ -493,10 +463,14 @@ class InstagramScraper
 
 
         // Load comments
-        $comments = $this->instagram->getPaginateMediaCommentsById($media->getId(), $max);
-        sleep(self::SLEEP_REQUEST);
+        if(sizeof($fetchedComments) === 0){
+            $comments = $this->instagram->getPaginateMediaCommentsById($media->getId(), $max);
+            $fetchedComments = $comments;
 
-        foreach($comments['comments'] as $comment){
+            sleep(self::SLEEP_REQUEST);
+        }
+
+        foreach($fetchedComments['comments'] as $key => $comment){
             // Analyze sentiment
             $analyzer = new Analyzer();
             $sentiment = $analyzer->getSentiment($comment->getText());
@@ -509,11 +483,13 @@ class InstagramScraper
 
             // Extract comment hashtags
             $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
+
+            unset($fetchedComments['comments'][$key]);
         }
 
         // Get more comments
-        if(isset($comments['haseNextPage']) && !is_null($comments['maxId']))
-            return $this->getSentimentsAndEmojis($media, $data, $comments['maxId'], $max);
+        if(isset($fetchedComments['haseNextPage']) && !is_null($fetchedComments['maxId']))
+            return $this->getSentimentsAndEmojis($media, $data, $fetchedComments, $fetchedComments['maxId'], $max);
 
 
         // Get top 3 emojis
@@ -638,10 +614,10 @@ class InstagramScraper
      */
     private function isTooManyRequests(\Exception $ex)
     {
-        return get_class($ex) === \Unirest\Exception::class 
-                || $ex->getCode() === 429 
-                || strpos($ex->getMessage(), "unable to connect to") !== false 
-                || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false 
+        return get_class($ex) === \Unirest\Exception::class
+                || $ex->getCode() === 429
+                || strpos($ex->getMessage(), "unable to connect to") !== false
+                || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false
                 || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false;
     }
 }
