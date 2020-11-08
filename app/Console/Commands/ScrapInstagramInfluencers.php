@@ -23,7 +23,7 @@ class ScrapInstagramInfluencers extends Command
      *
      * @var string
      */
-    protected $signature = 'scrap:instagram {--force=false}';
+    protected $signature = 'scrap:instagram';
 
     /**
      * The console command description.
@@ -110,21 +110,25 @@ class ScrapInstagramInfluencers extends Command
 
         // Scrap each influencer details
         foreach($influencers as $influencer){
-            // Ignore last updated influencers
-            if($this->option('force') === 'false' && $influencer->posts()->count() == $influencer->posts && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0)
-                continue;
-
-            // Update influencer queued state
-            $influencer->update(['queued' => 'progress']);
-
             try{
+                // Update influencer queued state
+                $influencer->update(['queued' => 'progress']);
+
                 // Scrap account details
                 $this->info("Start scraping account @" . $influencer->username);
                 $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
                 // Update influencer
                 $this->repository->update($influencer, $accountDetails);
+                $influencer = $influencer->refresh();
                 $this->info("Successfully updated influencer @" . $influencer->username);
+
+                // Ignore last updated influencers
+                if($influencer->posts()->count() == $influencer->posts && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0){
+                    $influencer->update(['queued' => 'finished']);
+
+                    continue;
+                }
 
                 // Update influencer posts
                 $this->info("Number of posts: " . $influencer->posts);
@@ -162,7 +166,7 @@ class ScrapInstagramInfluencers extends Command
         // Scrap each tracker details
         foreach($trackers as $tracker){
             // Ignore last updated trackers
-            if($this->option('force') === 'false' && isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
+            if(isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
                 continue;
 
             try{
