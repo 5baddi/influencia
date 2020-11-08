@@ -275,11 +275,11 @@ export default {
         },
     },
     notifications: {
-        showErrorDT: {
-            type: "error",
-            title: "Error",
-            message: "Something going wrong! Please try again.."
-        }
+        // showErrorDT: {
+        //     type: "error",
+        //     title: "Error",
+        //     message: "Something going wrong! Please try again.."
+        // }
     },
     methods: {
         setupStream() {
@@ -296,10 +296,10 @@ export default {
 
             // Catch error
             this.es.addEventListener('error', event => {
-                if (event.readyState == EventSource.CLOSED)
-                    this.showErrorDT({
-                        message: 'lost connection... giving up!'
-                    });
+                // if (event.readyState == EventSource.CLOSED)
+                //     this.showErrorDT({
+                //         message: 'lost connection... giving up!'
+                //     });
             }, false);
 
             // Close

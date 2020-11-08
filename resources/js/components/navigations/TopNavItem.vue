@@ -58,8 +58,8 @@ export default {
         };
     },
     created() {
-        // if (this.is_switch)
-        //     this.$store.dispatch("setActiveBrand");
+        if (this.is_switch)
+            this.$store.dispatch("setActiveBrand", this.activeBrand);
     },
     computed: {
         ...mapGetters(["AuthenticatedUser", "brands", "activeBrand"])
