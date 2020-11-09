@@ -4,6 +4,7 @@ namespace App;
 
 use App\Events\TrackerUpdated;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class Tracker extends Model
@@ -21,7 +22,9 @@ class Tracker extends Model
      *
      * @var array
      */
-    protected $appends = [];
+    protected $appends = [
+        'influencers'
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -127,5 +130,25 @@ class Tracker extends Model
     public function shortlink()
     {
         return $this->hasOne(ShortLink::class, 'tracker_id', 'id');
+    }
+
+    /**
+     * Get count of influencers related to trackers
+     *
+     * @return Illuminate\Support\Collection
+     */
+    public function getInfluencersAttribute() : Collection
+    {
+        // Init
+        $influencers = collect();
+
+        // Load influencers
+        foreach($this->posts()->get()->load('influencer') as $post){
+            if(is_null($post->influencer) || $post->influencer->queued !== 'finished')
+                continue;
+            $influencers->add($post->influencer);
+        }
+
+        return $influencers;
     }
 }
