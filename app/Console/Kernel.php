@@ -29,7 +29,7 @@ class Kernel extends ConsoleKernel
     {
         // Start jobs queue
         $schedule->command('queue:work --queue=default,trackers')
-            ->daily()
+            ->everyMinute()
             ->withoutOverlapping();
 
         // Instagram scraper
