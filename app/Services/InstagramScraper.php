@@ -210,8 +210,7 @@ class InstagramScraper
                 }
 
                 // Scrap medias
-                $instaMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
-                $fetchedMedias = $instaMedias;
+                $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
                 // $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
 
                 sleep(self::SLEEP_REQUEST);
@@ -250,6 +249,7 @@ class InstagramScraper
 
             return $fetchedMedias['hasNextPage'] ? $this->getMedias($influencer, $fetchedMedias['maxId'], $data, $fetchedMedias ?? [], $max) : $data;
         }catch(\Exception $ex){
+            Log::error($ex->getMessage());
             // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
             // Use proxy
@@ -263,7 +263,6 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            Log::error($ex->getMessage());
             throw $ex;
         }
     }
