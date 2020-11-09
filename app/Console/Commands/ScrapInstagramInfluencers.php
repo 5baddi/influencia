@@ -171,10 +171,6 @@ class ScrapInstagramInfluencers extends Command
 
         // Scrap each tracker details
         foreach($trackers as $tracker){
-            // Ignore last updated trackers
-            if(isset($tracker->updated_at) && $tracker->updated_at->diffInDays(Carbon::now()) === 0)
-                continue;
-
             try{
                 // TODO: scrap stories details
                 if($tracker->platform === "instagram" && $tracker->type === "story")
@@ -182,18 +178,19 @@ class ScrapInstagramInfluencers extends Command
 
                 if($tracker->platform === "instagram" && $tracker->type === "post"){
                     // Update trackers & influencers queued state
+                    $scrapedInfluencers = 0;
                     foreach($tracker->posts->load('influencer') as $post){
                         if($post->influencer->posts()->count() == $post->influencer->posts){
                             if($post->influencer->queued !== 'finished')
                                 $post->influencer->update(['queued' => 'finished']);
 
-                            $tracker->update([
-                                'queued' => 'finished',
-                                'status' => true
-                            ]);
-                            continue;
+                            ++$scrapedInfluencers;
                         }
                     }
+
+                    // Set tracker queued as finished
+                    if($tracker->influencers->count() > 0 && $tracker->influencers->count() === $scrapedInfluencers)
+                        $tracker->update(['queued' => 'finished']);
                 }
             }catch(\Exception $ex){
                 $tracker->update(['queued' => 'failed']);

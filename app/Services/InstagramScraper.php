@@ -153,6 +153,8 @@ class InstagramScraper
             unset($data['medias']);
             unset($data['data']);
         }catch(\Exception $ex){
+            Log::error($ex->getMessage());
+
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
@@ -161,8 +163,10 @@ class InstagramScraper
                 return $this->byUsername($username);
             }
 
+            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
+                throw new \Exception("Lost connection to Instagram");
+
             // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
-            Log::error($ex->getMessage());
             throw $ex;
         }
 
