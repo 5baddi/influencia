@@ -222,24 +222,29 @@ const actions = {
         })
     },
     updateBrand({ commit, state }, data) {
-        return new Promise((resolve, reject) => {
-            api.put("/api/v1/brands", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            })
-                .then(response => {
-                    if(response.status === 200){
-                        commit('setBrand', { brand: response.data.content })
-                        resolve(response.data)
-                    }else{
-                        throw new Error("Something going wrong!");
+        let uuid = data.get('uuid');
+        if(uuid !== null){
+            return new Promise((resolve, reject) => {
+                api.post("/api/v1/brands/" + uuid, data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
                     }
                 })
-                .catch(response => {
-                    reject(response)
-                })
-        })
+                    .then(response => {
+                        if(response.status === 200){
+                            commit('setBrand', { brand: response.data.content })
+                            resolve(response.data)
+                        }else{
+                            throw new Error("Something going wrong!");
+                        }
+                    })
+                    .catch(response => {
+                        reject(response)
+                    })
+            })
+        }else{
+            throw new Error("Something going wrong with the targeted entity!");
+        }
     },
     deleteBrand({commit, state}, uuid){
         return new Promise((resolve, reject) => {

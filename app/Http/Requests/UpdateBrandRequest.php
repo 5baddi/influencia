@@ -26,7 +26,7 @@ class UpdateBrandRequest extends FormRequest
     public function rules()
     {
         return [
-            'id'        =>  'required|integer|exists:brands,id',
+            'uuid'      =>  'required|string|exists:brands,uuid',
             'name'      =>  'required|string|unique:brands,name',
             'image'     =>  'nullable|image|mimes:jpeg,png,jpg,gif',
         ];
