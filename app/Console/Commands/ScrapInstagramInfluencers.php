@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
+use App\InfluencerPost;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -100,7 +101,7 @@ class ScrapInstagramInfluencers extends Command
     private function scrapInfluencers() : void
     {
         // Verify the max requests calls
-        $lastHourUpdatedRows = Influencer::where('updated_at', '>=', Carbon::now()->subHour())->count();
+        $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
         if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
             return;
 
@@ -142,6 +143,11 @@ class ScrapInstagramInfluencers extends Command
 
                 // Update influencer queued state
                 $influencer->update(['queued' => 'finished']);
+
+                // Verify the max requests calls
+                $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
+                if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
+                    return;
             }catch(\Exception $ex){
                 $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");
