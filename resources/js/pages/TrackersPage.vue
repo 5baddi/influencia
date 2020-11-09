@@ -86,10 +86,19 @@ export default {
                     }
                 },
                 {
-                    name: "Influencer",
-                    field: "influencer_id",
+                    name: "Influencers",
+                    field: "influencers",
                     callback: function (row) {
-                        return row.influencer !== null ? (row.influencer.name ? row.influencer.name : row.influencer.username) : '---';
+                        if (!row.influencers)
+                            return '-';
+
+                        let html = '';
+                        row.influencers.map(function (item, index) {
+                            // html += '<li>' + item.name.toUpperCase() + '</li>';
+                            html += '<span class="badge badge-success">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</span>';;
+                        });
+
+                        return html;
                     }
                 },
                 {
