@@ -28,12 +28,12 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Start jobs queue
-        $schedule->command('queue:work --queue=default,trackers,influencers')
+        $schedule->command('queue:work --queue=default,trackers')
             ->daily()
             ->withoutOverlapping();
 
         // Instagram scraper
-        $schedule->command('scrap:instagram --force=true')
+        $schedule->command('scrap:instagram')
             ->dailyAt(env('INSTAGRAM_SCHEDULE'))
             ->withoutOverlapping();
 
