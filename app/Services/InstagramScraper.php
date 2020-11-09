@@ -91,6 +91,7 @@ class InstagramScraper
         try{
             $this->instagram = Instagram::withCredentials(env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
             $this->instagram->login();
+            $this->instagram->saveSession();
         }catch(Exception $ex){
             // Trace log
             Log::error($ex->getMessage());
