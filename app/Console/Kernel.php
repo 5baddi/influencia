@@ -29,12 +29,12 @@ class Kernel extends ConsoleKernel
     {
         // Start jobs queue
         $schedule->command('queue:work --queue=default,trackers')
-            ->everyMinute()
+            ->daily()
             ->withoutOverlapping();
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
-            ->dailyAt(env('INSTAGRAM_SCHEDULE'))
+            ->everyMinute()
             ->withoutOverlapping();
 
         // Updater
