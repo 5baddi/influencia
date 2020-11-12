@@ -4,9 +4,7 @@ namespace App\Console\Commands;
 
 use App\Tracker;
 use Carbon\Carbon;
-use App\Influencer;
 use App\InfluencerPost;
-use App\Jobs\ScrapInstagramPostJob;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -80,15 +78,6 @@ class ScrapInstagramInfluencers extends Command
      */
     public function handle()
     {
-        // ScrapInstagramPostJob::dispatchNow(Tracker::create([
-        //     'campaign_id'  => 1,
-        //     'user_id'   => 1,
-        //     'platform' => 'instagram',
-        //     'type' => 'post',
-        //     'name' => 'test ' . uniqid(),
-        //     'url'   =>  'https://www.instagram.com/p/CGupb2FBKka/'
-        // ]));
-        // die();
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
@@ -112,8 +101,11 @@ class ScrapInstagramInfluencers extends Command
     {
         // Verify the max requests calls
         $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-        if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
+        if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS){
+            $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
+
             return;
+        }
 
         // Get influencers
         $influencers = $this->repository->all();
@@ -144,9 +136,9 @@ class ScrapInstagramInfluencers extends Command
                 $this->info("Number of posts: " . $influencer->posts);
                 $this->info("Please wait until scraping all medias ...");
                 $this->instagramScraper->getMedias($influencer);
+                $influencer->refresh();
 
                 // Update influencer queued state
-                $influencer->refresh();
                if($influencer->posts()->count() === $influencer->posts)
                     $influencer->update(['queued' => 'finished']);
 

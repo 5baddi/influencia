@@ -32,7 +32,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = 3;
+    const SLEEP_REQUEST = 10;
 
     /**
      * Instagram scraper
@@ -91,9 +91,13 @@ class InstagramScraper
 
         // Init instagram scraper
         try{
+            // Init
             $this->instagram = Instagram::withCredentials(env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
-            $this->instagram->login();
-            $this->instagram->saveSession();
+            $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
+
+            // Login to App Instagram account
+            $this->instagram->login(false, $emailVecification);
+            // $this->instagram->saveSession();
         }catch(Exception $ex){
             // Trace log
             Log::error($ex->getMessage());
@@ -154,8 +158,8 @@ class InstagramScraper
                 'pic_url'       =>  $account->getProfilePicUrl(),
                 'biography'     =>  $account->getBiography(),
                 'website'       =>  $account->getExternalUrl(),
-                'followers'     =>  $account->getFollowsCount(),
-                'follows'       =>  $account->getFollowedByCount(),
+                'followers'     =>  $account->getFollowedByCount(),
+                'follows'       =>  $account->getFollowsCount(),
                 'posts'         =>  $account->getMediaCount(),
                 'is_business'   =>  $account->isBusinessAccount(),
                 'is_private'    =>  $account->isPrivate(),
@@ -211,10 +215,10 @@ class InstagramScraper
     {
         try{
             $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
-            $maxID = !is_null($lastPost) ? $lastPost->next_cursor : null;
+            $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
 
             // Scrap medias
-            $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, !is_null($maxID) ? $maxID : '');
+            $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID);
             $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
 
             sleep(self::SLEEP_REQUEST);

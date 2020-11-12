@@ -26,13 +26,15 @@
         "owen-oj/laravel-getid3": "^1.1",
         "php-http/curl-client": "^2.1",
         "php-http/message": "^1.9",
+        "php-mail-client/client": "^3.2",
         "phpfastcache/phpfastcache": "^8.0",
         "phpoffice/phpspreadsheet": "^1.15",
         "pusher/pusher-php-server": "^4.1",
         "raiym/instagram-php-scraper": "^0.9.14",
         "ryancco/laravel-uuid-models": "^1.0",
         "scotteh/php-goose": "^1.0",
-        "spekulatius/phpscraper": "^0.4.1"
+        "spekulatius/phpscraper": "^0.4.1",
+        "ssilence/php-imap-client": "dev-master"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

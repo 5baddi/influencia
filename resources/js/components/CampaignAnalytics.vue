@@ -2,8 +2,10 @@
 <div class="campaign" v-if="campaign">
     <ul v-show="typeof campaign.influencers !== 'undefined' && campaign.influencers.length > 0" class="influencers-avatars">
         <h4>influencers</h4>
-        <li v-for="influencer in campaign.influencers" :key="influencer.id" :title="influencer.username">
-            <img :src="influencer.pic_url" loading="lazy" />
+        <li v-for="influencer in campaign.influencers" :key="influencer.id">
+            <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.username">
+                <img :src="influencer.pic_url" loading="lazy" />
+            </router-link>
         </li>
     </ul>
     <div class="cards statistics">
@@ -153,7 +155,7 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        if (this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative) {
+        if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
             this.createDoughtnutChart('sentiments-chart', {
                 datasets: [{
                     data: [
