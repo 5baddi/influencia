@@ -145,13 +145,10 @@ class ScrapInstagramInfluencers extends Command
                 $this->info("Please wait until scraping all medias ...");
                 $this->instagramScraper->getMedias($influencer);
 
-                // Check posts has been scraped
-                $influencer->refresh();
-               if($influencer->posts()->count() != $influencer->posts)
-                   throw new \Exception("Failed to scrap all medias for @" . $influencer->username);
-
                 // Update influencer queued state
-                $influencer->update(['queued' => 'finished']);
+                $influencer->refresh();
+               if($influencer->posts()->count() === $influencer->posts)
+                    $influencer->update(['queued' => 'finished']);
 
                 // Verify the max requests calls
                 $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
