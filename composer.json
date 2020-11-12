@@ -31,7 +31,8 @@
         "pusher/pusher-php-server": "^4.1",
         "raiym/instagram-php-scraper": "^0.9.14",
         "ryancco/laravel-uuid-models": "^1.0",
-        "scotteh/php-goose": "^1.0"
+        "scotteh/php-goose": "^1.0",
+        "spekulatius/phpscraper": "^0.4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",

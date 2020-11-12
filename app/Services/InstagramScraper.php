@@ -83,6 +83,9 @@ class InstagramScraper
 
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
+        set_time_limit(0);
+        ini_set('memory_limit', '2000M');
+
         // Disable SSL Certif
         if(config("app.debug"))
             Request::verifyPeer(false);
@@ -142,16 +145,28 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = collect($this->instagram->getAccount($username));
+            $account = $this->instagram->getAccount($username);
             sleep(self::SLEEP_REQUEST);
 
-            // Format account
-            $data = Format::parseArrayASCIIKey($account);
-            // $this->console->writeln("<fg=green>Account ID: {$data['id']}</>");
-
-            // Remove no needed data
-            unset($data['medias']);
-            unset($data['data']);
+            return [
+                'account_id'    =>  $account->getId(),
+                'username'      =>  $account->getUsername(),
+                'name'          =>  $account->getFullName(),
+                'pic_url'       =>  $account->getProfilePicUrl(),
+                'biography'     =>  $account->getBiography(),
+                'website'       =>  $account->getExternalUrl(),
+                'followers'     =>  $account->getFollowsCount(),
+                'follows'       =>  $account->getFollowedByCount(),
+                'posts'         =>  $account->getMediaCount(),
+                'is_business'   =>  $account->isBusinessAccount(),
+                'is_private'    =>  $account->isPrivate(),
+                'is_verified'   =>  $account->isVerified(),
+                'highlight_reel'    =>  $account->getHighlightReelCount(),
+                'business_category' =>  $account->getBusinessCategoryName(),
+                'business_email'    =>  $account->getBusinessEmail(),
+                'business_phone'    =>  $account->getBusinessPhoneNumber(),
+                'business_address'  =>  $account->getBusinessAddressJson(),
+            ];
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
 
@@ -169,26 +184,21 @@ class InstagramScraper
             // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             throw $ex;
         }
-
-        return $data->toArray();
     }
 
     /**
      * Scrap media by link
      *
      * @param string $link
-     * @return array
+     * @return \InstagramScraper\Model\Media
      */
-    public function byMedia(string $link) : array
+    public function byMedia(string $link) : \InstagramScraper\Model\Media
     {
         // Scrap media
-        $media = collect($this->instagram->getMediaByUrl($link));
+        $media = $this->instagram->getMediaByUrl($link);
         sleep(self::SLEEP_REQUEST);
 
-        // Format account
-        $data = Format::parseArrayASCIIKey($media);
-
-        return $data->toArray();
+        return $media;
     }
 
     /**

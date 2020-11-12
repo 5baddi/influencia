@@ -6,6 +6,7 @@ use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
 use App\InfluencerPost;
+use App\Jobs\ScrapInstagramPostJob;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -79,6 +80,15 @@ class ScrapInstagramInfluencers extends Command
      */
     public function handle()
     {
+        // ScrapInstagramPostJob::dispatchNow(Tracker::create([
+        //     'campaign_id'  => 1,
+        //     'user_id'   => 1,
+        //     'platform' => 'instagram',
+        //     'type' => 'post',
+        //     'name' => 'test ' . uniqid(),
+        //     'url'   =>  'https://www.instagram.com/p/CGupb2FBKka/'
+        // ]));
+        // die();
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
@@ -120,8 +130,7 @@ class ScrapInstagramInfluencers extends Command
                 $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
                 // Update influencer
-                $this->repository->update($influencer, $accountDetails);
-                $influencer = $influencer->refresh();
+                $influencer = $this->repository->update($influencer, $accountDetails);
                 $this->info("Successfully updated influencer @" . $influencer->username);
 
                 // Ignore last updated influencers

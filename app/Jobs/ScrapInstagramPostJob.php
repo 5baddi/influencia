@@ -85,19 +85,38 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                 // Scrap User details
                 $media = $scraper->byMedia($_url);
-                if(!is_array($media) || sizeof($media) === 0 || !isset($media['owner']) || is_null($media['owner']->getId()))
+                if(!is_object($media) || is_null($media->getOwner()))
                     return $this->fail();
 
-                // Check influencer if already exists
-                $influencer = Influencer::where('account_id', $media['owner']->getId())->first();
                 // Parse owner data
-                $owner = $scraper->byUsername($media['owner']->getUsername());
-                // Store influencer if not exists
+                $account = $media->getOwner();
+                $accountDetails = [
+                    'account_id'    =>  $account->getId(),
+                    'username'      =>  $account->getUsername(),
+                    'name'          =>  $account->getFullName(),
+                    'pic_url'       =>  $account->getProfilePicUrl(),
+                    'biography'     =>  $account->getBiography(),
+                    'website'       =>  $account->getExternalUrl(),
+                    'followers'     =>  $account->getFollowsCount(),
+                    'follows'       =>  $account->getFollowedByCount(),
+                    'posts'         =>  $account->getMediaCount(),
+                    'is_business'   =>  $account->isBusinessAccount(),
+                    'is_private'    =>  $account->isPrivate(),
+                    'is_verified'   =>  $account->isVerified(),
+                    'highlight_reel'    =>  $account->getHighlightReelCount(),
+                    'business_category' =>  $account->getBusinessCategoryName(),
+                    'business_email'    =>  $account->getBusinessEmail(),
+                    'business_phone'    =>  $account->getBusinessPhoneNumber(),
+                    'business_address'  =>  $account->getBusinessAddressJson(),
+                ];
+
+                // Check influencer if already exists
+                $influencer = Influencer::where('account_id', $account->getId())->first();
                 if(is_null($influencer)){
-                    $influencer = $influencerRepo->create($owner);
+                    $influencer = $influencerRepo->create($accountDetails);
                     // $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
                 }else{
-                    $influencer = $influencerRepo->update($influencer, $owner);
+                    $influencer = $influencerRepo->update($influencer, $accountDetails);
                     // $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");
                 }
 
