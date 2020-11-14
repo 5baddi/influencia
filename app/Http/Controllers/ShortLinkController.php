@@ -7,7 +7,7 @@ use App\ShortLink;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Request;
-use DavidePastore\Ipinfo\Ipinfo;
+// use DavidePastore\Ipinfo\Ipinfo;
 
 class ShortLinkController extends Controller
 {
@@ -56,10 +56,10 @@ class ShortLinkController extends Controller
             if(is_null($visit)){
                 // IP lookup
                 if($ip !== '127.0.0.1'){
-                    $ipLookup = new Ipinfo([
-                        'token' => env('IPINFOIO_TOKEN')
-                    ]);
-                    $ipInfo = $ipLookup->getFullIpDetails($ip);
+                    // $ipLookup = new Ipinfo([
+                    //     'token' => env('IPINFOIO_TOKEN')
+                    // ]);
+                    // $ipInfo = $ipLookup->getFullIpDetails($ip);
 
                     // $data = array_merge($data, [
                     //     'country_code'  =>  $ipInfo->country,
