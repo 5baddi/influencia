@@ -97,7 +97,7 @@ class InstagramScraper
 
             // Login to App Instagram account
             $this->instagram->login(false, $emailVecification);
-            // $this->instagram->saveSession();
+            $this->instagram->saveSession();
         }catch(Exception $ex){
             // Trace log
             Log::error($ex->getMessage());

@@ -47,13 +47,6 @@ class ScrapInstagramInfluencers extends Command
     private $repository;
 
     /**
-     * Tracker repository
-     *
-     * @var \App\Repositories\TrackerRepository
-     */
-    private $trackerRepo;
-
-    /**
      * Create a new command instance.
      *
      * @return void

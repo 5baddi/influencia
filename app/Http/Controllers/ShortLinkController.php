@@ -7,13 +7,13 @@ use App\ShortLink;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Request;
-use ipinfo\ipinfo\IPinfo;
+use DavidePastore\Ipinfo\Ipinfo;
 
 class ShortLinkController extends Controller
 {
     /**
      * Agent extrator
-     * 
+     *
      * @var \Jenssegers\Agent\Agent
      */
     private $agent;
@@ -26,7 +26,7 @@ class ShortLinkController extends Controller
 
     /**
      * Redirect from short code to original link
-     * 
+     *
      * @param string $code
      */
     public function shortenLink(string $code)
@@ -41,7 +41,7 @@ class ShortLinkController extends Controller
             $shortLinkID = $shortedLink->id;
             $ip = Request::ip();
             $visit = LinkVisit::where('ip', $ip)->whereDate('created_at', Carbon::today())->latest()->first();
-            
+
             // Init data
             $data = [
                 'is_mobile'             =>  $this->agent->isMobile(),
@@ -56,16 +56,18 @@ class ShortLinkController extends Controller
             if(is_null($visit)){
                 // IP lookup
                 if($ip !== '127.0.0.1'){
-                    $ipLookup = new Ipinfo(env('IPINFOIO_TOKEN'));
-                    $ipInfo = $ipLookup->getDetails("105.148.116.84");
-
-                    $data = array_merge($data, [
-                        'country_code'  =>  $ipInfo->country,
-                        'country_name'  =>  $ipInfo->country_name,
-                        'city_name'     =>  $ipInfo->city,
-                        // 'zip_code'      =>  $ipInfo->postal,
-                        'referer'       =>  Request::server('HTTP_REFERER')
+                    $ipLookup = new Ipinfo([
+                        'token' => env('IPINFOIO_TOKEN')
                     ]);
+                    $ipInfo = $ipLookup->getFullIpDetails($ip);
+
+                    // $data = array_merge($data, [
+                    //     'country_code'  =>  $ipInfo->country,
+                    //     'country_name'  =>  $ipInfo->country_name,
+                    //     'city_name'     =>  $ipInfo->city,
+                    //     // 'zip_code'      =>  $ipInfo->postal,
+                    //     'referer'       =>  Request::server('HTTP_REFERER')
+                    // ]);
                 }
 
                 $data = array_merge($data, [
@@ -80,7 +82,7 @@ class ShortLinkController extends Controller
                 $visit->update($data);
             }
         }
-        
+
         return redirect($shortedLink->link);
     }
 }
