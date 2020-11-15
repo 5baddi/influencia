@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use App\ShortLink;
-use Goose\Client;
+// use Goose\Client;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,7 +38,7 @@ class ScrapURLContentJob implements ShouldQueue
     {
         // Init
         $this->shortLink = $shortLink;
-        $this->goose = new Client();
+        // $this->goose = new Client();
     }
 
     /**
@@ -53,14 +53,14 @@ class ScrapURLContentJob implements ShouldQueue
 
         try{
             // Extract content
-            $content = $this->goose->extractContent($this->shortLink->link);
-            $this->shortLink->update([
-                'title'                 =>  $content->getTitle(),
-                'meta_description'      =>  $content->getMetaDescription(),
-                'meta_keywords'         =>  $content->getMetaKeywords(),
-                'tags'                  =>  $content->getTags(),
-                'top_image_url'         =>  !is_null($content->getTopImage()) ? $content->getTopImage()->getImageSrc() : null,
-            ]);
+            // $content = $this->goose->extractContent($this->shortLink->link);
+            // $this->shortLink->update([
+            //     'title'                 =>  $content->getTitle(),
+            //     'meta_description'      =>  $content->getMetaDescription(),
+            //     'meta_keywords'         =>  $content->getMetaKeywords(),
+            //     'tags'                  =>  $content->getTags(),
+            //     'top_image_url'         =>  !is_null($content->getTopImage()) ? $content->getTopImage()->getImageSrc() : null,
+            // ]);
             $this->shortLink->tracker->update(['queued' => 'finished']);
         }catch(\Exception $ex){
             $this->fail($ex);

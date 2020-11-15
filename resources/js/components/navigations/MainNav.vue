@@ -34,7 +34,7 @@
                     <span class="text">Search</span>
                 </router-link>
             </li>
-            <li v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `campagins`}">
+            <li v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `campaigns`}">
                 <router-link :to="{name : 'campaigns'}">
                     <span class="icon">
                         <i class="fas fa-chart-pie"></i>

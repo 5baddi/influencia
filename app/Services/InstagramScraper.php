@@ -7,14 +7,14 @@ use Exception;
 use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
-use Unirest\Request;
+use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
 use App\Helpers\EmojiParser;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
+use InstagramScraper\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
@@ -63,13 +63,6 @@ class InstagramScraper
     private $console;
 
     /**
-     * List of proxies
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    private $proxiess;
-
-    /**
      * All emojis used in media comments
      *
      * @var array
@@ -85,26 +78,6 @@ class InstagramScraper
 
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
-        // Disable SSL Certif
-        if(config("app.debug"))
-            Request::verifyPeer(false);
-
-        // Init instagram scraper
-        try{
-            // Init
-            $this->instagram = Instagram::withCredentials(env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
-            $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
-
-            // Login to App Instagram account
-            $this->instagram->login(false, $emailVecification);
-            $this->instagram->saveSession();
-        }catch(Exception $ex){
-            // Trace log
-            Log::error($ex->getMessage());
-
-            $this->instagram = new Instagram();
-        }
-
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
@@ -114,21 +87,41 @@ class InstagramScraper
         // Init console
         $this->console = new ConsoleOutput();
 
-        // Init proxies list
-        $this->proxies = new Collection();
+        // Init HTTP Client
+        $client = new Client([
+            'verify' => !config("app.debug")
+        ]);
+
+        // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
+
+        // Init instagram scraper
+        try{
+            // Init
+            $this->instagram = Instagram::withCredentials($client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
+            $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
+
+            // Login to App Instagram account
+            $this->instagram->login(false, $emailVecification);
+            $this->instagram->saveSession();
+        }catch(Exception $ex){
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // Trace log
+            Log::error($ex->getMessage());
+
+            $this->instagram = new Instagram($client);
+        }
     }
 
     public function setProxy()
     {
         try{
             // Set proxy
-            $this->instagram->setProxy([
-                'port'          => env('MAIN_PROXY_PORT'),
-                'address'       => env('MAIN_PROXY_IP'),
-                'type'          => CURLPROXY_HTTP,
-                'timeout'       => 300
-            ]);
-
+            Request::setHttpClient(new Client([
+                'verify'    =>  !config("app.debug"),
+                'proxy'     =>  'http://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
+                'timeout'   =>  30
+                // TODO: Improve proxy using curl params
+            ]));
 
             $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
@@ -337,7 +330,7 @@ class InstagramScraper
             'likes'         =>  $media->getLikesCount(),
             'thumbnail_url' =>  $media->getImageThumbnailUrl(),
             'comments'      =>  $media->getCommentsCount(),
-            'emojis'        =>  $this->getEmojisSum(),
+            'emojis'        =>  sizeof($comments['comments_emojis']),
             'published_at'  =>  Carbon::parse($media->getCreatedTime()),
             'caption'       =>  $media->getCaption(),
             'alttext'       =>  $media->getAltText(),
@@ -447,30 +440,12 @@ class InstagramScraper
     }
 
     /**
-     * Calculate number of emojis used in comments pf a media
-     */
-    private function getEmojisSum() : int
-    {
-        if(sizeof($this->emojis) === 0)
-            return 0;
-
-        // Get emojis counts
-        $emojisCount = 0;
-        array_walk($this->emojis, function($value, $key) use (&$emojisCount){
-            if(is_int($key))
-                $emojisCount += $key;
-        });
-
-        return $emojisCount;
-    }
-
-    /**
      * Get media sentiments and emojis from comments
      *
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, array $fetchedComments = [], int $nextComment = null, $max = self::MAX_REQUEST) : ?array
+    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_REQUEST) : ?array
     {
         // init
         $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
@@ -481,33 +456,45 @@ class InstagramScraper
 
 
         // Load comments
-        if(sizeof($fetchedComments) === 0){
-            $comments = $this->instagram->getPaginateMediaCommentsById($media->getId(), $max);
-            $fetchedComments = $comments;
+        $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
+        sleep(self::SLEEP_REQUEST);
 
-            sleep(self::SLEEP_REQUEST);
-        }
+        foreach($comments as $comment){
+            // Handle method
+            $handle = function($comment) use(&$data){
+                // Analyze sentiment
+                $analyzer = new Analyzer();
+                $sentiment = $analyzer->getSentiment($comment->getText());
+                $data['comments_positive'] += $sentiment['pos'];
+                $data['comments_neutral'] += $sentiment['neu'];
+                $data['comments_negative'] += $sentiment['neg'];
 
-        foreach($fetchedComments['comments'] as $key => $comment){
-            // Analyze sentiment
-            $analyzer = new Analyzer();
-            $sentiment = $analyzer->getSentiment($comment->getText());
-            $data['comments_positive'] += $sentiment['pos'];
-            $data['comments_neutral'] += $sentiment['neu'];
-            $data['comments_negative'] += $sentiment['neg'];
+                // Match all emojis
+                $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
 
-            // Match all emojis
-            $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
+                // Extract comment hashtags
+                $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
+            };
 
-            // Extract comment hashtags
-            $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
+            // Handle comment
+            $handle($comment);
 
-            unset($fetchedComments['comments'][$key]);
+            // unset($fetchedComments['comments'][$key]);
+
+            // Handle child comments
+            if(sizeof($comment->getChildComments()) > 0){
+                foreach($comment->getChildComments() as $child)
+                    $handle($child);
+            }
+
+            // Load more comments
+            if($comment->hasMoreChildComments())
+                $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
         }
 
         // Get more comments
-        if(isset($fetchedComments['haseNextPage']) && !is_null($fetchedComments['maxId']))
-            return $this->getSentimentsAndEmojis($media, $data, $fetchedComments, $fetchedComments['maxId'], $max);
+        // if(isset($fetchedComments['haseNextPage']) && !is_null($fetchedComments['maxId']))
+            // return $this->getSentimentsAndEmojis($media, $data, $fetchedComments, $fetchedComments['maxId'], $max);
 
 
         // Get top 3 emojis
@@ -572,56 +559,6 @@ class InstagramScraper
         // return array_slice($this->emojis, 0, $max, true);
         // return $this->emojis;
         return array_flip(array_count_values($emojis));
-    }
-
-    /**
-     * Test proxy is online
-     *
-     * @return array
-     */
-    private function testProxy()
-    {
-        // Random list sorting
-        $this->proxies->shuffle();
-
-        // Validate proxies
-        foreach($this->proxies->toArray() as $value){
-            // if(!preg_match('/^\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b:\d{2,5}/', $proxy))
-            //     continue;
-
-            $waitTimeoutInSeconds = 60;
-            $fp = @stream_socket_client($value['Ip'] . ':' . $value['Port'], $errCode, $errStr, $waitTimeoutInSeconds);
-            if(!$fp){
-                $this->console->writeln("<fg=red>Proxy dead!</>");
-
-                continue;
-            }
-
-            // Set proxy type
-            switch($value['Type'][0]){
-                case "HTTPS":
-                    $type = CURLPROXY_HTTPS;
-                break;
-                case "SOCKS4":
-                    $type = CURLPROXY_SOCKS4;
-                break;
-                case "SOCKS5":
-                    $type = CURLPROXY_SOCKS5;
-                break;
-                default:
-                    $type = CURLPROXY_HTTP;
-                break;
-
-            }
-
-            return [
-                'ip'    =>  $value['Ip'],
-                'port'  =>  $value['Port'],
-                'type'  =>  $type
-            ];
-        }
-
-        throw new \Exception("Unable to connect using the proxy!");
     }
 
     /**
