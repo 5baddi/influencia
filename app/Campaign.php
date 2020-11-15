@@ -46,7 +46,8 @@ class Campaign extends Model
         'organic_communities',
         'influencers',
         'comments_count',
-        'all_trackers_count'
+        'all_trackers_count',
+        'organic_posts'
     ];
 
 
@@ -332,6 +333,25 @@ class Campaign extends Model
         }
 
         return $communities;
+    }
+
+    public function getOrganicPostsAttribute()
+    {
+        $posts = 0;
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                if($post->is_ad)
+                    continue;
+
+                ++$posts;
+            }
+        }
+
+        return $posts;
     }
 
     public function getOrganicCommunitiesAttribute()

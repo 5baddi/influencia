@@ -62,6 +62,7 @@
                 </div>
             </div>
             <canvas id="posts-chart"></canvas>
+            <span>Organic posts {{ nbr().abbreviate(campaign.organic_posts) }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span>
         </div>
     </div>
 
