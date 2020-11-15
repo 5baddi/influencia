@@ -118,7 +118,7 @@ class InstagramScraper
             // Set proxy
             Request::setHttpClient(new Client([
                 'verify'    =>  !config("app.debug"),
-                'proxy'     =>  'http://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
+                'proxy'     =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
                 'timeout'   =>  30
                 // TODO: Improve proxy using curl params
             ]));
