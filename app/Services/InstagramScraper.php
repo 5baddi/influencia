@@ -101,13 +101,8 @@ class InstagramScraper
             $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
 
             // Login to App Instagram account
-<<<<<<< HEAD
-            $this->instagram->login(true, $emailVecification);
-            // $this->instagram->saveSession();
-=======
             $this->instagram->login(false, $emailVecification);
             $this->instagram->saveSession();
->>>>>>> master
         }catch(Exception $ex){
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             // Trace log
