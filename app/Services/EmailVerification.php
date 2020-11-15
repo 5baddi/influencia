@@ -6,6 +6,7 @@ use InstagramScraper\Exception\InstagramAuthException;
 use InstagramScraper\TwoStepVerification\TwoStepVerificationInterface;
 use SSilence\ImapClient\ImapClient as Imap;
 use SSilence\ImapClient\ImapClientException;
+use SSilence\ImapClient\ImapConnect;
 
 /**
  * User: Aleksei S. Popov aka Lexotrion
@@ -34,17 +35,17 @@ class EmailVerification implements TwoStepVerificationInterface
      * @param string $email
      * @param string $imapHost
      * @param string $pass
-     * @param bool $encryption
+     * @param string $encryption
      * @param string|null $username
      * @param string $folder
      * @throws InstagramAuthException
      */
-    public function __construct($email, $imapHost, $pass, $encryption = true, $username = null, $folder = 'INBOX')
+    public function __construct($email, $imapHost, $pass, $encryption = ImapConnect::NOVALIDATE_CERT, $username = null, $folder = 'INBOX')
     {
         $this->email = $email;
         $this->imapHost = $imapHost;
         $this->pass = $pass;
-        $this->encryption = $encryption ? 'ssl' : null;
+        $this->encryption = $encryption;
         $this->username = $username ?: $email;
         $this->folder = $folder;
 
