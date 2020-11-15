@@ -128,7 +128,9 @@ class ScrapInstagramInfluencers extends Command
                 // Update influencer posts
                 $this->info("Number of posts: " . $influencer->posts);
                 $this->info("Please wait until scraping all medias ...");
-                $this->instagramScraper->getMedias($influencer);
+                $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
+                $force = (!is_null($lastPost) && $lastPost->updated_at->diffInDays(Carbon::now()) > 1);
+                $this->instagramScraper->getMedias($influencer, $force);
                 $influencer->refresh();
 
                 // Update influencer queued state
@@ -180,12 +182,13 @@ class ScrapInstagramInfluencers extends Command
                     }
 
                     // Set tracker queued as finished
-                    if($tracker->influencers->count() > 0 && $tracker->influencers->count() === $scrapedInfluencers)
+                    if($tracker->influencers->count() === $scrapedInfluencers)
                         $tracker->update(['queued' => 'finished']);
                 }
             }catch(\Exception $ex){
                 $tracker->update(['queued' => 'failed']);
                 $this->error("Failed to scrap tracker {$tracker->uuid}");
+                $this->error($ex->getMessage());
                 Log::error($ex->getMessage());
 
                 continue;

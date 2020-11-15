@@ -201,14 +201,17 @@ class InstagramScraper
      * Scrap user medias
      *
      * @param Influencer $influencer
+     * @param bool $force Force update all medias
      * @param int $maxID
      * @return void
      */
-    public function getMedias(Influencer $influencer, int $max = self::MAX_REQUEST)
+    public function getMedias(Influencer $influencer, bool $force = false, int $max = self::MAX_REQUEST)
     {
         try{
-            $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
-            $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
+            if(!$force){
+                $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
+                $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
+            }
 
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID);
@@ -226,6 +229,8 @@ class InstagramScraper
                 // Set end cursor
                 if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'])
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
+                elseif($force)
+                    $max = $fetchedMedias['maxId'];
 
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
@@ -253,7 +258,7 @@ class InstagramScraper
 
             // Scraping more
             if($fetchedMedias['hasNextPage'])
-                return $this->getMedias($influencer, $max);
+                return $this->getMedias($influencer, $force, $max);
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
@@ -263,7 +268,7 @@ class InstagramScraper
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
 
-                return $this->getMedias($influencer, $max);
+                return $this->getMedias($influencer, $force, $max);
             }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
