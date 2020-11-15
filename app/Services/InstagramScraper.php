@@ -117,10 +117,21 @@ class InstagramScraper
         try{
             // Set proxy
             Request::setHttpClient(new Client([
-                'verify'    =>  !config("app.debug"),
-                'proxy'     =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
-                'timeout'   =>  30
-                // TODO: Improve proxy using curl params
+                'verify'            =>  false,
+                'proxy'             =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
+                'timeout'           =>  300,
+                'connect_timeout'   =>  35,
+                'config'            =>  [
+                    'curl'          =>  [
+                        CURLOPT_SSL_VERIFYPEER  =>  0,
+                        CURLOPT_SSL_VERIFYHOST  =>  0,
+                        CURLOPT_FOLLOWLOCATION  =>  1,
+                        CURLOPT_MAXREDIRS       =>  5,
+                        CURLOPT_HTTPPROXYTUNNEL =>  1,
+                        CURLOPT_RETURNTRANSFER  =>  1,
+                        CURLOPT_HEADER          =>  1
+                    ]
+                ]
             ]));
 
             $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
