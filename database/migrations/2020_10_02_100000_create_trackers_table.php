@@ -18,7 +18,6 @@ class CreateTrackersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('campaign_id');
-            $table->unsignedBigInteger('influencer_id')->nullable();
             $table->string('uuid')->unique()->nullable(false);
             $table->enum('type', ['url', 'post', 'story'])->default('url');
             $table->string('name')->unique()->nullable(false);
@@ -43,7 +42,6 @@ class CreateTrackersTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
-            $table->foreign('influencer_id')->references('id')->on('influencers')->onDelete('set null');
         });
 
         // Tracker medias

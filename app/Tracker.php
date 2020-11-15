@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Events\TrackerUpdated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
@@ -12,10 +11,6 @@ class Tracker extends Model
     use HasUuidRouteKey;
 
     protected $guarded = [];
-
-    protected $dispatchesEvents = [
-        'updated' => TrackerUpdated::class,
-    ];
 
     /**
      * The accessors to append to the model's array form.
@@ -93,16 +88,6 @@ class Tracker extends Model
     }
 
     /**
-     * Get influencer
-     *
-     * @return \App\Influencer
-     */
-    public function influencer()
-    {
-        return $this->belongsTo(Influencer::class);
-    }
-
-    /**
      * Get tracker media files
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
@@ -146,6 +131,7 @@ class Tracker extends Model
         foreach($this->posts()->get()->load('influencer') as $post){
             if(is_null($post->influencer) || $post->influencer->queued !== 'finished')
                 continue;
+
             $influencers->add($post->influencer);
         }
 

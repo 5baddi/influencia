@@ -9,13 +9,13 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "davidepastore/ipinfo": "^0.6.0",
         "davmixcool/php-sentiment-analyzer": "^1.2",
         "fideloper/proxy": "^4.4",
         "florianv/laravel-swap": "^2.2",
         "fruitcake/laravel-cors": "^2.0",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^7.0",
         "ip2location/ip2location-laravel": "^1.2",
-        "ipinfo/ipinfo": "^1.1",
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^7.0",
         "laravel/sanctum": "^2.3",
@@ -30,9 +30,8 @@
         "phpfastcache/phpfastcache": "^8.0",
         "phpoffice/phpspreadsheet": "^1.15",
         "pusher/pusher-php-server": "^4.1",
-        "raiym/instagram-php-scraper": "^0.9.14",
+        "raiym/instagram-php-scraper": "^0.10.0",
         "ryancco/laravel-uuid-models": "^1.0",
-        "scotteh/php-goose": "^1.0",
         "spekulatius/phpscraper": "^0.4.1",
         "ssilence/php-imap-client": "dev-master"
     },
@@ -60,12 +59,6 @@
         "classmap": [
             "database/seeds",
             "database/factories"
-        ],
-        "exclude-from-classmap": [
-            "vendor/raiym/instagram-php-scraper/src/InstagramScraper/Instagram.php"
-        ],
-        "files": [
-            "app/Overrides/Instagram.php"
         ]
     },
     "autoload-dev": {
