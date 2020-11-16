@@ -14,7 +14,6 @@ use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
 use App\Influencer;
-use App\Jobs\ScrapInstagramAllPostsJob;
 use App\Jobs\ScrapURLContentJob;
 use App\Services\InstagramScraper;
 use App\ShortLink;
@@ -41,7 +40,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
                     })
@@ -66,7 +65,7 @@ class TrackerController extends Controller
         ]);
 
         if($updated)
-            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])->find($tracker->id));
+            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'shortlink'])->find($tracker->id));
 
 
         return response()->error("Something going wrong! Please try again or contact the support..");
@@ -103,7 +102,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink'])->find($tracker->id)
         );
     }
 
@@ -138,13 +137,10 @@ class TrackerController extends Controller
         // Srap Influencer
         $instagramUser = $scraper->byUsername($request->input('username'));
         $influencer = Influencer::create($instagramUser);
-        // Dispatch scraping job
-        ScrapInstagramAllPostsJob::dispatch($influencer->refresh())->onQueue('influencers')->delay(Carbon::now()->addSeconds(60));
-
 
         return response()->success(
             "Story tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'influencer'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'medias'])->find($tracker->id)
         );
     }
 
@@ -160,7 +156,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'influencer', 'shortlink'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink'])->find($tracker->id)
         );
     }
 

@@ -4,7 +4,6 @@ namespace App\Jobs;
 
 use Format;
 use App\Tracker;
-use Carbon\Carbon;
 use App\Influencer;
 use Illuminate\Bus\Queueable;
 use App\Services\InstagramScraper;
@@ -15,7 +14,6 @@ use App\Repositories\InfluencerRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Repositories\InfluencerPostRepository;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class ScrapInstagramPostJob implements ShouldQueue
 {
@@ -36,13 +34,6 @@ class ScrapInstagramPostJob implements ShouldQueue
     private $tracker;
 
     /**
-     * Console output
-     *
-     * @var \Symfony\Component\Console\Output\ConsoleOutput
-     */
-    private $console;
-
-    /**
      * Create a new job instance.
      *
      * @return void
@@ -50,9 +41,6 @@ class ScrapInstagramPostJob implements ShouldQueue
     public function __construct(Tracker $tracker)
     {
         $this->tracker = $tracker;
-
-        // Init console
-        // $this->console = new ConsoleOutput();
     }
 
     /**
@@ -114,10 +102,8 @@ class ScrapInstagramPostJob implements ShouldQueue
                 $influencer = Influencer::where('account_id', $account->getId())->first();
                 if(is_null($influencer)){
                     $influencer = $influencerRepo->create($accountDetails);
-                    // $this->console->writeln("<fg=green>Create influencer @{$influencer->username}</>");
                 }else{
                     $influencer = $influencerRepo->update($influencer, $accountDetails);
-                    // $this->console->writeln("<fg=green>Update influencer @{$influencer->username}</>");
                 }
 
                 // Update tracker details
@@ -133,13 +119,6 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                     $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
                 }
-
-                $influencer = $influencer->refresh();
-                // Set tracker on finished status or launch all posts scraper
-                if($influencer->posts()->count() == $influencer->posts)
-                    $this->tracker->update(['queued' => 'finished']);
-                // else
-                //     ScrapInstagramAllPostsJob::dispatchNow($influencer);
             }
         }catch(\Exception $ex){
             $this->fail($ex);
@@ -149,7 +128,8 @@ class ScrapInstagramPostJob implements ShouldQueue
     public function fail($exception = null)
     {
         // Set tracker on failed status
-        $this->tracker->update(['queued' => 'failed']);
+        if($exception->getCode() === 429)
+            $this->tracker->update(['queued' => 'failed']);
 
         Log::error("Failed to extract Post info | " . $exception->getMessage());
     }
@@ -159,23 +139,18 @@ class ScrapInstagramPostJob implements ShouldQueue
         // Format short code
         $shortCode = Format::extractInstagarmShortCode($url);
         if(is_null($shortCode))
-            return $this->fail();
+            return $this->fail(new \Exception("Can't get post with URL: {$url}"));
 
         // Store media analytics
-        // TODO: verify short code parser
         $_media = $scraper->getMedia($shortCode, null, $this->tracker);
         // Set media influencer ID
         $_media['influencer_id'] = $influencer->id;
         // Store or update media
         $existsMedia = $postRepo->exists($influencer, $_media['post_id']);
         if(!is_null($existsMedia)){
-            // $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
-            // $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
             $postRepo->update($existsMedia, $_media);
             Log::info("Update post: {$existsMedia->short_code}");
         }else{
-            // $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
-            // $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
             $postRepo->create($_media);
             Log::info("Create post: {$_media['short_code']}");
         }
