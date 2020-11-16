@@ -95,6 +95,17 @@ class InstagramScraper
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
 
         // Init instagram scraper
+        $this->instagramAuthentication($client);
+    }
+
+    /**
+     * Instagram authentication
+     *
+     * @param \GuzzleHttp\Client $client
+     * @return void
+     */
+    public function instagramAuthentication(Client $client) : void
+    {
         try{
             // Init
             $this->instagram = Instagram::withCredentials($client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
@@ -115,8 +126,8 @@ class InstagramScraper
     public function setProxy()
     {
         try{
-            // Set proxy
-            Request::setHttpClient(new Client([
+            // Init $client
+            $client = new Client([
                 'verify'            =>  false,
                 'proxy'             =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
                 'timeout'           =>  300,
@@ -132,7 +143,10 @@ class InstagramScraper
                         CURLOPT_HEADER          =>  1
                     ]
                 ]
-            ]));
+            ]);
+
+            // Set proxy
+            $this->instagramAuthentication($client);
 
             $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
