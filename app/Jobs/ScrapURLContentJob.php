@@ -2,14 +2,14 @@
 
 namespace App\Jobs;
 
+use Goose\Client;
 use App\ShortLink;
-// use Goose\Client;
 use Illuminate\Bus\Queueable;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 
 class ScrapURLContentJob implements ShouldQueue
 {
@@ -38,7 +38,7 @@ class ScrapURLContentJob implements ShouldQueue
     {
         // Init
         $this->shortLink = $shortLink;
-        // $this->goose = new Client();
+        $this->goose = new Client();
     }
 
     /**
@@ -53,14 +53,14 @@ class ScrapURLContentJob implements ShouldQueue
 
         try{
             // Extract content
-            // $content = $this->goose->extractContent($this->shortLink->link);
-            // $this->shortLink->update([
-            //     'title'                 =>  $content->getTitle(),
-            //     'meta_description'      =>  $content->getMetaDescription(),
-            //     'meta_keywords'         =>  $content->getMetaKeywords(),
-            //     'tags'                  =>  $content->getTags(),
-            //     'top_image_url'         =>  !is_null($content->getTopImage()) ? $content->getTopImage()->getImageSrc() : null,
-            // ]);
+            $content = $this->goose->extractContent($this->shortLink->link);
+            $this->shortLink->update([
+                'title'                 =>  $content->getTitle(),
+                'meta_description'      =>  $content->getMetaDescription(),
+                'meta_keywords'         =>  $content->getMetaKeywords(),
+                'tags'                  =>  $content->getTags(),
+                'top_image_url'         =>  !is_null($content->getTopImage()) ? $content->getTopImage()->getImageSrc() : null,
+            ]);
             $this->shortLink->tracker->update(['queued' => 'finished']);
         }catch(\Exception $ex){
             $this->fail($ex);
@@ -69,10 +69,8 @@ class ScrapURLContentJob implements ShouldQueue
 
     public function fail($exception = null)
     {
-        dd($exception);
         // Set tracker on failed status
         $this->shortLink->tracker->update(['queued' => 'failed']);
-
         Log::error("Failed to extract URL info | " . $exception->getMessage());
     }
 }

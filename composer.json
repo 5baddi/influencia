@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "5baddi/php-goose-with-guzzlehttp7": "^1.0",
         "davidepastore/ipinfo": "^0.6.0",
         "davmixcool/php-sentiment-analyzer": "^1.2",
         "fideloper/proxy": "^4.4",
