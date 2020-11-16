@@ -171,9 +171,9 @@ export default {
                     ],
                 }],
                 labels: [
-                    'Positive',
-                    'Neutral',
-                    'Negative',
+                    'Positive ' + this.campaign.sentiments_positive.toFixed(2),
+                    'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
+                    'Negative ' + this.campaign.sentiments_negative.toFixed(2),
                 ]
             });
         }
