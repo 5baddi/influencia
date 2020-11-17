@@ -57,7 +57,7 @@ class ShortLinkController extends Controller
                 $ipLookup = new IPinfo([
                     'token' => env('IPINFOIO_TOKEN')
                 ]);
-                $ipInfo = $ipLookup->getFullIpDetails($ip);
+                $ipInfo = $ipLookup->getDetails($ip);
 
                 $data = array_merge($data, [
                     'country_code'  =>  $ipInfo->country,
