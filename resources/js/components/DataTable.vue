@@ -221,7 +221,7 @@ export default {
             if (this.data.length === 0)
                 return [];
 
-            let _data = this.data.slice(this.startIndex - 1, this.perPage);
+            let _data = this.data.slice(this.startIndex - 1, this.data.length < this.perPage ? this.data.length : this.perPage);
             // TODO: fix pagination...
             let vm = this;
             let parsedData = [];
