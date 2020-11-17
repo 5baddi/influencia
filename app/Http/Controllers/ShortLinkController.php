@@ -7,7 +7,7 @@ use App\ShortLink;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Request;
-use DavidePastore\Ipinfo\Ipinfo;
+use ipinfo\ipinfo\IPinfo;
 
 class ShortLinkController extends Controller
 {
@@ -52,24 +52,24 @@ class ShortLinkController extends Controller
                 'browser_version'       =>  $this->agent->version($this->agent->browser()),
             ];
 
+            // IP lookup
+            if($ip !== '127.0.0.1'){
+                $ipLookup = new IPinfo([
+                    'token' => env('IPINFOIO_TOKEN')
+                ]);
+                $ipInfo = $ipLookup->getFullIpDetails($ip);
+
+                $data = array_merge($data, [
+                    'country_code'  =>  $ipInfo->country,
+                    'country_name'  =>  $ipInfo->country_name,
+                    'city_name'     =>  $ipInfo->city,
+                    'zip_code'      =>  $ipInfo->postal,
+                    'referer'       =>  Request::server('HTTP_REFERER')
+                ]);
+            }
+
             // Create new record or update exists one
             if(is_null($visit)){
-                // IP lookup
-                if($ip !== '127.0.0.1'){
-                    $ipLookup = new Ipinfo([
-                        'token' => env('IPINFOIO_TOKEN')
-                    ]);
-                    $ipInfo = $ipLookup->getFullIpDetails($ip);
-
-                    // $data = array_merge($data, [
-                    //     'country_code'  =>  $ipInfo->country,
-                    //     'country_name'  =>  $ipInfo->country_name,
-                    //     'city_name'     =>  $ipInfo->city,
-                    //     // 'zip_code'      =>  $ipInfo->postal,
-                    //     'referer'       =>  Request::server('HTTP_REFERER')
-                    // ]);
-                }
-
                 $data = array_merge($data, [
                     'ip'            =>  $ip,
                     'short_link_id' =>  $shortLinkID,
