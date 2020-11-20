@@ -49,11 +49,10 @@ class EmailVerification implements TwoStepVerificationInterface
         $this->username = $username ?: $email;
         $this->folder = $folder;
 
-        // Open connection
-        try {
-            new Imap($this->imapHost, $this->username, $this->pass, $this->encryption);
-
-        } catch (ImapClientException $error) {
+        try{
+            // Open connection
+            $this->imap = new Imap($this->imapHost, $this->username, $this->pass, $this->encryption);
+        }catch(ImapClientException $error){
             throw new InstagramAuthException('Login error. Cannot login to imap server: ' . $error->getMessage());
         }
     }

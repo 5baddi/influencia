@@ -4,8 +4,77 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d4aabda9a521336d1b89c18d4e30ea55",
+    "content-hash": "f9c260feea4495726691cfc887ef25f3",
     "packages": [
+        {
+            "name": "5baddi/php-goose-with-guzzlehttp7",
+            "version": "1.0.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/5baddi/php-goose-with-guzzlehttp7.git",
+                "reference": "48ec24c7fee0531a169b56b271fce8140160144a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/5baddi/php-goose-with-guzzlehttp7/zipball/48ec24c7fee0531a169b56b271fce8140160144a",
+                "reference": "48ec24c7fee0531a169b56b271fce8140160144a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-libxml": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.0",
+                "jakeasmith/http_build_url": "1.0.*",
+                "lib-libxml": ">=2.7.7",
+                "php": ">=7.1.0",
+                "scotteh/php-dom-wrapper": "^1.0"
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "^2.9",
+                "phpunit/phpunit": "^7.0 || ^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Goose\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Scott",
+                    "email": "andrew@andrewscott.net.au"
+                },
+                {
+                    "name": "BADDI Mohamed",
+                    "email": "project@baddi.info"
+                }
+            ],
+            "description": "Readability / Html Content / Article Extractor & Web Scrapping library written in PHP",
+            "homepage": "https://github.com/5baddi/php-goose-with-guzzlehttp7",
+            "keywords": [
+                "content",
+                "extractor",
+                "http",
+                "readability",
+                "scraper",
+                "scraping",
+                "text",
+                "website"
+            ],
+            "support": {
+                "source": "https://github.com/5baddi/php-goose-with-guzzlehttp7/tree/1.0.11"
+            },
+            "time": "2020-11-16T18:10:19+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "v2.0.2",
@@ -183,57 +252,6 @@
                 }
             ],
             "time": "2020-10-02T12:38:20+00:00"
-        },
-        {
-            "name": "davidepastore/ipinfo",
-            "version": "v0.6.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/DavidePastore/ipinfo.git",
-                "reference": "3b63dae4ae2a6d759ca116aa91fcdeeebec63840"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/DavidePastore/ipinfo/zipball/3b63dae4ae2a6d759ca116aa91fcdeeebec63840",
-                "reference": "3b63dae4ae2a6d759ca116aa91fcdeeebec63840",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "ext-json": "*",
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "6.5.*",
-                "scrutinizer/ocular": "~1.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0+"
-            ],
-            "authors": [
-                {
-                    "name": "davidepastore",
-                    "email": "pasdavide@gmail.com"
-                }
-            ],
-            "description": "A wrapper around the ipinfo.io services",
-            "keywords": [
-                "IP",
-                "geolocation",
-                "ipinfo"
-            ],
-            "support": {
-                "issues": "https://github.com/DavidePastore/ipinfo/issues",
-                "source": "https://github.com/DavidePastore/ipinfo/tree/v0.6.0"
-            },
-            "time": "2020-09-10T11:05:03+00:00"
         },
         {
             "name": "davmixcool/php-sentiment-analyzer",
@@ -1405,6 +1423,107 @@
             "time": "2020-09-23T23:04:28+00:00"
         },
         {
+            "name": "ipinfo/ipinfo",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ipinfo/php.git",
+                "reference": "d933b19dc1fb8f72a16122f287768477c2e29814"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ipinfo/php/zipball/d933b19dc1fb8f72a16122f287768477c2e29814",
+                "reference": "d933b19dc1fb8f72a16122f287768477c2e29814",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "guzzlehttp/guzzle": "^6.3||^7.0",
+                "php": "~7.0",
+                "sabre/cache": "^1.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=6.5",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ipinfo\\ipinfo\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "James Timmins",
+                    "email": "jameshtimmins@gmail.com",
+                    "homepage": "https://github.com/jhtimmins",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Uman Shahzad",
+                    "email": "uman@mslm.io",
+                    "homepage": "https://github.com/UmanShahzad",
+                    "role": "Developer"
+                }
+            ],
+            "description": "The official PHP library for IPinfo, the most reliable, accurate, and in-depth source of IP address data available anywhere. We process terabytes of data to produce our custom IP geolocation, company, carrier and IP type data sets. Visit our developer docs at https://ipinfo.io/developers.",
+            "homepage": "https://github.com/ipinfo/php",
+            "keywords": [
+                "ipinfo"
+            ],
+            "support": {
+                "issues": "https://github.com/ipinfo/php/issues",
+                "source": "https://github.com/ipinfo/php/tree/v2.0.0"
+            },
+            "time": "2020-11-13T10:34:52+00:00"
+        },
+        {
+            "name": "jakeasmith/http_build_url",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jakeasmith/http_build_url.git",
+                "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jakeasmith/http_build_url/zipball/93c273e77cb1edead0cf8bcf8cd2003428e74e37",
+                "reference": "93c273e77cb1edead0cf8bcf8cd2003428e74e37",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/http_build_url.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jake A. Smith",
+                    "email": "theman@jakeasmith.com"
+                }
+            ],
+            "description": "Provides functionality for http_build_url() to environments without pecl_http.",
+            "support": {
+                "issues": "https://github.com/jakeasmith/http_build_url/issues",
+                "source": "https://github.com/jakeasmith/http_build_url"
+            },
+            "time": "2017-05-01T15:36:40+00:00"
+        },
+        {
             "name": "james-heinrich/getid3",
             "version": "v1.9.20",
             "source": {
@@ -1863,16 +1982,16 @@
         },
         {
             "name": "laravel/sanctum",
-            "version": "v2.8.0",
+            "version": "v2.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sanctum.git",
-                "reference": "b6420b0d4beace16f6e8248b221fd0b0deee47a1"
+                "reference": "9b8cc455eadee5330d849bb3e41dc5931ccbe8ee"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sanctum/zipball/b6420b0d4beace16f6e8248b221fd0b0deee47a1",
-                "reference": "b6420b0d4beace16f6e8248b221fd0b0deee47a1",
+                "url": "https://api.github.com/repos/laravel/sanctum/zipball/9b8cc455eadee5330d849bb3e41dc5931ccbe8ee",
+                "reference": "9b8cc455eadee5330d849bb3e41dc5931ccbe8ee",
                 "shasum": ""
             },
             "require": {
@@ -1923,7 +2042,7 @@
                 "issues": "https://github.com/laravel/sanctum/issues",
                 "source": "https://github.com/laravel/sanctum"
             },
-            "time": "2020-11-03T19:11:54+00:00"
+            "time": "2020-11-17T16:45:56+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -3761,49 +3880,6 @@
             "time": "2020-07-07T09:29:14+00:00"
         },
         {
-            "name": "php-mail-client/client",
-            "version": "3.2.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-mail-client/Client.git",
-                "reference": "976a4d082cd26d25cacabd0533fbc20cc913f0d3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-mail-client/Client/zipball/976a4d082cd26d25cacabd0533fbc20cc913f0d3",
-                "reference": "976a4d082cd26d25cacabd0533fbc20cc913f0d3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">= 5.3.0"
-            },
-            "require-dev": {
-                "nette/tester": "@dev"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "MailLibrary/loader.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Tomáš Blatný",
-                    "homepage": "https://github.com/greeny"
-                }
-            ],
-            "description": "This library allows you to get mails from mail server.",
-            "support": {
-                "issues": "https://github.com/php-mail-client/Client/issues",
-                "source": "https://github.com/php-mail-client/Client/tree/3.2.2"
-            },
-            "time": "2014-08-11T14:48:06+00:00"
-        },
-        {
             "name": "phpfastcache/phpfastcache",
             "version": "8.0.2",
             "source": {
@@ -5121,6 +5197,130 @@
                 "source": "https://github.com/ryancco/laravel-uuid-models/tree/v1.0"
             },
             "time": "2019-09-07T22:43:11+00:00"
+        },
+        {
+            "name": "sabre/cache",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/sabre-io/cache.git",
+                "reference": "70ffff53eaf873300af836fbcf0440b44cdcc798"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/sabre-io/cache/zipball/70ffff53eaf873300af836fbcf0440b44cdcc798",
+                "reference": "70ffff53eaf873300af836fbcf0440b44cdcc798",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0",
+                "psr/simple-cache": "^1.0"
+            },
+            "provide": {
+                "psr/simple-cache-implementation": "~1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "~2.16.1",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^7.5 || ^8.5 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sabre\\Cache\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Evert Pot",
+                    "email": "me@evertpot.com",
+                    "homepage": "https://evertpot.com/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Simple cache abstraction layer implementing PSR-16",
+            "homepage": "http://sabre.io/dav/",
+            "keywords": [
+                "apc",
+                "apcu",
+                "cache",
+                "memcache",
+                "memcached",
+                "psr-16",
+                "sabre",
+                "simple-cache"
+            ],
+            "support": {
+                "forum": "https://groups.google.com/group/sabredav-discuss",
+                "issues": "https://github.com/sabre-io/cache/issues",
+                "source": "https://github.com/fruux/sabre-skel"
+            },
+            "time": "2020-10-03T16:41:24+00:00"
+        },
+        {
+            "name": "scotteh/php-dom-wrapper",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/scotteh/php-dom-wrapper.git",
+                "reference": "54b064eb88e25887945a179b07097452b2f7af2e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/scotteh/php-dom-wrapper/zipball/54b064eb88e25887945a179b07097452b2f7af2e",
+                "reference": "54b064eb88e25887945a179b07097452b2f7af2e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-libxml": "*",
+                "ext-mbstring": "*",
+                "lib-libxml": ">=2.7.7",
+                "php": ">=7.1.0",
+                "symfony/css-selector": "^4.0 || ^5.0"
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "^2.9",
+                "phpunit/phpunit": "^7.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "DOMWrap\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Andrew Scott",
+                    "email": "andrew@andrewscott.net.au"
+                }
+            ],
+            "description": "Simple DOM wrapper to select nodes using either CSS or XPath expressions and manipulate results quickly and easily.",
+            "homepage": "https://github.com/scotteh/php-dom-wrapper",
+            "keywords": [
+                "css",
+                "dom",
+                "html",
+                "parser",
+                "wrapper"
+            ],
+            "support": {
+                "issues": "https://github.com/scotteh/php-dom-wrapper/issues",
+                "source": "https://github.com/scotteh/php-dom-wrapper/tree/1.2.1"
+            },
+            "time": "2020-02-22T00:53:56+00:00"
         },
         {
             "name": "spekulatius/phpscraper",
@@ -8171,16 +8371,16 @@
         },
         {
             "name": "facade/ignition",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/facade/ignition.git",
-                "reference": "3b3403f18bbdc0aeadf1ffaddf11a1588b12ec7a"
+                "reference": "08668034beb185fa2ac6f09b1034eaa440952ace"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/facade/ignition/zipball/3b3403f18bbdc0aeadf1ffaddf11a1588b12ec7a",
-                "reference": "3b3403f18bbdc0aeadf1ffaddf11a1588b12ec7a",
+                "url": "https://api.github.com/repos/facade/ignition/zipball/08668034beb185fa2ac6f09b1034eaa440952ace",
+                "reference": "08668034beb185fa2ac6f09b1034eaa440952ace",
                 "shasum": ""
             },
             "require": {
@@ -8244,7 +8444,7 @@
                 "issues": "https://github.com/facade/ignition/issues",
                 "source": "https://github.com/facade/ignition"
             },
-            "time": "2020-11-13T13:36:24+00:00"
+            "time": "2020-11-17T09:18:51+00:00"
         },
         {
             "name": "facade/ignition-contracts",

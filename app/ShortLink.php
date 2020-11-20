@@ -63,6 +63,16 @@ class ShortLink extends Model
     }
 
     /**
+     * Get Visis
+     *
+     * @return \App\LinkVisit
+     */
+    public function visits()
+    {
+        return $this->hasMany(LinkVisit::class, 'short_link_id', 'id');
+    }
+
+    /**
      * Get full shortlink
      *
      * @return string
