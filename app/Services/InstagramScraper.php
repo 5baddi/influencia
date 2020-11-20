@@ -238,7 +238,7 @@ class InstagramScraper
             }
 
             // Scrap medias
-            $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID);
+            $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
             $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
 
             sleep(self::SLEEP_REQUEST);
