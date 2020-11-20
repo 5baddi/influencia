@@ -95,13 +95,24 @@ class InstagramScraper
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
 
         // Init instagram scraper
+        $this->instagram = Instagram::withCredentials($client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
+        $this->instagramAuthentication($client);
+    }
+
+    /**
+     * Instagram authentication
+     *
+     * @param \GuzzleHttp\Client $client
+     * @return void
+     */
+    public function instagramAuthentication(Client $client, bool $force = false) : void
+    {
         try{
             // Init
-            $this->instagram = Instagram::withCredentials($client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
             $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
 
             // Login to App Instagram account
-            $this->instagram->login(false, $emailVecification);
+            $this->instagram->login($force, $emailVecification);
             $this->instagram->saveSession();
         }catch(Exception $ex){
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
@@ -115,8 +126,8 @@ class InstagramScraper
     public function setProxy()
     {
         try{
-            // Set proxy
-            Request::setHttpClient(new Client([
+            // Init $client
+            $client = new Client([
                 'verify'            =>  false,
                 'proxy'             =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
                 'timeout'           =>  300,
@@ -132,7 +143,10 @@ class InstagramScraper
                         CURLOPT_HEADER          =>  1
                     ]
                 ]
-            ]));
+            ]);
+
+            // Set proxy
+            $this->instagramAuthentication($client, true);
 
             $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
@@ -588,6 +602,7 @@ class InstagramScraper
     {
         return get_class($ex) === \Unirest\Exception::class
                 || $ex->getCode() === 429
+                || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false
                 || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false;
