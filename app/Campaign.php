@@ -89,9 +89,7 @@ class Campaign extends Model
 
     public function getVisitsEvolutionAttribute()
     {
-        // Get visits
-        $visits = LinkVisit::groupBy('updated_at')->get();
-        dd($visits->toArray());
+        // TODO: Get visits
     }
 
     /**
