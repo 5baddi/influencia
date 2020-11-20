@@ -226,10 +226,11 @@ class InstagramScraper
      *
      * @param Influencer $influencer
      * @param bool $force Force update all medias
+     * @param string $nextCursor
      * @param int $maxID
      * @return void
      */
-    public function getMedias(Influencer $influencer, bool $force = false, int $max = self::MAX_REQUEST)
+    public function getMedias(Influencer $influencer, bool $force = false, string $nextCursor = null, int $max = self::MAX_REQUEST)
     {
         try{
             if(!$force){
@@ -253,8 +254,9 @@ class InstagramScraper
                 // Set end cursor
                 if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'])
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
-                elseif($force)
-                    $max = $fetchedMedias['maxId'];
+                // Force scrap next_cursor
+                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'] && $force)
+                    $nextCursor = $fetchedMedias['maxId'];
 
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
@@ -282,7 +284,7 @@ class InstagramScraper
 
             // Scraping more
             if($fetchedMedias['hasNextPage'])
-                return $this->getMedias($influencer, $force, $max);
+                return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
@@ -292,7 +294,7 @@ class InstagramScraper
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
 
-                return $this->getMedias($influencer, $force, $max);
+                return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
             }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
