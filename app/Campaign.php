@@ -47,7 +47,8 @@ class Campaign extends Model
         'influencers',
         'comments_count',
         'all_trackers_count',
-        'organic_posts'
+        'organic_posts',
+        'visits_evolution'
     ];
 
 
@@ -84,6 +85,13 @@ class Campaign extends Model
                     'status'    => true,
                     'queued'    =>  'finished'
                 ]);
+    }
+
+    public function getVisitsEvolutionAttribute()
+    {
+        // Get visits
+        $visits = LinkVisit::groupBy('updated_at')->get();
+        dd($visits->toArray());
     }
 
     /**

@@ -47,4 +47,14 @@ class LinkVisit extends Model
         'short_lint_id'       =>  'unsignedInteger',
         'last_visit'          =>  'timestamp',
     ];
+
+    /**
+     * Get short link
+     *
+     * @return \App\ShortLink
+     */
+    public function shortLink()
+    {
+        return $this->belongsTo(ShortLnk::class);
+    }
 }
