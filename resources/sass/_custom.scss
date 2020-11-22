@@ -248,6 +248,26 @@ span.status{
     background-color: rgb(246 204 39 / 25%);
 }
 
+.card-with-table{
+    margin: 1rem;
+    padding: 1rem;
+    background: #fff;
+    border: 1px solid;
+    border-color: rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+
+    h4{
+        margin: 0;
+        margin-bottom: 1rem;
+    }
+
+    table{
+        border: none !important;
+        box-shadow: none !important;
+    }
+}
+
 .campaign{
     padding: 0 1rem;
 

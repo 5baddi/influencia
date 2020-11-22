@@ -53,6 +53,15 @@ class User extends Authenticatable
         'banned'            => 'boolean',
     ];
 
+    /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array
+     */
+    protected $appends = [
+        'influencers'
+    ];
+
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
@@ -83,7 +92,7 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function influencers()
+    public function getInfluencersAttribute()
     {
         $influencers = collect();
 

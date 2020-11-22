@@ -3,7 +3,9 @@
     <header>
         <div class="dashboard__sidebar--content">
             <div class="logo">
-                <img src="../../../assets/img/logo.svg" alt="logo" />
+                <router-link :to="{name : 'dashboard'}">
+                    <img src="../../../assets/img/logo.svg" alt="logo" />
+                </router-link>
             </div>
             <h1>INFLUENCIA</h1>
         </div>
@@ -26,6 +28,14 @@
     </div>
     <nav class="dashboard__sidebar__navigation">
         <ul>
+            <li v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == 'dashbooard'}">
+                <router-link :to="{name : 'dashboard'}">
+                    <span class="icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </span>
+                    <span class="text">Dashboard</span>
+                </router-link>
+            </li>
             <li v-if="$can('search', 'scraper') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `search`}">
                 <router-link :to="{name : 'search'}">
                     <span class="icon">

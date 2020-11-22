@@ -23,7 +23,7 @@ function fatchLocalUser() {
 const state = () => ({
     user: fatchLocalUser(),
     token: null,
-    dashboard: null,
+    dashboard: {},
     brands: null,
     activeBrand: null,
     users: null,
@@ -96,7 +96,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.get('/api/v1/dashboard')
                 .then(response => {
-                    if(response.status === 201 && response.data.success){
+                    if(response.status === 200 && response.data.success){
                         commit('setDashboard', { dashboard: response.data.content });
                         resolve(response.data);
                     }else{
