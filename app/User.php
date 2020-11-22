@@ -82,4 +82,23 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Role::class);
     }
+
+    public function influencers()
+    {
+        $influencers = collect();
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts->load('influencer') as $post){
+                if($influencers->contains('id', $post->influencer->id))
+                    continue;
+
+                $influencers->add($post->influencer);
+            }
+        }
+
+        return $influencers;
+    }
 }

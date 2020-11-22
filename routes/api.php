@@ -71,6 +71,9 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Export
     Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
+
+    // Data && statistics
+    Route::get('/dashboard', 'DataController@dashboardStatistics');
 });
 
 // Streamed data

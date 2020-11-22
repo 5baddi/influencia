@@ -129,7 +129,7 @@ class Tracker extends Model
 
         // Load influencers
         foreach($this->posts()->get()->load('influencer') as $post){
-            if(is_null($post->influencer) || $post->influencer->queued !== 'finished')
+            if(is_null($post->influencer) || in_array($post->influencer->queued, ['pending', 'failed']))
                 continue;
 
             $influencers->add($post->influencer);
