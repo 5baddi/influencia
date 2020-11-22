@@ -386,6 +386,18 @@ const actions = {
 
         });
     },
+    fetchTrackerAnalytics({ commit, state }, uuid) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/trackers/" + uuid + "/analytics").then(response => {
+                if(response.status === 200 && response.data.success){
+                    commit('setTracker', { tracker: response.data.content })
+                    resolve(response.data)
+                }else{
+                    throw new Error("Something going wrong!");
+                }
+            }).catch(error => reject(error))
+        });
+    },
     fetchRoles({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/roles").then(response => {

@@ -71,6 +71,15 @@ export default {
     components: {
         CreateTrackerModal,
     },
+    watch: {
+        $route: "initData"
+    },
+    beforeRouteEnter(to, from, next) {
+        next(vm => vm.initData());
+    },
+    beforeRouteUpdate(to, from, next) {
+        next(vm => vm.fatchTracker())
+    },
     data() {
         return {
             showAddTrackerModal: false,
@@ -125,10 +134,7 @@ export default {
         };
     },
     created() {
-        // Fetch brand compaigns
-        this.$store.dispatch("fetchCampaigns");
-        // Fetch brand trackers
-        // this.$store.dispatch("fetchTrackers");
+        this.initData();
     },
     computed: {
         ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "trackers"])
@@ -150,6 +156,21 @@ export default {
         }
     },
     methods: {
+        initData() {
+            // Fetch brand compaigns
+            this.$store.dispatch("fetchCampaigns");
+            // Fetch brand trackers
+            this.$store.dispatch("fetchTrackers");
+        },
+        fetchTracker() {
+            // Load user by UUID
+            if (typeof this.$route.params.uuid !== 'undefined')
+                this.$store.dispatch("fetchTrackerAnalytics", this.$route.params.uuid);
+            else
+                this.$store.commit("setTracker", {
+                    tracker: null
+                });
+        },
         dismissAddTrackerModal() {
             this.showAddTrackerModal = false;
         },

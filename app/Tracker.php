@@ -118,7 +118,7 @@ class Tracker extends Model
     /**
      * Get shortlink
      *
-     * @return \App\Tracker
+     * @return \App\ShortLink
      */
     public function shortlink()
     {

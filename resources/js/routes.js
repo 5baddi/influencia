@@ -40,13 +40,12 @@ const routes = [
             },
             {
                 name: 'trackers',
-                path: '/trackers',
+                path: '/trackers/:uuid?',
                 component: TrackersPage,
                 meta: {
                     auth: true,
                     // subject: 'tracker'
                 },
-
             },
             {
                 name: 'brands',

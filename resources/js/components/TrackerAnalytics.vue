@@ -1,108 +1,103 @@
 <template>
-<div class="campaign" v-if="campaign">
-    <ul v-show="typeof campaign.influencers !== 'undefined' && campaign.influencers.length > 0" class="influencers-avatars">
+<div class="campaign" v-if="tracker">
+    <ul v-show="typeof tracker.influencers !== 'undefined' && tracker.influencers.length > 0" class="influencers-avatars">
         <h4>influencers</h4>
-        <li v-for="influencer in campaign.influencers" :key="influencer.id">
+        <li v-for="influencer in tracker.influencers" :key="influencer.id">
             <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.username">
                 <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
     </ul>
     <div class="cards statistics">
-        <div class="card" v-if="campaign.communities > 0">
+        <div class="card" v-if="tracker.communities > 0">
             <div class="title">
                 <i class="fas fa-users egg-blue"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.communities >= 0 ? campaign.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                    <h4>{{ tracker.communities >= 0 ? tracker.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                     <span>Total size of activated communities</span>
                 </div>
             </div>
             <canvas id="communities-chart"></canvas>
-            <span>Organic communities {{ nbr().abbreviate(campaign.organic_communities) }} ({{ campaign.communities > 0 ? ((campaign.organic_communities / campaign.communities) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic communities {{ nbr().abbreviate(tracker.organic_communities) }} ({{ tracker.communities > 0 ? ((tracker.organic_communities / tracker.communities) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.impressions > 0">
+        <div class="card" v-if="tracker.impressions > 0">
             <div class="title">
                 <i class="fas fa-bullhorn purple"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.impressions >= 0 ? campaign.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                    <h4>{{ tracker.impressions >= 0 ? tracker.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                     <span>Total estimated impressions</span>
                 </div>
             </div>
             <canvas id="impressions-chart"></canvas>
-            <span>Organic impressions {{ nbr().abbreviate(campaign.organic_impressions) }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic impressions {{ nbr().abbreviate(tracker.organic_impressions) }} ({{ tracker.impressions > 0 ? ((tracker.organic_impressions / tracker.impressions) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.views > 0">
+        <div class="card" v-if="tracker.views > 0">
             <div class="title">
                 <i class="far fa-eye green"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.views >= 0 ? campaign.views.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                    <h4>{{ tracker.views >= 0 ? tracker.views.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                     <span>Total videos views</span>
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ nbr().abbreviate(campaign.organic_views) }} ({{ campaign.views > 0 ? ((campaign.organic_views / campaign.views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ nbr().abbreviate(tracker.organic_views) }} ({{ tracker.views > 0 ? ((tracker.organic_views / tracker.views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.engagements > 0">
+        <div class="card" v-if="tracker.engagements > 0">
             <div class="title">
                 <i class="fas fa-thumbs-up blue"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.engagements >= 0 ? campaign.engagements.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                    <h4>{{ tracker.engagements >= 0 ? tracker.engagements.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                     <span>Total engagements</span>
                 </div>
             </div>
             <canvas id="engagements-chart"></canvas>
-            <span>Organic engagements {{ nbr().abbreviate(campaign.organic_engagements) }} ({{ campaign.engagements > 0 ? ((campaign.organic_engagements / campaign.engagements) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic engagements {{ nbr().abbreviate(tracker.organic_engagements) }} ({{ tracker.engagements > 0 ? ((tracker.organic_engagements / tracker.engagements) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.posts_count > 0">
+        <div class="card" v-if="tracker.posts_count > 0">
             <div class="title">
                 <i class="fas fa-hashtag yellow"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.posts_count >= 0 ? campaign.posts_count.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
+                    <h4>{{ tracker.posts_count >= 0 ? tracker.posts_count.toLocaleString().replace(/,/g, ' ') : '---' }}</h4>
                     <span>Total number of posts</span>
                 </div>
             </div>
             <canvas id="posts-chart"></canvas>
-            <span>Organic posts {{ nbr().abbreviate(campaign.organic_posts) }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic posts {{ nbr().abbreviate(tracker.organic_posts) }} ({{ tracker.posts_count > 0 ? ((tracker.organic_posts / tracker.posts_count) * 100).toFixed(2) : 0  }}%)</span>
         </div>
     </div>
 
     <div class="cards sentiments">
-        <div class="card" v-if="campaign.comments_count > 0">
+        <div class="card" v-if="tracker.comments_count > 0">
             <h5>Comments sentiment</h5>
             <canvas id="sentiments-chart"></canvas>
-            <span>Based on {{ campaign.comments_count }} comments</span>
+            <span>Based on {{ tracker.comments_count }} comments</span>
         </div>
-        <div class="card emojis" v-if="campaign.top_three_emojis">
-            <h5>Top {{ Object.values(campaign.top_three_emojis.top).length > 1 ? Object.values(campaign.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
+        <div class="card emojis" v-if="tracker.top_three_emojis">
+            <h5>Top {{ Object.values(tracker.top_three_emojis.top).length > 1 ? Object.values(tracker.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
-                <li v-for="(emoji, index) in campaign.top_three_emojis.top" :key="index">
+                <li v-for="(emoji, index) in tracker.top_three_emojis.top" :key="index">
                     {{ emoji }}
-                    <span>{{ ((index / (campaign.top_three_emojis.all ? campaign.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((index / (tracker.top_three_emojis.all ? tracker.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ campaign.top_three_emojis.all }} emojis</span>
+            <span>Based on {{ tracker.top_three_emojis.all }} emojis</span>
         </div>
     </div>
 
     <div class="by-influencers">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" />
+        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" />
     </div>
 
     <div class="by-instagram-posts">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_posts" />
+        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.instagram_posts" />
     </div>
 
-    <div class="by-influencers">
-        <h4>List of trackers</h4>
-        <DataTable ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers" />
-    </div>
-
-    <div class="posts-section" v-if="campaign && campaign.posts_count > 0">
+    <div class="posts-section" v-if="campaign && tracker.posts_count > 0">
         <h4>Posts</h4>
-        <p>There are {{ campaign && campaign.posts_count ? campaign.posts_count : 0 }} posts for this campaign.</p>
-        <div class="campaign-posts" v-for="tracker in campaign.trackers" :key="tracker.id">
+        <p>There are {{ campaign && tracker.posts_count ? tracker.posts_count : 0 }} posts for this tracker.</p>
+        <div class="campaign-posts" v-for="tracker in tracker.trackers" :key="tracker.id">
             <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
                 <img :src="post.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
@@ -126,7 +121,7 @@ import Chart from 'chart.js';
 
 export default {
     props: {
-        campaign: {
+        tracker: {
             type: Object,
             default: () => ({
 
@@ -147,13 +142,13 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
+        if (typeof this.tracker.sentiments_positive === 'number' && typeof this.tracker.sentiments_neutral === 'number' && typeof this.tracker.sentiments_negative === 'number') {
             this.createDoughtnutChart('sentiments-chart', {
                 datasets: [{
                     data: [
-                        this.campaign.sentiments_positive.toFixed(2),
-                        this.campaign.sentiments_neutral.toFixed(2),
-                        this.campaign.sentiments_negative.toFixed(2)
+                        this.tracker.sentiments_positive.toFixed(2),
+                        this.tracker.sentiments_neutral.toFixed(2),
+                        this.tracker.sentiments_negative.toFixed(2)
                     ],
                     backgroundColor: [
                         "#AFD75C",
@@ -162,18 +157,18 @@ export default {
                     ],
                 }],
                 labels: [
-                    'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-                    'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-                    'Negative ' + this.campaign.sentiments_negative.toFixed(2),
+                    'Positive ' + this.tracker.sentiments_positive.toFixed(2),
+                    'Neutral ' + this.tracker.sentiments_neutral.toFixed(2),
+                    'Negative ' + this.tracker.sentiments_negative.toFixed(2),
                 ]
             });
         }
 
         // Communities
-        if (this.campaign.communities && this.campaign.communities > 0) {
+        if (this.tracker.communities && this.tracker.communities > 0) {
             this.createDoughtnutChart('communities-chart', {
                 datasets: [{
-                    data: [this.campaign.communities],
+                    data: [this.tracker.communities],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -181,10 +176,10 @@ export default {
         }
 
         // Impressions
-        if (this.campaign.impressions && this.campaign.impressions > 0) {
+        if (this.tracker.impressions && this.tracker.impressions > 0) {
             this.createDoughtnutChart('impressions-chart', {
                 datasets: [{
-                    data: [this.campaign.impressions],
+                    data: [this.tracker.impressions],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -192,10 +187,10 @@ export default {
         }
 
         // Videos views
-        if (this.campaign.views && this.campaign.views > 0) {
+        if (this.tracker.views && this.tracker.views > 0) {
             this.createDoughtnutChart('views-chart', {
                 datasets: [{
-                    data: [this.campaign.views],
+                    data: [this.tracker.views],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -203,10 +198,10 @@ export default {
         }
 
         // Engagements
-        if (this.campaign.engagements && this.campaign.engagements > 0) {
+        if (this.tracker.engagements && this.tracker.engagements > 0) {
             this.createDoughtnutChart('engagements-chart', {
                 datasets: [{
-                    data: [this.campaign.engagements],
+                    data: [this.tracker.engagements],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -214,11 +209,11 @@ export default {
         }
 
         // Posts
-        if (this.campaign.posts_count && this.campaign.posts_count > 0) {
-            let postsAndStoriesLabel = 'Instagram: ' + (this.campaign.posts_count ? this.campaign.posts_count : 0) + ' including ' + (this.campaign.stories_count ? this.campaign.stories_count : 0) + ' stories';
+        if (this.tracker.posts_count && this.tracker.posts_count > 0) {
+            let postsAndStoriesLabel = 'Instagram: ' + (this.tracker.posts_count ? this.tracker.posts_count : 0) + ' including ' + (this.tracker.stories_count ? this.tracker.stories_count : 0) + ' stories';
             this.createDoughtnutChart('posts-chart', {
                 datasets: [{
-                    data: [this.campaign.posts_count],
+                    data: [this.tracker.posts_count],
                     backgroundColor: ['#d93176']
                 }],
                 labels: [postsAndStoriesLabel]
@@ -323,25 +318,6 @@ export default {
                 currency: '€'
             }
         ],
-        trackersColumns: [{
-            name: "type",
-            field: "type",
-            capitalize: true
-        }, {
-            name: "name",
-            field: "name",
-            capitalize: true
-        }, {
-            name: "status",
-            field: "status",
-            callback: function (row) {
-                return row.status ? "Active" : "Inactive";
-            }
-        }, {
-            name: "Created at",
-            field: "created_at",
-            isDate: true
-        }, ],
         attrActive: null,
         sentimentData: {
             labels: [
