@@ -20,8 +20,8 @@ class DataController extends Controller
             'campaigns' =>  Campaign::where('user_id', Auth::id())->get(),
             'trackers'  =>  Tracker::where('user_id', Auth::id())->get(),
             'influencers'       =>  Auth::user()->influencers,
-            'latestCampaigns'   =>  Campaign::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get(),
-            'latestTrackers'    =>  Tracker::where('user_id', Auth::id())->orderBy('created_at', 'desc')->take(5)->get()
+            'latestCampaigns'   =>  Campaign::where('user_id', Auth::id())->latest()->take(5)->get(),
+            'latestTrackers'    =>  Tracker::where('user_id', Auth::id())->latest()->take(5)->get()
         ]);
     }
 }
