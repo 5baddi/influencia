@@ -23,6 +23,7 @@ function fatchLocalUser() {
 const state = () => ({
     user: fatchLocalUser(),
     token: null,
+    dashboard: {},
     brands: null,
     activeBrand: null,
     users: null,
@@ -39,6 +40,7 @@ const getters = {
     Token: state => state.token,
     isLogged: state => typeof state.user !== "undefined" && state.user !== null,
     isAdmin: state => state.user.is_superadmin,
+    dashboard: state => state.dashboard,
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
@@ -89,6 +91,21 @@ const actions = {
                 .catch(error => reject(error));
         })
 
+    },
+    fetchDashboard({commit, state}){
+        return new Promise((resolve, reject) => {
+            api.get('/api/v1/dashboard')
+                .then(response => {
+                    if(response.status === 200 && response.data.success){
+                        commit('setDashboard', { dashboard: response.data.content });
+                        resolve(response.data);
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
+                }).catch(error => {
+                    reject(error);
+                });
+        });
     },
     fetchUser({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
@@ -369,6 +386,18 @@ const actions = {
 
         });
     },
+    fetchTrackerAnalytics({ commit, state }, uuid) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/trackers/" + uuid + "/analytics").then(response => {
+                if(response.status === 200 && response.data.success){
+                    commit('setTracker', { tracker: response.data.content })
+                    resolve(response.data)
+                }else{
+                    throw new Error("Something going wrong!");
+                }
+            }).catch(error => reject(error))
+        });
+    },
     fetchRoles({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/roles").then(response => {
@@ -380,6 +409,9 @@ const actions = {
 };
 
 const mutations = {
+    setDashboard: (state, { dashboard }) => {
+        state.dashboard = dashboard;
+    },
     setToken: (state, { token }) => {
         state.token = token;
     },

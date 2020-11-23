@@ -35,7 +35,7 @@
         </tbody>
         <tfoot v-if="data.length > 0 && !isLoading">
             <tr>
-                <td :colspan="getColumnsCount()">
+                <td :colspan="getColumnsCount()" v-if="withPagination">
                     Rows per page:
                     <select ref="itemsPerPage" @change="perPageOnChange($event)">
                         <option v-for="value in rowPerPage" :key="value" :value="(value !== 'All') ? value : data.length" :selected="perPage == value">{{ value }}</option>
@@ -200,6 +200,10 @@ export default {
         },
         nativeData: {
             type: Array
+        },
+        withPagination: {
+            type: Boolean,
+            default: true
         },
         exportable: {
             type: Boolean,

@@ -39,7 +39,10 @@
             <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" :exportable="true" :excelLink="'/api/v1/export/excel/' + activeBrand.uuid + '/trackers'" :endPoint="'/api/v1/stream/' + activeBrand.uuid + '/trackers'" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
-                    <button v-if="(($can('view', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))) && row.data.original.type == 'url'" class="btn icon-link" title="Copy shortlink" @click="copyShortlink(row.data.original)">
+                    <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
+                        <i class="far fa-chart-bar"></i>
+                    </router-link>
+                    <button v-if="(($can('show', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))) && row.data.original.type == 'url'" class="btn icon-link" title="Copy shortlink" @click="copyShortlink(row.data.original)">
                         <i class="fas fa-link"></i>
                     </button>
                     <button v-if="($can('change-status', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" :title="(row.data.original.status ? 'Stop' : 'Start') + ' tracker'" @click="enableTracker(row.data.original)">
@@ -70,6 +73,15 @@ import CreateTrackerModal from "../components/modals/CreateTrackerModal";
 export default {
     components: {
         CreateTrackerModal,
+    },
+    watch: {
+        $route: "initData"
+    },
+    beforeRouteEnter(to, from, next) {
+        next(vm => vm.initData());
+    },
+    beforeRouteUpdate(to, from, next) {
+        next(vm => vm.fatchTracker())
     },
     data() {
         return {
@@ -125,10 +137,7 @@ export default {
         };
     },
     created() {
-        // Fetch brand compaigns
-        this.$store.dispatch("fetchCampaigns");
-        // Fetch brand trackers
-        // this.$store.dispatch("fetchTrackers");
+        this.initData();
     },
     computed: {
         ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "trackers"])
@@ -150,6 +159,21 @@ export default {
         }
     },
     methods: {
+        initData() {
+            // Fetch brand compaigns
+            this.$store.dispatch("fetchCampaigns");
+            // Fetch brand trackers
+            this.$store.dispatch("fetchTrackers");
+        },
+        fetchTracker() {
+            // Load user by UUID
+            if (typeof this.$route.params.uuid !== 'undefined')
+                this.$store.dispatch("fetchTrackerAnalytics", this.$route.params.uuid);
+            else
+                this.$store.commit("setTracker", {
+                    tracker: null
+                });
+        },
         dismissAddTrackerModal() {
             this.showAddTrackerModal = false;
         },

@@ -117,10 +117,6 @@
             </a>
         </div>
     </div>
-
-    <div class="urls-visits">
-        <div id="vmap" style="width: 600px; height: 400px;"></div>
-    </div>
 </div>
 </template>
 
@@ -147,11 +143,6 @@ export default {
                 type: 'doughnut',
                 data: data
             });
-        },
-        drawMap() {
-            // $('#vmap').vectorMap({
-            //     map: 'world_en'
-            // });
         }
     },
     mounted() {

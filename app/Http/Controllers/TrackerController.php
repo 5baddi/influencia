@@ -50,6 +50,20 @@ class TrackerController extends Controller
     }
 
     /**
+     * Display the specified resource.
+     *
+     * @param  \App\Tracker  $tracker
+     * @return \Illuminate\Http\Response
+     */
+    public function analytics(Tracker $tracker)
+    {
+        return response()->success(
+            "Tracker fetched successfully.",
+            Tracker::with(['posts', 'user', 'medias', 'campaign', 'shortlink'])->find($tracker->id)
+        );
+    }
+
+    /**
      * Enable/Disable tracker
      *
      * @param \App\Tracker $tracker

@@ -1,10 +1,10 @@
 <?php
 
-use App\ApplicationSetting;
 use App\Role;
 use App\User;
 use App\Brand;
 use App\Permission;
+use App\ApplicationSetting;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -42,6 +42,8 @@ class DumpDataSeeder extends Seeder
             'rename_campaign',
             'disable_campaign',
             'delete_campaign',
+            'analytics_tracker',
+            'change-status_tracker',
             'show_tracker',
             'list_tracker',
             'create_tracker',

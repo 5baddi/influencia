@@ -22,7 +22,8 @@ const routes = [
         path: '/',
         component: DashboardContainer,
         redirect: {
-            name: 'dashboard'
+            name: 'dashboard',
+            path: '/dashbooard'
         },
         meta: {
             auth: true
@@ -39,13 +40,12 @@ const routes = [
             },
             {
                 name: 'trackers',
-                path: '/trackers',
+                path: '/trackers/:uuid?',
                 component: TrackersPage,
                 meta: {
                     auth: true,
                     // subject: 'tracker'
                 },
-
             },
             {
                 name: 'brands',

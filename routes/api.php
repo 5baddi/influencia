@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::post('/trackers/story', 'TrackerController@createStory');
     Route::get('/trackers/{tracker}/status', 'TrackerController@changeStatus');
     Route::delete('/trackers/{tracker}', 'TrackerController@delete');
+    Route::get('/trackers/{tracker}/analytics', 'TrackerController@analytics');
 
     // Users
     Route::get('/users', 'UserController@index');
@@ -71,6 +72,9 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Export
     Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
+
+    // Data && statistics
+    Route::get('/dashboard', 'DataController@dashboardStatistics');
 });
 
 // Streamed data

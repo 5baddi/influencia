@@ -18,7 +18,15 @@ class Tracker extends Model
      * @var array
      */
     protected $appends = [
-        'influencers'
+        'influencers',
+        'engagements',
+        'organic_engagements',
+        'views',
+        'organic_views',
+        'impressions',
+        'organic_impressions',
+        'communities',
+        'organic_communities',
     ];
 
     /**
@@ -110,7 +118,7 @@ class Tracker extends Model
     /**
      * Get shortlink
      *
-     * @return \App\Tracker
+     * @return \App\ShortLink
      */
     public function shortlink()
     {
@@ -129,12 +137,148 @@ class Tracker extends Model
 
         // Load influencers
         foreach($this->posts()->get()->load('influencer') as $post){
-            if(is_null($post->influencer) || $post->influencer->queued !== 'finished')
+            if(is_null($post->influencer) || in_array($post->influencer->queued, ['pending', 'failed']))
                 continue;
 
             $influencers->add($post->influencer);
         }
 
         return $influencers;
+    }
+
+    /**
+     * Get tracker engagements
+     *
+     * @return int
+     */
+    public function getEngagementsAttribute() : int
+    {
+        $engagement = 0;
+
+        foreach($this->posts as $post)
+            $engagement += $post->likes + $post->comments;
+
+        return $engagement;
+    }
+
+    /**
+     * Get organic engagements
+     *
+     * @return int
+     */
+    public function getOrganicEngagementsAttribute() : int
+    {
+        $engagement = 0;
+
+        foreach($this->posts as $post){
+            if($post->is_ad)
+                continue;
+
+            $engagement += $post->likes + $post->comments;
+        }
+
+        return $engagement;
+    }
+
+    /**
+     * Get videos views 
+     *
+     * @return int
+     */
+    public function getViewsAttribute() : int
+    {
+        $views = 0;
+
+        foreach($this->posts as $post)
+            $views += $post->video_views;
+
+        return $views;
+    }
+
+    /**
+     * Get organic videos views
+     *
+     * @return int
+     */
+    public function getOrganicViewsAttribute() : int
+    {
+        $views = 0;
+
+        foreach($this->posts as $post){
+            if($post->is_ad)
+                continue;
+
+            $views += $post->video_views;
+        }
+
+        return $views;
+    }
+
+    /**
+     * Get impressions
+     *
+     * @return int
+     */
+    public function getImpressionsAttribute() : int
+    {
+        $impressions = 0;
+
+        foreach($this->posts as $post)
+            $impressions += $post->likes + $post->video_views;
+
+        return $impressions;
+    }
+
+    /**
+     * Get organic impressions
+     *
+     * @return int
+     */
+    public function getOrganicImpressionsAttribute() : int
+    {
+        $impressions = 0;
+
+        foreach($this->posts as $post){
+            if($post->is_ad)
+                continue;
+
+            $impressions += $post->likes + $post->video_views;
+        }
+
+        return $impressions;
+    }
+
+    /**
+     * Get size of activated communities
+     *
+     * @return int
+     */
+    public function getCommunitiesAttribute() : int
+    {
+        $communities = 0;
+
+        foreach($this->posts->load('influencer') as $post)
+            $communities += $post->influencer->followers;
+
+        return $communities;
+    }
+
+    /**
+     * Get size of origanic activated communities
+     *
+     * @return int
+     */
+    public function getOrganicCommunitiesAttribute() : int
+    {
+        $communities = 0;
+
+        foreach($this->posts as $post){
+            if($post->is_ad)
+                continue;
+
+            $communities += $post->likes + $post->comments;
+        }
+
+        return $communities;
     }
 }
