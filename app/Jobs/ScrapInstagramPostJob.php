@@ -127,9 +127,9 @@ class ScrapInstagramPostJob implements ShouldQueue
 
     public function fail($exception = null)
     {
+        dd($exception);
         // Set tracker on failed status
-        if($exception->getCode() === 429)
-            $this->tracker->update(['queued' => 'failed']);
+        $this->tracker->update(['queued' => 'failed']);
 
         Log::error("Failed to extract Post info | " . $exception->getMessage());
     }

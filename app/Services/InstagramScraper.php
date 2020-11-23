@@ -26,7 +26,7 @@ class InstagramScraper
     /**
      * Max request by each fetch
      */
-    const MAX_REQUEST = 10;
+    const MAX_REQUEST = 100;
 
     /**
      * Sleep request seconds
@@ -39,6 +39,20 @@ class InstagramScraper
      * @var \InstagramScraper\Instagram
      */
     private $instagram;
+
+    /**
+     * HTTP Client
+     *
+     * @var \GuzzleHttp\Client
+     */
+    private $client;
+
+    /**
+     * Cache manager
+     *
+     * @var \Phpfastcache\Helper\Psr16Adapter
+     */
+    private $cacheManager;
 
     /**
      * Emoji parser
@@ -77,6 +91,9 @@ class InstagramScraper
 
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
+        // Init Cache manager
+        $this->cacheManager = new Psr16Adapter('Files');
+
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
@@ -84,41 +101,46 @@ class InstagramScraper
         $this->postRepo = $postRepo;
 
         // Init console
-        $this->console = new ConsoleOutput();
+        // $this->console = new ConsoleOutput();
 
         // Init HTTP Client
-        $client = new Client([
-            'verify' => !config("app.debug")
+        $this->client = new Client([
+            'verify'    =>  !config('app.debug')
         ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
 
         // Init instagram scraper
-        $this->instagram = Instagram::withCredentials($client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), new Psr16Adapter('Files'));
-        $this->instagramAuthentication($client);
+        try{
+            $this->instagramAuthentication();
+        }catch(\Exception $ex){
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // Trace log
+            Log::error($ex->getMessage());
+        }
     }
 
     /**
      * Instagram authentication
      *
-     * @param \GuzzleHttp\Client $client
      * @return void
      */
-    public function instagramAuthentication(Client $client, bool $force = false) : void
+    public function instagramAuthentication(bool $force = false) : void
     {
         try{
-            // Init
+            // Init IMAP for Two steps verification
             $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
 
             // Login to App Instagram account
+            $this->instagram = Instagram::withCredentials($this->client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), $this->cacheManager);
             $this->instagram->login($force, $emailVecification);
             $this->instagram->saveSession();
         }catch(Exception $ex){
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             // Trace log
             Log::error($ex->getMessage());
 
-            $this->instagram = new Instagram($client);
+            $this->instagram = new Instagram($this->client);
         }
     }
 
@@ -126,8 +148,8 @@ class InstagramScraper
     {
         try{
             // Init $client
-            $client = new Client([
-                'verify'            =>  false,
+            $this->client = new Client([
+                'verify'            =>  !config('app.debug'),
                 'proxy'             =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
                 'timeout'           =>  300,
                 'connect_timeout'   =>  35,
@@ -144,12 +166,9 @@ class InstagramScraper
                 ]
             ]);
 
-            // Set proxy
-            $this->instagramAuthentication($client, true);
-
-            $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
+            // $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
             throw new \Exception("Failed to connect using a proxy!");
         }
@@ -188,13 +207,14 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
+                $this->instagramAuthentication(true);
 
                 return $this->byUsername($username);
             }
@@ -202,7 +222,7 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             throw $ex;
         }
     }
@@ -215,11 +235,30 @@ class InstagramScraper
      */
     public function byMedia(string $link) : \InstagramScraper\Model\Media
     {
-        // Scrap media
-        $media = $this->instagram->getMediaByUrl($link);
-        sleep(self::SLEEP_REQUEST);
+        try{
+            // Scrap media
+            $media = $this->instagram->getMediaByUrl($link);
+            sleep(self::SLEEP_REQUEST);
 
-        return $media;
+            return $media;
+        }catch(\Exception $ex){
+            Log::error($ex->getMessage());
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+
+            // Use proxy
+            if($this->isTooManyRequests($ex)){
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->setProxy();
+                $this->instagramAuthentication(true);
+
+                return $this->byMedia($link);
+            }
+
+            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
+                throw new \Exception("Lost connection to Instagram");
+
+            throw $ex;
+        }
     }
 
     /**
@@ -237,11 +276,12 @@ class InstagramScraper
             if(!$force){
                 $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
                 $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
+                // $this->console->writeln("<fg=green>Start scraping from " . $lastPost->short_code . "</>");
             }
 
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
+            // $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
 
             sleep(self::SLEEP_REQUEST);
 
@@ -262,14 +302,14 @@ class InstagramScraper
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
                 if(!is_null($existsMedia)){
-                    $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
-                    $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
+                    // $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
+                    // $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
                     $this->postRepo->update($existsMedia, $_media);
                     Log::info("Update post: {$existsMedia->short_code}");
                     continue;
                 }else{
-                    $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
-                    $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
+                    // $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
+                    // $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
                     $this->postRepo->create($_media);
                     Log::info("Create post: {$_media['short_code']}");
                 }
@@ -288,12 +328,13 @@ class InstagramScraper
                 return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
+                $this->instagramAuthentication(true);
 
                 return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
             }
@@ -324,8 +365,9 @@ class InstagramScraper
         }catch(\Exception $ex){
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
+                $this->instagramAuthentication(true);
 
                 return $this->getMedia($mediaShortCode, $media, $tracker);
             }
@@ -333,7 +375,7 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
             throw $ex;
         }
@@ -488,8 +530,27 @@ class InstagramScraper
 
 
         // Load comments
-        $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
-        sleep(self::SLEEP_REQUEST);
+        try{
+            $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
+            sleep(self::SLEEP_REQUEST);
+        }catch(\Exception $ex){
+            Log::error($ex->getMessage());
+            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+
+            // Use proxy
+            if($this->isTooManyRequests($ex)){
+                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->setProxy();
+                $this->instagramAuthentication(true);
+
+                return  $this->getSentimentsAndEmojis($media, $data, $nextComment, $max);
+            }
+
+            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
+                throw new \Exception("Lost connection to Instagram");
+
+            throw $ex;
+        }
 
         foreach($comments as $comment){
             // Handle method

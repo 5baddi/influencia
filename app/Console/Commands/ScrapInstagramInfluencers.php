@@ -127,6 +127,7 @@ class ScrapInstagramInfluencers extends Command
 
                 // Update influencer posts
                 $this->info("Number of posts: " . $influencer->posts);
+                $this->info("Already scraped posts: " . $influencer->posts()->count());
                 $this->info("Please wait until scraping all medias ...");
                 $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
                 $force = (!is_null($lastPost) && $lastPost->updated_at->diffInDays(Carbon::now()) > 1);
