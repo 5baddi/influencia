@@ -272,7 +272,7 @@ class Campaign extends Model
 
         // Slice top emojis
         return [
-            'top'   =>  array_slice($topThreeEmojis, 0, 3, true),
+            'top'   =>  array_slice($topThreeEmojis, 0, sizeof($topThreeEmojis) < 3 ? sizeof($topThreeEmojis) : 3, true),
             'all'   =>  $emojisCount
         ];
     }

@@ -22,8 +22,7 @@ const routes = [
         path: '/',
         component: DashboardContainer,
         redirect: {
-            name: 'dashboard',
-            path: '/dashbooard'
+            name: 'dashboard'
         },
         meta: {
             auth: true

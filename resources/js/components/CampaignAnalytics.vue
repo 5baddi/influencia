@@ -224,8 +224,6 @@ export default {
                 labels: [postsAndStoriesLabel]
             });
         }
-
-        this.drawMap();
     },
     data: () => ({
         influencersColumns: [{
