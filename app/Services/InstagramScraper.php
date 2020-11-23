@@ -319,9 +319,9 @@ class InstagramScraper
             }
 
             // Verify the max requests calls
-            $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-            if($lastHourUpdatedRows >= ScrapInstagramInfluencers::MAX_HOUR_CALLS)
-                return;
+            // $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
+            // if($lastHourUpdatedRows >= ScrapInstagramInfluencers::MAX_HOUR_CALLS)
+            //     return;
 
             // Scraping more
             if($fetchedMedias['hasNextPage'])

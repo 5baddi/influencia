@@ -93,12 +93,12 @@ class ScrapInstagramInfluencers extends Command
     private function scrapInfluencers() : void
     {
         // Verify the max requests calls
-        $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-        if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS){
-            $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
+        // $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
+        // if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS){
+        //     $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
 
-            return;
-        }
+        //     return;
+        // }
 
         // Get influencers
         $influencers = $this->repository->all();
@@ -139,9 +139,9 @@ class ScrapInstagramInfluencers extends Command
                     $influencer->update(['queued' => 'finished']);
 
                 // Verify the max requests calls
-                $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-                if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
-                    return;
+                // $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
+                // if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
+                //     return;
             }catch(\Exception $ex){
                 $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");
@@ -182,9 +182,9 @@ class ScrapInstagramInfluencers extends Command
                         }
                     }
 
-                    // Set tracker queued as finished
-                    if($tracker->influencers->count() === $scrapedInfluencers)
-                        $tracker->update(['queued' => 'finished']);
+                    // TODO: Set tracker queued as finished
+                    // if($tracker->influencers->count() === $scrapedInfluencers)
+                    //     $tracker->update(['queued' => 'finished']);
                 }
             }catch(\Exception $ex){
                 $tracker->update(['queued' => 'failed']);
