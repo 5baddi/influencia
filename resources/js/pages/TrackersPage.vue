@@ -2,7 +2,7 @@
 <div class="trackers">
     <div class="hero">
         <div class="hero__intro">
-            <h1>Trackers</h1>
+            <h1>{{ (tracker && tracker.name) ? tracker.name.toUpperCase() : 'Trackers' }}</h1>
             <ul class="breadcrumbs">
                 <li>
                     <a href="#">Dashboard</a>
@@ -16,7 +16,7 @@
             <button class="btn btn-success" @click="showAddTrackerModal = !showAddTrackerModal">Add new Trackers</button>
         </div>
     </div>
-    <div class="p-1">
+    <div class="p-1" v-if="!tracker">
         <header class="cards">
             <div class="card">
                 <div class="number">{{ (campaigns.all && campaigns.all.length) ? campaigns.all.length : 0 }}</div>
@@ -62,6 +62,7 @@
     </div>
     <CreateTrackerModal :show="showAddTrackerModal" @create="create" @dismiss="dismissAddTrackerModal" />
     <ConfirmationModal ref="confirmModal" v-on:custom="deleteAction" />
+    <TrackerAnalytics v-if="tracker" :tracker="tracker" />
 </div>
 </template>
 
@@ -70,9 +71,11 @@ import {
     mapGetters
 } from "vuex";
 import CreateTrackerModal from "../components/modals/CreateTrackerModal";
+import TrackerAnalytics from "../components/TrackerAnalytics";
 export default {
     components: {
         CreateTrackerModal,
+        TrackerAnalytics
     },
     watch: {
         $route: "initData"
@@ -140,7 +143,7 @@ export default {
         this.initData();
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "trackers"])
+        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "trackers", "tracker"])
     },
     notifications: {
         createTrackerErrors: {
@@ -164,6 +167,8 @@ export default {
             this.$store.dispatch("fetchCampaigns");
             // Fetch brand trackers
             this.$store.dispatch("fetchTrackers");
+            // Fetch tracker analytics
+            this.fetchTracker();
         },
         fetchTracker() {
             // Load user by UUID

@@ -27,6 +27,12 @@ class Tracker extends Model
         'organic_impressions',
         'communities',
         'organic_communities',
+        'posts_count',
+        'comments_count',
+        'top_three_emojis',
+        'sentiments_positive',
+        'sentiments_neutral',
+        'sentiments_negative',
     ];
 
     /**
@@ -280,5 +286,117 @@ class Tracker extends Model
         }
 
         return $communities;
+    }
+
+    /**
+     * Get posts count
+     *
+     * @return int
+     */
+    public function getPostsCountAttribute() : int
+    {
+        if($this->attributes['type'] !== 'post')
+            return 0;
+
+        return $this->posts->count();
+    }
+
+    
+    /**
+     * Get comments count
+     *
+     * @return int
+     */
+    public function getCommentsCountAttribute() : int
+    {
+        $count = 0;
+
+        foreach($this->posts as $post){
+            $count += $post->comments;
+        }
+
+        return $count;
+    }
+
+    /**
+     * Get top three emojis
+     * 
+     * @return array
+     */
+    public function getTopThreeEmojisAttribute() : array
+    {
+        $topThreeEmojis = [];
+        $emojisCount = 0;
+
+        foreach($this->posts as $post){
+            $emojis = json_decode(json_encode($post->comments_emojis), true);
+            if(is_null($emojis) || empty($emojis))
+                continue;
+
+            $topThreeEmojis = array_merge($topThreeEmojis, $emojis);
+            $emojisCount += sizeof($emojis);
+        }
+
+        // Ignore empty emojis list
+        if(is_null($topThreeEmojis) || empty($topThreeEmojis))
+            return $topThreeEmojis;
+
+        $topThreeEmojis = array_flip(array_count_values($topThreeEmojis));
+        // Sort emojis desc
+        krsort($topThreeEmojis);
+
+        // Slice top emojis
+        return [
+            'top'   =>  array_slice($topThreeEmojis, 0, sizeof($topThreeEmojis) < 3 ? sizeof($topThreeEmojis) : 3, true),
+            'all'   =>  $emojisCount
+        ];
+    }
+
+    /**
+     * Get percentage of positive semtiments
+     *
+     * @return float
+     */
+    public function getSentimentsPositiveAttribute() : float
+    {
+        $semtiments = 0.0;
+
+        foreach($this->posts as $post){
+            $semtiments += $post->comments_positive;
+        }
+
+        return $this->posts->count() > 0 ? $semtiments / $this->posts->count() : 0;
+    }
+
+    /**
+     * Get percentage of neutral semtiments
+     *
+     * @return float
+     */
+    public function getSentimentsNeutralAttribute() : float
+    {
+        $semtiments = 0.0;
+
+        foreach($this->posts as $post){
+            $semtiments += $post->comments_neutral;
+        }
+
+        return $this->posts->count() > 0 ? $semtiments / $this->posts->count() : 0;
+    }
+
+    /**
+     * Get percentage of negative semtiments
+     *
+     * @return float
+     */
+    public function getSentimentsNegativeAttribute() : float
+    {
+        $semtiments = 0.0;
+
+        foreach($this->posts as $post){
+            $semtiments += $post->comments_negative;
+        }
+
+        return $this->posts->count() > 0 ? $semtiments / $this->posts->count() : 0;
     }
 }

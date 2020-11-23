@@ -89,15 +89,15 @@
         <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" />
     </div>
 
-    <div class="by-instagram-posts">
+    <div class="by-instagram-posts" v-if="tracker.platform === 'instagram'">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.instagram_posts" />
+        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.posts" />
     </div>
 
-    <div class="posts-section" v-if="campaign && tracker.posts_count > 0">
+    <div class="posts-section" v-if="tracker && tracker.posts_count > 0">
         <h4>Posts</h4>
-        <p>There are {{ campaign && tracker.posts_count ? tracker.posts_count : 0 }} posts for this tracker.</p>
-        <div class="campaign-posts" v-for="tracker in tracker.trackers" :key="tracker.id">
+        <p>There are {{ tracker && tracker.posts_count ? tracker.posts_count : 0 }} posts for this tracker.</p>
+        <div class="campaign-posts">
             <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
                 <img :src="post.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
@@ -219,8 +219,6 @@ export default {
                 labels: [postsAndStoriesLabel]
             });
         }
-
-        this.drawMap();
     },
     data: () => ({
         influencersColumns: [{

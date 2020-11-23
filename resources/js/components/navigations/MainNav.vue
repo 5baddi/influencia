@@ -28,10 +28,10 @@
     </div>
     <nav class="dashboard__sidebar__navigation">
         <ul>
-            <li v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == 'dashbooard'}">
+            <li :class="{active : currentRouteName == 'dashboard'}">
                 <router-link :to="{name : 'dashboard'}">
                     <span class="icon">
-                        <i class="fas fa-chart-pie"></i>
+                        <i class="fas fa-columns"></i>
                     </span>
                     <span class="text">Dashboard</span>
                 </router-link>

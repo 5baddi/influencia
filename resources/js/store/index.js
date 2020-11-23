@@ -30,6 +30,7 @@ const state = () => ({
     campaigns: {all: []},
     campaign: null,
     trackers: null,
+    tracker: null,
     influencers: null,
     influencer: null,
     roles: [],
@@ -46,6 +47,7 @@ const getters = {
     campaigns: state => state.campaigns,
     campaign: state => state.campaign,
     trackers: state => state.trackers,
+    tracker: state => state.tracker,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
     activeBrand: state => state.user && state.user.selected_brand ? state.user.selected_brand : state.activeBrand,
@@ -482,6 +484,9 @@ const mutations = {
     },
     setTrackers: (state, { trackers }) => {
         state.trackers = trackers;
+    },
+    setTracker: (state, { tracker }) => {
+        state.tracker = tracker;
     },
     setRoles: (state, { roles }) => {
         state.roles = roles
