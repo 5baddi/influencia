@@ -153,7 +153,7 @@ class InfluencerPost extends Model
             return $this->attributes['engagement_rate'];
 
         // Calculate engagement rate
-        return ((($this->attributes['likes'] + $this->attributes['comments']) / $this->getEstimatedImpressionsAttribute()) * 100);
+        return $this->getEstimatedImpressionsAttribute() > 0 ? ((($this->attributes['likes'] + $this->attributes['comments']) / $this->getEstimatedImpressionsAttribute()) * 100) : 0.0;
     }
 
     /**
