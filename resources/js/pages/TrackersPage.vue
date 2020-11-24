@@ -131,8 +131,8 @@ export default {
                     }
                 },
                 {
-                    name: "Created at",
-                    field: "created_at",
+                    name: "Last update",
+                    field: "updated_at",
                     isData: true,
                     format: "DD/MM/YYYY"
                 }

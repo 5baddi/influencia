@@ -212,6 +212,16 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
+    fetchInfluencerContent({ commit, state }, attr) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/influencers/" + attr.uuid + "/content?page=" + (attr.page ? attr.page : 1)).then(response => {
+                if(response.status === 200 && response.data.success)
+                    resolve(response.data)
+                else
+                    throw new Error("Something going wrong!");
+            }).catch(response => reject(response))
+        });
+    },
     fetchBrands({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/brands").then(response => {

@@ -26,7 +26,7 @@ class InstagramScraper
     /**
      * Max request by each fetch
      */
-    const MAX_REQUEST = 100;
+    const MAX_REQUEST = 25;
 
     /**
      * Sleep request seconds
@@ -101,7 +101,7 @@ class InstagramScraper
         $this->postRepo = $postRepo;
 
         // Init console
-        // $this->console = new ConsoleOutput();
+        $this->console = new ConsoleOutput();
 
         // Init HTTP Client
         $this->client = new Client([
@@ -114,7 +114,7 @@ class InstagramScraper
         try{
             $this->instagramAuthentication();
         }catch(\Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             // Trace log
             Log::error($ex->getMessage());
         }
@@ -136,7 +136,7 @@ class InstagramScraper
             $this->instagram->login($force, $emailVecification);
             $this->instagram->saveSession();
         }catch(Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             // Trace log
             Log::error($ex->getMessage());
 
@@ -166,9 +166,9 @@ class InstagramScraper
                 ]
             ]);
 
-            // $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
+            $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
             throw new \Exception("Failed to connect using a proxy!");
         }
@@ -207,12 +207,12 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
                 $this->instagramAuthentication(true);
 
@@ -222,7 +222,7 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             throw $ex;
         }
     }
@@ -243,11 +243,11 @@ class InstagramScraper
             return $media;
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
                 $this->instagramAuthentication(true);
 
@@ -276,12 +276,12 @@ class InstagramScraper
             if(!$force){
                 $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
                 $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
-                // $this->console->writeln("<fg=green>Start scraping from " . $lastPost->short_code . "</>");
+                $this->console->writeln("<fg=green>Start scraping from " . $lastPost->short_code . "</>");
             }
 
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            // $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
+            $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
 
             sleep(self::SLEEP_REQUEST);
 
@@ -302,14 +302,14 @@ class InstagramScraper
                 // Store or update media
                 $existsMedia = $this->postRepo->exists($influencer, $_media['post_id']);
                 if(!is_null($existsMedia)){
-                    // $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
-                    // $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
+                    $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
+                    $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
                     $this->postRepo->update($existsMedia, $_media);
                     Log::info("Update post: {$existsMedia->short_code}");
                     continue;
                 }else{
-                    // $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
-                    // $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
+                    $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
+                    $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
                     $this->postRepo->create($_media);
                     Log::info("Create post: {$_media['short_code']}");
                 }
@@ -319,20 +319,21 @@ class InstagramScraper
             }
 
             // Verify the max requests calls
-            // $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-            // if($lastHourUpdatedRows >= ScrapInstagramInfluencers::MAX_HOUR_CALLS)
-            //     return;
+            if(ScrapInstagramInfluencers::checkPassedMaxCalls()){
+                $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
+                return;
+            }
 
             // Scraping more
             if($fetchedMedias['hasNextPage'])
                 return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
                 $this->instagramAuthentication(true);
 
@@ -365,7 +366,7 @@ class InstagramScraper
         }catch(\Exception $ex){
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
                 $this->instagramAuthentication(true);
 
@@ -375,7 +376,7 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
             throw $ex;
         }
@@ -535,11 +536,11 @@ class InstagramScraper
             sleep(self::SLEEP_REQUEST);
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
                 $this->instagramAuthentication(true);
 

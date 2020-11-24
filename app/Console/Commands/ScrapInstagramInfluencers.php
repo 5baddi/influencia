@@ -16,7 +16,12 @@ class ScrapInstagramInfluencers extends Command
     /**
      * Max scraping calls by hour for Instagram
      */
-    const MAX_HOUR_CALLS = 200;
+    const MAX_CALLS = 200;
+
+    /**
+     * Minutes between each max calls
+     */
+    const RANGE_MINUTES = 15;
 
     /**
      * The name and signature of the console command.
@@ -86,6 +91,20 @@ class ScrapInstagramInfluencers extends Command
     }
 
     /**
+     * Verify the max requests calls
+     *
+     * @return bool
+     */
+    public static function checkPassedMaxCalls()
+    {
+        $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subMinutes(self::RANGE_MINUTES)->toDateTimeString())->count();
+        if($lastHourUpdatedRows >= self::MAX_CALLS)
+            return true;
+
+        return false;
+    }
+
+    /**
      * Scrap influencers details and medias
      *
      * @return void
@@ -93,12 +112,10 @@ class ScrapInstagramInfluencers extends Command
     private function scrapInfluencers() : void
     {
         // Verify the max requests calls
-        // $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-        // if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS){
-        //     $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
-
-        //     return;
-        // }
+        if(self::checkPassedMaxCalls()){
+            $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
+            return;
+        }
 
         // Get influencers
         $influencers = $this->repository->all();
@@ -139,9 +156,10 @@ class ScrapInstagramInfluencers extends Command
                     $influencer->update(['queued' => 'finished']);
 
                 // Verify the max requests calls
-                // $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subHour())->count();
-                // if($lastHourUpdatedRows >= self::MAX_HOUR_CALLS)
-                //     return;
+                if(self::checkPassedMaxCalls()){
+                    $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
+                    return;
+                }
             }catch(\Exception $ex){
                 $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");
@@ -165,34 +183,25 @@ class ScrapInstagramInfluencers extends Command
 
         // Scrap each tracker details
         foreach($trackers as $tracker){
-            try{
-                // TODO: scrap stories details
-                if($tracker->platform === "instagram" && $tracker->type === "story")
-                    continue;
-
-                if($tracker->platform === "instagram" && $tracker->type === "post"){
-                    // Update trackers & influencers queued state
-                    $scrapedInfluencers = 0;
-                    foreach($tracker->posts->load('influencer') as $post){
-                        if($post->influencer->posts()->count() == $post->influencer->posts){
-                            if($post->influencer->queued !== 'finished')
-                                $post->influencer->update(['queued' => 'finished']);
-
-                            ++$scrapedInfluencers;
-                        }
-                    }
-
-                    // TODO: Set tracker queued as finished
-                    // if($tracker->influencers->count() === $scrapedInfluencers)
-                    //     $tracker->update(['queued' => 'finished']);
-                }
-            }catch(\Exception $ex){
-                $tracker->update(['queued' => 'failed']);
-                $this->error("Failed to scrap tracker {$tracker->uuid}");
-                $this->error($ex->getMessage());
-                Log::error($ex->getMessage());
-
+            // TODO: scrap stories details
+            if($tracker->platform === "instagram" && $tracker->type === "story")
                 continue;
+
+            if($tracker->platform === "instagram" && $tracker->type === "post"){
+                // Update trackers & influencers queued state
+                $scrapedInfluencers = 0;
+                foreach($tracker->posts->load('influencer') as $post){
+                    if($post->influencer->posts()->count() == $post->influencer->posts){
+                        if($post->influencer->queued !== 'finished')
+                            $post->influencer->update(['queued' => 'finished']);
+
+                        ++$scrapedInfluencers;
+                    }
+                }
+
+                // Set tracker queued as finished
+                if($tracker->influencers->count() === $scrapedInfluencers)
+                    $tracker->update(['queued' => 'finished']);
             }
         }
     }

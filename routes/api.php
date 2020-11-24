@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     // Influencers
     Route::get('/influencers', 'InfluencerController@index');
     Route::get('/influencers/{influencer}', 'InfluencerController@show');
+    Route::get('/influencers/{influencer}/content', 'InfluencerController@content');
 
     // Export
     Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
