@@ -4,6 +4,7 @@ namespace App\Console;
 
 use App\Console\Commands\AppUpdaterCommand;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\TrackersUpdaterCommand;
 use App\Console\Commands\ScrapInstagramInfluencers;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         ScrapInstagramInfluencers::class,
-        AppUpdaterCommand::class
+        AppUpdaterCommand::class,
+        TrackersUpdaterCommand::class
     ];
 
     /**
@@ -36,8 +38,13 @@ class Kernel extends ConsoleKernel
         $schedule->command('scrap:instagram')
             ->everyMinute()
             ->withoutOverlapping();
+            
+        // Trackers updater
+        $schedule->command('updater:trackers')
+            ->everyMinute()
+            ->withoutOverlapping();
 
-        // Updater
+        // App updater
         $schedule->command('updater:app')
             ->dailyAt('00:00')
             ->withoutOverlapping();

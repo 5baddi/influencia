@@ -81,10 +81,7 @@ class ScrapInstagramInfluencers extends Command
         $startTaskAt = microtime(true);
 
         // Scrap influencers details & posts
-        // $this->scrapInfluencers();
-
-        // Scrap trackers details & analytics
-        $this->scrapTrackers();
+        $this->scrapInfluencers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
@@ -167,54 +164,6 @@ class ScrapInstagramInfluencers extends Command
                 Log::error($ex->getMessage());
 
                 $influencer->update(['queued' => 'failed']);
-            }
-        }
-    }
-
-    /**
-     * Scrap trackers details and analytics
-     *
-     * @return void
-     */
-    private function scrapTrackers() : void
-    {
-        // Get trackers
-        $trackers = Tracker::with(['posts'])->get();
-        $this->info("Number of trackers to sync: " . $trackers->count());
-
-        // Scrap each tracker details
-        foreach($trackers as $tracker){
-            // TODO: scrap stories details
-            if($tracker->platform === "instagram" && $tracker->type === "story")
-                continue;
-
-            if($tracker->platform === "instagram" && $tracker->type === "post"){
-                // Init
-                $scrapedInfluencers = 0;
-
-                // Update trackers & influencers queued state
-                foreach($tracker->posts->load('influencer') as $post){
-                    // Set tracker to the post
-                    $post->update(['tracker_id' => $tracker->id]);
-
-                    // Update tracker influencers list
-                    $influencerExists = TrackerInfluencer::where(['tracker_id' => $tracker->id, 'influencer_id' => $post->influencer->id])->first();
-                    if(is_null($influencerExists))
-                        TrackerInfluencer::create(['tracker_id' => $tracker->id, 'influencer_id' => $post->influencer->id]);
-
-
-                    // Update influencer queued status
-                    if($post->influencer->posts()->count() == $post->influencer->posts){
-                        if($post->influencer->queued !== 'finished')
-                            $post->influencer->update(['queued' => 'finished']);
-
-                        ++$scrapedInfluencers;
-                    }
-                }
-
-                // Set tracker queued as finished
-                if($tracker->influencers->count() === $scrapedInfluencers && $scrapedInfluencers > 0)
-                    $tracker->update(['queued' => 'finished']);
             }
         }
     }
