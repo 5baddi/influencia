@@ -69,7 +69,7 @@ class TrackersUpdaterCommand extends Command
     private function updateTrackers() : void
     {
         // Get trackers
-        $trackers = Tracker::with(['posts', 'influencers'])->where(['queued' => 'progress', 'status' > true])->get();
+        $trackers = Tracker::with(['posts', 'influencers'])->where(['queued' => 'progress', 'status' => true])->get();
         $this->info("Number of trackers to sync: " . $trackers->count());
 
         // Scrap each tracker details
