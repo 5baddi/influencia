@@ -94,7 +94,7 @@ class TrackersUpdaterCommand extends Command
 
 
                     // Update influencer queued status
-                    if($post->influencer->posts()->count() == $post->influencer->posts){
+                    if($post->influencer->posts()->count() == $post->influencer->medias){
                         if($post->influencer->queued !== 'finished')
                             $post->influencer->update(['queued' => 'finished']);
 
