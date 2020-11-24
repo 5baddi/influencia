@@ -93,7 +93,7 @@ class InstagramScraper
     {
         // Init Cache manager
         if(is_null(self::$cacheManager))
-            self::$cacheManager = CacheManager::getInstance('files');
+            self::$cacheManager = new Psr16Adapter('Files');
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
