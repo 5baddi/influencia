@@ -171,13 +171,11 @@ class Campaign extends Model
     {
         $count = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers as $tracker){
+            if(!$tracker->comments_count)
                 continue;
 
-            foreach($tracker->posts as $post){
-                $count += $post->comments;
-            }
+            $count += $tracker->comments_count;
         }
 
         return $count;
@@ -277,84 +275,96 @@ class Campaign extends Model
         ];
     }
 
-    public function getEngagementsAttribute()
+    /**
+     * Get number of engagement
+     *
+     * @return int
+     */
+    public function getEngagementsAttribute() : int
     {
         $engagement = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers as $tracker){
+            if(!$tracker->engagement)
                 continue;
 
-            foreach($tracker->posts as $post){
-                $engagement += $post->likes + $post->comments;
-            }
+            $engagement += $tracker->engagement;
         }
 
         return $engagement;
     }
 
-    public function getViewsAttribute()
+    /**
+     * Get number of views for this campaign videos
+     *
+     * @return int
+     */
+    public function getViewsAttribute() : int
     {
         $views = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers as $tracker){
+            if(!$tracker->views)
                 continue;
 
-            foreach($tracker->posts as $post){
-                $views += $post->video_views;
-            }
+            $views += $tracker->views;
         }
 
         return $views;
     }
 
-    public function getImpressionsAttribute()
+    /**
+     * Get campaign number of impressions
+     *
+     * @return int
+     */
+    public function getImpressionsAttribute() : int
     {
         $impressions = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers as $tracker){
+            if(!$tracker->impressions)
                 continue;
 
-            foreach($tracker->posts as $post){
-                $impressions += $post->likes + $post->video_views;
-            }
+            $impressions += $tracker->impressions;
         }
 
         return $impressions;
     }
 
-    public function getCommunitiesAttribute()
+    /**
+     * Get number of communities
+     *
+     * @return int
+     */
+    public function getCommunitiesAttribute() : int
     {
         $communities = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers as $tracker){
+            if(!$tracker->communities)
                 continue;
 
-            foreach($tracker->posts->load('influencer') as $post){
-                $communities += $post->influencer->followers;
-            }
+            $communities += $tracker->communities;
         }
 
         return $communities;
     }
 
-    public function getOrganicPostsAttribute()
+    /**
+     * Get number of organic posts
+     *
+     * @return int
+     */
+    public function getOrganicPostsAttribute() : int
     {
         $posts = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers as $tracker){
+            if(!$tracker->organic_posts)
                 continue;
 
-            foreach($tracker->posts as $post){
-                if($post->is_ad)
-                    continue;
-
-                ++$posts;
-            }
+            $posts += $tracker->organic_posts;
         }
 
         return $posts;

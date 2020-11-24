@@ -28,6 +28,7 @@ class Tracker extends Model
         'communities',
         'organic_communities',
         'posts_count',
+        'organic_posts',
         'comments_count',
         'top_three_emojis',
         'sentiments_positive',
@@ -398,5 +399,24 @@ class Tracker extends Model
         }
 
         return $this->posts->count() > 0 ? $semtiments / $this->posts->count() : 0;
+    }
+
+    /**
+     * Get organic posts count
+     *
+     * @return int
+     */
+    public function getOrganicPostsAttribute() : int
+    {
+        $posts = 0;
+
+        foreach($this->posts as $post){
+            if($post->is_ad)
+                continue;
+
+            ++$posts;
+        }
+
+        return $posts;
     }
 }
