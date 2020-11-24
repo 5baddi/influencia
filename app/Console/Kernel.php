@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Start jobs queue
-        $schedule->command('queue:work --queue=default,trackers')
+        $schedule->command('queue:work --queue=high,default,trackers')
             ->hourly()
             ->withoutOverlapping();
 

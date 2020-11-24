@@ -3,7 +3,10 @@
 namespace App\Exceptions;
 
 use Throwable;
+use App\Jobs\SendEmail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -37,6 +40,9 @@ class Handler extends ExceptionHandler
      */
     public function report(Throwable $exception)
     {
+        if($this->shouldReport($exception))
+            $this->sendEmail();
+
         parent::report($exception);
     }
 
@@ -74,5 +80,26 @@ class Handler extends ExceptionHandler
         }
         
         return parent::render($request, $exception);
+    }
+
+    /**
+     * Sends an email to the developer about the exception.
+     *
+     * @param  \Exception  $exception
+     * @return void
+     */
+    private function sendEmail(\Exception $exception)
+    {
+        try{
+            // Parse the exception
+            $e = FlattenException::create($exception);
+            $handler = new SymfonyExceptionHandler();
+            $html = $handler->getHtml($e);
+
+            // Send exception email
+            SendEmail::dispatchNow(['to' => env('SUPPORT_EMAIL'), 'content' => new ExceptionOccured($html)]);
+        }catch(\Exception $ex){
+            Log::error($ex->getMessage(), ['context' => 'Exception handler with code: ' . $ex->getCode()]);
+        }
     }
 }
