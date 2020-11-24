@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Throwable;
 use App\Jobs\SendEmail;
+use App\Mail\ExceptionOccured;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\ErrorHandler\Exception\FlattenException;
