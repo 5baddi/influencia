@@ -17,8 +17,8 @@ class CreateTrackerInfluencers extends Migration
             $table->unsignedBigInteger('tracker_id');
             $table->unsignedBigInteger('influencer_id');
 
-            $table->foreign('tracker_id')->references('id')->on('trackers');
-            $table->foreign('influencer_id')->references('id')->on('influencers');
+            $table->foreign('tracker_id')->references('id')->on('trackers')->onDelete('cascade');
+            $table->foreign('influencer_id')->references('id')->on('influencers')->onDelete('cascade');
         });
     }
 
