@@ -134,14 +134,14 @@ class ScrapInstagramInfluencers extends Command
                 $this->info("Successfully updated influencer @" . $influencer->username);
 
                 // Ignore last updated influencers
-                if($influencer->posts()->count() == $influencer->posts && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0){
+                if($influencer->posts()->count() == $influencer->medias && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0){
                     $influencer->update(['queued' => 'finished']);
 
                     continue;
                 }
 
                 // Update influencer posts
-                $this->info("Number of posts: " . $influencer->posts);
+                $this->info("Number of posts: " . $influencer->medias);
                 $this->info("Already scraped posts: " . $influencer->posts()->count());
                 $this->info("Please wait until scraping all medias ...");
                 $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
@@ -150,7 +150,7 @@ class ScrapInstagramInfluencers extends Command
                 $influencer->refresh();
 
                 // Update influencer queued state
-               if($influencer->posts()->count() === $influencer->posts)
+               if($influencer->posts()->count() === $influencer->medias)
                     $influencer->update(['queued' => 'finished']);
 
                 // Verify the max requests calls
