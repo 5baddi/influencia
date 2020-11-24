@@ -52,6 +52,23 @@ class EmailVerification implements TwoStepVerificationInterface
         try{
             // Open connection
             $this->imap = new Imap($this->imapHost, $this->username, $this->pass, $this->encryption);
+            $this->imap = new Imap([
+                'flags' => [
+                    'service' => ImapConnect::SERVICE_IMAP,
+                    'encrypt' => $this->encryption,
+                    'validateCertificates' => ImapConnect::VALIDATE_CERT,
+                    // Turns debug on or off
+                    'debug' => config('app.debug') ? ImapConnect::DEBUG : null,
+                ],
+                'mailbox' => [
+                    'remote_system_name' => $this->imapHost,
+                    'port' => env('IMAP_PORT'),
+                ],
+                'connect' => [
+                    'username' => $this->email,
+                    'password' => $this->pass
+                ]
+            ]);
         }catch(ImapClientException $error){
             throw new InstagramAuthException('Login error. Cannot login to imap server: ' . $error->getMessage());
         }
