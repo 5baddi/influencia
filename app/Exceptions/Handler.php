@@ -6,9 +6,8 @@ use Throwable;
 use App\Jobs\SendEmail;
 use App\Mail\ExceptionOccured;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\ErrorHandler\Exception\FlattenException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -42,7 +41,7 @@ class Handler extends ExceptionHandler
     public function report(Throwable $exception)
     {
         if($this->shouldReport($exception))
-            $this->sendEmail();
+            $this->sendEmail($exception);
 
         parent::report($exception);
     }
@@ -86,19 +85,20 @@ class Handler extends ExceptionHandler
     /**
      * Sends an email to the developer about the exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return void
      */
-    private function sendEmail(\Exception $exception)
+    private function sendEmail(Throwable $exception)
     {
         try{
             // Parse the exception
-            $e = FlattenException::create($exception);
-            $handler = new SymfonyExceptionHandler();
-            $html = $handler->getHtml($e);
+            if($this->isHttpException($exception))
+                $content = ExceptionHandler::toIlluminateResponse(ExceptionHandler::renderHttpException($exception), $exception);
+            else
+                $content = ExceptionHandler::toIlluminateResponse(ExceptionHandler::convertExceptionToResponse($exception), $exception);
 
             // Send exception email
-            SendEmail::dispatchNow(['to' => env('SUPPORT_EMAIL'), 'content' => new ExceptionOccured($html)]);
+            SendEmail::dispatchNow(['to' => config('scraper.support'), 'content' => new ExceptionOccured((!isset($content->original)) ? $e->getMessage() : $content->original)]);
         }catch(\Exception $ex){
             Log::error($ex->getMessage(), ['context' => 'Exception handler with code: ' . $ex->getCode()]);
         }

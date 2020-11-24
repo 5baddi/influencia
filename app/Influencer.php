@@ -26,7 +26,7 @@ class Influencer extends Model
         'is_business',
         'is_private',
         'is_verified',
-        'posts',
+        'medias',
         'follows',
         'followers',
         'pic_url',
@@ -67,7 +67,7 @@ class Influencer extends Model
         'likes',
         'video_views',
         'comments',
-        'posts_count',
+        'active_posts_count',
         'estimated_impressions',
         'estimated_communities',
         'earned_media_value'
@@ -137,7 +137,7 @@ class Influencer extends Model
      * Get posts count of an infleuncer
      *
      */
-    public function getPostsCountAttribute()
+    public function getActivePostsCountAttribute()
     {
         return $this->posts()->whereNotNull('tracker_id')->count();
     }
@@ -183,9 +183,9 @@ class Influencer extends Model
     public function getEarnedMediaValueAttribute() : float
     {
         // Get USD/EUR exchange value
-        $defaultUSDTOEURValue = env('USD2EUR');
+        $defaultUSDTOEURValue = config('scraper.usd2eur');
         $USDTOEURValue = ApplicationSetting::where('key', 'usd2eur')->first();
-        $defaultFacebookCostPerImpressions = env('FBCOSTPERIMPRESSIONS');
+        $defaultFacebookCostPerImpressions = config('scraper.fbcost_perimpressions');
         $FacebookCostPerImpressions = ApplicationSetting::where('key', 'fbcostperimpressions')->first();
 
         return ($this->getEstimatedImpressionsAttribute() * ((isset($FacebookCostPerImpressions->value) ? $FacebookCostPerImpressions->value : $defaultFacebookCostPerImpressions) * (isset($USDTOEURValue->value) ? $USDTOEURValue->value : $defaultUSDTOEURValue))) / 1000;

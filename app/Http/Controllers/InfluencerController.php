@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Influencer;
 use App\InfluencerPost;
-use Illuminate\Http\Request;
 
 class InfluencerController extends Controller
 {
@@ -16,7 +15,7 @@ class InfluencerController extends Controller
     public function index()
     {
         return response()->success("Influencers fetched successfully.", 
-            Influencer::all()
+            Influencer::withCount('posts')->get()
         );
     }
 

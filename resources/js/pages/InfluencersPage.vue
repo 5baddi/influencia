@@ -74,8 +74,8 @@ export default {
                     isNbr: true
                 },
                 {
-                    name: "Posts",
-                    field: "posts",
+                    name: "Media",
+                    field: "medias",
                     isNbr: true
                 },
                 {
@@ -94,10 +94,10 @@ export default {
                     }
                 },
                 {
-                    name: "Analyze",
-                    field: "posts",
+                    name: "Analyzed",
+                    field: "posts_count",
                     callback: function (row) {
-                        return row.posts_count + ' of ' + row.posts;
+                        return row.posts_count + ' of ' + row.medias;
                     }
                 },
                 {

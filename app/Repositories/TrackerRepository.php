@@ -3,10 +3,7 @@
 namespace App\Repositories;
 
 use App\Influencer;
-use App\InfluencerPost;
 use App\Tracker;
-use Illuminate\Support\Collection;
-use Format;
 
 /**
  * Class TrackerRepository.

@@ -177,7 +177,6 @@ return [
         App\Providers\RouteServiceProvider::class,
 
         App\Providers\ResponseServiceProvider::class,
-        App\Providers\ScraperServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
 
     ],

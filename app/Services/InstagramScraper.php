@@ -8,9 +8,9 @@ use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
 use GuzzleHttp\Client;
-use App\InfluencerPost;
 use Sentiment\Analyzer;
 use App\Helpers\EmojiParser;
+use Phpfastcache\CacheManager;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
@@ -52,7 +52,7 @@ class InstagramScraper
      *
      * @var \Phpfastcache\Helper\Psr16Adapter
      */
-    private $cacheManager;
+    private static $cacheManager;
 
     /**
      * Emoji parser
@@ -92,7 +92,8 @@ class InstagramScraper
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
         // Init Cache manager
-        $this->cacheManager = new Psr16Adapter('Files');
+        if(is_null(self::$cacheManager))
+            self::$cacheManager = CacheManager::getInstance('files');
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
@@ -129,10 +130,10 @@ class InstagramScraper
     {
         try{
             // Init IMAP for Two steps verification
-            $emailVecification = new EmailVerification(env("IMAP_EMAIL"), env("IMAP_SERVER"), env("IMAP_PASSWORD"));
+            $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
 
             // Login to App Instagram account
-            $this->instagram = Instagram::withCredentials($this->client, env("INSTAGRAM_ACCOUNT"), env("INSTAGRAM_PASSWORD"), $this->cacheManager);
+            $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
             $this->instagram->login($force, $emailVecification);
             $this->instagram->saveSession();
         }catch(Exception $ex){
@@ -150,7 +151,7 @@ class InstagramScraper
             // Init $client
             $this->client = new Client([
                 'verify'            =>  !config('app.debug'),
-                'proxy'             =>  env('MAIN_PROXY_PROTOCOL') . '://' . env('MAIN_PROXY_IP') . ':' . env('MAIN_PROXY_PORT'),
+                'proxy'             =>  config('scraper.proxy.protocol') . '://' . config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
                 'timeout'           =>  300,
                 'connect_timeout'   =>  35,
                 'config'            =>  [
@@ -196,7 +197,7 @@ class InstagramScraper
                 'website'       =>  $account->getExternalUrl(),
                 'followers'     =>  $account->getFollowedByCount(),
                 'follows'       =>  $account->getFollowsCount(),
-                'posts'         =>  $account->getMediaCount(),
+                'medias'        =>  $account->getMediaCount(),
                 'is_business'   =>  $account->isBusinessAccount(),
                 'is_private'    =>  $account->isPrivate(),
                 'is_verified'   =>  $account->isVerified(),

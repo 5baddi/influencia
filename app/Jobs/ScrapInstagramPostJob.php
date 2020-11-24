@@ -87,7 +87,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                     'website'       =>  $account->getExternalUrl(),
                     'followers'     =>  $account->getFollowedByCount(),
                     'follows'       =>  $account->getFollowsCount(),
-                    'posts'         =>  $account->getMediaCount(),
+                    'medias'        =>  $account->getMediaCount(),
                     'is_business'   =>  $account->isBusinessAccount(),
                     'is_private'    =>  $account->isPrivate(),
                     'is_verified'   =>  $account->isVerified(),
@@ -127,7 +127,6 @@ class ScrapInstagramPostJob implements ShouldQueue
 
     public function fail($exception = null)
     {
-        dd($exception);
         // Set tracker on failed status
         $this->tracker->update(['queued' => 'failed']);
 

@@ -166,7 +166,7 @@ class InfluencerPost extends Model
         // Get USD/EUR exchange value
         $defaultUSDTOEURValue = env('USD2EUR');
         $USDTOEURValue = ApplicationSetting::where('key', 'usd2eur')->first();
-        $defaultFacebookCostPerImpressions = env('FBCOSTPERIMPRESSIONS');
+        $defaultFacebookCostPerImpressions = config('scraper.fbcost_perimpressions');
         $FacebookCostPerImpressions = ApplicationSetting::where('key', 'fbcostperimpressions')->first();
 
         return ($this->getEstimatedImpressionsAttribute() * ((isset($FacebookCostPerImpressions->value) ? $FacebookCostPerImpressions->value : $defaultFacebookCostPerImpressions) * (isset($USDTOEURValue->value) ? $USDTOEURValue->value : $defaultUSDTOEURValue))) / 1000;

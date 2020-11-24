@@ -103,7 +103,7 @@ class TrackerController extends Controller
             $ShortLink = ShortLink::create([
                 'tracker_id'    =>  $tracker->id,
                 'link'          =>  $tracker->url,
-                'code'          =>  Str::random(env('SHORTLINK_LENGTH'))
+                'code'          =>  Str::random(config('scraper.shortlink.length'))
             ]);
 
             // Dispatch scraping job

@@ -26,7 +26,7 @@ class CreateInfluencerTable extends Migration
             $table->float('engagement_rate')->nullable();
             $table->integer('followers')->nullable();
             $table->integer('follows')->nullable();
-            $table->integer('posts')->nullable();
+            $table->integer('medias')->nullable();
             $table->integer('highlight_reel')->nullable();
             $table->string('business_category')->nullable();
             $table->string('business_email')->nullable();

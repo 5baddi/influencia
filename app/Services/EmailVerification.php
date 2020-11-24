@@ -62,7 +62,7 @@ class EmailVerification implements TwoStepVerificationInterface
                 ],
                 'mailbox' => [
                     'remote_system_name' => $this->imapHost,
-                    'port' => env('IMAP_PORT'),
+                    'port' => config('scraper.imap.port'),
                 ],
                 'connect' => [
                     'username' => $this->email,
