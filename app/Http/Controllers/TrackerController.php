@@ -40,7 +40,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink'])
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
                     })
@@ -59,7 +59,7 @@ class TrackerController extends Controller
     {
         return response()->success(
             "Tracker fetched successfully.",
-            Tracker::with(['posts', 'user', 'medias', 'campaign', 'shortlink'])->find($tracker->id)
+            Tracker::with(['posts', 'user', 'medias', 'campaign', 'shortlink', 'influencers'])->find($tracker->id)
         );
     }
 
@@ -79,7 +79,7 @@ class TrackerController extends Controller
         ]);
 
         if($updated)
-            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'shortlink'])->find($tracker->id));
+            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])->find($tracker->id));
 
 
         return response()->error("Something going wrong! Please try again or contact the support..");
@@ -116,7 +116,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])->find($tracker->id)
         );
     }
 
@@ -154,7 +154,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Story tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'infleuncers'])->find($tracker->id)
         );
     }
 
@@ -170,7 +170,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'infleuncers'])->find($tracker->id)
         );
     }
 
