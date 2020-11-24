@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Tracker;
 use Carbon\Carbon;
 use App\InfluencerPost;
+use App\TrackerInfluencer;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -188,9 +189,21 @@ class ScrapInstagramInfluencers extends Command
                 continue;
 
             if($tracker->platform === "instagram" && $tracker->type === "post"){
-                // Update trackers & influencers queued state
+                // Init
                 $scrapedInfluencers = 0;
+
+                // Update trackers & influencers queued state
                 foreach($tracker->posts->load('influencer') as $post){
+                    // Set tracker to the post
+                    $post->update(['tracker_id' => $tracker->id]);
+
+                    // Update tracker influencers list
+                    $influencerExists = TrackerInfluencer::where(['tracker_id' => $tracker->id, 'influencer_id' => $post->influencer->id])->first();
+                    if(is_null($influencerExists))
+                        TrackerInfluencer::create(['tracker_id' => $tracker->id, 'influencer_id' => $post->influencer->id]);
+
+
+                    // Update influencer queued status
                     if($post->influencer->posts()->count() == $post->influencer->posts){
                         if($post->influencer->queued !== 'finished')
                             $post->influencer->update(['queued' => 'finished']);
@@ -200,7 +213,7 @@ class ScrapInstagramInfluencers extends Command
                 }
 
                 // Set tracker queued as finished
-                if($tracker->influencers->count() === $scrapedInfluencers)
+                if($tracker->influencers->count() === $scrapedInfluencers && $scrapedInfluencers > 0)
                     $tracker->update(['queued' => 'finished']);
             }
         }

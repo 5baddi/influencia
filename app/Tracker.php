@@ -18,7 +18,6 @@ class Tracker extends Model
      * @var array
      */
     protected $appends = [
-        'influencers',
         'engagements',
         'organic_engagements',
         'views',
@@ -135,22 +134,11 @@ class Tracker extends Model
     /**
      * Get count of influencers related to trackers
      *
-     * @return Illuminate\Support\Collection
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function getInfluencersAttribute() : Collection
+    public function influencers()
     {
-        // Init
-        $influencers = collect();
-
-        // Load influencers
-        foreach($this->posts()->get()->load('influencer') as $post){
-            if(is_null($post->influencer) || in_array($post->influencer->queued, ['pending', 'failed']))
-                continue;
-
-            $influencers->add($post->influencer);
-        }
-
-        return $influencers;
+        return $this->belongsToMany(Influencer::class, 'tracker_influencers');
     }
 
     /**

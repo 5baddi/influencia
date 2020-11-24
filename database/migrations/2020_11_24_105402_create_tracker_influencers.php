@@ -1,0 +1,34 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateTrackerInfluencers extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('tracker_influencers', function (Blueprint $table) {
+            $table->unsignedBigInteger('tracker_id');
+            $table->unsignedBigInteger('influencer_id');
+
+            $table->foreign('tracker_id')->references('id')->on('trackers');
+            $table->foreign('influencer_id')->references('id')->on('influencers');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('tracker_influencers');
+    }
+}
