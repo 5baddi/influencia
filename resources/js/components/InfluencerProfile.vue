@@ -70,14 +70,14 @@
         justify-content: center;
         margin: 1rem 0;
     }
-    .btn{
+    .load-more .btn{
         background-color: #039be5;
         color: white;
     }
-    .btn:hover, btn:focus{
+    .load-more .btn:hover, btn:focus{
         opacity: 0.7;
     }
-    svg{
+    .load-more svg{
         font-size: 22pt;
         color: #039be5;
     }
@@ -119,7 +119,7 @@ export default {
        },
        loadMore(){
            this.loadingMore = true;
-           
+
            this.$store.dispatch("fetchInfluencerContent", {uuid: this.influencer.uuid, page: this.page})
             .then(response => {
                 // Merge values and set mext page
