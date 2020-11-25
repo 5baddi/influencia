@@ -144,20 +144,19 @@ class InstagramScraper
             $this->client = new Client([
                 'verify'            =>  !config('app.debug'),
                 // 'proxy'             =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
-                // 'timeout'           =>  300,
-                // 'connect_timeout'   =>  35,
+                'timeout'           =>  300,
+                'connect_timeout'   =>  35,
                 'config'            =>  [
                     'curl'          =>  [
-			            CURLOPT_PROXY		=>  config('scraper.proxy.ip'),
-			            CURLOPT_PROXYPORT	=>  config('scraper.proxy.port'),
+			            CURLOPT_PROXY		    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
                         CURLOPT_SSL_VERIFYPEER  =>  0,
                         CURLOPT_SSL_VERIFYHOST  =>  0,
                         CURLOPT_FOLLOWLOCATION  =>  true,
                         CURLOPT_MAXREDIRS       =>  5,
                         CURLOPT_HTTPPROXYTUNNEL =>  1,
-                        CURLOPT_RETURNTRANSFER  =>  true,
+                        CURLOPT_RETURNTRANSFER  =>  false,
                         CURLOPT_HEADER          =>  1,
-			            CURLOPT_TIMEOUT		=>  35,
+			            CURLOPT_TIMEOUT		    =>  35,
 			            CURLOPT_CONNECTTIMEOUT	=>  35,
                     ]
                 ]
@@ -211,6 +210,9 @@ class InstagramScraper
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
 
+            // Stop process if necessary
+            $this->shouldStopProcess($ex);
+
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
@@ -223,7 +225,6 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             throw $ex;
         }
     }
@@ -245,6 +246,9 @@ class InstagramScraper
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+
+            // Stop process if necessary
+            $this->shouldStopProcess($ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
@@ -331,6 +335,9 @@ class InstagramScraper
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
+            // Stop process if necessary
+            $this->shouldStopProcess($ex);
+
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
@@ -364,6 +371,12 @@ class InstagramScraper
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
             }
         }catch(\Exception $ex){
+            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::error($ex->getMessage());
+
+            // Stop process if necessary
+            $this->shouldStopProcess($ex);
+
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
@@ -376,8 +389,6 @@ class InstagramScraper
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
-            $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
-            Log::error($ex->getMessage());
             throw $ex;
         }
 
@@ -537,6 +548,9 @@ class InstagramScraper
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+
+            // Stop process if necessary
+            $this->shouldStopProcess($ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex)){

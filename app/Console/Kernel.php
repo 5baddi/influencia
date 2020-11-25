@@ -36,7 +36,7 @@ class Kernel extends ConsoleKernel
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
-            ->everyMinute()
+            ->hourly()
             ->withoutOverlapping();
             
         // Trackers updater
