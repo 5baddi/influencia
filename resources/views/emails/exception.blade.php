@@ -4,6 +4,6 @@
 {!! $content !!}
 
 <br/>
-{{ Carbon\Carbon::createFromTimestamp($timestamp)->toDateTimeString() }}
+{{ Carbon\Carbon::now()->toDateTimeString() }}
 <br/>
 @endcomponent

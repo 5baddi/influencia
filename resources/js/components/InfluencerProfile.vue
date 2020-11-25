@@ -126,8 +126,8 @@ export default {
                 if(typeof response.content.data !== "undefined"){
                     this.influencerContent = this.influencerContent.concat(response.content.data);
 
-                    if(response.content.to && response.content.total)
-                        this.page = response.content.to < response.content.total ? this.page + 1 : null;
+                    if(response.content.to && response.content.total && response.content.current_page)
+                        this.page = response.content.to < response.content.total ? response.content.current_page + 1 : null;
                 }
 
                 this.loadingMore = false;
@@ -140,7 +140,7 @@ export default {
    data(){
        return {
             attrActive: null,
-            page: 1,
+            page: null,
             loadingMore: true,
             influencerContent: []
        }

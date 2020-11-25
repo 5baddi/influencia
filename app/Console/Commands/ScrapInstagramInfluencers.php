@@ -80,8 +80,12 @@ class ScrapInstagramInfluencers extends Command
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
-        // Scrap influencers details & posts
-        $this->scrapInfluencers();
+        try{
+            // Scrap influencers details & posts
+            $this->scrapInfluencers();
+        }catch(\Exception $ex){
+            $this->error($ex->getMessage);
+        }
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
