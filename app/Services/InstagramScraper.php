@@ -151,21 +151,30 @@ class InstagramScraper
             // Init $client
             $this->client = new Client([
                 'verify'            =>  !config('app.debug'),
-                'proxy'             =>  config('scraper.proxy.protocol') . '://' . config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
-                'timeout'           =>  300,
-                'connect_timeout'   =>  35,
+                //'proxy'             =>  config('scraper.proxy.protocol') . '://' . config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
+                //'timeout'           =>  300,
+                //'connect_timeout'   =>  35,
                 'config'            =>  [
                     'curl'          =>  [
+			CURLOPT_PROXY		=>  config('scraper.proxy.ip'),
+			CURLOPT_PROXYPORT	=>  config('scraper.proxy.port'),
                         CURLOPT_SSL_VERIFYPEER  =>  0,
                         CURLOPT_SSL_VERIFYHOST  =>  0,
-                        CURLOPT_FOLLOWLOCATION  =>  1,
+                        CURLOPT_FOLLOWLOCATION  =>  true,
                         CURLOPT_MAXREDIRS       =>  5,
                         CURLOPT_HTTPPROXYTUNNEL =>  1,
-                        CURLOPT_RETURNTRANSFER  =>  1,
-                        CURLOPT_HEADER          =>  1
+                        CURLOPT_RETURNTRANSFER  =>  true,
+                        CURLOPT_HEADER          =>  1,
+			CURLOPT_TIMEOUT		=>  35,
+			CURLOPT_CONNECTTIMEOUT	=>  35,
                     ]
                 ]
             ]);
+
+	    // Test proxy connection
+	    $response = $this->client->request('GET', 'https://instagram.com');
+	    if($response->getStatusCode()!== 200)
+		throw new \Exception("Something going wrong using the proxy!");
 
             // $this->console->writeln("<fg=yellow>Connect using proxy: " . env('MAIN_PROXY_IP') . ":" . env('MAIN_PROXY_PORT') . "</>");
         }catch(\Exception $ex){
