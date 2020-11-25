@@ -303,11 +303,10 @@ class InstagramScraper
     public function getMedias(Influencer $influencer, string $nextCursor = null, int $max = self::MAX_REQUEST)
     {
         try{
-            if(!$force){
-                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
-                $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
-                $this->console->writeln(!is_null($lastPost) ? "<fg=green>Start scraping from " . $lastPost->short_code . "</>" : "");
-            }
+            // Start from last inserted media
+            $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
+            $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
+            $this->console->writeln(!is_null($lastPost) ? "<fg=green>Start scraping from " . $lastPost->short_code . "</>" : "");
             
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
@@ -365,6 +364,12 @@ class InstagramScraper
 
             throw $ex;
         }
+    }
+
+    public function storeMedias()
+    {
+        // Bulk insert of influencer posts
+        // Influencer::insert($this->bulkInsert->toArray());
     }
 
     /**
