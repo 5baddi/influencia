@@ -143,9 +143,6 @@ class InstagramScraper
             // Init $client
             $this->client = new Client([
                 'verify'            =>  !config('app.debug'),
-                // 'proxy'             =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
-                'timeout'           =>  300,
-                'connect_timeout'   =>  35,
                 'config'            =>  [
                     'curl'          =>  [
 			            CURLOPT_PROXY		    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
@@ -154,7 +151,7 @@ class InstagramScraper
                         CURLOPT_FOLLOWLOCATION  =>  true,
                         CURLOPT_MAXREDIRS       =>  5,
                         CURLOPT_HTTPPROXYTUNNEL =>  1,
-                        CURLOPT_RETURNTRANSFER  =>  false,
+                        CURLOPT_RETURNTRANSFER  =>  true,
                         CURLOPT_HEADER          =>  1,
 			            CURLOPT_TIMEOUT		    =>  35,
 			            CURLOPT_CONNECTTIMEOUT	=>  35,
