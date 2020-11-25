@@ -3,7 +3,7 @@
     <div class="login-intro">
         <div class="login-intro__content">
             <div class="logo">
-                <img src="../../assets/img/logo.svg" alt="logo" />
+                <img src="../../assets/img/log-inf-mini.png" alt="logo" />
             </div>
             <h1>Welcom to INFLUENCIA III</h1>
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam quas facilis quibusdam tempore aperiam nostrum autem! Blanditiis sequi aut animi!</p>

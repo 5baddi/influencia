@@ -4,10 +4,9 @@
         <div class="dashboard__sidebar--content">
             <div class="logo">
                 <router-link :to="{name : 'dashboard'}">
-                    <img src="../../../assets/img/logo.svg" alt="logo" />
+                    <img :src="'images/log-inf' + (isNavOpen ? '.png' : '-mini.png')" alt="logo" />
                 </router-link>
             </div>
-            <h1>INFLUENCIA</h1>
         </div>
         <button class="dashboard__sidebar--toggle btn" @click="toggle">
             <span></span>
@@ -15,17 +14,13 @@
             <span></span>
         </button>
     </header>
-    <div class="dashboard__sidebar__profile" v-if="AuthenticatedUser">
+    <!--<div class="dashboard__sidebar__profile" v-if="AuthenticatedUser">
         <h2>{{ AuthenticatedUser.name }}</h2>
         <p>{{ AuthenticatedUser.email }}</p>
         <div class="avatar">
-            <!-- <img
-               src="https://medgoldresources.com/wp-content/uploads/2018/02/avatar-placeholder.gif"
-               alt="avatar"
-            /> -->
             <img v-bind:src="'https://ui-avatars.com/api/?color=039be5&name=' + AuthenticatedUser.name" alt="avatar" />
         </div>
-    </div>
+    </div>-->
     <nav class="dashboard__sidebar__navigation">
         <ul>
             <li :class="{active : currentRouteName == 'dashboard'}">

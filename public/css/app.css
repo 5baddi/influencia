@@ -7325,6 +7325,21 @@ button:disabled {
   content: "\E56B";
 }
 
+@font-face {
+  font-family: "BebasNeue Bold";
+  src: url(/fonts/BebasNeueBold.ttf?1e99b0442583593743adb5d91d7c0669);
+}
+
+@font-face {
+  font-family: "BebasNeue Regular";
+  src: url(/fonts/BebasNeueRegular.ttf?9042a37caa7fb0389371de54dd886b38);
+}
+
+@font-face {
+  font-family: "BebasNeue Light";
+  src: url(/fonts/BebasNeueLight.ttf?b5c9e279edbebf333edcabba7f36f065);
+}
+
 .text-center {
   text-align: center !important;
 }
@@ -7856,6 +7871,44 @@ span.status-danger::before {
 
 .vue-tags-input .ti-input .ti-tag {
   background-color: #039be5 !important;
+}
+
+.dashboard__sidebar .dashboard__sidebar--content {
+  justify-content: center;
+}
+
+.dashboard__sidebar .dashboard__sidebar--content .logo {
+  width: 90% !important;
+}
+
+.dashboard__sidebar__navigation {
+  font-family: "BebasNeue Regular", sans-serif;
+  margin: 0;
+}
+
+.dashboard__sidebar__navigation ul {
+  margin: 0;
+}
+
+.dashboard__sidebar__navigation ul li {
+  padding: 1rem 0rem;
+}
+
+.dashboard__sidebar__navigation ul li a {
+  font-weight: normal !important;
+  display: block !important;
+  text-align: center;
+}
+
+.dashboard__sidebar__navigation ul li a .icon {
+  margin: 0 0 0.5rem 0;
+  font-size: 16pt;
+  display: inline-block;
+}
+
+.dashboard__sidebar__navigation ul li a .text {
+  display: block;
+  font-size: 12pt;
 }
 
 .table {

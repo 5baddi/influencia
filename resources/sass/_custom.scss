@@ -1,5 +1,18 @@
 @import "~material-design-icons-iconfont/dist/material-design-icons";
 
+@font-face{
+    font-family: 'BebasNeue Bold';
+    src: url('../assets/fonts/BebasNeueBold.ttf');
+}
+@font-face{
+    font-family: 'BebasNeue Regular';
+    src: url('../assets/fonts/BebasNeueRegular.ttf');
+}
+@font-face{
+    font-family: 'BebasNeue Light';
+    src: url('../assets/fonts/BebasNeueLight.ttf');
+}
+
 .text-center{
     text-align: center !important;
 }
@@ -530,6 +543,43 @@ span.status{
 
         .ti-tag{
             background-color: #039be5 !important;
+        }
+    }
+}
+
+.dashboard__sidebar .dashboard__sidebar--content{
+    justify-content: center;
+
+    .logo{
+        width: 90% !important;
+    }
+}
+
+.dashboard__sidebar__navigation{
+    font-family: 'BebasNeue Regular', sans-serif;
+    margin: 0;
+
+    ul{
+        margin: 0;
+        
+        li{
+            padding: 1rem 0rem;
+            a{
+                font-weight: normal !important;
+                display: block !important;
+                text-align: center;
+
+                .icon{
+                    margin: 0 0 0.5rem 0;
+                    font-size: 16pt;
+                    display: inline-block;
+                }
+
+                .text{
+                    display: block;
+                    font-size: 12pt;
+                }
+            }
         }
     }
 }
