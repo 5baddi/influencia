@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Tracker;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
@@ -199,5 +200,15 @@ class Influencer extends Model
     public function posts()
     {
         return $this->hasMany(InfluencerPost::class);
+    }
+
+    /**
+     * Get count of trackers related to influencer
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function trackers()
+    {
+        return $this->belongsToMany(Tracker::class, 'tracker_influencers');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
+use App\Influencer;
 use App\InfluencerPost;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
@@ -114,25 +115,26 @@ class ScrapInstagramInfluencers extends Command
         }
 
         // Get influencers
-        $influencers = $this->repository->all();
+        $influencers = Influencer::with(['trackers', 'posts'])->get();
         $this->info("Number of account to sync: " . $influencers->count());
 
         // Scrap each influencer details
         foreach($influencers as $influencer){
             try{
                 // Update influencer queued state
-                $influencer->update(['queued' => 'progress']);
+                $this->updateQueue($influencer);
 
                 // Scrap account details
                 $this->info("Start scraping account @" . $influencer->username);
                 $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
                 // Update influencer
-                $influencer = $this->repository->update($influencer, $accountDetails);
+                $influencer->update($accountDetails);
+                $influencer->refresh();
                 $this->info("Successfully updated influencer @" . $influencer->username);
 
                 // Ignore last updated influencers
-                if($influencer->posts()->count() == $influencer->medias && isset($influencer->updated_at) && $influencer->updated_at->diffInDays(Carbon::now()) === 0){
+                if($influencer->posts()->count() === $influencer->medias){
                     $influencer->update(['queued' => 'finished']);
 
                     continue;
@@ -143,8 +145,8 @@ class ScrapInstagramInfluencers extends Command
                 $this->info("Already scraped posts: " . $influencer->posts()->count());
                 $this->info("Please wait until scraping all medias ...");
                 $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
-                $force = (!is_null($lastPost) && $lastPost->updated_at->diffInDays(Carbon::now()) > 1);
-                $this->instagramScraper->getMedias($influencer, $force);
+                // $force = (!is_null($lastPost) && $lastPost->updated_at->diffInDays(Carbon::now()) > 1);
+                $this->instagramScraper->getMedias($influencer);
                 $influencer->refresh();
 
                 // Update influencer queued state
@@ -163,12 +165,30 @@ class ScrapInstagramInfluencers extends Command
                 Log::error($ex->getMessage());
 
                 // Set tracker as failed
-                $influencer->update(['queued' => 'failed']);
+                $this->updateQueue($influencer, 'failed');
 
                 // Break process if necessary
                 if($ex->getCode() === -1)
                     break;
             }
         }
+    }
+
+
+    /**
+     * Update influencer and related trackers queued state
+     * 
+     * @param \App\Influencer $influencer
+     * @param string $queue
+     * @return void
+     */
+    private function updateQueue(Influencer $influencer, string $queue = 'progress') : void
+    {
+        // Update influencer queued state
+        $influencer->update(['queued' => $queue]);
+
+        // Update trackers queued state
+        foreach($influencer->trackers as $tracker)
+            $tracker->update(['queued' => $queue]);
     }
 }
