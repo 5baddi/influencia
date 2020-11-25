@@ -54,9 +54,7 @@ class ShortLinkController extends Controller
 
             // IP lookup
             if($ip !== '127.0.0.1'){
-                $ipLookup = new IPinfo([
-                    'token' => env('IPINFOIO_TOKEN')
-                ]);
+                $ipLookup = new IPinfo(env('IPINFOIO_TOKEN'));
                 $ipInfo = $ipLookup->getDetails($ip);
 
                 $data = array_merge($data, [
