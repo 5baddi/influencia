@@ -61,7 +61,7 @@ class ShortLinkController extends Controller
                     'country_code'  =>  $ipInfo->country,
                     'country_name'  =>  $ipInfo->country_name,
                     'city_name'     =>  $ipInfo->city,
-                    'zip_code'      =>  $ipInfo->postal,
+                    'zip_code'      =>  $ipInfo->postal ?? null,
                     'referer'       =>  Request::server('HTTP_REFERER')
                 ]);
             }
