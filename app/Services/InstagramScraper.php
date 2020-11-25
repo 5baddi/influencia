@@ -368,6 +368,7 @@ class InstagramScraper
 
     public function storeMedias()
     {
+        dd($this->bulkInsert->toArray());
         // Bulk insert of influencer posts
         InfluencerPost::insert($this->bulkInsert->toArray());
 
