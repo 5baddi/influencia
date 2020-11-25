@@ -217,7 +217,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
-                $this->instagramAuthentication(true);
+                $this->instagramAuthentication();
 
                 return $this->byUsername($username);
             }
@@ -254,7 +254,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
-                $this->instagramAuthentication(true);
+                $this->instagramAuthentication();
 
                 return $this->byMedia($link);
             }
@@ -342,7 +342,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
-                $this->instagramAuthentication(true);
+                $this->instagramAuthentication();
 
                 return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
             }
@@ -381,7 +381,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
-                $this->instagramAuthentication(true);
+                $this->instagramAuthentication();
 
                 return $this->getMedia($mediaShortCode, $media, $tracker);
             }
@@ -556,7 +556,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
-                $this->instagramAuthentication(true);
+                $this->instagramAuthentication();
 
                 return  $this->getSentimentsAndEmojis($media, $data, $nextComment, $max);
             }
