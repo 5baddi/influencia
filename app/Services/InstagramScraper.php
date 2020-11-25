@@ -14,6 +14,7 @@ use App\Helpers\EmojiParser;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
@@ -89,6 +90,20 @@ class InstagramScraper
      */
     public $hashtags = [];
 
+    /**
+     * Collection of media to be inserted
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public $bulkInsert;
+    
+    /**
+     * Collection of media to be updated
+     *
+     * @var \Illuminate\Support\Collection
+     */
+    public $bulkUpdate;
+
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
         // Init Cache manager
@@ -103,6 +118,10 @@ class InstagramScraper
 
         // Init console
         $this->console = new ConsoleOutput();
+
+        // Init collections
+        $this->bulkInsert = new Collection();
+        $this->bulkUpdate = new Collection();
 
         // Init HTTP Client
         $this->client = new Client([
@@ -164,6 +183,9 @@ class InstagramScraper
 			            CURLOPT_TIMEOUT		    =>  35,
 			            CURLOPT_CONNECTTIMEOUT	=>  35,
                     ]
+                ],
+                'headers'           =>  [
+                    'user-agent'    =>  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.89 Safari/537.36'
                 ]
             ]);
 
@@ -274,12 +296,11 @@ class InstagramScraper
      * Scrap user medias
      *
      * @param Influencer $influencer
-     * @param bool $force Force update all medias
      * @param string $nextCursor
      * @param int $maxID
      * @return void
      */
-    public function getMedias(Influencer $influencer, bool $force = false, string $nextCursor = null, int $max = self::MAX_REQUEST)
+    public function getMedias(Influencer $influencer, string $nextCursor = null, int $max = self::MAX_REQUEST)
     {
         try{
             if(!$force){
@@ -287,12 +308,18 @@ class InstagramScraper
                 $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
                 $this->console->writeln(!is_null($lastPost) ? "<fg=green>Start scraping from " . $lastPost->short_code . "</>" : "");
             }
+            
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
             $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             foreach($fetchedMedias['medias'] as $key => $media){
+                // Check media if already exists
+                $existsMedia = InfluencerPost::where('post_id', $media->getId())->first();
+                if(!is_null($existsMedia))
+                    continue;
+
                 // Scrap media
                 $_media = $this->getMedia($media->getShortCode(), $media);
 
@@ -302,38 +329,21 @@ class InstagramScraper
                 // Set end cursor
                 if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'])
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
-                // Force scrap next_cursor
-                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'] && $force)
-                    $nextCursor = $fetchedMedias['maxId'];
 
                 // Store or update media
-                $existsMedia = InfluencerPost::where('post_id', $_media['post_id'])->first();
-                if(!is_null($existsMedia)){
-                    $this->console->writeln("<fg=green>Update post: {$existsMedia->uuid}</>");
-                    $this->console->writeln("<href={$existsMedia->link}>{$existsMedia->link}</>");
-                    $this->postRepo->update($existsMedia, $_media);
-                    Log::info("Update post: {$existsMedia->short_code}");
-                    continue;
-                }else{
-                    $this->console->writeln("<fg=green>Create post: {$_media['short_code']}</>");
-                    $this->console->writeln("<href={$_media['link']}>{$_media['link']}</>");
-                    $this->postRepo->create($_media);
-                    Log::info("Create post: {$_media['short_code']}");
-                }
+                $this->bulkInsert($_media);
+                $this->console->writeln("<fg=green>New post: {$_media['short_code']}</><href={$_media['link']}>{$_media['link']}</>");
 
                 // Unset scraped media
                 unset($fetchedMedias['medias'][$key]);
             }
 
-            // Verify the max requests calls
-            if(ScrapInstagramInfluencers::checkPassedMaxCalls()){
-                $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
-                return;
-            }
+            // Verify process reach the limit
+            $this->verifyMaxRequestsLimit();
 
             // Scraping more
             if($fetchedMedias['hasNextPage'])
-                return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
+                return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
@@ -347,7 +357,7 @@ class InstagramScraper
                 $this->setProxy();
                 $this->instagramAuthentication();
 
-                return $this->getMedias($influencer, $force, $nextCursor ?? null, $max);
+                return $this->getMedias($influencer, $fetchedMedias['hasNextPage'] ? $fetchedMedias['maxId'] : null, $max);
             }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
@@ -368,11 +378,61 @@ class InstagramScraper
     public function getMedia(string $mediaShortCode, \InstagramScraper\Model\Media $media = null, Tracker $tracker = null) : array
     {
         try{
+            // Verify process reach the limit
+            $this->verifyMaxRequestsLimit();
+
             // Scrap media
             if(is_null($media)){
                 $media = $this->instagram->getMediaByCode($mediaShortCode);
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
             }
+
+            // Fetch comments sentiments
+            $comments = [];
+            $this->getSentimentsAndEmojis($media, $comments);
+
+            // calculate all comments sentiment
+            if($media->getCommentsCount() > 0){
+                $comments['comments_positive'] = round($comments['comments_positive'] / $media->getCommentsCount(), 2);
+                $comments['comments_neutral'] = round($comments['comments_neutral'] / $media->getCommentsCount(), 2);
+                $comments['comments_negative'] = round($comments['comments_negative'] / $media->getCommentsCount(), 2);
+            }
+
+            // Count hashtags on media caption
+            $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
+
+            // Add media and comments details
+            $_media = [
+                'post_id'       =>  $media->getId(),
+                'next_cursor'   =>  null,
+                'link'          =>  $media->getLink(),
+                'short_code'    =>  $media->getShortCode(),
+                'type'          =>  $media->getType(),
+                'likes'         =>  $media->getLikesCount(),
+                'thumbnail_url' =>  $media->getImageThumbnailUrl(),
+                'comments'      =>  $media->getCommentsCount(),
+                'emojis'        =>  sizeof($comments['comments_emojis']),
+                'published_at'  =>  Carbon::parse($media->getCreatedTime()),
+                'caption'       =>  $media->getCaption(),
+                'alttext'       =>  $media->getAltText(),
+                'location'      =>  $media->getLocationName(),
+                'location_id'   =>  $media->getLocationId(),
+                'location_slug' =>  $media->getLocationSlug(),
+                'location_json' =>  $media->getLocationAddressJson(),
+                'video_views'   =>  $media->getVideoViews(),
+                'video_duration'=>  $this->getVideoDuration($media),
+                'is_ad'         =>  $media->isAd(),
+                'caption_hashtags'  =>  $this->hashtags,
+                'comments_disabled' =>  $media->getCommentsDisabled(),
+                'caption_edited'    =>  $media->isCaptionEdited(),
+                'files'             =>  $this->getFiles($media)
+            ];
+
+            // Set tracker ID
+            if(!is_null($tracker))
+                $_media['tracker_id'] = $tracker->id;
+
+            return array_merge($_media, $comments);
         }catch(\Exception $ex){
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
@@ -394,53 +454,6 @@ class InstagramScraper
 
             throw $ex;
         }
-
-        // Fetch comments sentiments
-        $comments = [];
-        $this->getSentimentsAndEmojis($media, $comments);
-
-        // calculate all comments sentiment
-        if($media->getCommentsCount() > 0){
-            $comments['comments_positive'] = round($comments['comments_positive'] / $media->getCommentsCount(), 2);
-            $comments['comments_neutral'] = round($comments['comments_neutral'] / $media->getCommentsCount(), 2);
-            $comments['comments_negative'] = round($comments['comments_negative'] / $media->getCommentsCount(), 2);
-        }
-
-        // Count hashtags on media caption
-        $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
-
-        // Add media and comments details
-        $_media = [
-            'post_id'       =>  $media->getId(),
-            'next_cursor'   =>  null,
-            'link'          =>  $media->getLink(),
-            'short_code'    =>  $media->getShortCode(),
-            'type'          =>  $media->getType(),
-            'likes'         =>  $media->getLikesCount(),
-            'thumbnail_url' =>  $media->getImageThumbnailUrl(),
-            'comments'      =>  $media->getCommentsCount(),
-            'emojis'        =>  sizeof($comments['comments_emojis']),
-            'published_at'  =>  Carbon::parse($media->getCreatedTime()),
-            'caption'       =>  $media->getCaption(),
-            'alttext'       =>  $media->getAltText(),
-            'location'      =>  $media->getLocationName(),
-            'location_id'   =>  $media->getLocationId(),
-            'location_slug' =>  $media->getLocationSlug(),
-            'location_json' =>  $media->getLocationAddressJson(),
-            'video_views'   =>  $media->getVideoViews(),
-            'video_duration'=>  $this->getVideoDuration($media),
-            'is_ad'         =>  $media->isAd(),
-            'caption_hashtags'  =>  $this->hashtags,
-            'comments_disabled' =>  $media->getCommentsDisabled(),
-            'caption_edited'    =>  $media->isCaptionEdited(),
-            'files'             =>  $this->getFiles($media)
-        ];
-
-        // Set tracker ID
-        if(!is_null($tracker))
-            $_media['tracker_id'] = $tracker->id;
-
-        return array_merge($_media, $comments);
     }
 
     /**
@@ -536,18 +549,76 @@ class InstagramScraper
      */
     private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_REQUEST) : ?array
     {
-        // init
-        $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
-
-        // Ignore media with disabled comments option
-        if($media->getCommentsCount() === 0 || $media->getCommentsDisabled())
-            return $data;
-
-
-        // Load comments
         try{
+
+            // Verify process reach the limit
+            $this->verifyMaxRequestsLimit();
+
+            // init
+            $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
+
+            // Ignore media with disabled comments option
+            if($media->getCommentsCount() === 0 || $media->getCommentsDisabled())
+                return $data;
+
+
+            // Load comments
             $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            
+            // Parse ana analyze comments
+            foreach($comments as $comment){
+                // Handle method
+                $handle = function($comment) use(&$data){
+                    // Analyze sentiment
+                    $analyzer = new Analyzer();
+                    $sentiment = $analyzer->getSentiment($comment->getText());
+                    $data['comments_positive'] += $sentiment['pos'];
+                    $data['comments_neutral'] += $sentiment['neu'];
+                    $data['comments_negative'] += $sentiment['neg'];
+
+                    // Match all emojis
+                    $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
+
+                    // Extract comment hashtags
+                    $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
+                };
+
+                // Handle comment
+                $handle($comment);
+
+                // unset($fetchedComments['comments'][$key]);
+
+                // Handle child comments
+                if(sizeof($comment->getChildComments()) > 0){
+                    foreach($comment->getChildComments() as $child)
+                        $handle($child);
+                }
+
+                // Verify process reach the limit
+                $this->verifyMaxRequestsLimit();
+
+                // Load more comments
+                if($comment->hasMoreChildComments())
+                    $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
+            }
+
+            // Get more comments
+            // if(isset($fetchedComments['haseNextPage']) && !is_null($fetchedComments['maxId']))
+                // return $this->getSentimentsAndEmojis($media, $data, $fetchedComments, $fetchedComments['maxId'], $max);
+
+
+            // Get top 3 emojis
+            // if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
+            //     $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
+
+            return [
+                'comments_positive'  => $data['comments_positive'],
+                'comments_neutral'   => $data['comments_neutral'],
+                'comments_negative'  => $data['comments_negative'],
+                'comments_emojis'    => $data['comments_emojis'],
+                'comments_hashtags'  => $data['comments_hashtags']
+            ];
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
@@ -569,56 +640,6 @@ class InstagramScraper
 
             throw $ex;
         }
-
-        foreach($comments as $comment){
-            // Handle method
-            $handle = function($comment) use(&$data){
-                // Analyze sentiment
-                $analyzer = new Analyzer();
-                $sentiment = $analyzer->getSentiment($comment->getText());
-                $data['comments_positive'] += $sentiment['pos'];
-                $data['comments_neutral'] += $sentiment['neu'];
-                $data['comments_negative'] += $sentiment['neg'];
-
-                // Match all emojis
-                $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
-
-                // Extract comment hashtags
-                $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
-            };
-
-            // Handle comment
-            $handle($comment);
-
-            // unset($fetchedComments['comments'][$key]);
-
-            // Handle child comments
-            if(sizeof($comment->getChildComments()) > 0){
-                foreach($comment->getChildComments() as $child)
-                    $handle($child);
-            }
-
-            // Load more comments
-            if($comment->hasMoreChildComments())
-                $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
-        }
-
-        // Get more comments
-        // if(isset($fetchedComments['haseNextPage']) && !is_null($fetchedComments['maxId']))
-            // return $this->getSentimentsAndEmojis($media, $data, $fetchedComments, $fetchedComments['maxId'], $max);
-
-
-        // Get top 3 emojis
-        // if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
-        //     $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
-
-        return [
-            'comments_positive'  => $data['comments_positive'],
-            'comments_neutral'   => $data['comments_neutral'],
-            'comments_negative'  => $data['comments_negative'],
-            'comments_emojis'    => $data['comments_emojis'],
-            'comments_hashtags'  => $data['comments_hashtags']
-        ];
     }
 
     /**
@@ -703,6 +724,23 @@ class InstagramScraper
         if($ex->getCode() === 403){
             $msg = "Please wait a few minutes before you try again!";
             throw new \Exception($msg, -1);
+        }
+    }
+
+    /**
+     * Verify if process reach the max requests limit
+     *
+     * @return \Throwable
+     */
+    private function verifyMaxRequestsLimit()
+    {
+        // Init
+        $msg = "We will continue scraping after one hour because bypass the max requests per hour!";
+
+        // Verify the max requests calls
+        if(ScrapInstagramInfluencers::checkPassedMaxCalls()){
+            $this->error($msg);
+            throw new \Exception($msg, -2);
         }
     }
 }
