@@ -369,7 +369,19 @@ class InstagramScraper
     public function storeMedias()
     {
         // Bulk insert of influencer posts
-        // Influencer::insert($this->bulkInsert->toArray());
+        dd(Influencer::insert($this->bulkInsert->toArray()));
+
+        // Insert media assets 
+        $this->bulkInsert->map(function($item){
+            array_walk($item['files'], function($file) use ($post){
+                if(empty($file) || is_null($file) || !is_array($file))
+                    return;
+    
+                // Push added media record
+                $file = array_merge($file, ['post_id' =>  $post->id]);
+                InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']]);
+            });
+        });
     }
 
     /**

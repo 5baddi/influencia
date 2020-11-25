@@ -147,8 +147,7 @@ class ScrapInstagramInfluencers extends Command
                 $this->instagramScraper->getMedias($influencer);
 
                 // Bulk insert of influencer posts
-                Influencer::insert($this->instagramScraper->bulkInsert->toArray());
-                // TODO: $this->instagramScraper->storeMedias();
+                $this->instagramScraper->storeMedias();
                 $influencer->refresh();
 
                 // Update influencer queued state
