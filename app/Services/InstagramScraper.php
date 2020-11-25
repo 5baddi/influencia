@@ -30,7 +30,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = 10;
+    const SLEEP_REQUEST = ['min' => 10, 'max' => 120];
 
     /**
      * Instagram scraper
@@ -121,30 +121,20 @@ class InstagramScraper
      */
     public function instagramAuthentication(bool $force = false) : void
     {
-        $this->instagram = new Instagram($this->client);
+        try{
+            // Init IMAP for Two steps verification
+            $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
 
-        // try{
-        //     // Init IMAP for Two steps verification
-        //     $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
+            // Login to App Instagram account
+            $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
+            $this->instagram->login($force, $emailVecification);
+            $this->instagram->saveSession();
+        }catch(Exception $ex){
+            $this->shouldStopProcess($ex);
 
-        //     // Login to App Instagram account
-        //     $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
-        //     $this->instagram->login($force, $emailVecification);
-        //     $this->instagram->saveSession();
-        // }catch(Exception $ex){
-        //     $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
-        //     // Trace log
-        //     Log::error($ex->getMessage());
-
-        //     if($ex->getCode() === 403){
-        //         $msg = "Please wait a few minutes before you try again!";
-        //         $this->console->writeln("<fg=red>{$msg}</>");
-        //         Log::error($msg);
-        //         throw new \Exception($msg);
-        //     }
-
-        //     $this->instagram = new Instagram($this->client);
-        // }
+            // Use instagram without credentials may not all functionalities work fine
+            $this->instagram = new Instagram($this->client);
+        }
     }
 
     public function setProxy()
@@ -196,7 +186,7 @@ class InstagramScraper
         try{
             // Scrap user
             $account = $this->instagram->getAccount($username);
-            sleep(self::SLEEP_REQUEST);
+            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return [
                 'account_id'    =>  $account->getId(),
@@ -249,7 +239,7 @@ class InstagramScraper
         try{
             // Scrap media
             $media = $this->instagram->getMediaByUrl($link);
-            sleep(self::SLEEP_REQUEST);
+            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return $media;
         }catch(\Exception $ex){
@@ -293,7 +283,7 @@ class InstagramScraper
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
             $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
-            sleep(self::SLEEP_REQUEST);
+            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             foreach($fetchedMedias['medias'] as $key => $media){
                 // Scrap media
@@ -371,7 +361,7 @@ class InstagramScraper
             // Scrap media
             if(is_null($media)){
                 $media = $this->instagram->getMediaByCode($mediaShortCode);
-                sleep(self::SLEEP_REQUEST);
+                sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
             }
         }catch(\Exception $ex){
             // Use proxy
@@ -543,7 +533,7 @@ class InstagramScraper
         // Load comments
         try{
             $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
-            sleep(self::SLEEP_REQUEST);
+            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
         }catch(\Exception $ex){
             Log::error($ex->getMessage());
             $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
@@ -679,5 +669,23 @@ class InstagramScraper
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false
                 || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false;
+    }
+    
+    /**
+     * Stop the scraping process
+     *
+     * @param \Exception $ex
+     * @return boolean
+     */
+    private function shouldStopProcess(\Exception $ex)
+    {
+        // Trace error
+        $msg = $ex->getCode() . ' | ' . $ex->getMessage();
+        Log::error($msg);
+
+        if($ex->getCode() === 403){
+            $msg = "Please wait a few minutes before you try again!";
+            throw new \Exception($msg, -1);
+        }
     }
 }

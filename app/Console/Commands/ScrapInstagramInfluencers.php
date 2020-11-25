@@ -2,10 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Tracker;
 use Carbon\Carbon;
 use App\InfluencerPost;
-use App\TrackerInfluencer;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +20,7 @@ class ScrapInstagramInfluencers extends Command
     /**
      * Minutes between each max calls
      */
-    const RANGE_MINUTES = 15;
+    const RANGE_MINUTES = 60;
 
     /**
      * The name and signature of the console command.
@@ -80,12 +78,8 @@ class ScrapInstagramInfluencers extends Command
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
-        try{
-            // Scrap influencers details & posts
-            $this->scrapInfluencers();
-        }catch(\Exception $ex){
-            $this->error($ex->getMessage);
-        }
+        // Scrap influencers details & posts
+        $this->scrapInfluencers();
 
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
@@ -163,11 +157,17 @@ class ScrapInstagramInfluencers extends Command
                     return;
                 }
             }catch(\Exception $ex){
+                // Trace
                 $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");
                 Log::error($ex->getMessage());
 
+                // Set tracker as failed
                 $influencer->update(['queued' => 'failed']);
+
+                // Break process if necessary
+                if($ex->getCode() === -1)
+                    break;
             }
         }
     }
