@@ -331,7 +331,7 @@ class InstagramScraper
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
 
                 // Store or update media
-                $this->bulkInsert($_media);
+                $this->bulkInsert->add($_media);
                 $this->console->writeln("<fg=green>New post: {$_media['short_code']}</><href={$_media['link']}>{$_media['link']}</>");
 
                 // Unset scraped media

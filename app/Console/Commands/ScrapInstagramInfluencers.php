@@ -144,10 +144,10 @@ class ScrapInstagramInfluencers extends Command
                 $this->info("Number of posts: " . $influencer->medias);
                 $this->info("Already scraped posts: " . $influencer->posts()->count());
                 $this->info("Please wait until scraping all medias ...");
-                $lastPost = $influencer->posts()->where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
-                // $force = (!is_null($lastPost) && $lastPost->updated_at->diffInDays(Carbon::now()) > 1);
                 $this->instagramScraper->getMedias($influencer);
-                $influencer->refresh();
+
+                // Bulk insert of influencer posts
+                Influencer::insert($this->instagramScraper->bulkInsert->toArray());
 
                 // Update influencer queued state
                if($influencer->posts()->count() === $influencer->medias)
