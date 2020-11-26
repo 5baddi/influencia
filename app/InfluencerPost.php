@@ -19,6 +19,49 @@ class InfluencerPost extends Model
     protected $table = 'influencer_posts';
 
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'post_id',
+        'next_cursor',
+        'link',
+        'short_code',
+        'type',
+        'likes',
+        'thumbnail_url',
+        'comments',
+        'emojis',
+        'published_at',
+        'caption',
+        'alttext',
+        'location',
+        'location_id',
+        'location_slug',
+        'location_json',
+        'video_views',
+        'video_duration',
+        'is_ad',
+        'caption_hashtags',
+        'comments_disabled',
+        'caption_edited',
+        'influencer_id'
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'caption_hashtags'       =>  'json',
+        'comments_emojis'        =>  'json',
+        'comments_hashtags'      =>  'json',
+        'location_json'          =>  'json',
+    ];
+
+    /**
      * The accessors to append to the model's array form.
      *
      * @var array
@@ -34,18 +77,6 @@ class InfluencerPost extends Model
         'engagements',
         'calculated_engagement_rate',
         'earned_media_value'
-    ];
-
-     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'caption_hashtags'       =>  'json',
-        'comments_emojis'        =>  'json',
-        'comments_hashtags'      =>  'json',
-        'location_json'          =>  'json',
     ];
 
     /**
@@ -117,6 +148,29 @@ class InfluencerPost extends Model
     {
         if(!is_string($value))
             $this->attributes['caption_hashtags'] = json_encode($value);
+    }
+    
+    /**
+     * Get location
+     * 
+     * @return array
+     */
+    public function getLocationJsonAttribute()
+    {
+        $result = json_decode($this->attributes['location_json']);
+
+        return $result;
+    }
+    
+    /**
+     * Set location
+     * 
+     * @return void
+     */
+    public function setLocationJsonAttribute($value)
+    {
+        if(!is_string($value))
+            $this->attributes['location_json'] = json_encode($value);
     }
 
     /**

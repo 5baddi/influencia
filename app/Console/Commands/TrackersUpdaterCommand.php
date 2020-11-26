@@ -69,7 +69,7 @@ class TrackersUpdaterCommand extends Command
     private function updateTrackers() : void
     {
         // Get trackers
-        $trackers = Tracker::with(['posts', 'influencers'])->where(['queued' => 'progress', 'status' => true])->get();
+        $trackers = Tracker::with(['posts', 'influencers'])->where('status', true)->get();
         $this->info("Number of trackers to sync: " . $trackers->count());
 
         // Scrap each tracker details
@@ -99,6 +99,8 @@ class TrackersUpdaterCommand extends Command
                             $post->influencer->update(['queued' => 'finished']);
 
                         ++$scrapedInfluencers;
+                    }else{
+                        $post->influencer->update(['queued' => 'progress']);
                     }
                 }
 
@@ -108,6 +110,8 @@ class TrackersUpdaterCommand extends Command
                 // Set tracker queued as finished
                 if($tracker->influencers->count() === $scrapedInfluencers && $scrapedInfluencers > 0)
                     $tracker->update(['queued' => 'finished']);
+                else
+                    $tracker->update(['queued' => 'progress']);
             }
         }
     }

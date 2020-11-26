@@ -7,7 +7,7 @@
         <title>Influencia</title>
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
         <link href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons" rel="stylesheet"/>
-        <link href="{{ asset('css/app.css') }}?v=0.2.4.1" rel="stylesheet"/>
+        <link href="{{ asset('css/app.css') }}?v={{ env('APP_VERSION') }}" rel="stylesheet"/>
     </head>
     <body>
         <div id="app">

@@ -145,9 +145,6 @@ class ScrapInstagramInfluencers extends Command
                 $this->info("Already scraped posts: " . $influencer->posts()->count());
                 $this->info("Please wait until scraping all medias ...");
                 $this->instagramScraper->getMedias($influencer);
-
-                // Bulk insert of influencer posts
-                $this->instagramScraper->storeMedias();
                 $influencer->refresh();
 
                 // Update influencer queued state
@@ -160,6 +157,7 @@ class ScrapInstagramInfluencers extends Command
                     return;
                 }
             }catch(\Exception $ex){
+                dd($ex);
                 // Trace
                 $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");

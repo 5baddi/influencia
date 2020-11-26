@@ -20,7 +20,6 @@ use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\InfluencerPostRepository;
 use App\Console\Commands\ScrapInstagramInfluencers;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class InstagramScraper
 {
@@ -32,7 +31,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 10, 'max' => 120];
+    const SLEEP_REQUEST = ['min' => 10, 'max' => 60];
 
     /**
      * Instagram scraper
@@ -70,13 +69,6 @@ class InstagramScraper
     private $postRepo;
 
     /**
-     * Console output
-     *
-     * @var \Symfony\Component\Console\Output\ConsoleOutput
-     */
-    private $console;
-
-    /**
      * All emojis used in media comments
      *
      * @var array
@@ -96,13 +88,6 @@ class InstagramScraper
      * @var \Illuminate\Support\Collection
      */
     public $bulkInsert;
-    
-    /**
-     * Collection of media to be updated
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    public $bulkUpdate;
 
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
@@ -116,12 +101,8 @@ class InstagramScraper
         // Init repositories
         $this->postRepo = $postRepo;
 
-        // Init console
-        // $this->console = new ConsoleOutput();
-
         // Init collections
         $this->bulkInsert = new Collection();
-        $this->bulkUpdate = new Collection();
 
         // Init HTTP Client
         $this->client = new Client([
@@ -305,14 +286,16 @@ class InstagramScraper
     public function getMedias(Influencer $influencer, string $nextCursor = null, int $max = self::MAX_REQUEST)
     {
         try{
+            Log::channel('stderr')->info("Scrap media for influencer @{$influencer->username}");
+
             // Start from last inserted media
             $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
             $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
-            // $this->console->writeln(!is_null($lastPost) ? "<fg=green>Start scraping from " . $lastPost->short_code . "</>" : "");
+            Log::channel('stderr')->info("Start scraping from " . (!is_null($lastPost) ? $lastPost->short_code : '---'));
             
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            // $this->console->writeln("<fg=green>Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...</>");
+            Log::channel('stderr')->info("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             foreach($fetchedMedias['medias'] as $key => $media){
@@ -339,6 +322,9 @@ class InstagramScraper
                 unset($fetchedMedias['medias'][$key]);
             }
 
+            // Bulk media insertion
+            $this->storeMedias();
+
             // Verify process reach the limit
             $this->verifyMaxRequestsLimit();
 
@@ -346,6 +332,7 @@ class InstagramScraper
             if($fetchedMedias['hasNextPage'])
                 return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
         }catch(\Exception $ex){
+            dd($ex);
             Log::error($ex->getMessage());
             // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
 
@@ -368,22 +355,41 @@ class InstagramScraper
         }
     }
 
-    public function storeMedias()
+    /**
+     * Bulk media insertion
+     *
+     * @return void
+     */
+    public function storeMedias() : void
     {
-        // Bulk insert of influencer posts
-        InfluencerPost::insert($this->bulkInsert->toArray());
+        if($this->bulkInsert->count() === 0)
+            return;
 
-        // Insert media assets 
-        $this->bulkInsert->map(function($item){
-            array_walk($item['files'], function($file) use ($post){
-                if(empty($file) || is_null($file) || !is_array($file))
-                    return;
-    
-                // Push added media record
-                $file = array_merge($file, ['post_id' =>  $post->id]);
-                InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']]);
+        Log::channel('stderr')->info("Bulk insertion of {$this->bulkInsert->count()} media");
+
+        // Bulk insert of influencer posts
+        $this->bulkInsert->map(function ($item, $key){
+            // Store media
+            $post = InfluencerPost::create($item);
+
+            // Store media assets 
+            $this->bulkInsert->map(function($item) use($post){
+                array_walk($item['files'], function($file) use ($post){
+                    if(empty($file) || is_null($file) || !is_array($file))
+                        return;
+        
+                    // Push added media record
+                    $file = array_merge($file, ['post_id' =>  $post->id]);
+                    InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
+                });
             });
         });
+        
+
+        Log::channel('stderr')->info("Bulk insertion termiate successfully");
+        
+        // Re-Init collection
+        $this->bulkInsert = new Collection();
     }
 
     /**
@@ -548,13 +554,20 @@ class InstagramScraper
      */
     private function getVideoDuration(\InstagramScraper\Model\Media $media) : ?int
     {
-        if($media->getType() === 'video' && $media->getVideoDuration() === ''){
-            Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl() ?? $media->getVideoStandardResolutionUrl()));
-            $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
-            $duration = $video->getPlaytimeSeconds();
-            Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
+        try{
+            if($media->getType() === 'video' && $media->getVideoDuration() === ''){
+                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl() ?? $media->getVideoStandardResolutionUrl()));
+                $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
+                $duration = $video->getPlaytimeSeconds();
+                Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
 
-            return $duration;
+                Log::channel('stderr')->info("Video duration for media {$media->getShortCode()} is {$video->getPlaytimeString()}");
+    
+                return $duration;
+            }
+        }catch(\Exception $ex){
+            // Trace
+            Log::error($ex->getMessage, ['context' => 'Get video details for media ' . $media->getShortCode()]);
         }
 
         return null;
@@ -674,17 +687,20 @@ class InstagramScraper
             return [];
 
         // Parse emojis
-        $emojis = $this->emojiParser->matchAll($comment);
+        $_emojis = $this->emojiParser->matchAll($comment);
 
         // Ignore empty emojis list
-        if(empty($emojis))
+        if(empty($_emojis))
             return [];
 
         // Slice empty emoji
-        array_walk($emojis, function($item, $key) use (&$emojis){
-            if(is_null($item) || empty($item) || $item === '#' || $item === '')
-                unset($emojis[$key]);
+        $emojis = [];
+        array_walk($_emojis, function($item, $key) use (&$emojis){
+            if(!is_null($item) && !empty($item) && $item !== '#' && $item !== '')
+                array_push($emojis, $item);
         });
+
+        Log::channel('stderr')->info('Parsed Emojis: ' . sizeof($emojis));
 
         return $emojis;
     }
