@@ -130,7 +130,7 @@ class ScrapInstagramPostJob implements ShouldQueue
         // Set tracker on failed status
         $this->tracker->update(['queued' => 'failed']);
 
-        Log::error("Failed to extract Post info | " . $exception->getMessage());
+        Log::error("Failed to extract Post info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
     }
 
     private function scrapMediaDetails(string $url, InstagramScraper $scraper, Influencer $influencer, InfluencerPostRepository $postRepo)
