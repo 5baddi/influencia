@@ -64,7 +64,6 @@ import CampaignAnalytics from "../components/CampaignAnalytics";
 import {
     mapGetters
 } from "vuex";
-import moment from "moment";
 import DataTableVue from '../components/DataTable.vue';
 export default {
     components: {
@@ -113,7 +112,7 @@ export default {
         next(vm => vm.fetchCampaign())
     },
     created() {
-        // this.initData();
+        this.initData();
     },
     watch: {
         $route: "initData"
@@ -133,16 +132,13 @@ export default {
                     campaign: null
                 });
         },
-        moment() {
-            return moment();
-        },
         dismissAddCampaignModal() {
             this.showAddCampaignModal = false;
         },
         showEditCampaignModal() {
 
         },
-        deleteCampagin(campagin) {
+        deleteCampaign(campagin) {
             this.$refs.confirmDeleteCampaignModal.open("Are sure to delete this campagin?", campagin);
         },
         deleteCampaignAction(campagin) {
@@ -175,10 +171,6 @@ export default {
                 });
                 this.dismissAddCampaignModal();
             });
-        },
-        // Delete campaign
-        deleteCampaign(campaign) {
-
         }
     },
     computed: {
