@@ -7892,6 +7892,8 @@ span.status-danger::before {
 
 .dashboard__sidebar__navigation ul li {
   padding: 1rem 0rem;
+  border-bottom-right-radius: unset;
+  border-top-right-radius: unset;
 }
 
 .dashboard__sidebar__navigation ul li a {

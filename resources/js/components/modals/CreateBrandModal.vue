@@ -60,7 +60,7 @@ export default {
             if (typeof brand !== "undefined")
                 this.brand = brand;
 
-            if(typeof brand.uuid == "string" && brand.name !== null)
+            if(typeof brand !== "undefined" && typeof brand.uuid == "string" && brand.name !== null)
                 this.title = "Update " + brand.name.slice();
 
             this.show = true;

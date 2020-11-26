@@ -288,6 +288,19 @@ const actions = {
                 });
         });
     },
+    deleteCampagin({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.delete("/api/v1/campaigns/" + uuid)
+                .then(response => {
+                    if(response.status === 204)
+                        resolve(response);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                });
+        });
+    },
     addNewCampaign({ commit, state }, data) {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/campaigns", data)

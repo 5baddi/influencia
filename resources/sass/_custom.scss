@@ -564,6 +564,9 @@ span.status{
         
         li{
             padding: 1rem 0rem;
+            border-bottom-right-radius: unset;
+            border-top-right-radius: unset;
+
             a{
                 font-weight: normal !important;
                 display: block !important;

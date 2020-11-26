@@ -45,12 +45,16 @@
                     <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
                      <i class="far fa-stop-circle"></i>
                   </button> -->
+                    <button v-if="($can('delete', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Delete campaign" @click="deleteCampaign(row.data.original)">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
                 </td>
             </DataTable>
         </div>
     </div>
     <CreateCampaignModal :show="showAddCampaignModal" @create="create" @dismiss="dismissAddCampaignModal" />
     <CampaignAnalytics v-if="campaign" :campaign="campaign" />
+    <ConfirmationModal ref="confirmDeleteCampaignModal" v-on:custom="deleteCampaignAction" />
 </div>
 </template>
 
@@ -138,6 +142,25 @@ export default {
         showEditCampaignModal() {
 
         },
+        deleteCampagin(campagin) {
+            this.$refs.confirmDeleteCampaignModal.open("Are sure to delete this campagin?", campagin);
+        },
+        deleteCampaignAction(campagin) {
+            if (typeof campagin.uuid === "undefined")
+                this.showError();
+
+            this.$store.dispatch("deleteCampagin", campagin.uuid)
+                .then(response => {
+                    this.$refs.campaignsDT.reloadData();
+                    this.showSuccess({
+                        message: "Successfully deleted campagin '" + campagin.name + "'"
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.message
+                    });
+                });
+        },
         create(payload) {
             payload = {
                 ...payload,
@@ -162,6 +185,14 @@ export default {
         ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "trackers"])
     },
     notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        },
         createCampaignErrors: {
             type: "error"
         },
