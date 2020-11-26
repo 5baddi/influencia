@@ -313,6 +313,26 @@ const actions = {
                 })
         })
     },
+    updateCampaign({ commit, state }, data) {
+        if(data.uuid !== null && typeof data.uuid !== "undefined"){
+            return new Promise((resolve, reject) => {
+                api.put("/api/v1/campaigns/" + data.uuid, data)
+                    .then(response => {
+                        if(response.status === 200){
+                            commit('setCampaigns', { campaigns: response.data.content })
+                            resolve(response.data)
+                        }else{
+                            throw new Error("Something going wrong!");
+                        }
+                    })
+                    .catch(response => {
+                        reject(response)
+                    })
+            });
+        }else{
+            throw new Error("campaign not found!");
+        }
+    },
     addNewTracker({ commit, state }, data) {
         return new Promise((resolve, reject) => {
             // Verify is a story tracker
