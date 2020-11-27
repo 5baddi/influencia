@@ -4,7 +4,9 @@
 This application require a linux server with good performance there's no minimum requirements.
 
 First you need to update the `.env` file, set the queue connection to database
-`QUEUE_CONNECTION=database`
+``` bash
+QUEUE_CONNECTION=database
+```
 
 then add the default configuration.
 
