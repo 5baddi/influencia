@@ -104,7 +104,7 @@ export default {
                     name: "Influencers",
                     field: "influencers",
                     callback: function (row) {
-                        if (!row.influencers)
+                        if (!row.influencers || row.influencers.length === 0)
                             return '-';
 
                         let html = '';
