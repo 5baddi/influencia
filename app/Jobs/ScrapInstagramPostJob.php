@@ -5,6 +5,7 @@ namespace App\Jobs;
 use Format;
 use App\Tracker;
 use App\Influencer;
+use App\InfluencerPost;
 use Illuminate\Bus\Queueable;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -140,18 +141,24 @@ class ScrapInstagramPostJob implements ShouldQueue
         if(is_null($shortCode))
             return $this->fail(new \Exception("Can't get post with URL: {$url}"));
 
-        // Store media analytics
-        $_media = $scraper->getMedia($shortCode, null, $this->tracker);
-        // Set media influencer ID
-        $_media['influencer_id'] = $influencer->id;
-        // Store or update media
-        $existsMedia = $postRepo->exists($influencer, $_media['post_id']);
-        if(!is_null($existsMedia)){
-            $postRepo->update($existsMedia, $_media);
-            Log::info("Update post: {$existsMedia->short_code}");
-        }else{
+        // Verify of already exists
+        $existsMedia = InfluencerPost::where('short_code', $shortCode)->first();
+        if(is_null($existsMedia)){
+            // Scrape media
+            $_media = $scraper->getMedia($shortCode);
+
+            // Set media influencer ID
+            $_media['influencer_id'] = $influencer->id;
+            // Set tracker ID
+            $_media['tracker_id'] = $tracker->id;
+
+            // Store media
             $postRepo->create($_media);
             Log::info("Create post: {$_media['short_code']}");
+        }else{
+            // Set tracker ID
+            $existsMedia->update(['tracker_id' => $tracker->id]);
+            Log::info("Update post: {$existsMedia->short_code}");
         }
     }
 }
