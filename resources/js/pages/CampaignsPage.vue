@@ -2,7 +2,7 @@
 <div class="campaigns">
     <div class="hero">
         <div class="hero__intro">
-            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'Campagins' }}</h1>
+            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'campaigns' }}</h1>
             <ul class="breadcrumbs">
                 <li>
                     <a href="#">Dashboard</a>
@@ -13,7 +13,7 @@
             </ul>
         </div>
         <div class="hero__actions" v-if="($can('create', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && !campaign">
-            <button :disabled="!activeBrand" class="btn btn-success" @click="showAddCampaignModal = !showAddCampaignModal">Add new campagin</button>
+            <button :disabled="!activeBrand" class="btn btn-success" @click="addCampaign()">Add new campaign</button>
         </div>
     </div>
     <div class="p-1" v-if="!campaign">
@@ -42,6 +42,9 @@
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                         <i class="far fa-chart-bar"></i>
                     </router-link>
+                    <button v-if="($can('edit', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit campaign" @click="editCampaign(row.data.original)">
+                        <i class="fas fa-pen"></i>
+                    </button>
                     <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
                      <i class="far fa-stop-circle"></i>
                   </button> -->
@@ -52,7 +55,7 @@
             </DataTable>
         </div>
     </div>
-    <CreateCampaignModal :show="showAddCampaignModal" @create="create" @dismiss="dismissAddCampaignModal" />
+    <CreateCampaignModal ref="campaignFormModal" @create="create" @update="update"/>
     <CampaignAnalytics v-if="campaign" :campaign="campaign" />
     <ConfirmationModal ref="confirmDeleteCampaignModal" v-on:custom="deleteCampaignAction" />
 </div>
@@ -72,7 +75,6 @@ export default {
     },
     data() {
         return {
-            showAddCampaignModal: false,
             isLoading: true,
             columns: [{
                     name: "Campaign name",
@@ -132,24 +134,24 @@ export default {
                     campaign: null
                 });
         },
-        dismissAddCampaignModal() {
-            this.showAddCampaignModal = false;
+        addCampaign() {
+            this.$refs.campaignFormModal.open();
         },
-        showEditCampaignModal() {
-
+        editCampaign(campaign) {
+            this.$refs.campaignFormModal.open(Object.assign({}, campaign));
         },
-        deleteCampaign(campagin) {
-            this.$refs.confirmDeleteCampaignModal.open("Are sure to delete this campagin?", campagin);
+        deleteCampaign(campaign) {
+            this.$refs.confirmDeleteCampaignModal.open("Are sure to delete this campaign?", campaign);
         },
-        deleteCampaignAction(campagin) {
-            if (typeof campagin.uuid === "undefined")
+        deleteCampaignAction(campaign) {
+            if (typeof campaign.uuid === "undefined")
                 this.showError();
 
-            this.$store.dispatch("deleteCampagin", campagin.uuid)
+            this.$store.dispatch("deleteCampaign", campaign.uuid)
                 .then(response => {
                     this.$refs.campaignsDT.reloadData();
                     this.showSuccess({
-                        message: "Successfully deleted campagin '" + campagin.name + "'"
+                        message: "Successfully deleted campaign '" + campaign.name + "'"
                     });
                 }).catch(error => {
                     this.showError({
@@ -157,20 +159,34 @@ export default {
                     });
                 });
         },
-        create(payload) {
-            payload = {
-                ...payload,
-                brand_id: this.$store.getters.activeBrand && this.$store.getters.activeBrand.id
-            };
-            this.$store.dispatch("addNewCampaign", payload).then(() => {
-                // Reload DataTable
-                this.$refs.campaignsDT.reloadData();
+        create(campaign) {
+            // Set brand ID
+            campaign.brand_id = this.$store.getters.activeBrand && this.$store.getters.activeBrand.id;
 
-                this.createCampaignSuccess({
-                    message: "Campaign created successfully"
+            this.$store.dispatch("addNewCampaign", campaign)
+                .then(response => {
+                    this.$refs.campaignsDT.reloadData();
+                    this.showSuccess({
+                        message: response.message
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.response.data.message
+                    })
                 });
-                this.dismissAddCampaignModal();
-            });
+        },
+        update(campaign) {
+            this.$store.dispatch("updateCampaign", campaign)
+                .then(response => {
+                    this.$refs.campaignsDT.reloadData();
+                    this.showSuccess({
+                        message: response.message
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.response.data.message
+                    })
+                });
         }
     },
     computed: {

@@ -66,7 +66,7 @@ class CampaignPolicy
      */
     public function update(User $user, Campaign $campaign)
     {
-        return ($user->id === $campaign->user_id || $user->is_superadmin);
+        return ($user->id === $campaign->user_id && Gate::allows('edit_campaign')) || $user->is_superadmin;
     }
 
     /**

@@ -38,7 +38,10 @@ class ScrapURLContentJob implements ShouldQueue
     {
         // Init
         $this->shortLink = $shortLink;
-        $this->goose = new Client();
+        $this->goose = new Client([
+            'verify'            =>  !config('app.debug'),
+            'http_errors'       =>  false
+        ]);
     }
 
     /**

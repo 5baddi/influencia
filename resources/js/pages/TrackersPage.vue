@@ -255,6 +255,7 @@ export default {
             this.$store.dispatch("addNewTracker", formData)
                 .then(response => {
                     this.dismissAddTrackerModal();
+                    this.$refs.trackersDT.reloadData();
                     this.createTrackerSuccess({
                         message: `Tracker ${response.content.name} created successfuly!`
                     });

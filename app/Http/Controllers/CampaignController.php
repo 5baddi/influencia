@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Repositories\CampaignRepository;
+use App\Http\Requests\UpdateCampaignRequest;
 use Symfony\Component\HttpFoundation\Response;
 
 class CampaignController extends Controller
@@ -34,7 +35,7 @@ class CampaignController extends Controller
 
         // Load data
         $campaigns = $brand->campaigns()
-                ->with('user', 'brand')
+                ->with(['user', 'brand'])
                 ->withCount('trackers')
                 ->get();
 
@@ -121,9 +122,17 @@ class CampaignController extends Controller
      * @param  \App\Campaign  $campaign
      * @return \Illuminate\Http\Response
      */
-    public function update(Campaign $campaign, Request $request)
+    public function update(Campaign $campaign, UpdateCampaignRequest $request)
     {
-        // TODO: update campaign entity
+        abort_if(Gate::denies('edit_campaign') && Gate::denies('update', $campaign), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Set data
+        $data = $request->validated();
+
+        // Update the brand
+        $campaign->update($data);
+
+        return response()->success("Campaign updated successfully.", Campaign::with(['user', 'brand'])->get());
     }
 
     /**
