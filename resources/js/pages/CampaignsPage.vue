@@ -147,7 +147,7 @@ export default {
             if (typeof campaign.uuid === "undefined")
                 this.showError();
 
-            this.$store.dispatch("deletecampaign", campaign.uuid)
+            this.$store.dispatch("deleteCampaign", campaign.uuid)
                 .then(response => {
                     this.$refs.campaignsDT.reloadData();
                     this.showSuccess({

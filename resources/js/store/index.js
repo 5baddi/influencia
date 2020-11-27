@@ -333,6 +333,19 @@ const actions = {
             throw new Error("campaign not found!");
         }
     },
+    deleteCampaign({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.delete("/api/v1/campaigns/" + uuid)
+                .then(response => {
+                    if(response.status === 204)
+                        resolve(response);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                });
+        });
+    },
     addNewTracker({ commit, state }, data) {
         return new Promise((resolve, reject) => {
             // Verify is a story tracker
