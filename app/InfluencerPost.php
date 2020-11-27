@@ -46,7 +46,14 @@ class InfluencerPost extends Model
         'caption_hashtags',
         'comments_disabled',
         'caption_edited',
-        'influencer_id'
+        'influencer_id',
+        'comments_positive',
+        'comments_neutral',
+        'comments_negative',
+        'comments_emojis',
+        'comments_hashtags',
+        'tracker_id',
+        'engagement_rate'
     ];
 
     /**
