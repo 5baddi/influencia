@@ -6,6 +6,7 @@ use Format;
 use App\Tracker;
 use App\Influencer;
 use App\InfluencerPost;
+use App\TrackerInfluencer;
 use Illuminate\Bus\Queueable;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
@@ -120,6 +121,11 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                     $this->scrapMediaDetails($url, $scraper, $influencer, $postRepo);
                 }
+
+                // Set tracker influencer
+                $trackerInfluencer = TrackerInfluencer::where(['tracker_id' => $this->tracker_id, 'influencer_id' => $influencer->id])->first();
+                if(is_null($trackerInfluencer))
+                    TrackerInfluencer::create(['tracker_id' => $this->tracker_id, 'influencer_id' => $influencer->id]);
             }
         }catch(\Exception $ex){
             $this->fail($ex);
@@ -150,14 +156,14 @@ class ScrapInstagramPostJob implements ShouldQueue
             // Set media influencer ID
             $_media['influencer_id'] = $influencer->id;
             // Set tracker ID
-            $_media['tracker_id'] = $tracker->id;
+            $_media['tracker_id'] = $this->tracker->id;
 
             // Store media
             $postRepo->create($_media);
             Log::info("Create post: {$_media['short_code']}");
         }else{
             // Set tracker ID
-            $existsMedia->update(['tracker_id' => $tracker->id]);
+            $existsMedia->update(['tracker_id' => $this->tracker->id]);
             Log::info("Update post: {$existsMedia->short_code}");
         }
     }
