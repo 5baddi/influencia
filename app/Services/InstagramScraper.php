@@ -56,6 +56,13 @@ class InstagramScraper
     private static $cacheManager;
 
     /**
+     * Mailbox connection
+     *
+     * @var \SSilence\ImapClient\ImapClient
+     */
+    private static $mailbox;
+
+    /**
      * Emoji parser
      *
      * @var \App\Helpers\EmojiParser
@@ -124,21 +131,28 @@ class InstagramScraper
      *
      * @return void
      */
-    public function instagramAuthentication(bool $force = false) : void
+    public function instagramAuthentication(bool $force = true) : void
     {
         try{
             // Init IMAP for Two steps verification
-            $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
+            if(is_null(self::$mailbox))
+                self::$mailbox = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
+
+            // Use proxy
+            $this->setProxy();
 
             // Login to App Instagram account
-            $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
-            $this->instagram->login($force, $emailVecification);
-            $this->instagram->saveSession();
+            $this->instagram = Instagram::withCredentials($this->client, '5baddi', 'Me@social4fu', self::$cacheManager);
+            $this->instagram->login($force, self::$mailbox);
+            // $this->instagram->saveSession();
         }catch(Exception $ex){
+            Log::channel('stderr')->error($ex->getMessage());
+
+            // Verify should stop the process
             $this->shouldStopProcess($ex);
 
-            // Use instagram without credentials may not all functionalities work fine
-            $this->instagram = new Instagram($this->client);
+            // Otherwise throw exception
+            throw $ex;
         }
     }
 
@@ -152,7 +166,7 @@ class InstagramScraper
                 // 'debug'             =>  config('app.debug'),
                 'http_errors'       =>  false,
                 'proxy'             =>  [
-                    config('scraper.proxy.protocol')    =>   'tcp://' . config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
+                    config('scraper.proxy.protocol')    =>   config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
                 ],
                 'config'            =>  [
                     'curl'          =>  [
@@ -179,11 +193,15 @@ class InstagramScraper
             $response = $this->client->request('GET', 'https://instagram.com');
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
- 
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+
+            Log::channel('stderr')->info("Successfully connected using Proxy " . config('scraper.proxy.ip'));
+
+            // Clear cache
+            self::$cacheManager->clear();
         }catch(\Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
             Log::error($ex->getMessage());
+            Log::channel('stderr')->error($ex->getMessage());
+
             throw new \Exception("Failed to connect using a proxy!");
         }
     }
@@ -226,14 +244,6 @@ class InstagramScraper
             // Stop process if necessary
             $this->shouldStopProcess($ex);
 
-            // Use proxy
-            if($this->isTooManyRequests($ex)){
-                $this->setProxy();
-                $this->instagramAuthentication();
-
-                return $this->byUsername($username);
-            }
-
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
 
@@ -261,15 +271,6 @@ class InstagramScraper
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
-
-            // Use proxy
-            if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
-                $this->setProxy();
-                $this->instagramAuthentication();
-
-                return $this->byMedia($link);
-            }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
@@ -340,15 +341,6 @@ class InstagramScraper
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
-
-            // Use proxy
-            if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
-                $this->setProxy();
-                $this->instagramAuthentication();
-
-                return $this->getMedias($influencer, $fetchedMedias['hasNextPage'] ? $fetchedMedias['maxId'] : null, $max);
-            }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
@@ -466,15 +458,6 @@ class InstagramScraper
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
-
-            // Use proxy
-            if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
-                $this->setProxy();
-                $this->instagramAuthentication();
-
-                return $this->getMedia($mediaShortCode, $media, $tracker);
-            }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
@@ -657,15 +640,6 @@ class InstagramScraper
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
-
-            // Use proxy
-            if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
-                $this->setProxy();
-                $this->instagramAuthentication();
-
-                return  $this->getSentimentsAndEmojis($media, $data, $nextComment, $max);
-            }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
                 throw new \Exception("Lost connection to Instagram");
