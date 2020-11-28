@@ -144,7 +144,7 @@ class InstagramScraper
             $this->instagram = new Instagram($this->client);
         }
 
-        return self;
+        return $this;
     }
 
     public function setProxy()
