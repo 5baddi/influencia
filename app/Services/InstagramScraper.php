@@ -142,7 +142,7 @@ class InstagramScraper
             $this->setProxy();
 
             // Login to App Instagram account
-            $this->instagram = Instagram::withCredentials($this->client, '5baddi', 'Me@social4fu', self::$cacheManager);
+            $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
             $this->instagram->login($force, self::$mailbox);
             // $this->instagram->saveSession();
         }catch(Exception $ex){
