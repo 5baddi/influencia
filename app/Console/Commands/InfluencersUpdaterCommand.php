@@ -41,7 +41,7 @@ class InfluencersUpdaterCommand extends Command
         parent::__construct();
 
         // Init
-        $this->instagram = $instagram->authenticate();
+        $this->instagram = $instagram;
     }
 
     /**
@@ -51,6 +51,9 @@ class InfluencersUpdaterCommand extends Command
      */
     public function handle()
     {
+        // Init scraper
+        $this->instagram = $instagram->authenticate();
+        
         $this->info("=== Start updating influencers ===");
         $startTaskAt = microtime(true);
 

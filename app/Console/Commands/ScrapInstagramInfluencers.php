@@ -64,7 +64,7 @@ class ScrapInstagramInfluencers extends Command
         parent::__construct();
 
         // Init
-        $this->instagramScraper = $instagramScraper->authenticate();
+        $this->instagramScraper = $instagramScraper;
         $this->repository = $repository;
         $this->trackerRepo = $trackerRepo;
     }
@@ -76,6 +76,9 @@ class ScrapInstagramInfluencers extends Command
      */
     public function handle()
     {
+        // Init scraper
+        $this->instagramScraper = $instagramScraper->authenticate();
+
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
