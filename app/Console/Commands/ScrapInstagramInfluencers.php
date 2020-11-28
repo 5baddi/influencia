@@ -77,7 +77,7 @@ class ScrapInstagramInfluencers extends Command
     public function handle()
     {
         // Init scraper
-        $this->instagramScraper = $instagramScraper->authenticate();
+        $this->instagramScraper = $this->instagramScraper->authenticate();
 
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
