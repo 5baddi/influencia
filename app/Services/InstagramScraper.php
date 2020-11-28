@@ -112,15 +112,10 @@ class InstagramScraper
         // Init collections
         $this->bulkInsert = new Collection();
 
-        // Init HTTP Client
-        $this->client = new Client([
-            'base_uri'      =>  url('/'),
-            'verify'        =>  !config('app.debug'),
-            // 'debug'         =>  config('app.debug'),
-            'http_errors'   =>  false
-        ]);
-
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
+
+        // Use proxy
+        $this->setProxy();
 
         // Init instagram scraper
         $this->instagramAuthentication();
@@ -137,9 +132,6 @@ class InstagramScraper
             // Init IMAP for Two steps verification
             if(is_null(self::$mailbox))
                 self::$mailbox = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
-
-            // Use proxy
-            $this->setProxy();
 
             // Login to App Instagram account
             $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
