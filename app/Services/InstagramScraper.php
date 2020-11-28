@@ -113,39 +113,38 @@ class InstagramScraper
         $this->bulkInsert = new Collection();
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
-
-        // Use proxy
-        $this->setProxy();
-
-        // Init instagram scraper
-        $this->instagramAuthentication();
     }
 
     /**
      * Instagram authentication
      *
-     * @return void
+     * @return self
      */
-    public function instagramAuthentication(bool $force = true) : void
+    public function authenticate(bool $force = true) : self
     {
         try{
             // Init IMAP for Two steps verification
             if(is_null(self::$mailbox))
                 self::$mailbox = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
 
+            // Use proxy
+            $this->setProxy();
+
             // Login to App Instagram account
             $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
             $this->instagram->login($force, self::$mailbox);
-            // $this->instagram->saveSession();
+            $this->instagram->saveSession();
         }catch(Exception $ex){
             Log::channel('stderr')->error($ex->getMessage());
 
             // Verify should stop the process
             $this->shouldStopProcess($ex);
 
-            // Otherwise throw exception
-            throw $ex;
+            // Continue without authentification
+            $this->instagram = new Instagram();
         }
+
+        return self;
     }
 
     public function setProxy()

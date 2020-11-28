@@ -149,6 +149,7 @@ class TrackerController extends Controller
         }
 
         // Srap Influencer
+        $scraper = $scraper->authenticate();
         $instagramUser = $scraper->byUsername($request->input('username'));
         $influencer = Influencer::create($instagramUser);
 

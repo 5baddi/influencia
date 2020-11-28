@@ -74,6 +74,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                 }
 
                 // Scrap User details
+                $scraper = $scraper->authenticate();
                 $media = $scraper->byMedia($_url);
                 if(!is_object($media) || is_null($media->getOwner()))
                     return $this->fail();

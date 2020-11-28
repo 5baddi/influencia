@@ -41,7 +41,7 @@ class InfluencersUpdaterCommand extends Command
         parent::__construct();
 
         // Init
-        $this->instagram = $instagram;
+        $this->instagram = $instagram->authenticate();
     }
 
     /**

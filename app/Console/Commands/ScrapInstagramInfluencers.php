@@ -64,7 +64,7 @@ class ScrapInstagramInfluencers extends Command
         parent::__construct();
 
         // Init
-        $this->instagramScraper = $instagramScraper;
+        $this->instagramScraper = $instagramScraper->authenticate();
         $this->repository = $repository;
         $this->trackerRepo = $trackerRepo;
     }
