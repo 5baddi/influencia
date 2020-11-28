@@ -314,9 +314,20 @@ class InstagramScraper
                 if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'])
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
 
-                // Store or update media
-                $this->bulkInsert->add($_media);
-                // $this->console->writeln("<fg=green>New post: {$_media['short_code']}</><href={$_media['link']}>{$_media['link']}</>");
+                // Store media
+                $post = InfuencerPost::create($_media);
+
+                // Store media assets 
+                array_walk($_media['files'], function($file) use ($post){
+                    if(empty($file) || is_null($file) || !is_array($file))
+                        return;
+        
+                    // Push added media record
+                    $file = array_merge($file, ['post_id' =>  $post->id]);
+                    InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
+                });
+
+                Log::channel('stderr')->info("New post: {$_media['short_code']} | {$_media['link']}");
 
                 // Unset scraped media
                 unset($fetchedMedias['medias'][$key]);
