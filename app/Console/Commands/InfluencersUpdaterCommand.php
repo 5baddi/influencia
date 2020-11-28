@@ -52,7 +52,7 @@ class InfluencersUpdaterCommand extends Command
     public function handle()
     {
         // Init scraper
-        $this->instagram = $instagram->authenticate();
+        $this->instagram = $this->instagram->authenticate();
         
         $this->info("=== Start updating influencers ===");
         $startTaskAt = microtime(true);
