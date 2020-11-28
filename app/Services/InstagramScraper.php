@@ -315,7 +315,7 @@ class InstagramScraper
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
 
                 // Store media
-                $post = InfuencerPost::create($_media);
+                $post = InfluencerPost::create($_media);
 
                 // Store media assets 
                 array_walk($_media['files'], function($file) use ($post){

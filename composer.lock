@@ -823,21 +823,21 @@
         },
         {
             "name": "florianv/exchanger",
-            "version": "2.5.3",
+            "version": "2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/florianv/exchanger.git",
-                "reference": "13b25dc0957d17c8dc1e982b44dfba0a4f4454d0"
+                "reference": "6c2347ddcecbd53fb401787eda8be8f1f8a4c646"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/florianv/exchanger/zipball/13b25dc0957d17c8dc1e982b44dfba0a4f4454d0",
-                "reference": "13b25dc0957d17c8dc1e982b44dfba0a4f4454d0",
+                "url": "https://api.github.com/repos/florianv/exchanger/zipball/6c2347ddcecbd53fb401787eda8be8f1f8a4c646",
+                "reference": "6c2347ddcecbd53fb401787eda8be8f1f8a4c646",
                 "shasum": ""
             },
             "require": {
                 "ext-simplexml": "*",
-                "php": "^7.1.3",
+                "php": "^7.1.3 || ^8.0",
                 "php-http/client-implementation": "^1.0",
                 "php-http/discovery": "^1.6",
                 "php-http/httplug": "^1.0 || ^2.0",
@@ -848,7 +848,7 @@
                 "nyholm/psr7": "^1.0",
                 "php-http/message": "^1.7",
                 "php-http/mock-client": "^1.0",
-                "phpunit/phpunit": "^7.5"
+                "phpunit/phpunit": "^7 || ^8 || ^9.4"
             },
             "suggest": {
                 "php-http/guzzle6-adapter": "Required to use Guzzle for sending HTTP requests",
@@ -887,9 +887,9 @@
             ],
             "support": {
                 "issues": "https://github.com/florianv/exchanger/issues",
-                "source": "https://github.com/florianv/exchanger/tree/master"
+                "source": "https://github.com/florianv/exchanger/tree/2.6.0"
             },
-            "time": "2020-08-13T12:56:54+00:00"
+            "time": "2020-11-26T08:01:30+00:00"
         },
         {
             "name": "florianv/laravel-swap",
@@ -1380,16 +1380,16 @@
         },
         {
             "name": "ip2location/ip2location-php",
-            "version": "8.2.3",
+            "version": "8.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chrislim2888/IP2Location-PHP-Module.git",
-                "reference": "532749399c73b664ca8b24770b40b6c479131870"
+                "reference": "4c501aa1f666ae85eab84d4df9d19399f2e6ce15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chrislim2888/IP2Location-PHP-Module/zipball/532749399c73b664ca8b24770b40b6c479131870",
-                "reference": "532749399c73b664ca8b24770b40b6c479131870",
+                "url": "https://api.github.com/repos/chrislim2888/IP2Location-PHP-Module/zipball/4c501aa1f666ae85eab84d4df9d19399f2e6ce15",
+                "reference": "4c501aa1f666ae85eab84d4df9d19399f2e6ce15",
                 "shasum": ""
             },
             "type": "library",
@@ -1418,9 +1418,9 @@
             ],
             "support": {
                 "issues": "https://github.com/chrislim2888/IP2Location-PHP-Module/issues",
-                "source": "https://github.com/chrislim2888/IP2Location-PHP-Module/tree/8.2.3"
+                "source": "https://github.com/chrislim2888/IP2Location-PHP-Module/tree/8.3.0"
             },
-            "time": "2020-09-23T23:04:28+00:00"
+            "time": "2020-11-23T04:30:39+00:00"
         },
         {
             "name": "ipinfo/ipinfo",
@@ -1592,16 +1592,16 @@
         },
         {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.2.102",
+            "version": "v1.2.103",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "346cfd72d11bb41f15e82654e532dc55360612ac"
+                "reference": "3efa2860959cc971f17624b40bf0699823f9d0f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/346cfd72d11bb41f15e82654e532dc55360612ac",
-                "reference": "346cfd72d11bb41f15e82654e532dc55360612ac",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/3efa2860959cc971f17624b40bf0699823f9d0f3",
+                "reference": "3efa2860959cc971f17624b40bf0699823f9d0f3",
                 "shasum": ""
             },
             "require": {
@@ -1638,9 +1638,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JayBizzle/Crawler-Detect/issues",
-                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.102"
+                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.103"
             },
-            "time": "2020-11-04T19:23:01+00:00"
+            "time": "2020-11-23T19:49:25+00:00"
         },
         {
             "name": "jenssegers/agent",
@@ -1982,16 +1982,16 @@
         },
         {
             "name": "laravel/sanctum",
-            "version": "v2.8.1",
+            "version": "v2.8.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sanctum.git",
-                "reference": "9b8cc455eadee5330d849bb3e41dc5931ccbe8ee"
+                "reference": "331bd6572610b06ad6dd6b2a7c15a0465a3ca9c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sanctum/zipball/9b8cc455eadee5330d849bb3e41dc5931ccbe8ee",
-                "reference": "9b8cc455eadee5330d849bb3e41dc5931ccbe8ee",
+                "url": "https://api.github.com/repos/laravel/sanctum/zipball/331bd6572610b06ad6dd6b2a7c15a0465a3ca9c9",
+                "reference": "331bd6572610b06ad6dd6b2a7c15a0465a3ca9c9",
                 "shasum": ""
             },
             "require": {
@@ -2042,7 +2042,7 @@
                 "issues": "https://github.com/laravel/sanctum/issues",
                 "source": "https://github.com/laravel/sanctum"
             },
-            "time": "2020-11-17T16:45:56+00:00"
+            "time": "2020-11-24T17:31:19+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2420,23 +2420,23 @@
         },
         {
             "name": "maatwebsite/excel",
-            "version": "3.1.25",
+            "version": "3.1.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Maatwebsite/Laravel-Excel.git",
-                "reference": "a3e56f1a60e49f21798fd242a3b3d2f4051eeda7"
+                "reference": "66f7c9584304ad0b6a267a5d8ffbfa2ff4272e85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/a3e56f1a60e49f21798fd242a3b3d2f4051eeda7",
-                "reference": "a3e56f1a60e49f21798fd242a3b3d2f4051eeda7",
+                "url": "https://api.github.com/repos/Maatwebsite/Laravel-Excel/zipball/66f7c9584304ad0b6a267a5d8ffbfa2ff4272e85",
+                "reference": "66f7c9584304ad0b6a267a5d8ffbfa2ff4272e85",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "illuminate/support": "5.5.*|5.6.*|5.7.*|5.8.*|^6.0|^7.0|^8.0",
-                "php": "^7.0",
-                "phpoffice/phpspreadsheet": "^1.14"
+                "illuminate/support": "5.8.*|^6.0|^7.0|^8.0",
+                "php": "^7.0|^8.0",
+                "phpoffice/phpspreadsheet": "^1.15"
             },
             "require-dev": {
                 "orchestra/testbench": "^6.0",
@@ -2482,7 +2482,7 @@
             ],
             "support": {
                 "issues": "https://github.com/Maatwebsite/Laravel-Excel/issues",
-                "source": "https://github.com/Maatwebsite/Laravel-Excel/tree/3.1.25"
+                "source": "https://github.com/Maatwebsite/Laravel-Excel/tree/3.1.26"
             },
             "funding": [
                 {
@@ -2494,7 +2494,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-13T10:37:36+00:00"
+            "time": "2020-11-27T16:17:38+00:00"
         },
         {
             "name": "maennchen/zipstream-php",
@@ -3008,16 +3008,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.41.5",
+            "version": "2.42.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "c4a9caf97cfc53adfc219043bcecf42bc663acee"
+                "reference": "d0463779663437392fe42ff339ebc0213bd55498"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/c4a9caf97cfc53adfc219043bcecf42bc663acee",
-                "reference": "c4a9caf97cfc53adfc219043bcecf42bc663acee",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/d0463779663437392fe42ff339ebc0213bd55498",
+                "reference": "d0463779663437392fe42ff339ebc0213bd55498",
                 "shasum": ""
             },
             "require": {
@@ -3032,7 +3032,7 @@
                 "kylekatarnls/multi-tester": "^2.0",
                 "phpmd/phpmd": "^2.9",
                 "phpstan/extension-installer": "^1.0",
-                "phpstan/phpstan": "^0.12.35",
+                "phpstan/phpstan": "^0.12.54",
                 "phpunit/phpunit": "^7.5 || ^8.0",
                 "squizlabs/php_codesniffer": "^3.4"
             },
@@ -3097,7 +3097,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2020-10-23T06:02:30+00:00"
+            "time": "2020-11-28T14:25:28+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -3565,16 +3565,16 @@
         },
         {
             "name": "php-http/discovery",
-            "version": "1.12.0",
+            "version": "1.13.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-http/discovery.git",
-                "reference": "4366bf1bc39b663aa87459bd725501d2f1988b6c"
+                "reference": "788f72d64c43dc361e7fcc7464c3d947c64984a7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-http/discovery/zipball/4366bf1bc39b663aa87459bd725501d2f1988b6c",
-                "reference": "4366bf1bc39b663aa87459bd725501d2f1988b6c",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/788f72d64c43dc361e7fcc7464c3d947c64984a7",
+                "reference": "788f72d64c43dc361e7fcc7464c3d947c64984a7",
                 "shasum": ""
             },
             "require": {
@@ -3628,9 +3628,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-http/discovery/issues",
-                "source": "https://github.com/php-http/discovery/tree/1.12.0"
+                "source": "https://github.com/php-http/discovery/tree/1.13.0"
             },
-            "time": "2020-09-22T13:31:04+00:00"
+            "time": "2020-11-27T14:49:42+00:00"
         },
         {
             "name": "php-http/httplug",
@@ -3881,16 +3881,16 @@
         },
         {
             "name": "phpfastcache/phpfastcache",
-            "version": "8.0.2",
+            "version": "8.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPSocialNetwork/phpfastcache.git",
-                "reference": "943dcea432f2a5cc93b4718845fa9eb3fd03bf7a"
+                "reference": "e1b7cb89a438d1d962d0529ff74c4932159a216f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPSocialNetwork/phpfastcache/zipball/943dcea432f2a5cc93b4718845fa9eb3fd03bf7a",
-                "reference": "943dcea432f2a5cc93b4718845fa9eb3fd03bf7a",
+                "url": "https://api.github.com/repos/PHPSocialNetwork/phpfastcache/zipball/e1b7cb89a438d1d962d0529ff74c4932159a216f",
+                "reference": "e1b7cb89a438d1d962d0529ff74c4932159a216f",
                 "shasum": ""
             },
             "require": {
@@ -3982,7 +3982,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPSocialNetwork/phpfastcache/issues",
-                "source": "https://github.com/PHPSocialNetwork/phpfastcache/tree/8.0.2"
+                "source": "https://github.com/PHPSocialNetwork/phpfastcache/tree/8.0.3"
             },
             "funding": [
                 {
@@ -3994,7 +3994,7 @@
                     "type": "patreon"
                 }
             ],
-            "time": "2020-08-28T13:54:22+00:00"
+            "time": "2020-11-24T11:29:49+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",
@@ -5324,20 +5324,21 @@
         },
         {
             "name": "spekulatius/phpscraper",
-            "version": "0.4.1",
+            "version": "0.4.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/spekulatius/PHPScraper.git",
-                "reference": "9e90ec98ba7280b5cb251ba1d3b9e2f465c6baaf"
+                "reference": "0aac52853ab394d9f38b004e401c5fbec328e017"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spekulatius/PHPScraper/zipball/9e90ec98ba7280b5cb251ba1d3b9e2f465c6baaf",
-                "reference": "9e90ec98ba7280b5cb251ba1d3b9e2f465c6baaf",
+                "url": "https://api.github.com/repos/spekulatius/PHPScraper/zipball/0aac52853ab394d9f38b004e401c5fbec328e017",
+                "reference": "0aac52853ab394d9f38b004e401c5fbec328e017",
                 "shasum": ""
             },
             "require": {
-                "donatello-za/rake-php-plus": "^1.0",
+                "donatello-za/rake-php-plus": "^1.0.15",
+                "ext-intl": "*",
                 "fabpot/goutte": "^4.0",
                 "jeremykendall/php-domain-parser": "^5.6",
                 "php": "^7.2",
@@ -5345,7 +5346,8 @@
             },
             "require-dev": {
                 "phpunit/phpunit": "^8.0",
-                "symfony/process": "^4.0|^5.0"
+                "symfony/process": "^4.0|^5.0",
+                "symfony/thanks": "*"
             },
             "type": "library",
             "autoload": {
@@ -5355,7 +5357,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "GPL-3"
+                "GPL-3.0-or-later"
             ],
             "authors": [
                 {
@@ -5374,19 +5376,19 @@
             ],
             "support": {
                 "issues": "https://github.com/spekulatius/PHPScraper/issues",
-                "source": "https://github.com/spekulatius/PHPScraper/tree/0.4.1"
+                "source": "https://github.com/spekulatius/PHPScraper/tree/0.4.3"
             },
             "funding": [
                 {
                     "url": "https://www.buymeacoffee.com/spekulatius",
-                    "type": "custom"
+                    "type": "buymeacoffee"
                 },
                 {
-                    "url": "https://github.com/spekulatius",
+                    "url": "https://github.com/sponsors/spekulatius",
                     "type": "github"
                 }
             ],
-            "time": "2020-09-27T13:16:20+00:00"
+            "time": "2020-11-24T14:39:02+00:00"
         },
         {
             "name": "ssilence/php-imap-client",
@@ -9225,16 +9227,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "7.0.10",
+            "version": "7.0.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "f1884187926fbb755a9aaf0b3836ad3165b478bf"
+                "reference": "52f55786aa2e52c26cd9e2db20aff2981e0f7399"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f1884187926fbb755a9aaf0b3836ad3165b478bf",
-                "reference": "f1884187926fbb755a9aaf0b3836ad3165b478bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/52f55786aa2e52c26cd9e2db20aff2981e0f7399",
+                "reference": "52f55786aa2e52c26cd9e2db20aff2981e0f7399",
                 "shasum": ""
             },
             "require": {
@@ -9286,9 +9288,15 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/7.0.10"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/7.0.12"
             },
-            "time": "2019-11-20T13:55:58+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/sebastianbergmann",
+                    "type": "github"
+                }
+            ],
+            "time": "2020-11-27T06:08:35+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -9498,16 +9506,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "8.5.9",
+            "version": "8.5.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f5c8a5dd5e7e8d68d7562bfb48d47287d33937d6"
+                "reference": "3123601e3b29339b20129acc3f989cfec3274566"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f5c8a5dd5e7e8d68d7562bfb48d47287d33937d6",
-                "reference": "f5c8a5dd5e7e8d68d7562bfb48d47287d33937d6",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/3123601e3b29339b20129acc3f989cfec3274566",
+                "reference": "3123601e3b29339b20129acc3f989cfec3274566",
                 "shasum": ""
             },
             "require": {
@@ -9523,7 +9531,7 @@
                 "phar-io/version": "^2.0.1",
                 "php": "^7.2",
                 "phpspec/prophecy": "^1.10.3",
-                "phpunit/php-code-coverage": "^7.0.10",
+                "phpunit/php-code-coverage": "^7.0.12",
                 "phpunit/php-file-iterator": "^2.0.2",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^2.1.2",
@@ -9579,7 +9587,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/phpunit/issues",
-                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.9"
+                "source": "https://github.com/sebastianbergmann/phpunit/tree/8.5.11"
             },
             "funding": [
                 {
@@ -9591,7 +9599,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-10T12:51:38+00:00"
+            "time": "2020-11-27T12:46:45+00:00"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",
