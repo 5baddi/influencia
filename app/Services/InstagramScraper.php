@@ -134,17 +134,16 @@ class InstagramScraper
             $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
             $this->instagram->login($force, self::$mailbox);
             $this->instagram->saveSession();
+
+            return $this;
         }catch(Exception $ex){
             Log::channel('stderr')->error($ex->getMessage());
 
             // Verify should stop the process
             $this->shouldStopProcess($ex);
 
-            // Continue without authentification
-            $this->instagram = new Instagram($this->client);
+            throw $ex;
         }
-
-        return $this;
     }
 
     public function setProxy()
