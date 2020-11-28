@@ -141,7 +141,7 @@ class InstagramScraper
             $this->shouldStopProcess($ex);
 
             // Continue without authentification
-            $this->instagram = new Instagram();
+            $this->instagram = new Instagram($this->client);
         }
 
         return self;
