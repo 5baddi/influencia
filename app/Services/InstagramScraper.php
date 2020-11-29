@@ -749,9 +749,10 @@ class InstagramScraper
     private function isTooManyRequests(\Exception $ex)
     {
         return get_class($ex) === \Unirest\Exception::class
-                || $ex->getCode() === 429
+                || $ex->getCode() === 429 || $ex->getCode() === 56
                 || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
+                || strpos($ex->getMessage(), "cURL error 56: Proxy CONNECT aborted") !== false
                 || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false
                 || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false;
     }
