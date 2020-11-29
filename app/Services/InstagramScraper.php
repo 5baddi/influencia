@@ -134,7 +134,11 @@ class InstagramScraper
             $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
             $this->instagram->login($force, $emailVecification);
             $this->instagram->saveSession();
+
+            Log::channel("stderr")->info("Successfully connected using account @" . config('scraper.instagram.username'));
         }catch(Exception $ex){
+            Log::channel("stderr")->error($ex->getMessage());
+
             $this->shouldStopProcess($ex);
 
             // Use instagram without credentials may not all functionalities work fine
@@ -178,10 +182,10 @@ class InstagramScraper
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
  
+            Log::channel("stderr")->info("Connect using proxy " . config('scraper.proxy.ip'));
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
         }catch(\Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
-            Log::error($ex->getMessage());
+            Log::channel("stderr")->error($ex->getMessage());
             throw new \Exception("Failed to connect using a proxy!");
         }
     }
@@ -197,6 +201,7 @@ class InstagramScraper
         try{
             // Scrap user
             $account = $this->instagram->getAccount($username);
+            Log::channel("stderr")->info("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return [
@@ -219,7 +224,7 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
-            Log::error($ex->getMessage());
+            Log::channel("stderr")->error($ex->getMessage());
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
@@ -250,12 +255,12 @@ class InstagramScraper
         try{
             // Scrap media
             $media = $this->instagram->getMediaByUrl($link);
+            Log::channel("stderr")->info("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return $media;
         }catch(\Exception $ex){
-            Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::channel("stderr")->error($ex->getMessage());
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
@@ -300,6 +305,8 @@ class InstagramScraper
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             foreach($fetchedMedias['medias'] as $key => $media){
+                Log::channel("stderr")->info("Handle media {$media->getShortCode()}");
+
                 // Check media if already exists
                 $existsMedia = InfluencerPost::where('post_id', $media->getId())->first();
                 if(!is_null($existsMedia))
@@ -344,16 +351,14 @@ class InstagramScraper
             if($fetchedMedias['hasNextPage'])
                 return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
         }catch(\Exception $ex){
-            dd($ex);
-            Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::channel('stderr')->error($ex->getMessage());
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                Log::channel('stderr')->error("Too Many Requests!");
                 $this->setProxy();
                 $this->instagramAuthentication();
 
@@ -421,6 +426,7 @@ class InstagramScraper
             // Scrap media
             if(is_null($media)){
                 $media = $this->instagram->getMediaByCode($mediaShortCode);
+                Log::channel('stderr')->info("Media {$media->getShortCode()} details scraped successfully.");
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
             }
 
@@ -471,15 +477,15 @@ class InstagramScraper
 
             return array_merge($_media, $comments);
         }catch(\Exception $ex){
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
-            Log::error($ex->getMessage());
+            Log::channel('stderr')->error($ex->getMessage());
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                Log::channel('stderr')->error("Too Many Requests!");
+
                 $this->setProxy();
                 $this->instagramAuthentication();
 
@@ -528,6 +534,8 @@ class InstagramScraper
             $files = $this->getFile($media);
         }
 
+        Log::channel('stderr')->info("Media {$media->getShortCode()} files: " . sizeof($files));
+
         return $files;
     }
 
@@ -550,6 +558,8 @@ class InstagramScraper
         }elseif($media->getType() === 'video'){
             $url = $media->getVideoStandardResolutionUrl() ?? $media->getVideoLowResolutionUrl();
         }
+
+        Log::channel('stderr')->info("Media {$media->getShortCode()} File: {$url}");
 
         return [
             'file_id'   =>  $media->getId(),
@@ -608,6 +618,7 @@ class InstagramScraper
 
             // Load comments
             $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
+            Log::channel('stderr')->info("Media {$media->getShortCode()} comments: " . sizeof($comments));
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
             
             // Parse ana analyze comments
@@ -656,6 +667,8 @@ class InstagramScraper
             // if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
             //     $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
 
+            Log::channel('stderr')->info("Sentiments for media {$media->getShortCode()} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
+
             return [
                 'comments_positive'  => $data['comments_positive'],
                 'comments_neutral'   => $data['comments_neutral'],
@@ -664,15 +677,15 @@ class InstagramScraper
                 'comments_hashtags'  => $data['comments_hashtags']
             ];
         }catch(\Exception $ex){
-            Log::error($ex->getMessage());
-            // $this->console->writeln("<fg=red>{$ex->getMessage()}</>");
+            Log::channel('stderr')->error($ex->getMessage());
 
             // Stop process if necessary
             $this->shouldStopProcess($ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
+                Log::channel('stderr')->error("Too Many Requests!");
+
                 $this->setProxy();
                 $this->instagramAuthentication();
 
@@ -748,6 +761,8 @@ class InstagramScraper
      */
     private function isTooManyRequests(\Exception $ex)
     {
+        Log::channel('stderr')->error("Check is too many requests!");
+
         return get_class($ex) === \Unirest\Exception::class
                 || $ex->getCode() === 429 || $ex->getCode() === 56
                 || strpos($ex->getMessage(), "Response code is 302") !== false
@@ -767,7 +782,7 @@ class InstagramScraper
     {
         // Trace error
         $msg = $ex->getCode() . ' | ' . $ex->getMessage();
-        Log::error($msg);
+        Log::channel('stderr')->error($msg);
 
         if($ex->getCode() === 403){
             $msg = "Please wait a few minutes before you try again!";
@@ -787,7 +802,7 @@ class InstagramScraper
 
         // Verify the max requests calls
         if(ScrapInstagramInfluencers::checkPassedMaxCalls()){
-            $this->error($msg);
+            Log::channel('stderr')->error($msg);
             throw new \Exception($msg, -2);
         }
     }
