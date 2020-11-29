@@ -13,7 +13,7 @@
             </ul>
         </div>
         <div class="hero__actions">
-            <button class="btn btn-success" @click="showAddTrackerModal = !showAddTrackerModal">Add new Trackers</button>
+            <button class="btn btn-success" @click="showAddTrackerModal = !showAddTrackerModal">Add new tracker</button>
         </div>
     </div>
     <div class="p-1" v-if="!tracker">

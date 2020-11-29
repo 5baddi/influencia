@@ -222,6 +222,21 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
+    addInfluencer({ commit, state }, data) {
+        return new Promise((resolve, reject) => {
+            api.post("/api/v1/influencers", data)
+                .then(response => {
+                    if(response.status === 201){
+                        resolve(response.data)
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
+                })
+                .catch(response => {
+                    reject(response)
+                });
+        })
+    },
     fetchBrands({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/brands").then(response => {

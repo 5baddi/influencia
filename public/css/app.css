@@ -7913,6 +7913,10 @@ span.status-danger::before {
   font-size: 12pt;
 }
 
+.mini-toastr {
+  z-index: 99999999 !important;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

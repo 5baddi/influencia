@@ -243,6 +243,60 @@ class InstagramScraper
             throw $ex;
         }
     }
+    
+    /**
+     * Scrap user details by ID
+     *
+     * @param int $id
+     * @return array
+     */
+    public function byId(int $id) : array
+    {
+        try{
+            // Scrap user
+            $account = $this->instagram->getAccountById($id);
+            Log::channel("stderr")->info("User @{$account->getUsername()} details scraped successfully.");
+            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+
+            return [
+                'account_id'    =>  $account->getId(),
+                'username'      =>  $account->getUsername(),
+                'name'          =>  $account->getFullName(),
+                'pic_url'       =>  $account->getProfilePicUrl(),
+                'biography'     =>  $account->getBiography(),
+                'website'       =>  $account->getExternalUrl(),
+                'followers'     =>  $account->getFollowedByCount(),
+                'follows'       =>  $account->getFollowsCount(),
+                'medias'        =>  $account->getMediaCount(),
+                'is_business'   =>  $account->isBusinessAccount(),
+                'is_private'    =>  $account->isPrivate(),
+                'is_verified'   =>  $account->isVerified(),
+                'highlight_reel'    =>  $account->getHighlightReelCount(),
+                'business_category' =>  $account->getBusinessCategoryName(),
+                'business_email'    =>  $account->getBusinessEmail(),
+                'business_phone'    =>  $account->getBusinessPhoneNumber(),
+                'business_address'  =>  $account->getBusinessAddressJson(),
+            ];
+        }catch(\Exception $ex){
+            Log::channel("stderr")->error($ex->getMessage());
+
+            // Stop process if necessary
+            $this->shouldStopProcess($ex);
+
+            // Use proxy
+            if($this->isTooManyRequests($ex)){
+                $this->setProxy();
+                $this->instagramAuthentication();
+
+                return $this->byId($id);
+            }
+
+            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
+                throw new \Exception("Lost connection to Instagram");
+
+            throw $ex;
+        }
+    }
 
     /**
      * Scrap media by link
@@ -323,6 +377,7 @@ class InstagramScraper
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
 
                 // Store media
+                dd($_media);
                 $post = InfluencerPost::create($_media);
 
                 // Store media assets 

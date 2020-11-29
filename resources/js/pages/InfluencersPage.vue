@@ -1,5 +1,5 @@
 <template>
-<div class="influencers" v-if="!isLoading">
+<div class="influencers">
     <div class="hero" v-if="!influencer">
         <div class="hero__intro">
             <h1>Influencers</h1>
@@ -12,6 +12,9 @@
                 </li>
             </ul>
         </div>
+        <div class="hero__actions">
+            <button class="btn btn-success" @click="addInfluencer()">Add new influencer</button>
+        </div>
     </div>
     <div class="p-1" v-if="!influencer">
         <header class="cards">
@@ -21,7 +24,7 @@
             </div>
         </header>
         <div class="datatable-scroll">
-            <DataTable :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
+            <DataTable ref="influencersDT" :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Influencer details">
@@ -32,28 +35,24 @@
         </div>
     </div>
     <InfluencerProfile v-if="influencer" :influencer="influencer" />
-    <EditInfluencerModal v-if="editInfluencerModal" :influencer="influencer" />
+    <CreateInfluencerModal ref="influencerFormModal" @create="create" />
 </div>
 </template>
 
 <script>
 import InfluencerProfile from "../components/InfluencerProfile";
-import EditInfluencerModal from "../components/modals/EditInfluencerModal";
+import CreateInfluencerModal from "../components/modals/CreateInfluencerModal";
 import {
     mapGetters
 } from "vuex";
-import moment from "moment";
-import abbreviate from 'number-abbreviate';
 
 export default {
     components: {
         InfluencerProfile,
-        EditInfluencerModal
+        CreateInfluencerModal
     },
     data() {
         return {
-            isLoading: true,
-            editInfluencerModal: false,
             columns: [{
                     field: "pic_url",
                     callback: function (row) {
@@ -130,17 +129,22 @@ export default {
         '$route': 'initData'
     },
     methods: {
-        test(row) {
-            console.log(row);
+        addInfluencer(){
+            this.$refs.influencerFormModal.open();
         },
-        dismissEditInfluencerModal() {
-            this.editInfluencerModal = false;
-        },
-        showEditInfluencerModal(influencer) {
-            this.editInfluencerModal = true;
-        },
-        nbr() {
-            return new abbreviate();
+        create(influencer) {
+            this.$store.dispatch("addInfluencer", influencer)
+                .then(response => {
+                    this.$refs.influencerFormModal.close();
+                    this.$refs.influencersDT.reloadData();
+                    this.showSuccess({
+                        message: response.message
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.response.data.message
+                    })
+                });
         },
         fetchInfluencer() {
             // Load user by UUID
@@ -151,23 +155,22 @@ export default {
                     influencer: null
                 });
         },
-        initData() {
-            if (!this.$store.getters.influencers) {
-                this.$store.dispatch("fetchInfluencers").then(response => {
-                    this.isLoading = false;
-                });
-            }
-
+        initData(){
             this.fetchInfluencer();
-
-            this.isLoading = false;
-        },
-        moment() {
-            return moment();
         }
     },
     computed: {
         ...mapGetters(["influencers", "influencer"])
     },
+    notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        }
+    }
 };
 </script>
