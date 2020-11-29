@@ -8,6 +8,13 @@ use Illuminate\Contracts\Validation\Rule;
 class InfluencerUsernameRule implements Rule
 {
     /**
+     * Influencer exists
+     *
+     * @var boolean
+     */
+    private $exists = false;
+
+    /**
      * Create a new rule instance.
      *
      * @return void
@@ -26,9 +33,9 @@ class InfluencerUsernameRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $exists = Influencer::where((filter_var($value, FILTER_VALIDATE_INT) !== false ? 'account_id' : 'username'), $value)->first();
+        $this->exists = Influencer::where((filter_var($value, FILTER_VALIDATE_INT) !== false ? 'account_id' : 'username'), $value)->first();
 
-        return is_null($exists);
+        return is_null($this->exists);
     }
 
     /**
@@ -38,6 +45,6 @@ class InfluencerUsernameRule implements Rule
      */
     public function message()
     {
-        return 'Wrong influencer identify!';
+        return $this->exists ? 'Influencer already exists!' : 'Wrong influencer identify!';
     }
 }

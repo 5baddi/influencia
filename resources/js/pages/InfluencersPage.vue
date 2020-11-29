@@ -141,9 +141,18 @@ export default {
                         message: response.message
                     });
                 }).catch(error => {
-                    this.showError({
-                        message: error.response.data.message
-                    })
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
                 });
         },
         fetchInfluencer() {

@@ -232,7 +232,7 @@ class InstagramScraper
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->setProxy();
-                $this->instagramAuthentication();
+                // $this->instagramAuthentication();
 
                 return $this->byUsername($username);
             }
@@ -286,7 +286,7 @@ class InstagramScraper
             // Use proxy
             if($this->isTooManyRequests($ex)){
                 $this->setProxy();
-                $this->instagramAuthentication();
+                // $this->instagramAuthentication();
 
                 return $this->byId($id);
             }
