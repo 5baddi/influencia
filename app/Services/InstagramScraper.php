@@ -573,7 +573,7 @@ class InstagramScraper
                 $duration = $video->getPlaytimeSeconds();
                 Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
 
-                Log::channel('stderr')->info("Video duration for media {$media->getShortCode()} is {$video->getPlaytimeString()}");
+                Log::channel('stderr')->info("Video duration for media {$media->getShortCode()} is {$video->getPlaytimeSeconds()}s");
     
                 return $duration;
             }
