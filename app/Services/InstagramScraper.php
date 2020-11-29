@@ -182,7 +182,7 @@ class InstagramScraper
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
  
-            Log::channel("stderr")->info("Connect using proxy " . config('scraper.proxy.ip'));
+            Log::channel("stderr")->info("Connected using proxy " . config('scraper.proxy.ip'));
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
         }catch(\Exception $ex){
             Log::channel("stderr")->error($ex->getMessage());
