@@ -30,7 +30,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 5, 'max' => 20];
+    const SLEEP_REQUEST = ['min' => 5, 'max' => 10];
 
     /**
      * Instagram scraper
@@ -110,7 +110,7 @@ class InstagramScraper
      */
     public function authenticate(bool $force = false) : void
     {
-        if(!is_null($this->instagram))
+        if(!is_null($this->instagram) && !$force)
             return;
 
         // Init IMAP for Two steps verification
@@ -527,7 +527,7 @@ class InstagramScraper
             // Load comments
             $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
             $this->log("Media {$media->getShortCode()} comments: " . sizeof($comments));
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            // sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             if(sizeof($comments) === 0)
                 return $data;
