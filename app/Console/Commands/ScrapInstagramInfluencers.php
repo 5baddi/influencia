@@ -88,32 +88,12 @@ class ScrapInstagramInfluencers extends Command
     }
 
     /**
-     * Verify the max requests calls
-     *
-     * @return bool
-     */
-    public static function checkPassedMaxCalls()
-    {
-        $lastHourUpdatedRows = InfluencerPost::where('updated_at', '>=', Carbon::now()->subMinutes(self::RANGE_MINUTES)->toDateTimeString())->count();
-        if($lastHourUpdatedRows >= self::MAX_CALLS)
-            return true;
-
-        return false;
-    }
-
-    /**
      * Scrap influencers details and medias
      *
      * @return void
      */
     private function scrapInfluencers() : void
     {
-        // Verify the max requests calls
-        if(self::checkPassedMaxCalls()){
-            $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
-            return;
-        }
-
         // Get influencers
         $influencers = Influencer::with(['trackers', 'posts'])->get();
         $this->info("Number of account to sync: " . $influencers->count());
@@ -150,14 +130,7 @@ class ScrapInstagramInfluencers extends Command
                 // Update influencer queued state
                if($influencer->posts()->count() === $influencer->medias)
                     $influencer->update(['queued' => 'finished']);
-
-                // Verify the max requests calls
-                if(self::checkPassedMaxCalls()){
-                    $this->error("We will continue scraping after one hour because bypass the max requests per hour!");
-                    return;
-                }
             }catch(\Exception $ex){
-                dd($ex);
                 // Trace
                 $this->error($ex->getMessage());
                 $this->error("Failed to scrap influencer @{$influencer->username}");

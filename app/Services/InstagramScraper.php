@@ -354,9 +354,6 @@ class InstagramScraper
                 unset($fetchedMedias['medias'][$key]);
             }
 
-            // Verify process reach the limit
-            $this->verifyMaxRequestsLimit();
-
             // Scraping more
             if($fetchedMedias['hasNextPage'])
                 return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
@@ -380,9 +377,6 @@ class InstagramScraper
     public function getMedia(\InstagramScraper\Model\Media $media) : array
     {
         try{
-            // Verify process reach the limit
-            $this->verifyMaxRequestsLimit();
-
             // Fetch comments sentiments
             $comments = [];
             $this->getSentimentsAndEmojis($media, $comments);
@@ -516,10 +510,6 @@ class InstagramScraper
     private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_REQUEST) : ?array
     {
         try{
-
-            // Verify process reach the limit
-            $this->verifyMaxRequestsLimit();
-
             // init
             $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
 
@@ -651,24 +641,6 @@ class InstagramScraper
         }
 
         return false;
-    }
-    
-
-    /**
-     * Verify if process reach the max requests limit
-     *
-     * @return \Throwable
-     */
-    private function verifyMaxRequestsLimit()
-    {
-        // Init
-        $msg = "We will continue scraping after one hour because bypass the max requests per hour!";
-
-        // Verify the max requests calls
-        if(ScrapInstagramInfluencers::checkPassedMaxCalls()){
-            Log::channel('stderr')->error($msg);
-            throw new \Exception($msg, -2);
-        }
     }
 
     /**
