@@ -35,10 +35,10 @@ class InfluencerController extends Controller
         try{
             // Add instagram influencer
             if($data['platform'] === 'instagram'){
-                if(filter_var($data['username'],FILTER_VALIDATE_INT) !== false)
+                if(preg_match('/^[0-9]*$/', $data['username']) && filter_var($data['username'], FILTER_VALIDATE_INT) !== false)
                     $account = $instagram->byId((int)$data['username']);
                 else
-                    $account = $instagram->byUsername((int)$data['username']);
+                    $account = $instagram->byUsername($data['username']);
 
                 // Store account
                 $influencer = Influencer::create($account);

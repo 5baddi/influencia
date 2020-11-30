@@ -15,7 +15,6 @@ use App\InfluencerPostMedia;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
@@ -83,13 +82,6 @@ class InstagramScraper
      */
     public $hashtags = [];
 
-    /**
-     * Collection of media to be inserted
-     *
-     * @var \Illuminate\Support\Collection
-     */
-    public $bulkInsert;
-
     public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
     {
         // Init Cache manager
@@ -102,9 +94,6 @@ class InstagramScraper
         // Init repositories
         $this->postRepo = $postRepo;
 
-        // Init collections
-        $this->bulkInsert = new Collection();
-
         // Init HTTP Client
         $this->client = new Client([
             'base_uri'      =>  url('/'),
@@ -116,7 +105,7 @@ class InstagramScraper
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
 
         // Init instagram scraper
-        $this->instagramAuthentication();
+        // $this->instagramAuthentication();
     }
 
     /**
@@ -124,26 +113,17 @@ class InstagramScraper
      *
      * @return void
      */
-    public function instagramAuthentication(bool $force = false) : void
+    public function authenticate(bool $force = false) : void
     {
-        try{
-            // Init IMAP for Two steps verification
-            $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
+        // Init IMAP for Two steps verification
+        $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
 
-            // Login to App Instagram account
-            $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
-            $this->instagram->login($force, $emailVecification);
-            $this->instagram->saveSession();
+        // Login to App Instagram account
+        $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
+        $this->instagram->login($force, $emailVecification);
+        $this->instagram->saveSession();
 
-            Log::channel("stderr")->info("Successfully connected using account @" . config('scraper.instagram.username'));
-        }catch(Exception $ex){
-            Log::channel("stderr")->error($ex->getMessage());
-
-            $this->shouldStopProcess($ex);
-
-            // Use instagram without credentials may not all functionalities work fine
-            $this->instagram = new Instagram($this->client);
-        }
+        Log::channel("stderr")->info("Successfully connected using account @" . config('scraper.instagram.username'));
     }
 
     public function setProxy()
@@ -200,7 +180,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = $this->instagram->getAccount($username);
+            $account = (new Instagram($this->client))->getAccount($username);
             Log::channel("stderr")->info("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -254,7 +234,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = $this->instagram->getAccountById($id);
+            $account = (new Instagram($this->client))->getAccountById($id);
             Log::channel("stderr")->info("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -307,6 +287,9 @@ class InstagramScraper
     public function byMedia(string $link) : \InstagramScraper\Model\Media
     {
         try{
+            // Authenticate with scraping account
+            $this->authenticate();
+
             // Scrap media
             $media = $this->instagram->getMediaByUrl($link);
             Log::channel("stderr")->info("Media {$media->getShortCode()} details scraped successfully.");
@@ -323,7 +306,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
                 $this->setProxy();
-                $this->instagramAuthentication();
+                // $this->instagramAuthentication();
 
                 return $this->byMedia($link);
             }
@@ -347,6 +330,9 @@ class InstagramScraper
     {
         try{
             Log::channel('stderr')->info("Scrap media for influencer @{$influencer->username}");
+
+            // Authenticate with scraping account
+            $this->authenticate();
 
             // Start from last inserted media
             $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
@@ -377,7 +363,6 @@ class InstagramScraper
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
 
                 // Store media
-                dd($_media);
                 $post = InfluencerPost::create($_media);
 
                 // Store media assets 
@@ -396,9 +381,6 @@ class InstagramScraper
                 unset($fetchedMedias['medias'][$key]);
             }
 
-            // Bulk media insertion
-            $this->storeMedias();
-
             // Verify process reach the limit
             $this->verifyMaxRequestsLimit();
 
@@ -415,7 +397,7 @@ class InstagramScraper
             if($this->isTooManyRequests($ex)){
                 Log::channel('stderr')->error("Too Many Requests!");
                 $this->setProxy();
-                $this->instagramAuthentication();
+                // $this->instagramAuthentication();
 
                 return $this->getMedias($influencer, $fetchedMedias['hasNextPage'] ? $fetchedMedias['maxId'] : null, $max);
             }
@@ -425,43 +407,6 @@ class InstagramScraper
 
             throw $ex;
         }
-    }
-
-    /**
-     * Bulk media insertion
-     *
-     * @return void
-     */
-    public function storeMedias() : void
-    {
-        if($this->bulkInsert->count() === 0)
-            return;
-
-        Log::channel('stderr')->info("Bulk insertion of {$this->bulkInsert->count()} media");
-
-        // Bulk insert of influencer posts
-        $this->bulkInsert->map(function ($item, $key){
-            // Store media
-            $post = InfluencerPost::create($item);
-
-            // Store media assets 
-            $this->bulkInsert->map(function($item) use($post){
-                array_walk($item['files'], function($file) use ($post){
-                    if(empty($file) || is_null($file) || !is_array($file))
-                        return;
-        
-                    // Push added media record
-                    $file = array_merge($file, ['post_id' =>  $post->id]);
-                    InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-                });
-            });
-        });
-        
-
-        Log::channel('stderr')->info("Bulk insertion termiate successfully");
-        
-        // Re-Init collection
-        $this->bulkInsert = new Collection();
     }
 
     /**
@@ -542,7 +487,7 @@ class InstagramScraper
                 Log::channel('stderr')->error("Too Many Requests!");
 
                 $this->setProxy();
-                $this->instagramAuthentication();
+                // $this->instagramAuthentication();
 
                 return $this->getMedia($mediaShortCode, $media, $tracker);
             }
@@ -742,7 +687,7 @@ class InstagramScraper
                 Log::channel('stderr')->error("Too Many Requests!");
 
                 $this->setProxy();
-                $this->instagramAuthentication();
+                // $this->instagramAuthentication();
 
                 return  $this->getSentimentsAndEmojis($media, $data, $nextComment, $max);
             }

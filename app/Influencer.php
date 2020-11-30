@@ -169,7 +169,7 @@ class Influencer extends Model
     public function getCalculatedEngagementRateAttribute() : float
     {
         // Get manually inserted value
-        if(!is_null($this->attributes['engagement_rate']))
+        if(isset($this->attributes['engagement_rate']))
             return $this->attributes['engagement_rate'];
 
         // Calculate engagement rate

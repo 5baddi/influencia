@@ -33,7 +33,7 @@ class InfluencerUsernameRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $this->exists = Influencer::where((filter_var($value, FILTER_VALIDATE_INT) !== false ? 'account_id' : 'username'), $value)->first();
+        $this->exists = Influencer::where((filter_var($value, FILTER_VALIDATE_INT) !== false && preg_match('/^[0-9]*$/', $value) ? 'account_id' : 'username'), $value)->first();
 
         return is_null($this->exists);
     }
