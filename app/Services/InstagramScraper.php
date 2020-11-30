@@ -463,8 +463,6 @@ class InstagramScraper
                 'files'             =>  $this->getFiles($media)
             ];
 
-            dd($comments);
-
             return array_merge($_media, $comments);
         }catch(\Exception $ex){
             Log::channel('stderr')->error($ex->getMessage());
