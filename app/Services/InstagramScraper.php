@@ -30,7 +30,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 10, 'max' => 120];
+    const SLEEP_REQUEST = ['min' => 10, 'max' => 60];
 
     /**
      * Instagram scraper
@@ -114,6 +114,9 @@ class InstagramScraper
      */
     public function authenticate(bool $force = false) : void
     {
+        if(!is_null($this->instagram))
+            return;
+
         // Init IMAP for Two steps verification
         $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
 
@@ -459,6 +462,8 @@ class InstagramScraper
                 'caption_edited'    =>  $media->isCaptionEdited(),
                 'files'             =>  $this->getFiles($media)
             ];
+
+            dd($comments);
 
             return array_merge($_media, $comments);
         }catch(\Exception $ex){
