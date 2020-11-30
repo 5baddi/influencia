@@ -24,6 +24,7 @@ class InfluencerPost extends Model
      * @var array
      */
     protected $fillable = [
+        'influencer_id',
         'post_id',
         'next_cursor',
         'link',
