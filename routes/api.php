@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// API Status
+Route::get('/status', function(){
+    return response()->success("Welcome to " . env('APP_NAME') . " API");
+});
+
 
 // Logout action
 Route::post('/logout', 'AuthenticationController@logout');

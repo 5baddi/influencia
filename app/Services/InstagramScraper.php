@@ -159,7 +159,7 @@ class InstagramScraper
             ]);
 
             // Test proxy connection
-            $response = $this->client->request('GET', 'https://instagram.com');
+            $response = $this->client->request('GET', '/api/status');
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
  
