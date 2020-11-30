@@ -140,7 +140,7 @@ class Influencer extends Model
      */
     public function getActivePostsCountAttribute()
     {
-        return $this->posts()->whereNotNull('tracker_id')->count();
+        return $this->posts()->count();
     }
 
     /**
