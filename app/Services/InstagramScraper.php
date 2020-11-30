@@ -6,6 +6,7 @@ use Format;
 use Exception;
 use Carbon\Carbon;
 use App\Influencer;
+use Unirest\Request;
 use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
@@ -17,7 +18,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
-use App\Repositories\InfluencerPostRepository;
 use App\Console\Commands\ScrapInstagramInfluencers;
 
 class InstagramScraper
@@ -40,13 +40,6 @@ class InstagramScraper
     private $instagram;
 
     /**
-     * HTTP Client
-     *
-     * @var \GuzzleHttp\Client
-     */
-    private $client;
-
-    /**
      * Cache manager
      *
      * @var \Phpfastcache\Helper\Psr16Adapter
@@ -59,13 +52,6 @@ class InstagramScraper
      * @var \App\Helpers\EmojiParser
      */
     private $emojiParser;
-
-    /**
-     * Influencer Post repository
-     *
-     * @var \App\Repositories\InfluencerPostRepository
-     */
-    private $postRepo;
 
     /**
      * All emojis used in media comments
@@ -81,23 +67,31 @@ class InstagramScraper
      */
     public $hashtags = [];
 
-    public function __construct(EmojiParser $emojiParser, InfluencerPostRepository $postRepo)
+    public function __construct(EmojiParser $emojiParser)
     {
         // Init Cache manager
         if(is_null(self::$cacheManager))
             self::$cacheManager = new Psr16Adapter('Files');
+        
+        // Init Instagram scraper
+        $this->instagram = new Instagram();
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
-        // Init repositories
-        $this->postRepo = $postRepo;
-
-        // Init HTTP Client
-        $this->client = new Client([
-            'base_uri'      =>  url('/'),
-            'verify'        =>  !config('app.debug'),
-            'http_errors'   =>  false
+        // Set CURL options
+        Request::curlOpts([
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+            CURLOPT_SSLVERSION      =>  3,
+            CURLOPT_FOLLOWLOCATION  =>  true,
+            CURLOPT_MAXREDIRS       =>  5,
+            CURLOPT_HTTPPROXYTUNNEL =>  1,
+            CURLOPT_RETURNTRANSFER  =>  true,
+            CURLOPT_HEADER          =>  1,
+            CURLOPT_TIMEOUT		    =>  0,
+            CURLOPT_CONNECTTIMEOUT	=>  35,
+            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
         ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
@@ -110,14 +104,11 @@ class InstagramScraper
      */
     public function authenticate(bool $force = false) : void
     {
-        if(!is_null($this->instagram) && !$force)
-            return;
-
         // Init IMAP for Two steps verification
         $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
 
         // Login to App Instagram account
-        $this->instagram = Instagram::withCredentials($this->client, config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
+        $this->instagram = Instagram::withCredentials(config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
 
@@ -128,7 +119,7 @@ class InstagramScraper
     {
         try{
             // Init $client
-            $this->client = new Client([
+            $client = new Client([
                 'base_uri'          =>  url('/'),
                 'verify'            =>  !config('app.debug'),
                 // 'debug'             =>  config('app.debug'),
@@ -141,7 +132,8 @@ class InstagramScraper
 			            CURLOPT_PROXY		    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
                         CURLOPT_SSL_VERIFYPEER  =>  0,
                         CURLOPT_SSL_VERIFYHOST  =>  0,
-                        CURLOPT_SSLVERSION      =>  3,
+                        // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+                        // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
                         CURLOPT_FOLLOWLOCATION  =>  true,
                         CURLOPT_MAXREDIRS       =>  5,
                         CURLOPT_HTTPPROXYTUNNEL =>  1,
@@ -158,13 +150,24 @@ class InstagramScraper
             ]);
 
             // Test proxy connection
-            $response = $this->client->request('GET', '/api/status');
+            $response = $client->request('GET', '/api/status');
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
+
+            // Set proxy for the Instagram scraper
+            Instagram::setProxy([
+                'address' => config('scraper.proxy.ip'),
+                'port'    => config('scraper.proxy.port'),
+                'tunnel'  => true,
+                'timeout' => 35,
+            ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
             $this->log("Failed to connect using a proxy!", $ex);
+
+            // Unset proxy
+            Instagram::disableProxy();
 
             throw new \Exception("Failed to connect using a proxy!");
         }
@@ -180,7 +183,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = (new Instagram($this->client))->getAccount($username);
+            $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -204,6 +207,7 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
+            dd($ex);
             $this->log("Can't find influencer by username @{$username}", $ex);
 
             // Use proxy
@@ -224,7 +228,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = (new Instagram($this->client))->getAccountById($id);
+            $account = $this->instagram->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -550,6 +554,7 @@ class InstagramScraper
             
             // Parse ana analyze comments
             foreach($comments as $comment){
+                dd($comment);
                 // Handle comment
                 $handle($comment);
 
