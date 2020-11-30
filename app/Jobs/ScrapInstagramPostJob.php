@@ -75,7 +75,7 @@ class ScrapInstagramPostJob implements ShouldQueue
                     $influencerMedia = InfluencerPost::where('link', $url)->first();
                     if(is_null($influencerMedia)){
                         // Scrap User details
-                        $media = $scraper->byMedia($_url);
+                        $media = $scraper->byMedia($url);
                         if(!is_object($media) || is_null($media->getOwner()))
                             return $this->fail();
 
