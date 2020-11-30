@@ -25,12 +25,12 @@ class InstagramScraper
     /**
      * Max request by each fetch
      */
-    const MAX_REQUEST = 25;
+    const MAX_REQUEST = 100;
 
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 10, 'max' => 60];
+    const SLEEP_REQUEST = ['min' => 10, 'max' => 30];
 
     /**
      * Instagram scraper
@@ -97,14 +97,10 @@ class InstagramScraper
         $this->client = new Client([
             'base_uri'      =>  url('/'),
             'verify'        =>  !config('app.debug'),
-            // 'debug'         =>  config('app.debug'),
             'http_errors'   =>  false
         ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
-
-        // Init instagram scraper
-        // $this->instagramAuthentication();
     }
 
     /**
@@ -125,7 +121,7 @@ class InstagramScraper
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
 
-        Log::channel("stderr")->info("Successfully connected using account @" . config('scraper.instagram.username'));
+        $this->log("Successfully connected using account @" . config('scraper.instagram.username'));
     }
 
     public function setProxy()
@@ -166,10 +162,11 @@ class InstagramScraper
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
  
-            Log::channel("stderr")->info("Connected using proxy " . config('scraper.proxy.ip'));
+            $this->log("Connected using proxy " . config('scraper.proxy.ip'));
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
         }catch(\Exception $ex){
-            Log::channel("stderr")->error($ex->getMessage());
+            $this->log("Failed to connect using a proxy!", $ex);
+
             throw new \Exception("Failed to connect using a proxy!");
         }
     }
@@ -185,7 +182,7 @@ class InstagramScraper
         try{
             // Scrap user
             $account = (new Instagram($this->client))->getAccount($username);
-            Log::channel("stderr")->info("User @{$account->getUsername()} details scraped successfully.");
+            $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return [
@@ -208,18 +205,11 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
-            Log::channel("stderr")->error($ex->getMessage());
-
-            // Stop process if necessary
-            $this->shouldStopProcess($ex);
+            $this->log("Can't find influencer by username @{$username}", $ex);
 
             // Use proxy
-            if($this->isTooManyRequests($ex)){
-                $this->setProxy();
-                // $this->instagramAuthentication();
-
+            if($this->isTooManyRequests($ex))
                 return $this->byUsername($username);
-            }
 
             throw $ex;
         }
@@ -236,7 +226,7 @@ class InstagramScraper
         try{
             // Scrap user
             $account = (new Instagram($this->client))->getAccountById($id);
-            Log::channel("stderr")->info("User @{$account->getUsername()} details scraped successfully.");
+            $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return [
@@ -259,21 +249,11 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
-            Log::channel("stderr")->error($ex->getMessage());
-
-            // Stop process if necessary
-            $this->shouldStopProcess($ex);
+            $this->log("Can't find influencer by ID {$id}", $ex);
 
             // Use proxy
-            if($this->isTooManyRequests($ex)){
-                $this->setProxy();
-                // $this->instagramAuthentication();
-
+            if($this->isTooManyRequests($ex))
                 return $this->byId($id);
-            }
-
-            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
-                throw new \Exception("Lost connection to Instagram");
 
             throw $ex;
         }
@@ -293,27 +273,16 @@ class InstagramScraper
 
             // Scrap media
             $media = $this->instagram->getMediaByUrl($link);
-            Log::channel("stderr")->info("Media {$media->getShortCode()} details scraped successfully.");
+            $this->log("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return $media;
         }catch(\Exception $ex){
-            Log::channel("stderr")->error($ex->getMessage());
-
-            // Stop process if necessary
-            $this->shouldStopProcess($ex);
+            $this->log("Can't get media by link {$link}", $ex);
 
             // Use proxy
-            if($this->isTooManyRequests($ex)){
-                // $this->console->writeln("<fg=red>429 Too Many Requests!</>");
-                $this->setProxy();
-                // $this->instagramAuthentication();
-
+            if($this->isTooManyRequests($ex))
                 return $this->byMedia($link);
-            }
-
-            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
-                throw new \Exception("Lost connection to Instagram");
 
             throw $ex;
         }
@@ -330,7 +299,7 @@ class InstagramScraper
     public function getMedias(Influencer $influencer, string $nextCursor = null, int $max = self::MAX_REQUEST)
     {
         try{
-            Log::channel('stderr')->info("Scrap media for influencer @{$influencer->username}");
+            $this->log("Scrap media for influencer @{$influencer->username}");
 
             // Authenticate with scraping account
             $this->authenticate();
@@ -338,11 +307,11 @@ class InstagramScraper
             // Start from last inserted media
             $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
             $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
-            Log::channel('stderr')->info("Start scraping from " . (!is_null($lastPost) ? $lastPost->short_code : '---'));
+            $this->log("Start scraping from " . (!is_null($lastPost) ? $lastPost->short_code : '---'));
             
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            Log::channel('stderr')->info("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
+            $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             foreach($fetchedMedias['medias'] as $key => $media){
@@ -376,7 +345,7 @@ class InstagramScraper
                     InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
                 });
 
-                Log::channel('stderr')->info("New post: {$_media['short_code']} | {$_media['link']}");
+                $this->log("New post: {$_media['short_code']} | {$_media['link']}");
 
                 // Unset scraped media
                 unset($fetchedMedias['medias'][$key]);
@@ -389,22 +358,11 @@ class InstagramScraper
             if($fetchedMedias['hasNextPage'])
                 return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
         }catch(\Exception $ex){
-            Log::channel('stderr')->error($ex->getMessage());
-
-            // Stop process if necessary
-            $this->shouldStopProcess($ex);
+            $this->log("Can't get media for influencer @{$influencer->username}", $ex);
 
             // Use proxy
-            if($this->isTooManyRequests($ex)){
-                Log::channel('stderr')->error("Too Many Requests!");
-                $this->setProxy();
-                // $this->instagramAuthentication();
-
+            if($this->isTooManyRequests($ex))
                 return $this->getMedias($influencer, $fetchedMedias['hasNextPage'] ? $fetchedMedias['maxId'] : null, $max);
-            }
-
-            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
-                throw new \Exception("Lost connection to Instagram");
 
             throw $ex;
         }
@@ -425,13 +383,6 @@ class InstagramScraper
             // Fetch comments sentiments
             $comments = [];
             $this->getSentimentsAndEmojis($media, $comments);
-
-            // calculate all comments sentiment
-            if($media->getCommentsCount() > 0){
-                $comments['comments_positive'] = round($comments['comments_positive'] / $media->getCommentsCount(), 2);
-                $comments['comments_neutral'] = round($comments['comments_neutral'] / $media->getCommentsCount(), 2);
-                $comments['comments_negative'] = round($comments['comments_negative'] / $media->getCommentsCount(), 2);
-            }
 
             // Count hashtags on media caption
             $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
@@ -465,43 +416,14 @@ class InstagramScraper
 
             return array_merge($_media, $comments);
         }catch(\Exception $ex){
-            Log::channel('stderr')->error($ex->getMessage());
-
-            // Stop process if necessary
-            $this->shouldStopProcess($ex);
+            $this->log("Can't get media details {$media->getShortCode()}", $ex);
 
             // Use proxy
-            if($this->isTooManyRequests($ex)){
-                Log::channel('stderr')->error("Too Many Requests!");
-
-                $this->setProxy();
-                // $this->instagramAuthentication();
-
+            if($this->isTooManyRequests($ex))
                 return $this->getMedia($media);
-            }
-
-            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
-                throw new \Exception("Lost connection to Instagram");
 
             throw $ex;
         }
-    }
-
-    /**
-     * Scrap instagram stories for an username
-     *
-     * @param string $username
-     * @return array
-     */
-    public function getStories(string $username)
-    {
-        // Scrap user
-        $stories = collect($this->instagram->getStories([$username]));
-
-        // Format account
-        $data = Format::parseArrayASCIIKey($stories);
-
-        return $data->toArray();
     }
 
     /**
@@ -522,7 +444,7 @@ class InstagramScraper
             $files = $this->getFile($media);
         }
 
-        Log::channel('stderr')->info("Media {$media->getShortCode()} files: " . sizeof($files));
+        $this->log("Media {$media->getShortCode()} files: " . sizeof($files));
 
         return $files;
     }
@@ -547,7 +469,7 @@ class InstagramScraper
             $url = $media->getVideoStandardResolutionUrl() ?? $media->getVideoLowResolutionUrl();
         }
 
-        Log::channel('stderr')->info("Media {$media->getShortCode()} File: {$url}");
+        $this->log("Media {$media->getShortCode()} File: {$url}");
 
         return [
             'file_id'   =>  $media->getId(),
@@ -571,13 +493,12 @@ class InstagramScraper
                 $duration = $video->getPlaytimeSeconds();
                 Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
 
-                Log::channel('stderr')->info("Video duration for media {$media->getShortCode()} is {$video->getPlaytimeSeconds()}s");
+                $this->log("Video duration for media {$media->getShortCode()} is {$video->getPlaytimeSeconds()}s");
     
                 return $duration;
             }
         }catch(\Exception $ex){
-            // Trace
-            Log::error($ex->getMessage, ['context' => 'Get video details for media ' . $media->getShortCode()]);
+            $this->log("Get video details for media {$media->getShortCode()}", $ex);
         }
 
         return null;
@@ -606,31 +527,32 @@ class InstagramScraper
 
             // Load comments
             $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
-            Log::channel('stderr')->info("Media {$media->getShortCode()} comments: " . sizeof($comments));
+            $this->log("Media {$media->getShortCode()} comments: " . sizeof($comments));
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+
+            if(sizeof($comments) === 0)
+                return $data;
+
+            // Handle method
+            $handle = function($comment) use(&$data){
+                // Analyze sentiment
+                $analyzer = new Analyzer();
+                $sentiment = $analyzer->getSentiment($comment->getText());
+                $data['comments_positive'] += $sentiment['pos'];
+                $data['comments_neutral'] += $sentiment['neu'];
+                $data['comments_negative'] += $sentiment['neg'];
+
+                // Match all emojis
+                $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
+
+                // Extract comment hashtags
+                $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
+            };
             
             // Parse ana analyze comments
             foreach($comments as $comment){
-                // Handle method
-                $handle = function($comment) use(&$data){
-                    // Analyze sentiment
-                    $analyzer = new Analyzer();
-                    $sentiment = $analyzer->getSentiment($comment->getText());
-                    $data['comments_positive'] += $sentiment['pos'];
-                    $data['comments_neutral'] += $sentiment['neu'];
-                    $data['comments_negative'] += $sentiment['neg'];
-
-                    // Match all emojis
-                    $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
-
-                    // Extract comment hashtags
-                    $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
-                };
-
                 // Handle comment
                 $handle($comment);
-
-                // unset($fetchedComments['comments'][$key]);
 
                 // Handle child comments
                 if(sizeof($comment->getChildComments()) > 0){
@@ -638,24 +560,12 @@ class InstagramScraper
                         $handle($child);
                 }
 
-                // Verify process reach the limit
-                $this->verifyMaxRequestsLimit();
-
                 // Load more comments
                 if($comment->hasMoreChildComments())
                     $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
             }
 
-            // Get more comments
-            // if(isset($fetchedComments['haseNextPage']) && !is_null($fetchedComments['maxId']))
-                // return $this->getSentimentsAndEmojis($media, $data, $fetchedComments, $fetchedComments['maxId'], $max);
-
-
-            // Get top 3 emojis
-            // if(isset($data['comments_emojis']) && !empty($data['comments_emojis']))
-            //     $data['comments_emojis'] = $this->getTopEmojis($data['comments_emojis']);
-
-            Log::channel('stderr')->info("Sentiments for media {$media->getShortCode()} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
+            $this->log("Sentiments for media {$media->getShortCode()} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
 
             return [
                 'comments_positive'  => $data['comments_positive'],
@@ -665,23 +575,11 @@ class InstagramScraper
                 'comments_hashtags'  => $data['comments_hashtags']
             ];
         }catch(\Exception $ex){
-            Log::channel('stderr')->error($ex->getMessage());
-
-            // Stop process if necessary
-            $this->shouldStopProcess($ex);
+            $this->log("Can't get comments for media {$media->getShortCode()}", $ex);
 
             // Use proxy
-            if($this->isTooManyRequests($ex)){
-                Log::channel('stderr')->error("Too Many Requests!");
-
-                $this->setProxy();
-                // $this->instagramAuthentication();
-
-                return  $this->getSentimentsAndEmojis($media, $data, $nextComment, $max);
-            }
-
-            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
-                throw new \Exception("Lost connection to Instagram");
+            if($this->isTooManyRequests($ex))
+                return $this->getSentimentsAndEmojis($media, $data, $nextComment, $max);
 
             throw $ex;
         }
@@ -713,71 +611,44 @@ class InstagramScraper
                 array_push($emojis, $item);
         });
 
-        Log::channel('stderr')->info('Parsed Emojis: ' . sizeof($emojis));
+        $this->log('Parsed Emojis: ' . sizeof($emojis));
 
         return $emojis;
-    }
-
-    /**
-     * Get top emojis
-     *
-     * @param array $emojis
-     * @param int $max
-     * @return null|array
-     */
-    private function getTopEmojis(array $emojis, int $max = 3) : ?array
-    {
-        // Ignore empty emojis list
-        if(is_null($emojis) || empty($emojis))
-            return null;
-
-
-        // Extract occurrence of each duplicate emoji and set values as keys
-        $this->emojis = array_flip(array_count_values($emojis));
-
-        // Slice top emojis
-        // return array_slice($this->emojis, 0, $max, true);
-        // return $this->emojis;
-        return array_flip(array_count_values($emojis));
     }
 
     /**
      * Verify exception is too many requests exception
      *
      * @param \Exception $ex
-     * @return boolean
+     * @return boolevoidan
      */
-    private function isTooManyRequests(\Exception $ex)
+    private function isTooManyRequests(\Exception $ex) : bool
     {
-        Log::channel('stderr')->error("Check is too many requests!");
+        $this->log("It would be too many requests issue!", $ex);
 
-        return get_class($ex) === \Unirest\Exception::class
+        // Should try after a while
+        if($ex->getCode() === 403)
+            throw new \Exception("Please wait a few minutes before you try again!", -1);
+
+        // Is too many requests or lost connection
+        if(get_class($ex) === \Unirest\Exception::class
                 || $ex->getCode() === 429 || $ex->getCode() === 56 || $ex->getCode() === 302
                 || strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false
                 || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "cURL error 56: Proxy CONNECT aborted") !== false
                 || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false
-                || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false;
+                || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false){
+
+            // Set proxy
+            $this->setProxy();
+
+            return true;
+        }
+
+        return false;
     }
     
-    /**
-     * Stop the scraping process
-     *
-     * @param \Exception $ex
-     * @return boolean
-     */
-    private function shouldStopProcess(\Exception $ex)
-    {
-        // Trace error
-        $msg = $ex->getCode() . ' | ' . $ex->getMessage();
-        Log::channel('stderr')->error($msg);
-
-        if($ex->getCode() === 403){
-            $msg = "Please wait a few minutes before you try again!";
-            throw new \Exception($msg, -1);
-        }
-    }
 
     /**
      * Verify if process reach the max requests limit
@@ -793,6 +664,26 @@ class InstagramScraper
         if(ScrapInstagramInfluencers::checkPassedMaxCalls()){
             Log::channel('stderr')->error($msg);
             throw new \Exception($msg, -2);
+        }
+    }
+
+    /**
+     * Trace log
+     *
+     * @param string $message
+     * @param \Exception|null $exception
+     * @return void
+     */
+    private function log(string $message, \Exception $exception = null)
+    {
+        if(is_null($exception)){
+            Log::channel('stderr')->info($message);
+            Log::info($message);
+        }else{
+            Log::channel('stderr')->error($message);
+            Log::error($exception->getMessage(), [
+                'context'   =>  'Instagram Scraper with code: ' . $exception->getCode()
+            ]);
         }
     }
 }
