@@ -45,7 +45,6 @@ class Tracker extends Model
         'platform',
         'name',
         'type',
-        'username',
         'url',
         'nbr_squences',
         'nbr_squences_impressions',
@@ -60,8 +59,7 @@ class Tracker extends Model
         'posted_date',
         'posted_hour',
         'status',
-        'queued',
-        'influencer_id'
+        'queued'
     ];
 
      /**
@@ -72,7 +70,6 @@ class Tracker extends Model
     protected $casts = [
         'user_id'       =>  'unsignedInteger',
         'campaign_id'   =>  'unsignedInteger',
-        'influencer_id' =>  'unsignedInteger',
         'posted_date'   =>  'date',
         'posted_time'   =>  'time',
         'status'        =>  'boolean',
@@ -117,7 +114,7 @@ class Tracker extends Model
      */
     public function posts()
     {
-        return $this->hasMany(InfluencerPost::class, 'tracker_id', 'id');
+        return $this->belongsToMany(InfluencerPost::class, 'tracker_influencer_media');
     }
 
     /**

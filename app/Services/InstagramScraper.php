@@ -353,7 +353,7 @@ class InstagramScraper
                     continue;
 
                 // Scrap media
-                $_media = $this->getMedia($media->getShortCode(), $media);
+                $_media = $this->getMedia($media);
 
                 // Set media influencer ID
                 $_media['influencer_id'] = $influencer->id;
@@ -412,23 +412,14 @@ class InstagramScraper
     /**
      * Scrap media details
      *
-     * @param string $mediaShortCode
      * @param \InstagramScraper\Model\Media $media
-     * @param \App\Tracker $tracker
      * @return array
      */
-    public function getMedia(string $mediaShortCode, \InstagramScraper\Model\Media $media = null, Tracker $tracker = null) : array
+    public function getMedia(\InstagramScraper\Model\Media $media) : array
     {
         try{
             // Verify process reach the limit
             $this->verifyMaxRequestsLimit();
-
-            // Scrap media
-            if(is_null($media)){
-                $media = $this->instagram->getMediaByCode($mediaShortCode);
-                Log::channel('stderr')->info("Media {$media->getShortCode()} details scraped successfully.");
-                sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
-            }
 
             // Fetch comments sentiments
             $comments = [];
@@ -471,10 +462,6 @@ class InstagramScraper
                 'files'             =>  $this->getFiles($media)
             ];
 
-            // Set tracker ID
-            if(!is_null($tracker))
-                $_media['tracker_id'] = $tracker->id;
-
             return array_merge($_media, $comments);
         }catch(\Exception $ex){
             Log::channel('stderr')->error($ex->getMessage());
@@ -489,7 +476,7 @@ class InstagramScraper
                 $this->setProxy();
                 // $this->instagramAuthentication();
 
-                return $this->getMedia($mediaShortCode, $media, $tracker);
+                return $this->getMedia($media);
             }
 
             if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)

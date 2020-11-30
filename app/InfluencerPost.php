@@ -307,12 +307,12 @@ class InfluencerPost extends Model
     }
     
     /**
-     * Get tracker
-     * 
-     * @return \App\Tracker
+     * Get count of trackers related to media
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tracker()
+    public function trackers()
     {
-        return $this->belongsTo(Tracker::class, 'tracker_id');
+        return $this->belongsToMany(Tracker::class, 'tracker_influencer_media');
     }
 }

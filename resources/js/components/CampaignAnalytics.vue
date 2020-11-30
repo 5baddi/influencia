@@ -73,7 +73,7 @@
             <span>Based on {{ campaign.comments_count }} comments</span>
         </div>
         <div class="card emojis" v-if="campaign.top_three_emojis">
-            <h5>Top {{ Object.values(campaign.top_three_emojis.top).length > 1 ? Object.values(campaign.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
+            <h5>Top {{ campaign.top_three_emojis.top && Object.values(campaign.top_three_emojis.top).length > 1 ? Object.values(campaign.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
                 <li v-for="(emoji, index) in campaign.top_three_emojis.top" :key="index">
                     {{ emoji }}

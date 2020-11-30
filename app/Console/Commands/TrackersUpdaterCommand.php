@@ -84,24 +84,9 @@ class TrackersUpdaterCommand extends Command
 
                 // Update trackers & influencers queued state
                 foreach($tracker->posts->load('influencer') as $post){
-                    // Set tracker to the post
-                    $post->update(['tracker_id' => $tracker->id]);
-
-                    // Update tracker influencers list
-                    $influencerExists = TrackerInfluencer::where(['tracker_id' => $tracker->id, 'influencer_id' => $post->influencer->id])->first();
-                    if(is_null($influencerExists))
-                        TrackerInfluencer::create(['tracker_id' => $tracker->id, 'influencer_id' => $post->influencer->id]);
-
-
                     // Update influencer queued status
-                    if($post->influencer->posts()->count() == $post->influencer->medias){
-                        if($post->influencer->queued !== 'finished')
-                            $post->influencer->update(['queued' => 'finished']);
-
+                    if($post->influencer->posts()->count() === $post->influencer->medias)
                         ++$scrapedInfluencers;
-                    }else{
-                        $post->influencer->update(['queued' => 'progress']);
-                    }
                 }
 
                 // Refresh tracker
