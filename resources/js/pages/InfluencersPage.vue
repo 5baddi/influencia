@@ -30,7 +30,7 @@
                     <router-link :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Influencer details">
                         <i class="fas fa-eye"></i>
                     </router-link>
-                    <button v-if="($can('delete', 'influencer') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && row.data.original.trackers_count === 0" class="btn icon-link" title="Delete influencer" @click="deleteInfluencer(row.data.original)">
+                    <button v-if="($can('delete', 'influencer') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" :disabled="row.data.original.trackers_count > 0" class="btn icon-link" title="Delete influencer" @click="deleteInfluencer(row.data.original)">
                         <i class="far fa-trash-alt"></i>
                     </button>
                 </td>

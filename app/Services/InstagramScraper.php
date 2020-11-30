@@ -218,9 +218,6 @@ class InstagramScraper
                 return $this->byUsername($username);
             }
 
-            if(strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false)
-                throw new \Exception("Lost connection to Instagram");
-
             throw $ex;
         }
     }
@@ -752,7 +749,8 @@ class InstagramScraper
         Log::channel('stderr')->error("Check is too many requests!");
 
         return get_class($ex) === \Unirest\Exception::class
-                || $ex->getCode() === 429 || $ex->getCode() === 56
+                || $ex->getCode() === 429 || $ex->getCode() === 56 || $ex->getCode() === 302
+                || strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false
                 || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "cURL error 56: Proxy CONNECT aborted") !== false
