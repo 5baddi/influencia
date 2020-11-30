@@ -20,7 +20,7 @@ class InfluencerController extends Controller
     public function index()
     {
         return response()->success("Influencers fetched successfully.", 
-            Influencer::withCount('posts')->get()
+            Influencer::withCount(['posts', 'trackers'])->get()
         );
     }
 
@@ -82,5 +82,26 @@ class InfluencerController extends Controller
         return response()->success("Posts of Influencer ID:{$influencer->id} fetched successfully.", 
             InfluencerPost::where('influencer_id', $influencer->id)->paginate(25)
         );
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Influencer  $influencer
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Influencer $influencer)
+    {
+        abort_if(Gate::denies('delete', $influencer), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Check is not linked to any tracker
+        $influencer = Influencer::withCount('trackers')->find($influencer->id);
+        if($influencer->trackers_count > 0)
+            return response()->error("You can't remove this influencer because is linked to {$influencer->trackers_count} trackers!", [], 400);
+
+        // Delete influencer
+        $influencer->delete();
+
+        return response()->success("Influencer deleted successfully.", [], 204);
     }
 }

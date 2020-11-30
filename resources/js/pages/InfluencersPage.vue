@@ -30,12 +30,16 @@
                     <router-link :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Influencer details">
                         <i class="fas fa-eye"></i>
                     </router-link>
+                    <button v-if="($can('delete', 'influencer') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && row.data.original.trackers_count === 0" class="btn icon-link" title="Delete influencer" @click="deleteInfluencer(row.data.original)">
+                        <i class="far fa-trash-alt"></i>
+                    </button>
                 </td>
             </DataTable>
         </div>
     </div>
     <InfluencerProfile v-if="influencer" :influencer="influencer" />
     <CreateInfluencerModal ref="influencerFormModal" @create="create" />
+    <ConfirmationModal ref="confirmDeleteInfluencerModal" v-on:custom="deleteInfluencerAction" />
 </div>
 </template>
 
@@ -132,6 +136,25 @@ export default {
         addInfluencer(){
             this.$refs.influencerFormModal.open();
         },
+        deleteInfluencer(influencer){
+            this.$refs.confirmDeleteInfluencerModal.open("Are sure to delete this influencer?", influencer);
+        },
+        deleteInfluencerAction(influencer){
+            if (typeof influencer.uuid === "undefined")
+                this.showError();
+
+            this.$store.dispatch("deleteInfluencer", influencer.uuid)
+                .then(response => {
+                    this.$refs.influencersDT.reloadData();
+                    this.showSuccess({
+                        message: "Successfully deleted influencer @" + influencer.username
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.message
+                    });
+                });
+        },
         create(influencer) {
             this.$store.dispatch("addInfluencer", influencer)
                 .then(response => {
@@ -169,7 +192,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["influencers", "influencer"])
+        ...mapGetters(["AuthenticatedUser", "influencers", "influencer"])
     },
     notifications: {
         showError: {
