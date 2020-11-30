@@ -30,7 +30,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 10, 'max' => 30];
+    const SLEEP_REQUEST = ['min' => 5, 'max' => 20];
 
     /**
      * Instagram scraper
@@ -163,7 +163,6 @@ class InstagramScraper
                 throw new \Exception("Something going wrong using the proxy!");
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
         }catch(\Exception $ex){
             $this->log("Failed to connect using a proxy!", $ex);
 
@@ -315,7 +314,7 @@ class InstagramScraper
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             foreach($fetchedMedias['medias'] as $key => $media){
-                Log::channel("stderr")->info("Handle media {$media->getShortCode()}");
+                $this->log("Handle media {$media->getShortCode()}");
 
                 // Check media if already exists
                 $existsMedia = InfluencerPost::where('post_id', $media->getId())->first();
