@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Format;
 use Exception;
-use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
 use GuzzleHttp\Client;
@@ -137,6 +136,7 @@ class InstagramScraper
                 'http_errors'       =>  false,
                 'proxy'             =>  [
                     config('scraper.proxy.protocol')    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
+                ],
                 'config'            =>  [
                     'curl'          =>  [
 			            CURLOPT_PROXY		    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
