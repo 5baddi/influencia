@@ -50,7 +50,8 @@ class InfluencerPost extends Model
         'comments_neutral',
         'comments_negative',
         'comments_emojis',
-        'comments_hashtags'
+        'comments_hashtags',
+        'engagement_rate'
     ];
 
     /**
