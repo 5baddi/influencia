@@ -135,7 +135,8 @@ class InstagramScraper
                 'verify'            =>  !config('app.debug'),
                 // 'debug'             =>  config('app.debug'),
                 'http_errors'       =>  false,
-                'proxy'             =>  config('scraper.proxy.protocol') . '://' . config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
+                'proxy'             =>  [
+                    config('scraper.proxy.protocol')    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
                 'config'            =>  [
                     'curl'          =>  [
 			            CURLOPT_PROXY		    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
