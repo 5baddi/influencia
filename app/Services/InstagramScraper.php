@@ -32,6 +32,13 @@ class InstagramScraper
     const SLEEP_REQUEST = ['min' => 5, 'max' => 10];
 
     /**
+     * Console Debugging
+     * 
+     * @var bool
+     */
+    private static $debug = true;
+
+    /**
      * Instagram scraper
      *
      * @var \InstagramScraper\Instagram
@@ -85,6 +92,16 @@ class InstagramScraper
         ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
+    }
+
+    /**
+     * Disable console debugging
+     * 
+     * @return void
+     */
+    public static function disableDebugging() : void
+    {
+        self::$debug = false;
     }
 
     /**
@@ -525,8 +542,8 @@ class InstagramScraper
             // init
             $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
 
-            // Ignore media with disabled comments option
-            if($media->getCommentsCount() === 0 || $media->getCommentsDisabled())
+            // Ignore media without comments
+            if($media->getCommentsCount() === 0)
                 return $data;
 
 
@@ -560,7 +577,7 @@ class InstagramScraper
                 $handle($comment);
 
                 // Handle child comments
-                if(sizeof($comment->getChildComments()) > 0){
+                if($comment->getChildCommentsCount() > 0){
                     foreach($comment->getChildComments() as $child)
                         $handle($child);
                 }
@@ -664,12 +681,17 @@ class InstagramScraper
     private function log(string $message, \Exception $exception = null)
     {
         if(is_null($exception)){
-            Log::channel('stderr')->info($message);
+            if(self::$debug)
+                Log::channel('stderr')->info($message);
+
+            Log::info("Error line: {$exception->getLine()}");
             Log::info($message);
         }else{
-            Log::channel('stderr')->error($message);
+            if(self::$debug)
+                Log::channel('stderr')->error($message);
+
             Log::error($exception->getMessage(), [
-                'context'   =>  'Instagram Scraper with code: ' . $exception->getCode()
+                'context'   =>  "Instagram Scraper with Code: {$exception->getCode()} Line: {$exception->getLine()}"
             ]);
         }
     }

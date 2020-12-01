@@ -54,6 +54,9 @@ class ScrapInstagramPostJob implements ShouldQueue
     public function handle(InstagramScraper $scraper, InfluencerRepository $influencerRepo)
     {
         try{
+            // Disable console debugging
+            InstagramScraper::disableDebugging();
+            
             // Update analytics for instagram media
             if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
                 // Set tracker on progress status
