@@ -60,6 +60,10 @@ class InfluencersUpdaterCommand extends Command
             $this->info("Influencers need update {$influencers->count()}");
 
             foreach($influencers as $influencer){
+                // Ignore still in scraping queue
+                if($influencer->posts->count() !== $influencer->medias)
+                    continue;
+
                 // Update instagram media
                 if($influencer->platform === 'instagram'){
                     $this->info("Update Instagram influencer @{$influencer->username}");

@@ -422,7 +422,7 @@ class InstagramScraper
                 'type'          =>  $media->getType(),
                 'likes'         =>  $media->getLikesCount(),
                 'thumbnail_url' =>  $media->getImageThumbnailUrl(),
-                'comments'      =>  $media->getCommentsCount(),
+                'comments'      =>  $media->getCommentsCount() ?? 0,
                 'emojis'        =>  sizeof($comments['comments_emojis']),
                 'published_at'  =>  Carbon::parse($media->getCreatedTime()),
                 'caption'       =>  $media->getCaption(),
@@ -439,6 +439,13 @@ class InstagramScraper
                 'caption_edited'    =>  $media->isCaptionEdited(),
                 'files'             =>  $this->getFiles($media)
             ];
+
+            // Update analyzed sentiments percentage of comments
+            if($_media['comments'] > 0){
+                $_media['comments_positive'] = round($_media['comments_positive'] ?? 0 / $_media['comments'], 2);
+                $_media['comments_neutral'] = round($_media['comments_neutral'] ?? 0 / $_media['comments'], 2);
+                $_media['comments_negative'] = round($_media['comments_negative'] ?? 0 / $_media['comments'], 2);
+            }
 
             return array_merge($_media, $comments);
         }catch(\Exception $ex){
