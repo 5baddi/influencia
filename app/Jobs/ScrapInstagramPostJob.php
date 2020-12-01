@@ -56,7 +56,7 @@ class ScrapInstagramPostJob implements ShouldQueue
         try{
             // Disable console debugging
             InstagramScraper::disableDebugging();
-            
+
             // Update analytics for instagram media
             if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
                 // Set tracker on progress status
@@ -146,7 +146,7 @@ class ScrapInstagramPostJob implements ShouldQueue
     public function fail($exception = null)
     {
         // Set tracker on failed status
-        $this->tracker->update(['queued' => 'failed']);
+        $this->tracker->update(['queued' => 'pending']);
 
         Log::error("Failed to extract Post info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
     }

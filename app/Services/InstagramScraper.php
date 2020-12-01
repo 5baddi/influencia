@@ -513,7 +513,7 @@ class InstagramScraper
     private function getVideoDuration(\InstagramScraper\Model\Media $media) : ?int
     {
         try{
-            if($media->getType() === 'video' && $media->getVideoDuration() === ''){
+            if($media->getType() === 'video'){
                 Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl() ?? $media->getVideoStandardResolutionUrl()));
                 $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
                 $duration = $video->getPlaytimeSeconds();
