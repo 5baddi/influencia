@@ -32,9 +32,9 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Start jobs queue
-        // $schedule->command('queue:work --queue=high,default,trackers --timeout=600')
-        //     ->hourly()
-        //     ->withoutOverlapping();
+        $schedule->command('queue:work --queue=high,default,trackers --timeout=600')
+            ->everyMinute()
+            ->withoutOverlapping();
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
