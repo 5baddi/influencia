@@ -684,7 +684,6 @@ class InstagramScraper
             if(self::$debug)
                 Log::channel('stderr')->info($message);
 
-            Log::info("Error line: {$exception->getLine()}");
             Log::info($message);
         }else{
             if(self::$debug)
