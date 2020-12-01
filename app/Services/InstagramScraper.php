@@ -18,7 +18,6 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
-use App\Console\Commands\ScrapInstagramInfluencers;
 
 class InstagramScraper
 {
@@ -152,6 +151,15 @@ class InstagramScraper
                 'tunnel'  => true,
                 'timeout' => 35,
             ]);
+
+            Request::curlOpts([
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+            ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
@@ -198,8 +206,14 @@ class InstagramScraper
                 'business_address'  =>  $account->getBusinessAddressJson(),
             ];
         }catch(\Exception $ex){
-            dd($ex);
             $this->log("Can't find influencer by username @{$username}", $ex);
+
+            // Authenticate
+            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
+                $this->authenticate();
+                
+                return $this->byUsername($username);
+            }
 
             // Use proxy
             if($this->isTooManyRequests($ex))
@@ -244,6 +258,13 @@ class InstagramScraper
             ];
         }catch(\Exception $ex){
             $this->log("Can't find influencer by ID {$id}", $ex);
+
+            // Authenticate
+            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
+                $this->authenticate();
+                
+                return $this->byId($id);
+            }
 
             // Use proxy
             if($this->isTooManyRequests($ex))
@@ -535,7 +556,6 @@ class InstagramScraper
             
             // Parse ana analyze comments
             foreach($comments as $comment){
-                dd($comment);
                 // Handle comment
                 $handle($comment);
 
