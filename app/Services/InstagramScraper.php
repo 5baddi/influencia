@@ -86,7 +86,7 @@ class InstagramScraper
         $this->emojiParser = $emojiParser;
 
         // Set CURL options
-        Request::curlOpts([
+        Instagram::curlOpts([
             CURLOPT_SSL_VERIFYPEER  =>  0,
             CURLOPT_SSL_VERIFYHOST  =>  0,
         ]);
@@ -169,7 +169,7 @@ class InstagramScraper
                 'timeout' => 35,
             ]);
 
-            Request::curlOpts([
+            Instagram::curlOpts([
                 CURLOPT_SSL_VERIFYPEER  =>  0,
                 CURLOPT_SSL_VERIFYHOST  =>  0,
                 CURLOPT_FOLLOWLOCATION  =>  true,

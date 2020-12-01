@@ -87,8 +87,6 @@ class InfluencersUpdaterCommand extends Command
 
                             $this->info("Post {$post->short_code} successfully updated.");
                         }catch(\Exception $ex){
-                            // Trace
-                            Log::error($ex->getMessage());
                             $this->error($ex->getMessage());
 
                             // Break process if reach the Instagram limit
@@ -105,7 +103,6 @@ class InfluencersUpdaterCommand extends Command
 
             return 1;
         }catch(\Exception $exception){
-            Log::error($exception->getMessage(), ['context' => 'Influencers updater with code: ' . $exception->getCode()]);
             $this->error($exception->getMessage());
 
             return 0;
