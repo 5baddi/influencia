@@ -4,7 +4,7 @@
         <div class="dashboard__sidebar--content">
             <div class="logo">
                 <router-link :to="{name : 'dashboard'}">
-                    <img :src="'images/log-inf' + (isNavOpen ? '.png' : '-mini.png')" alt="logo" />
+                    <img :src="'/images/log-inf' + (isNavOpen ? '.png' : '-mini.png')" alt="logo" />
                 </router-link>
             </div>
         </div>

@@ -97,6 +97,11 @@ export default {
                     }
                 },
                 {
+                    name: "Engagement rate",
+                    field: "engagement_rate",
+                    isNbr: true
+                },
+                {
                     name: "Analyzed",
                     field: "posts_count",
                     callback: function (row) {

@@ -12,7 +12,7 @@
                 </li>
             </ul>
         </div>
-        <div class="hero__actions">
+        <div class="hero__actions" v-if="!tracker">
             <button class="btn btn-success" @click="showAddTrackerModal = !showAddTrackerModal">Add new tracker</button>
         </div>
     </div>
