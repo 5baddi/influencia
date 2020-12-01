@@ -83,15 +83,6 @@ class InstagramScraper
         Request::curlOpts([
             CURLOPT_SSL_VERIFYPEER  =>  0,
             CURLOPT_SSL_VERIFYHOST  =>  0,
-            CURLOPT_SSLVERSION      =>  3,
-            CURLOPT_FOLLOWLOCATION  =>  true,
-            CURLOPT_MAXREDIRS       =>  5,
-            CURLOPT_HTTPPROXYTUNNEL =>  1,
-            CURLOPT_RETURNTRANSFER  =>  true,
-            CURLOPT_HEADER          =>  1,
-            CURLOPT_TIMEOUT		    =>  0,
-            CURLOPT_CONNECTTIMEOUT	=>  35,
-            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
         ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
