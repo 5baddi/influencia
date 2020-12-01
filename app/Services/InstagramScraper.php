@@ -435,7 +435,7 @@ class InstagramScraper
                 'video_duration'=>  $this->getVideoDuration($media),
                 'is_ad'         =>  $media->isAd(),
                 'caption_hashtags'  =>  $this->hashtags,
-                'comments_disabled' =>  $media->getCommentsDisabled(),
+                // 'comments_disabled' =>  $media->getCommentsDisabled(),
                 'caption_edited'    =>  $media->isCaptionEdited(),
                 'files'             =>  $this->getFiles($media)
             ];
