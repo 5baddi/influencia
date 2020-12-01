@@ -71,14 +71,15 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                 // Scrap media details and update on DB
                 foreach($_urls as $url){
-                    if(empty($url) || !isset($url) || $url === "")
+                    $shortCode = Format::extractInstagarmShortCode($url);
+                    if(is_null($shortCode))
                         continue;
 
                     // Verify if media already exists
-                    $influencerMedia = InfluencerPost::where('link', $url)->first();
+                    $influencerMedia = InfluencerPost::where('short_code', $shortCode)->first();
                     if(is_null($influencerMedia)){
                         // Scrap User details
-                        $media = $scraper->byMedia($url);
+                        $media = $scraper->byMedia($shortCode);
                         if(!is_object($media) || is_null($media->getOwner()))
                             return $this->fail();
 

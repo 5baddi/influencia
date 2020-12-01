@@ -6,7 +6,6 @@ use Format;
 use Exception;
 use Carbon\Carbon;
 use App\Influencer;
-use Unirest\Request;
 use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
@@ -292,29 +291,29 @@ class InstagramScraper
     }
 
     /**
-     * Scrap media by link
+     * Scrap media by short code
      *
-     * @param string $link
+     * @param string $shortCode
      * @return \InstagramScraper\Model\Media
      */
-    public function byMedia(string $link) : \InstagramScraper\Model\Media
+    public function byMedia(string $shortCode) : \InstagramScraper\Model\Media
     {
         try{
             // Authenticate with scraping account
             $this->authenticate();
 
             // Scrap media
-            $media = $this->instagram->getMediaByUrl($link);
+            $media = $this->instagram->getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return $media;
         }catch(\Exception $ex){
-            $this->log("Can't get media by link {$link}", $ex);
+            $this->log("Can't get media by short code {$shortCode}", $ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex))
-                return $this->byMedia($link);
+                return $this->byMedia($shortCode);
 
             throw $ex;
         }

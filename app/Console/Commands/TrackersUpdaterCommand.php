@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Tracker;
 use Carbon\Carbon;
-use App\TrackerInfluencer;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
@@ -69,7 +68,7 @@ class TrackersUpdaterCommand extends Command
     private function updateTrackers() : void
     {
         // Get trackers
-        $trackers = Tracker::with(['posts', 'influencers'])->where('status', true)->get();
+        $trackers = Tracker::with(['posts', 'influencers'])->where('status', true)->whereNotIn('queued', ['pending', 'finished'])->get();
         $this->info("Number of trackers to sync: " . $trackers->count());
 
         // Scrap each tracker details
@@ -84,19 +83,16 @@ class TrackersUpdaterCommand extends Command
 
                 // Update trackers & influencers queued state
                 foreach($tracker->posts->load('influencer') as $post){
+                    if($post->influencer->username === 'safia.tazi')
+                    continue;
                     // Update influencer queued status
-                    if($post->influencer->posts()->count() === $post->influencer->medias)
+                    if($post->influencer->posts->count() === $post->influencer->medias)
                         ++$scrapedInfluencers;
                 }
-
-                // Refresh tracker
-                $tracker = $tracker->refresh();
 
                 // Set tracker queued as finished
                 if($tracker->influencers->count() === $scrapedInfluencers && $scrapedInfluencers > 0)
                     $tracker->update(['queued' => 'finished']);
-                else
-                    $tracker->update(['queued' => 'progress']);
             }
         }
     }
