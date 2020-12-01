@@ -391,7 +391,7 @@ class InstagramScraper
 
             // Use proxy
             if($this->isTooManyRequests($ex))
-                return $this->getMedias($influencer, $fetchedMedias['hasNextPage'] ? $fetchedMedias['maxId'] : null, $max);
+                return $this->getMedias($influencer, (isset($fetchedMedias) && $fetchedMedias['hasNextPage']) ? $fetchedMedias['maxId'] : null, $max);
 
             throw $ex;
         }
