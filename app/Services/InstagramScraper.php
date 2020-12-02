@@ -98,34 +98,14 @@ class InstagramScraper
         if(is_null(self::$cacheManager))
             self::$cacheManager = new Psr16Adapter('Files');
 
-        // Init HTTP Client
-        $this->client = $client = new Client([
-            'base_uri'          =>  url('/'),
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            CURLOPT_SSL_VERIFYPEER  =>  0,
-            CURLOPT_SSL_VERIFYHOST  =>  0,
-            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-            CURLOPT_FOLLOWLOCATION  =>  true,
-            CURLOPT_MAXREDIRS       =>  5,
-            CURLOPT_HTTPPROXYTUNNEL =>  1,
-            CURLOPT_RETURNTRANSFER  =>  true,
-            CURLOPT_HEADER          =>  1,
-            CURLOPT_TIMEOUT		    =>  0,
-            CURLOPT_CONNECTTIMEOUT	=>  35,
-            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-        ]);
-
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
         // Set CURL options
-        // Instagram::curlOpts([
-        //     CURLOPT_SSL_VERIFYPEER  =>  0,
-        //     CURLOPT_SSL_VERIFYHOST  =>  0,
-        // ]);
+        Instagram::curlOpts([
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+        ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
@@ -180,7 +160,7 @@ class InstagramScraper
     {
         try{
             // Init $client
-            $this->client = new Client([
+            $client = new Client([
                 'base_uri'          =>  url('/'),
                 'verify'            =>  !config('app.debug'),
                 'debug'             =>  self::$debug,
@@ -211,18 +191,17 @@ class InstagramScraper
             ]);
 
             // Test proxy connection
-            $response = $this->client->request('GET', '/api/status');
+            $response = $client->request('GET', '/api/status');
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
 
             // Set proxy for the Instagram scraper
-            Instagram::setHttpClient($this->client);
-            // Instagram::setProxy([
-            //     'address' => config('scraper.proxy.ip'),
-            //     'port'    => config('scraper.proxy.port'),
-            //     'tunnel'  => true,
-            //     'timeout' => 35,
-            // ]);
+            Instagram::setProxy([
+                'address' => config('scraper.proxy.ip'),
+                'port'    => config('scraper.proxy.port'),
+                'tunnel'  => true,
+                'timeout' => 35,
+            ]);
 
             // Instagram::curlOpts([
             //     CURLOPT_SSL_VERIFYPEER  =>  0,
@@ -254,7 +233,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = (new Instagram($this->client))->getAccount($username);
+            $account = (new Instagram())->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -305,7 +284,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = (new Instagram($this->client))->getAccountById($id);
+            $account = (new Instagram())->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
