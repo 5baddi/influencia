@@ -75,6 +75,22 @@ class Influencer extends Model
     ];
 
     /**
+     * Get business email attribute
+     * 
+     * @return string
+     */
+    public function getBusinessEmailAttribute() : ?string
+    {
+        if(isset($this->attributes['business_email']))
+            return $this->attributes['business_email'];
+
+        // Get email from biography
+        preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $this->attributes['biography'] ?? '', $matches);
+        
+        return $matches[0] ?? null;
+    }
+
+    /**
      * Get likes of an infleuncer
      *
      * @return int
