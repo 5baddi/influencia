@@ -50,12 +50,6 @@ class InstagramScraper
      */
     private $instagram;
 
-    /**
-     * Guzzle HTTP client
-     * 
-     * @var \GuzzleHttp\Client
-     */
-    private $client;
 
     /**
      * Cache manager
@@ -100,6 +94,9 @@ class InstagramScraper
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
+
+        // Init instagram scraper
+        $this->instagram = new Instagram();
 
         // Set CURL options
         Instagram::curlOpts([
@@ -146,7 +143,7 @@ class InstagramScraper
             self::$cacheManager->clear();
 
         // Login to App Instagram account
-        $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
+        $this->instagram = Instagram::withCredentials($scrapAccount->username, $scrapAccount->password, self::$cacheManager);
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
 
@@ -203,14 +200,15 @@ class InstagramScraper
                 'timeout' => 35,
             ]);
 
-            // Instagram::curlOpts([
-            //     CURLOPT_SSL_VERIFYPEER  =>  0,
-            //     CURLOPT_SSL_VERIFYHOST  =>  0,
-            //     CURLOPT_FOLLOWLOCATION  =>  true,
-            //     CURLOPT_MAXREDIRS       =>  5,
-            //     CURLOPT_HTTPPROXYTUNNEL =>  1,
-            //     CURLOPT_RETURNTRANSFER  =>  true,
-            // ]);
+            // Set CURL options 
+            Instagram::curlOpts([
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+            ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
@@ -233,7 +231,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = (new Instagram())->getAccount($username);
+            $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -284,7 +282,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = (new Instagram())->getAccountById($id);
+            $account = $this->instagram->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
