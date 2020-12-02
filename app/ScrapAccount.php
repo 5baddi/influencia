@@ -27,4 +27,15 @@ class ScrapAccount extends Model
         'imap_password',
         'enabled',
     ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'enabled'       =>  'boolean',
+        'updated_at'    =>  'datetime:Y-m-d H:i',
+        'created_at'    =>  'datetime:Y-m-d H:i',
+    ];
 }

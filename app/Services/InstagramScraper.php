@@ -120,7 +120,7 @@ class InstagramScraper
     public function authenticate(bool $force = false) : void
     {
         // Get scraping account
-        $scrapAccount = ScrapAccount::where(['platform' => 'instagram']);
+        $scrapAccount = ScrapAccount::where(['platform' => 'instagram', 'enabled' => true]);
         
         if(!is_null($this->username))
             $scrapAccount = $scrapAccount->where('username', '!=', $this->username);
