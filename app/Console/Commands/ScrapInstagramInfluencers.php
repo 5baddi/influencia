@@ -97,7 +97,7 @@ class ScrapInstagramInfluencers extends Command
                 $this->error($ex->getMessage());
 
                 // Break process if necessary
-                if($ex->getCode() === -1)
+                if($ex->getCode() === 111)
                     break;
             }
         }

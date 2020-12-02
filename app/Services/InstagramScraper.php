@@ -655,8 +655,8 @@ class InstagramScraper
         $this->log("It would be too many requests issue!", $ex);
 
         // Should try after a while
-        if($ex->getCode() === 403)
-            throw new \Exception("Please wait a few minutes before you try again!", -1);
+        if($ex->getCode() === 403 || $ex->getCode() === 560)
+            throw new \Exception("Please wait a few minutes before you try again!", 111);
 
         // Is too many requests or lost connection
         if(get_class($ex) === \Unirest\Exception::class
