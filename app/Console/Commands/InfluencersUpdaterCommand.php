@@ -94,7 +94,7 @@ class InfluencersUpdaterCommand extends Command
                             $this->error($ex->getMessage());
 
                             // Break process if reach the Instagram limit
-                            if($ex->getCode() === -2)
+                            if($ex->getCode() === 111)
                                 break;
                         }
                     }
