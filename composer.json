@@ -30,7 +30,7 @@
         "phpfastcache/phpfastcache": "^8.0",
         "phpoffice/phpspreadsheet": "^1.15",
         "pusher/pusher-php-server": "^4.1",
-        "raiym/instagram-php-scraper": "0.9.14",
+        "raiym/instagram-php-scraper": "0.10.0",
         "ryancco/laravel-uuid-models": "^1.0",
         "spekulatius/phpscraper": "^0.4.1",
         "ssilence/php-imap-client": "dev-master"

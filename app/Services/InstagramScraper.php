@@ -51,6 +51,13 @@ class InstagramScraper
     private $instagram;
 
     /**
+     * Guzzle HTTP client
+     * 
+     * @var \GuzzleHttp\Client
+     */
+    private $client;
+
+    /**
      * Cache manager
      *
      * @var \Phpfastcache\Helper\Psr16Adapter
@@ -90,18 +97,35 @@ class InstagramScraper
         // Init Cache manager
         if(is_null(self::$cacheManager))
             self::$cacheManager = new Psr16Adapter('Files');
-        
-        // Init Instagram scraper
-        $this->instagram = new Instagram();
+
+        // Init HTTP Client
+        $this->client = $client = new Client([
+            'base_uri'          =>  url('/'),
+            'verify'            =>  !config('app.debug'),
+            'debug'             =>  self::$debug,
+            'http_errors'       =>  false,
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
+            CURLOPT_FOLLOWLOCATION  =>  true,
+            CURLOPT_MAXREDIRS       =>  5,
+            CURLOPT_HTTPPROXYTUNNEL =>  1,
+            CURLOPT_RETURNTRANSFER  =>  true,
+            CURLOPT_HEADER          =>  1,
+            CURLOPT_TIMEOUT		    =>  0,
+            CURLOPT_CONNECTTIMEOUT	=>  35,
+            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
+        ]);
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
         // Set CURL options
-        Instagram::curlOpts([
-            CURLOPT_SSL_VERIFYPEER  =>  0,
-            CURLOPT_SSL_VERIFYHOST  =>  0,
-        ]);
+        // Instagram::curlOpts([
+        //     CURLOPT_SSL_VERIFYPEER  =>  0,
+        //     CURLOPT_SSL_VERIFYHOST  =>  0,
+        // ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
@@ -142,7 +166,7 @@ class InstagramScraper
             self::$cacheManager->clear();
 
         // Login to App Instagram account
-        $this->instagram = Instagram::withCredentials($scrapAccount->username, $scrapAccount->password, self::$cacheManager);
+        $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
 
@@ -156,7 +180,7 @@ class InstagramScraper
     {
         try{
             // Init $client
-            $client = new Client([
+            $this->client = new Client([
                 'base_uri'          =>  url('/'),
                 'verify'            =>  !config('app.debug'),
                 'debug'             =>  self::$debug,
@@ -187,26 +211,27 @@ class InstagramScraper
             ]);
 
             // Test proxy connection
-            $response = $client->request('GET', '/api/status');
+            $response = $this->client->request('GET', '/api/status');
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
 
             // Set proxy for the Instagram scraper
-            Instagram::setProxy([
-                'address' => config('scraper.proxy.ip'),
-                'port'    => config('scraper.proxy.port'),
-                'tunnel'  => true,
-                'timeout' => 35,
-            ]);
+            Instagram::setHttpClient($this->client);
+            // Instagram::setProxy([
+            //     'address' => config('scraper.proxy.ip'),
+            //     'port'    => config('scraper.proxy.port'),
+            //     'tunnel'  => true,
+            //     'timeout' => 35,
+            // ]);
 
-            Instagram::curlOpts([
-                CURLOPT_SSL_VERIFYPEER  =>  0,
-                CURLOPT_SSL_VERIFYHOST  =>  0,
-                CURLOPT_FOLLOWLOCATION  =>  true,
-                CURLOPT_MAXREDIRS       =>  5,
-                CURLOPT_HTTPPROXYTUNNEL =>  1,
-                CURLOPT_RETURNTRANSFER  =>  true,
-            ]);
+            // Instagram::curlOpts([
+            //     CURLOPT_SSL_VERIFYPEER  =>  0,
+            //     CURLOPT_SSL_VERIFYHOST  =>  0,
+            //     CURLOPT_FOLLOWLOCATION  =>  true,
+            //     CURLOPT_MAXREDIRS       =>  5,
+            //     CURLOPT_HTTPPROXYTUNNEL =>  1,
+            //     CURLOPT_RETURNTRANSFER  =>  true,
+            // ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
@@ -229,7 +254,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = $this->instagram->getAccount($username);
+            $account = (new Instagram($this->client))->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -280,7 +305,7 @@ class InstagramScraper
     {
         try{
             // Scrap user
-            $account = $this->instagram->getAccountById($id);
+            $account = (new Instagram($this->client))->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -692,7 +717,7 @@ class InstagramScraper
         $this->log("It would be too many requests issue!", $ex);
 
         // Should try after a while
-        if($ex->getCode() === 403 || $ex->getCode() === 560){
+        if($ex->getCode() === 403 || $ex->getCode() === 560 || $ex->getCode() === 302){
             $this->authenticate(true);
 
             return true;
@@ -700,7 +725,7 @@ class InstagramScraper
 
         // Is too many requests or lost connection
         if(get_class($ex) === \Unirest\Exception::class
-                || $ex->getCode() === 429 || $ex->getCode() === 56 || $ex->getCode() === 302
+                || $ex->getCode() === 429 || $ex->getCode() === 56
                 || strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false
                 || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
