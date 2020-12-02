@@ -140,7 +140,7 @@ class InstagramScraper
         // Save connected scraping account username
         $this->username = $scrapAccount->username;
 
-        $this->log("Successfully connected using account @" . config('scraper.instagram.username'));
+        $this->log("Successfully connected using account @" . $scrapAccount->username);
     }
 
     public function setProxy()
