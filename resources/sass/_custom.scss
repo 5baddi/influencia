@@ -111,23 +111,38 @@ span.status{
         align-items: flex-start;
 
         &-name{
+            display: flex;
+            flex-direction: column;
+            flex-basis: 80%;
             margin: 0rem .7rem;
 
             h4{
                 font-size: 16pt;
                 text-transform: uppercase;
-                margin: 0.5rem 0;
+                margin: 1rem 0 0 0;
+
+                svg{
+                    margin-left: 10px;
+                    color: #039be5;
+                }
             }
 
             p{
                 font-size: 10pt;
                 color: gray;
+                padding: 0 0 0 6px;
             }
         }
 
         &-picture{
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
             img{
-                width: 100px;
+                width: 100%;
                 height: auto;
                 border-radius: 50%;
             }
@@ -144,9 +159,14 @@ span.status{
                 a{
                     color: #039be5;
                     text-decoration: none;
+
                     &:hover{
                         color: adjust-color($color: #039be5, $alpha: -0.5)
                     }
+                }
+
+                span{
+                    text-transform: uppercase;
                 }
             }
         }
@@ -167,6 +187,7 @@ span.status{
                 font-size: 10pt;
                 color: white;
                 padding: .2rem 1rem;
+                text-transform: uppercase;
             }
 
             &-instagram{
@@ -586,3 +607,8 @@ span.status{
         }
     }
 }
+
+.mini-toastr {
+    z-index: 99999999 !important;
+}
+

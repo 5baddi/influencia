@@ -75,6 +75,22 @@ class Influencer extends Model
     ];
 
     /**
+     * Get business email attribute
+     * 
+     * @return string
+     */
+    public function getBusinessEmailAttribute() : ?string
+    {
+        if(isset($this->attributes['business_email']))
+            return $this->attributes['business_email'];
+
+        // Get email from biography
+        preg_match_all("/[\._a-zA-Z0-9-]+@[\._a-zA-Z0-9-]+/i", $this->attributes['biography'] ?? '', $matches);
+        
+        return $matches[0] ?? null;
+    }
+
+    /**
      * Get likes of an infleuncer
      *
      * @return int
@@ -140,7 +156,7 @@ class Influencer extends Model
      */
     public function getActivePostsCountAttribute()
     {
-        return $this->posts()->whereNotNull('tracker_id')->count();
+        return $this->posts()->count();
     }
 
     /**
@@ -169,7 +185,7 @@ class Influencer extends Model
     public function getCalculatedEngagementRateAttribute() : float
     {
         // Get manually inserted value
-        if(!is_null($this->attributes['engagement_rate']))
+        if(isset($this->attributes['engagement_rate']))
             return $this->attributes['engagement_rate'];
 
         // Calculate engagement rate

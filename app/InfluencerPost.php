@@ -24,6 +24,7 @@ class InfluencerPost extends Model
      * @var array
      */
     protected $fillable = [
+        'influencer_id',
         'post_id',
         'next_cursor',
         'link',
@@ -46,13 +47,11 @@ class InfluencerPost extends Model
         'caption_hashtags',
         'comments_disabled',
         'caption_edited',
-        'influencer_id',
         'comments_positive',
         'comments_neutral',
         'comments_negative',
         'comments_emojis',
         'comments_hashtags',
-        'tracker_id',
         'engagement_rate'
     ];
 
@@ -314,12 +313,12 @@ class InfluencerPost extends Model
     }
     
     /**
-     * Get tracker
-     * 
-     * @return \App\Tracker
+     * Get count of trackers related to media
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tracker()
+    public function trackers()
     {
-        return $this->belongsTo(Tracker::class, 'tracker_id');
+        return $this->belongsToMany(Tracker::class, 'tracker_influencer_media');
     }
 }

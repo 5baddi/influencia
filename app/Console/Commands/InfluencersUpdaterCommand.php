@@ -63,6 +63,10 @@ class InfluencersUpdaterCommand extends Command
             $this->info("Influencers need update {$influencers->count()}");
 
             foreach($influencers as $influencer){
+                // Ignore still in scraping queue
+                if($influencer->posts->count() !== $influencer->medias)
+                    continue;
+
                 // Update instagram media
                 if($influencer->platform === 'instagram'){
                     $this->info("Update Instagram influencer @{$influencer->username}");
@@ -90,12 +94,10 @@ class InfluencersUpdaterCommand extends Command
 
                             $this->info("Post {$post->short_code} successfully updated.");
                         }catch(\Exception $ex){
-                            // Trace
-                            Log::error($ex->getMessage());
                             $this->error($ex->getMessage());
 
                             // Break process if reach the Instagram limit
-                            if($ex->getCode() === -2)
+                            if($ex->getCode() === 111)
                                 break;
                         }
                     }
@@ -108,7 +110,6 @@ class InfluencersUpdaterCommand extends Command
 
             return 1;
         }catch(\Exception $exception){
-            Log::error($exception->getMessage(), ['context' => 'Influencers updater with code: ' . $exception->getCode()]);
             $this->error($exception->getMessage());
 
             return 0;

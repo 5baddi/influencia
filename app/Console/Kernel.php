@@ -32,13 +32,13 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Start jobs queue
-        $schedule->command('queue:work --queue=high,default,trackers')
-            ->hourly()
+        $schedule->command('queue:work --queue=high,default,trackers --timeout=600 --tries=5')
+            ->everyMinute()
             ->withoutOverlapping();
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
-            ->hourly()
+            ->everyMinute()
             ->withoutOverlapping();
             
         // Trackers updater

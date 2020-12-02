@@ -7443,22 +7443,39 @@ span.status-danger::before {
 }
 
 .influencer-details-name {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 80%;
   margin: 0rem 0.7rem;
 }
 
 .influencer-details-name h4 {
   font-size: 16pt;
   text-transform: uppercase;
-  margin: 0.5rem 0;
+  margin: 1rem 0 0 0;
+}
+
+.influencer-details-name h4 svg {
+  margin-left: 10px;
+  color: #039be5;
 }
 
 .influencer-details-name p {
   font-size: 10pt;
   color: gray;
+  padding: 0 0 0 6px;
+}
+
+.influencer-details-picture {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .influencer-details-picture img {
-  width: 100px;
+  width: 100%;
   height: auto;
   border-radius: 50%;
 }
@@ -7482,6 +7499,10 @@ span.status-danger::before {
   color: rgba(3, 155, 229, 0.5);
 }
 
+.influencer-details ul li span {
+  text-transform: uppercase;
+}
+
 .influencer-details-bar {
   display: inline-flex;
   width: 100%;
@@ -7499,6 +7520,7 @@ span.status-danger::before {
   font-size: 10pt;
   color: white;
   padding: 0.2rem 1rem;
+  text-transform: uppercase;
 }
 
 .influencer-details-bar-instagram {
@@ -7911,6 +7933,10 @@ span.status-danger::before {
 .dashboard__sidebar__navigation ul li a .text {
   display: block;
   font-size: 12pt;
+}
+
+.mini-toastr {
+  z-index: 99999999 !important;
 }
 
 .table {

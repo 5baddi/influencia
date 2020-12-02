@@ -12,8 +12,8 @@
                 </li>
             </ul>
         </div>
-        <div class="hero__actions">
-            <button class="btn btn-success" @click="showAddTrackerModal = !showAddTrackerModal">Add new Trackers</button>
+        <div class="hero__actions" v-if="!tracker">
+            <button class="btn btn-success" @click="showAddTrackerModal = !showAddTrackerModal">Add new tracker</button>
         </div>
     </div>
     <div class="p-1" v-if="!tracker">
@@ -97,14 +97,14 @@ export default {
                     name: "Status",
                     field: "status",
                     callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + row.queued + '</span>';
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued !== 'failed' ? row.queued : 'Waiting..') + '</span>';
                     }
                 },
                 {
                     name: "Influencers",
                     field: "influencers",
                     callback: function (row) {
-                        if (!row.influencers || row.influencers.length === 0)
+                        if (row.influencers.length === 0)
                             return '-';
 
                         let html = '';

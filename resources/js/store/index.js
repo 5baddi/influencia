@@ -222,6 +222,34 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
+    addInfluencer({ commit, state }, data) {
+        return new Promise((resolve, reject) => {
+            api.post("/api/v1/influencers", data)
+                .then(response => {
+                    if(response.status === 201){
+                        resolve(response.data)
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
+                })
+                .catch(response => {
+                    reject(response)
+                });
+        })
+    },
+    deleteInfluencer({commit, state}, uuid){
+        return new Promise((resolve, reject) => {
+            api.delete("/api/v1/influencers/" + uuid)
+                .then(response => {
+                    if(response.status === 204)
+                        resolve(response);
+                    else
+                        throw new Error("Something going wrong!");
+                }).catch((error) => {
+                    reject(error);
+                });
+        });
+    },
     fetchBrands({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/brands").then(response => {
