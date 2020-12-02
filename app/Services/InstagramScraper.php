@@ -358,7 +358,13 @@ class InstagramScraper
             $this->authenticate();
 
             // Start from last inserted media
-            $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
+            $lastPost = InfluencerPost::where('influencer_id', $influencer->id);
+            if(is_null($nextCursor))
+                $lastPost = $lastPost->whereNotNull('next_cursor')->latest();
+            else
+                $lastPost = $lastPost->where('next_cursor', $nextCursor);
+                
+            $lastPost = $lastPost->first();
             $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
             $this->log("Start scraping from " . (!is_null($lastPost) ? $lastPost->short_code : '---'));
             
