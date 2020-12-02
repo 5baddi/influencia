@@ -122,7 +122,7 @@ class InstagramScraper
         // Get scraping account
         $scrapAccount = ScrapAccount::where(['platform' => 'instagram', 'enabled' => true]);
         
-        if(!is_null($this->username))
+        if(!is_null($this->username) && $scrapAccount->count() > 0)
             $scrapAccount = $scrapAccount->where('username', '!=', $this->username);
 
         $scrapAccount = $scrapAccount->inRandomOrder()->first();
@@ -582,7 +582,7 @@ class InstagramScraper
 
 
             // Load comments
-            $comments = $this->instagram->getMediaCommentsById($media->getId(), $max, $nextComment);
+            $comments = $this->instagram->getMediaCommentsById($media->getId(), $media->getCommentsCount() < $max ? $media->getCommentsCount() : $max, $nextComment);
             $this->log("Media {$media->getShortCode()} comments: " . sizeof($comments));
             // sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
