@@ -6,6 +6,7 @@ use Format;
 use Exception;
 use Carbon\Carbon;
 use App\Influencer;
+use App\ScrapAccount;
 use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
@@ -50,6 +51,13 @@ class InstagramScraper
      * @var \Phpfastcache\Helper\Psr16Adapter
      */
     private static $cacheManager;
+
+    /**
+     * Connected scrap account username
+     *
+     * @var string
+     */
+    private $username;
 
     /**
      * Emoji parser
@@ -106,17 +114,31 @@ class InstagramScraper
     /**
      * Instagram authentication
      *
+     * @param bool $force
      * @return void
      */
     public function authenticate(bool $force = false) : void
     {
+        // Get scraping account
+        $scrapAccount = ScrapAccount::where(['platform' => 'instagram']);
+        
+        if(!is_null($this->username))
+            $scrapAccount = $scrapAccount->where('username', '!=', $this->username);
+
+        $scrapAccount = $scrapAccount->inRandomOrder()->first();
+        if(is_null($scrapAccount))
+            throw new \Exception("There's no scraping account!", 111);
+
         // Init IMAP for Two steps verification
-        $emailVecification = new EmailVerification(config('scraper.imap.email'), config('scraper.imap.server'), config('scraper.imap.password'));
+        $emailVecification = new EmailVerification($scrapAccount->imap_email, $scrapAccount->imap_server, $scrapAccount->imap_password);
 
         // Login to App Instagram account
-        $this->instagram = Instagram::withCredentials(config('scraper.instagram.username'), config('scraper.instagram.password'), self::$cacheManager);
+        $this->instagram = Instagram::withCredentials($scrapAccount->username, $scrapAccount->password, self::$cacheManager);
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
+
+        // Save connected scraping account username
+        $this->username = $scrapAccount->username;
 
         $this->log("Successfully connected using account @" . config('scraper.instagram.username'));
     }
@@ -655,8 +677,11 @@ class InstagramScraper
         $this->log("It would be too many requests issue!", $ex);
 
         // Should try after a while
-        if($ex->getCode() === 403 || $ex->getCode() === 560)
-            throw new \Exception("Please wait a few minutes before you try again!", 111);
+        if($ex->getCode() === 403 || $ex->getCode() === 560){
+            $this->authenticate(true);
+
+            return true;
+        }
 
         // Is too many requests or lost connection
         if(get_class($ex) === \Unirest\Exception::class
