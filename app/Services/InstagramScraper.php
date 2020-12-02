@@ -128,7 +128,7 @@ class InstagramScraper
             $client = new Client([
                 'base_uri'          =>  url('/'),
                 'verify'            =>  !config('app.debug'),
-                // 'debug'             =>  config('app.debug'),
+                'debug'             =>  self::$debug,
                 'http_errors'       =>  false,
                 'proxy'             =>  [
                     config('scraper.proxy.protocol')    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),

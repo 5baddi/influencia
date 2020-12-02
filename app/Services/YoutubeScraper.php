@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
+
 /**
  * Youtube Scraper
  *
@@ -10,5 +12,23 @@ namespace App\Services;
  */
 class YoutubeScraper
 {
+    /**
+     * HTTP Client
+     *
+     * @var \GuzzleHttp\Client
+     */
+    private $client;
 
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->client = new Client([
+            'base_uri'          =>  url('/'),
+            'verify'            =>  !config('app.debug'),
+            // 'debug'             =>  config('app.debug'),
+            'http_errors'       =>  false,
+        ]);
+    }
 }
