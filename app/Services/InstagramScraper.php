@@ -22,9 +22,14 @@ use Illuminate\Support\Facades\Storage;
 class InstagramScraper
 {
     /**
-     * Max request by each fetch
+     * Max media by each fetch
      */
-    const MAX_REQUEST = 100;
+    const MAX_MEDIA = 100;
+    
+    /**
+     * Max comments by each fetch
+     */
+    const MAX_COMMENTS = 1000;
 
     /**
      * Sleep request seconds
@@ -122,7 +127,7 @@ class InstagramScraper
         // Get scraping account
         $scrapAccount = ScrapAccount::where(['platform' => 'instagram', 'enabled' => true]);
         
-        if(!is_null($this->username) && $scrapAccount->count() > 0)
+        if(!is_null($this->username) && $scrapAccount->count() > 1)
             $scrapAccount = $scrapAccount->where('username', '!=', $this->username);
 
         $scrapAccount = $scrapAccount->inRandomOrder()->first();
@@ -131,6 +136,10 @@ class InstagramScraper
 
         // Init IMAP for Two steps verification
         $emailVecification = new EmailVerification($scrapAccount->imap_email, $scrapAccount->imap_server, $scrapAccount->imap_password);
+
+        // Clear Psr16 cache
+        if($force)
+            self::$cacheManager->clear();
 
         // Login to App Instagram account
         $this->instagram = Instagram::withCredentials($scrapAccount->username, $scrapAccount->password, self::$cacheManager);
@@ -349,7 +358,7 @@ class InstagramScraper
      * @param int $maxID
      * @return void
      */
-    public function getMedias(Influencer $influencer, string $nextCursor = null, int $max = self::MAX_REQUEST)
+    public function getMedias(Influencer $influencer, string $nextCursor = null, int $max = self::MAX_MEDIA)
     {
         try{
             $this->log("Scrap media for influencer @{$influencer->username}");
@@ -570,7 +579,7 @@ class InstagramScraper
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_REQUEST) : ?array
+    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
     {
         try{
             // init
