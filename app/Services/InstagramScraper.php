@@ -690,7 +690,7 @@ class InstagramScraper
                 || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "Proxy CONNECT aborted") !== false
-                || strpos($ex->getMessage(), "Received HTTP code 400 from proxy after CONNECT") !== false
+                || strpos($ex->getMessage(), "proxy after CONNECT") !== false
                 || strpos($ex->getMessage(), "Failed receiving connect request ack: Failure when receiving data from the peer") !== false){
 
             // Set proxy
