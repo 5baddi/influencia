@@ -353,6 +353,30 @@ class InstagramScraper
     }
 
     /**
+     * Analyze media and get sentiments and emojis
+     *
+     * @param \InstagramScraper\Model\Media $media
+     * @return array
+     */
+    public function analyzeMedia(\InstagramScraper\Model\Media $media) : array
+    {
+        // Fetch comments sentiments
+        $comments = $this->getSentimentsAndEmojis($media);
+
+        // Get number of emojis
+        $comments = array_merge($comments, ['emojis' => sizeof($comments['comments_emojis'])]);
+
+        // Update analyzed sentiments percentage of comments
+        if($media->getCommentsCount() > 0){
+            $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media->getCommentsCount(), 2);
+            $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media->getCommentsCount(), 2);
+            $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media->getCommentsCount(), 2);
+        }
+
+        return $comments;
+    }
+
+    /**
      * Scrap user medias
      *
      * @param Influencer $influencer
@@ -444,10 +468,6 @@ class InstagramScraper
     public function getMedia(\InstagramScraper\Model\Media $media) : array
     {
         try{
-            // Fetch comments sentiments
-            $comments = [];
-            $this->getSentimentsAndEmojis($media, $comments);
-
             // Count hashtags on media caption
             $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
 
@@ -461,7 +481,6 @@ class InstagramScraper
                 'likes'         =>  $media->getLikesCount(),
                 'thumbnail_url' =>  $media->getImageThumbnailUrl(),
                 'comments'      =>  $media->getCommentsCount() ?? 0,
-                'emojis'        =>  sizeof($comments['comments_emojis']),
                 'published_at'  =>  Carbon::parse($media->getCreatedTime()),
                 'caption'       =>  $media->getCaption(),
                 'alttext'       =>  $media->getAltText(),
@@ -478,20 +497,9 @@ class InstagramScraper
                 'files'             =>  $this->getFiles($media)
             ];
 
-            // Update analyzed sentiments percentage of comments
-            if($_media['comments'] > 0){
-                $_media['comments_positive'] = round($_media['comments_positive'] ?? 0 / $_media['comments'], 2);
-                $_media['comments_neutral'] = round($_media['comments_neutral'] ?? 0 / $_media['comments'], 2);
-                $_media['comments_negative'] = round($_media['comments_negative'] ?? 0 / $_media['comments'], 2);
-            }
-
-            return array_merge($_media, $comments);
+            return $_media;
         }catch(\Exception $ex){
             $this->log("Can't get media details {$media->getShortCode()}", $ex);
-
-            // Use proxy
-            if($this->isTooManyRequests($ex))
-                return $this->getMedia($media);
 
             throw $ex;
         }
@@ -581,7 +589,7 @@ class InstagramScraper
      * @param \InstagramScraper\Model\Media $media
      * @return null|array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
+    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data = [], string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
     {
         try{
             // init
