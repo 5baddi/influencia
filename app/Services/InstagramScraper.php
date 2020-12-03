@@ -34,7 +34,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 5, 'max' => 60];
+    const SLEEP_REQUEST = ['min' => 30, 'max' => 120];
 
     /**
      * Console Debugging
