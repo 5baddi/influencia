@@ -69,7 +69,7 @@ class DumpDataSeeder extends Seeder
         $user = User::create([
             'name'              =>  'Webmaster',
             'email'             =>  'project@baddi.info',
-            'password'          =>  Hash::make('web2020'),
+            'password'          =>  Hash::make('inf2021'),
             'is_superadmin'     =>  true,
             'selected_brand_id' =>  $brand->id
         ]);
