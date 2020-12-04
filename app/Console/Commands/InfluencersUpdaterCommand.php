@@ -81,6 +81,13 @@ class InfluencersUpdaterCommand extends Command
                             $media = $this->instagram->getMedia($post->short_code);
                             $this->info("Post {$media['short_code']} successfully scraped!");
 
+                            // Update comments if post linked to a tracker
+                            $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
+                            if($mediaTrackersCount > 0){
+                                $sentiments = $scraper->analyzeMedia($media);
+                                $media = array_merge($media, $sentiments);
+                            }
+
                             // Update local media
                             $files = $media['files'];
                             unset($media['files']);

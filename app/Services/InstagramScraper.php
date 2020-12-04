@@ -361,10 +361,10 @@ class InstagramScraper
     /**
      * Analyze media and get sentiments and emojis
      *
-     * @param \InstagramScraper\Model\Media $media
+     * @param Array $media
      * @return array
      */
-    public function analyzeMedia(\InstagramScraper\Model\Media $media) : array
+    public function analyzeMedia(Array $media) : array
     {
         // Fetch comments sentiments
         $comments = $this->getSentimentsAndEmojis($media);
@@ -374,9 +374,9 @@ class InstagramScraper
 
         // Update analyzed sentiments percentage of comments
         if($media->getCommentsCount() > 0){
-            $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media->getCommentsCount(), 2);
-            $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media->getCommentsCount(), 2);
-            $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media->getCommentsCount(), 2);
+            $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media['comments'], 2);
+            $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media['comments'], 2);
+            $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media['comments'], 2);
         }
 
         return $comments;
@@ -592,23 +592,23 @@ class InstagramScraper
     /**
      * Get media sentiments and emojis from comments
      *
-     * @param \InstagramScraper\Model\Media $media
-     * @return null|array
+     * @param array $media
+     * @return array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data = [], string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
+    private function getSentimentsAndEmojis(array $media, array &$data = [], string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
     {
         try{
             // init
             $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
 
             // Ignore media without comments
-            if($media->getCommentsCount() === 0)
+            if($media['comments'] === 0)
                 return $data;
 
 
             // Load comments
-            $comments = $this->instagram->getMediaCommentsById($media->getId(), $media->getCommentsCount() < $max ? $media->getCommentsCount() : $max, $nextComment);
-            $this->log("Media {$media->getShortCode()} comments: " . sizeof($comments));
+            $comments = $this->instagram->getMediaCommentsById($media['post_id'], $media['comments'] < $max ? $media['comments'] : $max, $nextComment);
+            $this->log("Media {$media['short_code']} comments: " . sizeof($comments));
             // sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             if(sizeof($comments) === 0)
@@ -646,7 +646,7 @@ class InstagramScraper
                     $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
             }
 
-            $this->log("Sentiments for media {$media->getShortCode()} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
+            $this->log("Sentiments for media {$media['short_code']} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
 
             return [
                 'comments_positive'  => $data['comments_positive'],
@@ -656,7 +656,7 @@ class InstagramScraper
                 'comments_hashtags'  => $data['comments_hashtags']
             ];
         }catch(\Exception $ex){
-            $this->log("Can't get comments for media {$media->getShortCode()}", $ex);
+            $this->log("Can't get comments for media {$media['short_code']}", $ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex))
