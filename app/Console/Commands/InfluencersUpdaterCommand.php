@@ -5,8 +5,6 @@ namespace App\Console\Commands;
 use Carbon\Carbon;
 use App\Influencer;
 use Illuminate\Console\Command;
-use App\Services\InstagramScraper;
-use Illuminate\Support\Facades\Log;
 
 class InfluencersUpdaterCommand extends Command
 {
@@ -54,6 +52,9 @@ class InfluencersUpdaterCommand extends Command
         $this->info("=== Start updating influencers ===");
         $startTaskAt = microtime(true);
 
+        // Init 
+        $ignoreInstagram = false;
+
         try{
             // Load all influencers
             $influencers = Influencer::with(['posts'])->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())->get();
@@ -65,7 +66,13 @@ class InfluencersUpdaterCommand extends Command
                     continue;
 
                 // Update instagram media
-                if($influencer->platform === 'instagram'){
+                if($influencer->platform === 'instagram' && !$ignoreInstagram){
+                    // Break process if last one executed less than 10 minutes
+                    if($influencer->updated_at->diffInMinutes(Carbon::now()->subMinutes(10)) === 0){
+                        $ignoreInstagram = true;
+                        continue;
+                    }
+                        
                     $this->info("Update Instagram influencer @{$influencer->username}");
                     
                     foreach($influencer->posts as $post){
