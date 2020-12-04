@@ -19,7 +19,7 @@ class CreateTrackersArchive extends Migration
             $table->unsignedBigInteger('campaign_id');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
         });
     }

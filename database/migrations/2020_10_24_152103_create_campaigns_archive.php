@@ -21,7 +21,7 @@ class CreateCampaignsArchive extends Migration
             $table->timestamps();
 
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('brand_id')->references('id')->on('brands')->cascadeOnDelete();
         });
     }
