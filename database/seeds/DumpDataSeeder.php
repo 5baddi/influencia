@@ -28,6 +28,7 @@ class DumpDataSeeder extends Seeder
             'name'  =>  'Facebook cost per impressions',
             'value' =>  7.19
         ]);
+
         // Create default roles
         $ownerRole = Role::create(['name' => 'owner']);
 
@@ -59,21 +60,12 @@ class DumpDataSeeder extends Seeder
             $permission = Permission::create(['name' => $item]);
             $ownerRole->permissions()->attach($permission->id);
         }
-        
-        // Insert data for testing
-        $brand = Brand::create([
-            'name'  =>  'Promo',
-            'logo'  =>  '/uploads/promo.png'
-        ]);
 
         $user = User::create([
             'name'              =>  'Webmaster',
             'email'             =>  'project@baddi.info',
             'password'          =>  Hash::make('inf2021'),
-            'is_superadmin'     =>  true,
-            'selected_brand_id' =>  $brand->id
+            'is_superadmin'     =>  true
         ]);
-
-        $brand->users()->attach([$user->id]);
     }
 }
