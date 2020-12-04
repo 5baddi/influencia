@@ -16,7 +16,7 @@ class CreateCampaignsArchive extends Migration
         Schema::create('campaigns_archive', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('campaign_id');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('brand_id');
             $table->timestamps();
 

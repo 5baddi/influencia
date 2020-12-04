@@ -17,8 +17,8 @@ class CreateBrandUserTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('brand_id');
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('brand_id')->references('id')->on('brands')->cascadeOnDelete();
         });
     }
 

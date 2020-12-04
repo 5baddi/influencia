@@ -15,7 +15,7 @@ class CreateTrackersArchive extends Migration
     {
         Schema::create('trackers_archive', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('campaign_id');
             $table->timestamps();
 
