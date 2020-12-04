@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use App\Influencer;
+use App\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
 
 class InfluencersUpdaterCommand extends Command
@@ -84,7 +85,7 @@ class InfluencersUpdaterCommand extends Command
                             // Update comments if post linked to a tracker
                             $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
                             if($mediaTrackersCount > 0){
-                                $sentiments = $scraper->analyzeMedia($media);
+                                $sentiments = $this->instagram->analyzeMedia($media);
                                 $media = array_merge($media, $sentiments);
                             }
 
