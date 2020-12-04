@@ -39,7 +39,7 @@ class CreateTrackersTable extends Migration
             $table->enum('queued', ['pending', 'progress', 'finished', 'failed'])->default('pending');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
         });
 
