@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Influencer;
 use App\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
+use App\Services\InstagramScraper;
 
 class InfluencersUpdaterCommand extends Command
 {
