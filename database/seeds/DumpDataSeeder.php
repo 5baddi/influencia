@@ -2,11 +2,9 @@
 
 use App\Role;
 use App\User;
-use App\Brand;
 use App\Permission;
 use App\ApplicationSetting;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
 
 class DumpDataSeeder extends Seeder
 {
@@ -62,9 +60,9 @@ class DumpDataSeeder extends Seeder
         }
 
         $user = User::create([
-            'name'              =>  'Webmaster',
-            'email'             =>  'project@baddi.info',
-            'password'          =>  Hash::make('inf2021'),
+            'name'              =>  'Super Admin',
+            'email'             =>  'amine.karhat@gmail.com',
+            'password'          =>  '$2y$10$A6znpOP2beWWYY3b1c0SseruesR9HN8xEMEE.Dzm.n3B8ZpnfdH5u',
             'is_superadmin'     =>  true
         ]);
     }
