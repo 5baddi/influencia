@@ -262,7 +262,7 @@ class InstagramScraper
             // Scrap user
             $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], slef::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
+            sleep(rand(self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return [
                 'account_id'    =>  $account->getId(),
