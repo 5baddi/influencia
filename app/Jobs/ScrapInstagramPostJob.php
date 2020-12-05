@@ -146,7 +146,7 @@ class ScrapInstagramPostJob implements ShouldQueue
             }
 
             // Set tracker as finished
-            $this->tracker->update(['queued' => 'pending']);
+            $this->tracker->update(['queued' => 'finished']);
         }catch(\Exception $ex){
             $this->fail($ex);
         }
