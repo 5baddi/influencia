@@ -66,14 +66,14 @@ export default {
                         message: `Welcome ${response.user.name}`
                     });
                     // Redirect to create new brand
-                    if(this.brands === null || (typeof this.brands.length !== "undefined" && this.brands.length === 0)){
-                        this.showLoginError({
-                            message: "You should create at least one brand"
-                        });
-                        this.$router.push({ name: 'brands' });
-                    }else{
+                    // if(this.brands === null || (typeof this.brands.length !== "undefined" && this.brands.length === 0)){
+                    //     this.showLoginError({
+                    //         message: "You should create at least one brand"
+                    //     });
+                    //     this.$router.push({ name: 'brands' });
+                    // }else{
                         this.$router.push({ name: 'dashboard' });
-                    }
+                    // }
                 })
                 .catch((error) => {
                     this.showLoginError({

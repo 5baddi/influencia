@@ -4,6 +4,7 @@ namespace App\Jobs;
 
 use Format;
 use App\Tracker;
+use Carbon\Carbon;
 use App\Influencer;
 use App\InfluencerPost;
 use App\TrackerInfluencer;
@@ -148,9 +149,13 @@ class ScrapInstagramPostJob implements ShouldQueue
 
     public function fail($exception = null)
     {
+        // Trace 
+        Log::error("Failed to extract Post info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
+
         // Set tracker on failed status
         $this->tracker->update(['queued' => 'pending']);
 
-        Log::error("Failed to extract Post info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
+        // Dispatch job to run after 10 minutes
+        ScrapInstagramPostJob::dispatch($this->tracker)->delay(Carbon::now()->addMinutes(10));
     }
 }
