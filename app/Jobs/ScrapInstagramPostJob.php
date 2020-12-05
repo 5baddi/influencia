@@ -60,13 +60,6 @@ class ScrapInstagramPostJob implements ShouldQueue
             // Sleep for short time
             InstagramScraper::isHTTPRequest();
 
-            // Re-check tracker is exists
-            $exists = Tracker::find($this->tracker->id);
-            if(is_null($exists))
-                return;
-            else
-                $this->tracker->refresh();
-
             // Update analytics for instagram media
             if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
                 // Set tracker on progress status
