@@ -62,9 +62,17 @@ class User extends Authenticatable
         'influencers'
     ];
 
-    public function setPasswordAttribute($value)
+    /**
+     * Encrypt plain text password
+     *
+     * @param string $value
+     * @return self
+     */
+    public function setPasswordAttribute(string $value) : self
     {
         $this->attributes['password'] = Hash::make($value);
+
+        return $this;
     }
 
     public function selectedBrand()
