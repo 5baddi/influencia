@@ -15,7 +15,6 @@ use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
-use App\Repositories\InfluencerRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 
@@ -52,11 +51,18 @@ class ScrapInstagramPostJob implements ShouldQueue
      *
      * @return void
      */
-    public function handle(InstagramScraper $scraper, InfluencerRepository $influencerRepo)
+    public function handle(InstagramScraper $scraper)
     {
         try{
             // Disable console debugging
             InstagramScraper::disableDebugging();
+
+            // Re-check tracker is exists
+            $exists = Tracker::find($this->tracker->id);
+            if(is_null($exists))
+                return;
+            else
+                $this->tracker->refresh();
 
             // Update analytics for instagram media
             if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
