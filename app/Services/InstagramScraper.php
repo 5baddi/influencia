@@ -233,10 +233,12 @@ class InstagramScraper
     {
         try{
             // Authenticate
+            $this->setProxy();
             $this->authenticate();
 
             // Scrap user
             $account = $this->instagram->getAccount($username);
+            dd($account);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
