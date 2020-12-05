@@ -54,6 +54,7 @@ class ScrapInstagramInfluencers extends Command
         try{
             // Scrap user
             $username = 'nims97_rs3';
+            InstagramScraper::isHTTPRequest();
            dd($this->instagramScraper->byUsername($username));
 
         }catch(\Exception $ex){
