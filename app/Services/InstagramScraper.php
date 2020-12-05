@@ -57,7 +57,6 @@ class InstagramScraper
      */
     private $instagram;
 
-
     /**
      * Cache manager
      *
