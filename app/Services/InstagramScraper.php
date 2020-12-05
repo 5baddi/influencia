@@ -34,7 +34,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 30, 'max' => 120];
+    const SLEEP_REQUEST = ['min' => 60, 'max' => 300];
 
     /**
      * Console Debugging
@@ -197,14 +197,14 @@ class InstagramScraper
                 throw new \Exception("Something going wrong using the proxy!");
 
             // Set proxy to the Instagram scraper
-            // Instagram::curlOpts([
-            //     CURLOPT_SSL_VERIFYPEER  =>  0,
-            //     CURLOPT_SSL_VERIFYHOST  =>  0,
-            //     CURLOPT_FOLLOWLOCATION  =>  true,
-            //     CURLOPT_MAXREDIRS       =>  5,
-            //     CURLOPT_HTTPPROXYTUNNEL =>  1,
-            //     CURLOPT_RETURNTRANSFER  =>  true,
-            // ]);
+            Instagram::curlOpts([
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+            ]);
             Instagram::setProxy([
                 'address' => config('scraper.proxy.ip'),
                 'port'    => config('scraper.proxy.port'),

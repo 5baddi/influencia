@@ -58,7 +58,7 @@ class ScrapInstagramInfluencers extends Command
 
             // Scrap user
             $username = 'nims97_rs3';
-            $account = $this->instagramScraper->instagram->getAccount($username);
+            $account = $this->instagramScraper->getAccount($username);
             // $this->instagramScraper->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(InstagramScraper::SLEEP_REQUEST['min'], InstagramScraper::SLEEP_REQUEST['max']));
 
