@@ -42,6 +42,13 @@ class InstagramScraper
      * @var bool
      */
     private static $debug = true;
+    
+    /**
+     * HTTP Request
+     * 
+     * @var bool
+     */
+    private static $isHTTPRequest = false;
 
     /**
      * Instagram scraper
@@ -119,6 +126,16 @@ class InstagramScraper
     public static function disableDebugging() : void
     {
         self::$debug = false;
+    }
+    
+    /**
+     * Use short sleep time on HTTP request
+     * 
+     * @return void
+     */
+    public static function isHTTPRequest() : void
+    {
+        self::$isHTTPRequest = true;
     }
 
     /**
@@ -245,7 +262,7 @@ class InstagramScraper
             // Scrap user
             $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            sleep(rand(self::SLEEP_REQUEST['min'], slef::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return [
                 'account_id'    =>  $account->getId(),
@@ -292,7 +309,7 @@ class InstagramScraper
             // Scrap user
             $account = $this->instagram->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            sleep(rand(self::SLEEP_REQUEST['min'], slef::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return [
                 'account_id'    =>  $account->getId(),
@@ -339,7 +356,7 @@ class InstagramScraper
             // Scrap media
             $media = $this->instagram->getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            sleep(rand(self::SLEEP_REQUEST['min'], slef::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return $media;
         }catch(\Exception $ex){

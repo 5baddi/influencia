@@ -57,6 +57,9 @@ class ScrapInstagramPostJob implements ShouldQueue
             // Disable console debugging
             InstagramScraper::disableDebugging();
 
+            // Sleep for short time
+            InstagramScraper::isHTTPRequest();
+
             // Re-check tracker is exists
             $exists = Tracker::find($this->tracker->id);
             if(is_null($exists))
