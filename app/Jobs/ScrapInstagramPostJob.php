@@ -112,7 +112,7 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                         //  Analyze media
                         $_media = $scraper->getMedia($media);
-                        $sentiments = $scraper->analyzeMedia($media);
+                        $sentiments = $scraper->analyzeMedia($_media);
                         $_media = array_merge($_media, $sentiments);
 
                         // Store media

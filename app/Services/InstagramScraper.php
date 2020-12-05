@@ -328,7 +328,7 @@ class InstagramScraper
             $this->initHTTPClient();
 
             // Scrap media
-            $media = (new Instagram($this->client))>getMediaByCode($shortCode);
+            $media = (new Instagram($this->client))->getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -357,7 +357,7 @@ class InstagramScraper
      * @param Array $media
      * @return array
      */
-    public function analyzeMedia(Array $media) : array
+    public function analyzeMedia(array $media) : array
     {
         // Fetch comments sentiments
         $comments = $this->getSentimentsAndEmojis($media);
