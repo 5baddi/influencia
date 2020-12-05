@@ -419,20 +419,24 @@ const actions = {
         });
     },
     setActiveBrand({ commit, state }, brand) {
-        return new Promise((resolve, reject) => {
-            api.get(`/api/v1/users/active-brand/${brand.uuid}`)
-                .then((response) => {
-                    if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined")
-                        commit("setActiveBrand", {brand: response.data.content.selected_brand});
-                    else
-                        throw new Error("Something going wrong!");
+        if(brand !== null && typeof brand.uuid !== "undefined"){
+            return new Promise((resolve, reject) => {
+                api.get(`/api/v1/users/active-brand/${brand.uuid}`)
+                    .then((response) => {
+                        if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined")
+                            commit("setActiveBrand", {brand: response.data.content.selected_brand});
+                        else
+                            throw new Error("Something going wrong!");
 
-                    resolve(response.data);
-                })
-                .catch((error) => {
-                    reject(error);
-                });
-        });
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        reject(error);
+                    });
+            });
+        }else{
+            throw new Error("Something going wrong!");
+        }
     },
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {

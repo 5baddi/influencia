@@ -42,12 +42,17 @@
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
     data() {
         return {
             email: "",
             password: "",
         };
+    },
+    computed: {
+      ...mapGetters(["brands"])
     },
     methods: {
         login() {
@@ -57,13 +62,18 @@ export default {
                     password: this.password,
                 })
                 .then((response) => {
-                    //    console.log("<-- Logged in -->");
                     this.showLoginSuccess({
                         message: `Welcome ${response.user.name}`
                     });
-                    this.$router.push({
-                        name: "dashboard"
-                    });
+                    // Redirect to create new brand
+                    if(this.brands === null || (typeof this.brands.length !== "undefined" && this.brands.length === 0)){
+                        this.showLoginError({
+                            message: "You should create at least one brand"
+                        });
+                        this.$router.push({ name: 'brands' });
+                    }else{
+                        this.$router.push({ name: 'dashboard' });
+                    }
                 })
                 .catch((error) => {
                     this.showLoginError({
@@ -74,7 +84,7 @@ export default {
     },
     notifications: {
         showLoginError: {
-            title: "Login Failed",
+            title: "Error",
             type: "error",
         },
         showLoginSuccess: {
