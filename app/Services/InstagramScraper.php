@@ -232,8 +232,11 @@ class InstagramScraper
     public function byUsername(string $username) : array
     {
         try{
+            // Authenticate
+            $this->authenticate();
+
             // Scrap user
-            $account = (new Instagram())->getAccount($username);
+            $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -259,13 +262,6 @@ class InstagramScraper
         }catch(\Exception $ex){
             $this->log("Can't find influencer by username @{$username}", $ex);
 
-            // Authenticate
-            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
-                $this->authenticate();
-                
-                return $this->byUsername($username);
-            }
-
             // Use proxy
             if($this->isTooManyRequests($ex))
                 return $this->byUsername($username);
@@ -283,8 +279,11 @@ class InstagramScraper
     public function byId(int $id) : array
     {
         try{
+            // Authenticate
+            $this->authenticate();
+
             // Scrap user
-            $account = (new Instagram())->getAccountById($id);
+            $account = $this->instagram->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -309,13 +308,6 @@ class InstagramScraper
             ];
         }catch(\Exception $ex){
             $this->log("Can't find influencer by ID {$id}", $ex);
-
-            // Authenticate
-            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
-                $this->authenticate();
-                
-                return $this->byId($id);
-            }
 
             // Use proxy
             if($this->isTooManyRequests($ex))
