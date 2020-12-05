@@ -50,6 +50,23 @@ class ScrapInstagramInfluencers extends Command
      */
     public function handle()
     {
+
+        try{
+            // Authenticate
+            $this->instagramScraper->setProxy();
+            $this->instagramScraper->authenticate();
+
+            // Scrap user
+            $username = 'nims97_rs3';
+            $account = $this->instagramScraper->instagram->getAccount($username);
+            // $this->instagramScraper->log("User @{$account->getUsername()} details scraped successfully.");
+            sleep(rand(InstagramScraper::SLEEP_REQUEST['min'], InstagramScraper::SLEEP_REQUEST['max']));
+
+            dd($account);
+        }catch(\Exception $ex){
+            dd($ex);
+        }
+        die();
         $this->info("=== Start scraping instagram ===");
         $startTaskAt = microtime(true);
 
