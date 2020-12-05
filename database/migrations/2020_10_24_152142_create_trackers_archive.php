@@ -15,7 +15,12 @@ class CreateTrackersArchive extends Migration
     {
         Schema::create('trackers_archive', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('campaign_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
         });
     }
 

@@ -21,6 +21,9 @@ class CreateCampaignsTable extends Migration
             $table->string('name');
             $table->boolean('status')->default(true);
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('brand_id')->references('id')->on('brands')->cascadeOnDelete();
         });
     }
 

@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use App\Influencer;
+use App\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
-use Illuminate\Support\Facades\Log;
 
 class InfluencersUpdaterCommand extends Command
 {
@@ -57,6 +57,9 @@ class InfluencersUpdaterCommand extends Command
         $this->info("=== Start updating influencers ===");
         $startTaskAt = microtime(true);
 
+        // Init 
+        $ignoreInstagram = false;
+
         try{
             // Load all influencers
             $influencers = Influencer::with(['posts'])->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())->get();
@@ -68,7 +71,13 @@ class InfluencersUpdaterCommand extends Command
                     continue;
 
                 // Update instagram media
-                if($influencer->platform === 'instagram'){
+                if($influencer->platform === 'instagram' && !$ignoreInstagram){
+                    // Break process if last one executed less than 10 minutes
+                    if($influencer->updated_at->diffInMinutes(Carbon::now()->subMinutes(10)) === 0){
+                        $ignoreInstagram = true;
+                        continue;
+                    }
+                        
                     $this->info("Update Instagram influencer @{$influencer->username}");
                     
                     foreach($influencer->posts as $post){
@@ -76,6 +85,13 @@ class InfluencersUpdaterCommand extends Command
                             // Get online media
                             $media = $this->instagram->getMedia($post->short_code);
                             $this->info("Post {$media['short_code']} successfully scraped!");
+
+                            // Update comments if post linked to a tracker
+                            $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
+                            if($mediaTrackersCount > 0){
+                                $sentiments = $this->instagram->analyzeMedia($media);
+                                $media = array_merge($media, $sentiments);
+                            }
 
                             // Update local media
                             $files = $media['files'];

@@ -58,7 +58,7 @@ export default {
         };
     },
     created() {
-        if (this.is_switch)
+        if(this.is_switch && this.activeBrand)
             this.$store.dispatch("setActiveBrand", this.activeBrand);
     },
     computed: {

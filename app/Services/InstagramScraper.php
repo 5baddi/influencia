@@ -34,7 +34,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 5, 'max' => 60];
+    const SLEEP_REQUEST = ['min' => 30, 'max' => 120];
 
     /**
      * Console Debugging
@@ -50,12 +50,6 @@ class InstagramScraper
      */
     private $instagram;
 
-    /**
-     * Guzzle HTTP client
-     * 
-     * @var \GuzzleHttp\Client
-     */
-    private $client;
 
     /**
      * Cache manager
@@ -63,6 +57,13 @@ class InstagramScraper
      * @var \Phpfastcache\Helper\Psr16Adapter
      */
     private static $cacheManager;
+
+    /**
+     * Guzzle HTTP client
+     *
+     * @var \GuzzleHttp\Client
+     */
+    private $client;
 
     /**
      * Connected scrap account username
@@ -98,34 +99,8 @@ class InstagramScraper
         if(is_null(self::$cacheManager))
             self::$cacheManager = new Psr16Adapter('Files');
 
-        // Init HTTP Client
-        $this->client = $client = new Client([
-            'base_uri'          =>  url('/'),
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            CURLOPT_SSL_VERIFYPEER  =>  0,
-            CURLOPT_SSL_VERIFYHOST  =>  0,
-            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-            CURLOPT_FOLLOWLOCATION  =>  true,
-            CURLOPT_MAXREDIRS       =>  5,
-            CURLOPT_HTTPPROXYTUNNEL =>  1,
-            CURLOPT_RETURNTRANSFER  =>  true,
-            CURLOPT_HEADER          =>  1,
-            CURLOPT_TIMEOUT		    =>  0,
-            CURLOPT_CONNECTTIMEOUT	=>  35,
-            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-        ]);
-
         // Init emoji parser
         $this->emojiParser = $emojiParser;
-
-        // Set CURL options
-        // Instagram::curlOpts([
-        //     CURLOPT_SSL_VERIFYPEER  =>  0,
-        //     CURLOPT_SSL_VERIFYHOST  =>  0,
-        // ]);
 
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
@@ -164,6 +139,9 @@ class InstagramScraper
         // Clear Psr16 cache
         if($force)
             self::$cacheManager->clear();
+
+        // Set proxy and Init HTTP Client
+        $this->initHTTPClient();
 
         // Login to App Instagram account
         $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
@@ -215,23 +193,8 @@ class InstagramScraper
             if($response->getStatusCode() !== 200)
                 throw new \Exception("Something going wrong using the proxy!");
 
-            // Set proxy for the Instagram scraper
+            // Set proxy to the Instagram scraper
             Instagram::setHttpClient($this->client);
-            // Instagram::setProxy([
-            //     'address' => config('scraper.proxy.ip'),
-            //     'port'    => config('scraper.proxy.port'),
-            //     'tunnel'  => true,
-            //     'timeout' => 35,
-            // ]);
-
-            // Instagram::curlOpts([
-            //     CURLOPT_SSL_VERIFYPEER  =>  0,
-            //     CURLOPT_SSL_VERIFYHOST  =>  0,
-            //     CURLOPT_FOLLOWLOCATION  =>  true,
-            //     CURLOPT_MAXREDIRS       =>  5,
-            //     CURLOPT_HTTPPROXYTUNNEL =>  1,
-            //     CURLOPT_RETURNTRANSFER  =>  true,
-            // ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
@@ -253,6 +216,9 @@ class InstagramScraper
     public function byUsername(string $username) : array
     {
         try{
+            // Init HTTP Client
+            $this->initHTTPClient();
+
             // Scrap user
             $account = (new Instagram($this->client))->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
@@ -304,6 +270,9 @@ class InstagramScraper
     public function byId(int $id) : array
     {
         try{
+            // Init HTTP Client
+            $this->initHTTPClient();
+
             // Scrap user
             $account = (new Instagram($this->client))->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
@@ -355,11 +324,11 @@ class InstagramScraper
     public function byMedia(string $shortCode) : \InstagramScraper\Model\Media
     {
         try{
-            // Authenticate with scraping account
-            $this->authenticate();
+            // Init HTTP Client
+            $this->initHTTPClient();
 
             // Scrap media
-            $media = $this->instagram->getMediaByCode($shortCode);
+            $media = (new Instagram($this->client))->getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -367,12 +336,43 @@ class InstagramScraper
         }catch(\Exception $ex){
             $this->log("Can't get media by short code {$shortCode}", $ex);
 
+            // Authenticate
+            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
+                $this->authenticate();
+                
+                return $this->byMedia($shortCode);
+            }
+
             // Use proxy
             if($this->isTooManyRequests($ex))
                 return $this->byMedia($shortCode);
 
             throw $ex;
         }
+    }
+
+    /**
+     * Analyze media and get sentiments and emojis
+     *
+     * @param Array $media
+     * @return array
+     */
+    public function analyzeMedia(array $media) : array
+    {
+        // Fetch comments sentiments
+        $comments = $this->getSentimentsAndEmojis($media);
+
+        // Get number of emojis
+        $comments = array_merge($comments, ['emojis' => sizeof($comments['comments_emojis'])]);
+
+        // Update analyzed sentiments percentage of comments
+        if($media->getCommentsCount() > 0){
+            $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media['comments'], 2);
+            $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media['comments'], 2);
+            $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media['comments'], 2);
+        }
+
+        return $comments;
     }
 
     /**
@@ -467,10 +467,6 @@ class InstagramScraper
     public function getMedia(\InstagramScraper\Model\Media $media) : array
     {
         try{
-            // Fetch comments sentiments
-            $comments = [];
-            $this->getSentimentsAndEmojis($media, $comments);
-
             // Count hashtags on media caption
             $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
 
@@ -484,7 +480,6 @@ class InstagramScraper
                 'likes'         =>  $media->getLikesCount(),
                 'thumbnail_url' =>  $media->getImageThumbnailUrl(),
                 'comments'      =>  $media->getCommentsCount() ?? 0,
-                'emojis'        =>  sizeof($comments['comments_emojis']),
                 'published_at'  =>  Carbon::parse($media->getCreatedTime()),
                 'caption'       =>  $media->getCaption(),
                 'alttext'       =>  $media->getAltText(),
@@ -501,20 +496,9 @@ class InstagramScraper
                 'files'             =>  $this->getFiles($media)
             ];
 
-            // Update analyzed sentiments percentage of comments
-            if($_media['comments'] > 0){
-                $_media['comments_positive'] = round($_media['comments_positive'] ?? 0 / $_media['comments'], 2);
-                $_media['comments_neutral'] = round($_media['comments_neutral'] ?? 0 / $_media['comments'], 2);
-                $_media['comments_negative'] = round($_media['comments_negative'] ?? 0 / $_media['comments'], 2);
-            }
-
-            return array_merge($_media, $comments);
+            return $_media;
         }catch(\Exception $ex){
             $this->log("Can't get media details {$media->getShortCode()}", $ex);
-
-            // Use proxy
-            if($this->isTooManyRequests($ex))
-                return $this->getMedia($media);
 
             throw $ex;
         }
@@ -601,23 +585,23 @@ class InstagramScraper
     /**
      * Get media sentiments and emojis from comments
      *
-     * @param \InstagramScraper\Model\Media $media
-     * @return null|array
+     * @param array $media
+     * @return array
      */
-    private function getSentimentsAndEmojis(\InstagramScraper\Model\Media $media, array &$data, string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
+    private function getSentimentsAndEmojis(array $media, array &$data = [], string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
     {
         try{
             // init
             $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
 
             // Ignore media without comments
-            if($media->getCommentsCount() === 0)
+            if($media['comments'] === 0)
                 return $data;
 
 
             // Load comments
-            $comments = $this->instagram->getMediaCommentsById($media->getId(), $media->getCommentsCount() < $max ? $media->getCommentsCount() : $max, $nextComment);
-            $this->log("Media {$media->getShortCode()} comments: " . sizeof($comments));
+            $comments = $this->instagram->getMediaCommentsById($media['post_id'], $media['comments'] < $max ? $media['comments'] : $max, $nextComment);
+            $this->log("Media {$media['short_code']} comments: " . sizeof($comments));
             // sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             if(sizeof($comments) === 0)
@@ -655,7 +639,7 @@ class InstagramScraper
                     $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
             }
 
-            $this->log("Sentiments for media {$media->getShortCode()} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
+            $this->log("Sentiments for media {$media['short_code']} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
 
             return [
                 'comments_positive'  => $data['comments_positive'],
@@ -665,7 +649,7 @@ class InstagramScraper
                 'comments_hashtags'  => $data['comments_hashtags']
             ];
         }catch(\Exception $ex){
-            $this->log("Can't get comments for media {$media->getShortCode()}", $ex);
+            $this->log("Can't get comments for media {$media['short_code']}", $ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex))
@@ -707,6 +691,33 @@ class InstagramScraper
     }
 
     /**
+     * Init HTTP Client
+     *
+     * @return void
+     */
+    private function initHTTPClient() : void
+    {
+        // Init HTTP Client without proxy
+        $this->client = $client = new Client([
+            'base_uri'          =>  url('/'),
+            'verify'            =>  !config('app.debug'),
+            'debug'             =>  self::$debug,
+            'http_errors'       =>  false,
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
+            CURLOPT_FOLLOWLOCATION  =>  true,
+            CURLOPT_MAXREDIRS       =>  5,
+            CURLOPT_HTTPPROXYTUNNEL =>  1,
+            CURLOPT_RETURNTRANSFER  =>  true,
+            CURLOPT_HEADER          =>  1,
+            CURLOPT_TIMEOUT		    =>  0,
+            CURLOPT_CONNECTTIMEOUT	=>  35,
+            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
+        ]);
+    }
+    /**
      * Verify exception is too many requests exception
      *
      * @param \Exception $ex
@@ -717,7 +728,7 @@ class InstagramScraper
         $this->log("It would be too many requests issue!", $ex);
 
         // Should try after a while
-        if($ex->getCode() === 403 || $ex->getCode() === 560 || $ex->getCode() === 302){
+        if($ex->getCode() === 403 || $ex->getCode() === 560){
             $this->authenticate(true);
 
             return true;
@@ -725,7 +736,7 @@ class InstagramScraper
 
         // Is too many requests or lost connection
         if(get_class($ex) === \Unirest\Exception::class
-                || $ex->getCode() === 429 || $ex->getCode() === 56
+                || $ex->getCode() === 429 || $ex->getCode() === 56 || $ex->getCode() === 302
                 || strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false
                 || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
@@ -735,6 +746,10 @@ class InstagramScraper
 
             // Set proxy
             $this->setProxy();
+
+            // Maybe IP blocked and need re-authenticate
+            if($ex->getCode() === 302)
+                $this->authenticate(true);
 
             return true;
         }

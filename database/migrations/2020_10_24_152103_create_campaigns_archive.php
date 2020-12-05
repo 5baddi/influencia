@@ -15,7 +15,14 @@ class CreateCampaignsArchive extends Migration
     {
         Schema::create('campaigns_archive', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('campaign_id');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('brand_id');
             $table->timestamps();
+
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('brand_id')->references('id')->on('brands')->cascadeOnDelete();
         });
     }
 

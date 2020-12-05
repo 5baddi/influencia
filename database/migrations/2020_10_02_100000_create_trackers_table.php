@@ -16,7 +16,7 @@ class CreateTrackersTable extends Migration
         // Trackers
         Schema::create('trackers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('campaign_id');
             $table->string('uuid')->unique()->nullable(false);
             $table->enum('type', ['url', 'post', 'story'])->default('url');
@@ -39,7 +39,7 @@ class CreateTrackersTable extends Migration
             $table->enum('queued', ['pending', 'progress', 'finished', 'failed'])->default('pending');
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
         });
 
