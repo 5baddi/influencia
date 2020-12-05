@@ -36,7 +36,7 @@ class CreateInfluencerTable extends Migration
             $table->boolean('is_private')->nullable();
             $table->boolean('is_verified')->nullable();
             $table->boolean('banned')->default(false);
-            $table->enum('queued', ['pending', 'progress', 'finished', 'failed'])->default('pending');
+            // $table->enum('queued', ['pending', 'progress', 'finished', 'failed'])->default('pending');
             $table->timestamps();
         });
     }

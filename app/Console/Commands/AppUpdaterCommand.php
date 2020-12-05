@@ -38,12 +38,6 @@ class AppUpdaterCommand extends Command
     public function __construct()
     {
         parent::__construct();
-
-        // Build Swap
-        // $this->swap = (new Builder())
-        // Use the currencylayer.com service as first fallback
-        // ->add('currency_layer', ['access_key' => env('CURRENCYLAYER_SECRET'), 'enterprise' => false])
-        // ->build();
     }
 
     /**
