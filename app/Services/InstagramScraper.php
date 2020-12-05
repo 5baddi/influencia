@@ -385,7 +385,7 @@ class InstagramScraper
         $comments = array_merge($comments, ['emojis' => sizeof($comments['comments_emojis'])]);
 
         // Update analyzed sentiments percentage of comments
-        if($media->getCommentsCount() > 0){
+        if($media['comments'] > 0){
             $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media['comments'], 2);
             $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media['comments'], 2);
             $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media['comments'], 2);
