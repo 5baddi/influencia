@@ -102,6 +102,12 @@ class InstagramScraper
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
+        // Set CURL options
+        Instagram::curlOpts([
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+        ]);
+
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
 
@@ -140,11 +146,8 @@ class InstagramScraper
         if($force)
             self::$cacheManager->clear();
 
-        // Set proxy and Init HTTP Client
-        $this->initHTTPClient();
-
         // Login to App Instagram account
-        $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
+        $this->instagram = Instagram::withCredentials($scrapAccount->username, $scrapAccount->password, self::$cacheManager);
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
 
@@ -194,7 +197,20 @@ class InstagramScraper
                 throw new \Exception("Something going wrong using the proxy!");
 
             // Set proxy to the Instagram scraper
-            Instagram::setHttpClient($this->client);
+            Instagram::curlOpts([
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+            ]);
+            Instagram::setProxy([
+                'address' => config('scraper.proxy.ip'),
+                'port'    => config('scraper.proxy.port'),
+                'tunnel'  => true,
+                'timeout' => 35,
+            ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
@@ -216,11 +232,8 @@ class InstagramScraper
     public function byUsername(string $username) : array
     {
         try{
-            // Init HTTP Client
-            $this->initHTTPClient();
-
             // Scrap user
-            $account = (new Instagram($this->client))->getAccount($username);
+            $account = (new Instagram())->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -270,11 +283,8 @@ class InstagramScraper
     public function byId(int $id) : array
     {
         try{
-            // Init HTTP Client
-            $this->initHTTPClient();
-
             // Scrap user
-            $account = (new Instagram($this->client))->getAccountById($id);
+            $account = (new Instagram())->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -324,24 +334,17 @@ class InstagramScraper
     public function byMedia(string $shortCode) : \InstagramScraper\Model\Media
     {
         try{
-            // Init HTTP Client
-            $this->initHTTPClient();
+            // Authenticate
+            $this->authenticate();
 
             // Scrap media
-            $media = (new Instagram($this->client))->getMediaByCode($shortCode);
+            $media = $this->instagram->getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return $media;
         }catch(\Exception $ex){
             $this->log("Can't get media by short code {$shortCode}", $ex);
-
-            // Authenticate
-            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
-                $this->authenticate();
-                
-                return $this->byMedia($shortCode);
-            }
 
             // Use proxy
             if($this->isTooManyRequests($ex))
