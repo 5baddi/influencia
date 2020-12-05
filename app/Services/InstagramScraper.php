@@ -129,6 +129,9 @@ class InstagramScraper
      */
     public function authenticate(bool $force = false) : void
     {
+        if(!is_null($this->username) && !$force)
+            return;
+            
         // Get scraping account
         $scrapAccount = ScrapAccount::where(['platform' => 'instagram', 'enabled' => true]);
         
@@ -138,6 +141,10 @@ class InstagramScraper
         $scrapAccount = $scrapAccount->inRandomOrder()->first();
         if(is_null($scrapAccount))
             throw new \Exception("There's no scraping account!", 111);
+
+        // Set proxy
+        if(is_null($this->client))
+            $this->setProxy();
 
         // Init IMAP for Two steps verification
         $emailVecification = new EmailVerification($scrapAccount->imap_email, $scrapAccount->imap_server, $scrapAccount->imap_password);
@@ -233,12 +240,10 @@ class InstagramScraper
     {
         try{
             // Authenticate
-            $this->setProxy();
             $this->authenticate();
 
             // Scrap user
             $account = $this->instagram->getAccount($username);
-            dd($account);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -687,33 +692,6 @@ class InstagramScraper
         return $emojis;
     }
 
-    /**
-     * Init HTTP Client
-     *
-     * @return void
-     */
-    private function initHTTPClient() : void
-    {
-        // Init HTTP Client without proxy
-        $this->client = $client = new Client([
-            'base_uri'          =>  url('/'),
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            CURLOPT_SSL_VERIFYPEER  =>  0,
-            CURLOPT_SSL_VERIFYHOST  =>  0,
-            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-            CURLOPT_FOLLOWLOCATION  =>  true,
-            CURLOPT_MAXREDIRS       =>  5,
-            CURLOPT_HTTPPROXYTUNNEL =>  1,
-            CURLOPT_RETURNTRANSFER  =>  true,
-            CURLOPT_HEADER          =>  1,
-            CURLOPT_TIMEOUT		    =>  0,
-            CURLOPT_CONNECTTIMEOUT	=>  35,
-            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-        ]);
-    }
     /**
      * Verify exception is too many requests exception
      *
