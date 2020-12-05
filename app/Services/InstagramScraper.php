@@ -141,28 +141,7 @@ class InstagramScraper
             self::$cacheManager->clear();
 
         // Set proxy and Init HTTP Client
-        try{
-            $this->setProxy();
-        }catch(\Exception $ex){
-            $this->client = $client = new Client([
-                'base_uri'          =>  url('/'),
-                'verify'            =>  !config('app.debug'),
-                'debug'             =>  self::$debug,
-                'http_errors'       =>  false,
-                CURLOPT_SSL_VERIFYPEER  =>  0,
-                CURLOPT_SSL_VERIFYHOST  =>  0,
-                // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-                // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-                CURLOPT_FOLLOWLOCATION  =>  true,
-                CURLOPT_MAXREDIRS       =>  5,
-                CURLOPT_HTTPPROXYTUNNEL =>  1,
-                CURLOPT_RETURNTRANSFER  =>  true,
-                CURLOPT_HEADER          =>  1,
-                CURLOPT_TIMEOUT		    =>  0,
-                CURLOPT_CONNECTTIMEOUT	=>  35,
-                CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-            ]);
-        }
+        $this->initHTTPClient();
 
         // Login to App Instagram account
         $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
@@ -237,11 +216,11 @@ class InstagramScraper
     public function byUsername(string $username) : array
     {
         try{
-            // Authentification
-            $this->authenticate();
+            // Init HTTP Client
+            $this->initHTTPClient();
 
             // Scrap user
-            $account = $this->instagram->getAccount($username);
+            $account = (new Instagram($this->client))->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -291,11 +270,11 @@ class InstagramScraper
     public function byId(int $id) : array
     {
         try{
-            // Authentification
-            $this->authenticate();
-            
+            // Init HTTP Client
+            $this->initHTTPClient();
+
             // Scrap user
-            $account = $this->instagram->getAccountById($id);
+            $account = (new Instagram($this->client))->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
@@ -345,17 +324,24 @@ class InstagramScraper
     public function byMedia(string $shortCode) : \InstagramScraper\Model\Media
     {
         try{
-            // Authenticate with scraping account
-            $this->authenticate();
+            // Init HTTP Client
+            $this->initHTTPClient();
 
             // Scrap media
-            $media = $this->instagram->getMediaByCode($shortCode);
+            $media = (new Instagram($this->client))>getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
             sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
             return $media;
         }catch(\Exception $ex){
             $this->log("Can't get media by short code {$shortCode}", $ex);
+
+            // Authenticate
+            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
+                $this->authenticate();
+                
+                return $this->byMedia($shortCode);
+            }
 
             // Use proxy
             if($this->isTooManyRequests($ex))
@@ -704,6 +690,38 @@ class InstagramScraper
         return $emojis;
     }
 
+    /**
+     * Init HTTP Client
+     *
+     * @return void
+     */
+    private function initHTTPClient() : void
+    {
+        try{
+            // Set proxy
+            $this->setProxy();
+        }catch(\Exception $ex){
+            // Init HTTP Client without proxy
+            $this->client = $client = new Client([
+                'base_uri'          =>  url('/'),
+                'verify'            =>  !config('app.debug'),
+                'debug'             =>  self::$debug,
+                'http_errors'       =>  false,
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+                // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+                CURLOPT_HEADER          =>  1,
+                CURLOPT_TIMEOUT		    =>  0,
+                CURLOPT_CONNECTTIMEOUT	=>  35,
+                CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
+            ]);
+        }
+    }
     /**
      * Verify exception is too many requests exception
      *
