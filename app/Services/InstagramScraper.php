@@ -102,25 +102,29 @@ class InstagramScraper
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
-        // Init HTTP Client
-        $this->client = $client = new Client([
-            'base_uri'          =>  url('/'),
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            CURLOPT_SSL_VERIFYPEER  =>  0,
-            CURLOPT_SSL_VERIFYHOST  =>  0,
-            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-            CURLOPT_FOLLOWLOCATION  =>  true,
-            CURLOPT_MAXREDIRS       =>  5,
-            CURLOPT_HTTPPROXYTUNNEL =>  1,
-            CURLOPT_RETURNTRANSFER  =>  true,
-            CURLOPT_HEADER          =>  1,
-            CURLOPT_TIMEOUT		    =>  0,
-            CURLOPT_CONNECTTIMEOUT	=>  35,
-            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-        ]);
+        // Set proxy and Init HTTP Client
+        try{
+            $this->setProxy();
+        }catch(\Exception $ex){
+            $this->client = $client = new Client([
+                'base_uri'          =>  url('/'),
+                'verify'            =>  !config('app.debug'),
+                'debug'             =>  self::$debug,
+                'http_errors'       =>  false,
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+                // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+                CURLOPT_HEADER          =>  1,
+                CURLOPT_TIMEOUT		    =>  0,
+                CURLOPT_CONNECTTIMEOUT	=>  35,
+                CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
+            ]);
+        }
 
         // Init instagram scraper
         $this->instagram = new Instagram($this->client);
