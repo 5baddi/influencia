@@ -34,7 +34,7 @@ class InstagramScraper
     /**
      * Sleep request seconds
      */
-    const SLEEP_REQUEST = ['min' => 30, 'max' => 120];
+    const SLEEP_REQUEST = ['min' => 60, 'max' => 300];
 
     /**
      * Console Debugging
@@ -42,6 +42,13 @@ class InstagramScraper
      * @var bool
      */
     private static $debug = true;
+    
+    /**
+     * HTTP Request
+     * 
+     * @var bool
+     */
+    private static $isHTTPRequest = false;
 
     /**
      * Instagram scraper
@@ -49,7 +56,6 @@ class InstagramScraper
      * @var \InstagramScraper\Instagram
      */
     private $instagram;
-
 
     /**
      * Cache manager
@@ -102,6 +108,12 @@ class InstagramScraper
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
+        // Set CURL options
+        Instagram::curlOpts([
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+        ]);
+
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
 
@@ -114,6 +126,16 @@ class InstagramScraper
     {
         self::$debug = false;
     }
+    
+    /**
+     * Use short sleep time on HTTP request
+     * 
+     * @return void
+     */
+    public static function isHTTPRequest() : void
+    {
+        self::$isHTTPRequest = true;
+    }
 
     /**
      * Instagram authentication
@@ -123,6 +145,9 @@ class InstagramScraper
      */
     public function authenticate(bool $force = false) : void
     {
+        if(!is_null($this->username) && !$force)
+            return;
+            
         // Get scraping account
         $scrapAccount = ScrapAccount::where(['platform' => 'instagram', 'enabled' => true]);
         
@@ -133,6 +158,10 @@ class InstagramScraper
         if(is_null($scrapAccount))
             throw new \Exception("There's no scraping account!", 111);
 
+        // Set proxy
+        if(is_null($this->client))
+            $this->setProxy();
+
         // Init IMAP for Two steps verification
         $emailVecification = new EmailVerification($scrapAccount->imap_email, $scrapAccount->imap_server, $scrapAccount->imap_password);
 
@@ -140,11 +169,8 @@ class InstagramScraper
         if($force)
             self::$cacheManager->clear();
 
-        // Set proxy and Init HTTP Client
-        $this->initHTTPClient();
-
         // Login to App Instagram account
-        $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
+        $this->instagram = Instagram::withCredentials($scrapAccount->username, $scrapAccount->password, self::$cacheManager);
         $this->instagram->login($force, $emailVecification);
         $this->instagram->saveSession();
 
@@ -194,7 +220,20 @@ class InstagramScraper
                 throw new \Exception("Something going wrong using the proxy!");
 
             // Set proxy to the Instagram scraper
-            Instagram::setHttpClient($this->client);
+            Instagram::curlOpts([
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+            ]);
+            Instagram::setProxy([
+                'address' => config('scraper.proxy.ip'),
+                'port'    => config('scraper.proxy.port'),
+                'tunnel'  => true,
+                'timeout' => 35,
+            ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
         }catch(\Exception $ex){
@@ -216,13 +255,13 @@ class InstagramScraper
     public function byUsername(string $username) : array
     {
         try{
-            // Init HTTP Client
-            $this->initHTTPClient();
+            // Authenticate
+            $this->authenticate();
 
             // Scrap user
-            $account = (new Instagram($this->client))->getAccount($username);
+            $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            sleep(rand(self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return [
                 'account_id'    =>  $account->getId(),
@@ -246,13 +285,6 @@ class InstagramScraper
         }catch(\Exception $ex){
             $this->log("Can't find influencer by username @{$username}", $ex);
 
-            // Authenticate
-            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
-                $this->authenticate();
-                
-                return $this->byUsername($username);
-            }
-
             // Use proxy
             if($this->isTooManyRequests($ex))
                 return $this->byUsername($username);
@@ -270,13 +302,13 @@ class InstagramScraper
     public function byId(int $id) : array
     {
         try{
-            // Init HTTP Client
-            $this->initHTTPClient();
+            // Authenticate
+            $this->authenticate();
 
             // Scrap user
-            $account = (new Instagram($this->client))->getAccountById($id);
+            $account = $this->instagram->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            sleep(rand(self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return [
                 'account_id'    =>  $account->getId(),
@@ -300,13 +332,6 @@ class InstagramScraper
         }catch(\Exception $ex){
             $this->log("Can't find influencer by ID {$id}", $ex);
 
-            // Authenticate
-            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
-                $this->authenticate();
-                
-                return $this->byId($id);
-            }
-
             // Use proxy
             if($this->isTooManyRequests($ex))
                 return $this->byId($id);
@@ -324,24 +349,17 @@ class InstagramScraper
     public function byMedia(string $shortCode) : \InstagramScraper\Model\Media
     {
         try{
-            // Init HTTP Client
-            $this->initHTTPClient();
+            // Authenticate
+            $this->authenticate();
 
             // Scrap media
-            $media = (new Instagram($this->client))->getMediaByCode($shortCode);
+            $media = $this->instagram->getMediaByCode($shortCode);
             $this->log("Media {$media->getShortCode()} details scraped successfully.");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            sleep(rand(self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? self::SLEEP_REQUEST['min'] + 5 : self::SLEEP_REQUEST['max'] ));
 
             return $media;
         }catch(\Exception $ex){
             $this->log("Can't get media by short code {$shortCode}", $ex);
-
-            // Authenticate
-            if($ex->getCode() === 200 && strpos($ex->getMessage(), "Login • Instagram") !== false){
-                $this->authenticate();
-                
-                return $this->byMedia($shortCode);
-            }
 
             // Use proxy
             if($this->isTooManyRequests($ex))
@@ -366,7 +384,7 @@ class InstagramScraper
         $comments = array_merge($comments, ['emojis' => sizeof($comments['comments_emojis'])]);
 
         // Update analyzed sentiments percentage of comments
-        if($media->getCommentsCount() > 0){
+        if($media['comments'] > 0){
             $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media['comments'], 2);
             $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media['comments'], 2);
             $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media['comments'], 2);
@@ -690,33 +708,6 @@ class InstagramScraper
         return $emojis;
     }
 
-    /**
-     * Init HTTP Client
-     *
-     * @return void
-     */
-    private function initHTTPClient() : void
-    {
-        // Init HTTP Client without proxy
-        $this->client = $client = new Client([
-            'base_uri'          =>  url('/'),
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            CURLOPT_SSL_VERIFYPEER  =>  0,
-            CURLOPT_SSL_VERIFYHOST  =>  0,
-            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-            CURLOPT_FOLLOWLOCATION  =>  true,
-            CURLOPT_MAXREDIRS       =>  5,
-            CURLOPT_HTTPPROXYTUNNEL =>  1,
-            CURLOPT_RETURNTRANSFER  =>  true,
-            CURLOPT_HEADER          =>  1,
-            CURLOPT_TIMEOUT		    =>  0,
-            CURLOPT_CONNECTTIMEOUT	=>  35,
-            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-        ]);
-    }
     /**
      * Verify exception is too many requests exception
      *

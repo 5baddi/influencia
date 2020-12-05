@@ -57,12 +57,8 @@ class ScrapInstagramPostJob implements ShouldQueue
             // Disable console debugging
             InstagramScraper::disableDebugging();
 
-            // Re-check tracker is exists
-            $exists = Tracker::find($this->tracker->id);
-            if(is_null($exists))
-                return;
-            else
-                $this->tracker->refresh();
+            // Sleep for short time
+            InstagramScraper::isHTTPRequest();
 
             // Update analytics for instagram media
             if($this->tracker->type === 'post' && !is_null($this->tracker->url)){
@@ -137,15 +133,15 @@ class ScrapInstagramPostJob implements ShouldQueue
                         });
                     }
 
-                    // Set tracker to media
-                    $mediaTracker = TrackerInfluencerMedia::where(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id])->first();
-                    if(is_null($mediaTracker))
-                        TrackerInfluencerMedia::create(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id]);
-
                     // Update tracker influencers list
                     $influencerExists = TrackerInfluencer::where(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencerMedia->influencer_id])->first();
                     if(is_null($influencerExists))
                         TrackerInfluencer::create(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencerMedia->influencer_id]);
+
+                    // Set tracker to media
+                    $mediaTracker = TrackerInfluencerMedia::where(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id])->first();
+                    if(is_null($mediaTracker))
+                        TrackerInfluencerMedia::create(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id]);
                 }
 
                 // Set tracker influencer
@@ -153,6 +149,9 @@ class ScrapInstagramPostJob implements ShouldQueue
                 if(is_null($trackerInfluencer))
                     TrackerInfluencer::create(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencer->id]);
             }
+
+            // Set tracker as finished
+            $this->tracker->update(['queued' => 'finished']);
         }catch(\Exception $ex){
             $this->fail($ex);
         }

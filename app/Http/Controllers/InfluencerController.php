@@ -33,6 +33,9 @@ class InfluencerController extends Controller
         $data = $request->validated();
         
         try{
+            // Sleep for short time
+            InstagramScraper::isHTTPRequest();
+            
             // Add instagram influencer
             if($data['platform'] === 'instagram'){
                 if(preg_match('/^[0-9]*$/', $data['username']) && filter_var($data['username'], FILTER_VALIDATE_INT) !== false)
