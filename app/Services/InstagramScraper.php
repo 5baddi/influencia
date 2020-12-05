@@ -197,19 +197,19 @@ class InstagramScraper
                 throw new \Exception("Something going wrong using the proxy!");
 
             // Set proxy to the Instagram scraper
+            // Instagram::curlOpts([
+            //     CURLOPT_SSL_VERIFYPEER  =>  0,
+            //     CURLOPT_SSL_VERIFYHOST  =>  0,
+            //     CURLOPT_FOLLOWLOCATION  =>  true,
+            //     CURLOPT_MAXREDIRS       =>  5,
+            //     CURLOPT_HTTPPROXYTUNNEL =>  1,
+            //     CURLOPT_RETURNTRANSFER  =>  true,
+            // ]);
             Instagram::setProxy([
                 'address' => config('scraper.proxy.ip'),
                 'port'    => config('scraper.proxy.port'),
                 'tunnel'  => true,
                 'timeout' => 35,
-            ]);
-            Instagram::curlOpts([
-                CURLOPT_SSL_VERIFYPEER  =>  0,
-                CURLOPT_SSL_VERIFYHOST  =>  0,
-                CURLOPT_FOLLOWLOCATION  =>  true,
-                CURLOPT_MAXREDIRS       =>  5,
-                CURLOPT_HTTPPROXYTUNNEL =>  1,
-                CURLOPT_RETURNTRANSFER  =>  true,
             ]);
  
             $this->log("Connected using proxy " . config('scraper.proxy.ip'));
