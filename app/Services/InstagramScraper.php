@@ -697,30 +697,25 @@ class InstagramScraper
      */
     private function initHTTPClient() : void
     {
-        try{
-            // Set proxy
-            $this->setProxy();
-        }catch(\Exception $ex){
-            // Init HTTP Client without proxy
-            $this->client = $client = new Client([
-                'base_uri'          =>  url('/'),
-                'verify'            =>  !config('app.debug'),
-                'debug'             =>  self::$debug,
-                'http_errors'       =>  false,
-                CURLOPT_SSL_VERIFYPEER  =>  0,
-                CURLOPT_SSL_VERIFYHOST  =>  0,
-                // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-                // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-                CURLOPT_FOLLOWLOCATION  =>  true,
-                CURLOPT_MAXREDIRS       =>  5,
-                CURLOPT_HTTPPROXYTUNNEL =>  1,
-                CURLOPT_RETURNTRANSFER  =>  true,
-                CURLOPT_HEADER          =>  1,
-                CURLOPT_TIMEOUT		    =>  0,
-                CURLOPT_CONNECTTIMEOUT	=>  35,
-                CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-            ]);
-        }
+        // Init HTTP Client without proxy
+        $this->client = $client = new Client([
+            'base_uri'          =>  url('/'),
+            'verify'            =>  !config('app.debug'),
+            'debug'             =>  self::$debug,
+            'http_errors'       =>  false,
+            CURLOPT_SSL_VERIFYPEER  =>  0,
+            CURLOPT_SSL_VERIFYHOST  =>  0,
+            // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+            // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
+            CURLOPT_FOLLOWLOCATION  =>  true,
+            CURLOPT_MAXREDIRS       =>  5,
+            CURLOPT_HTTPPROXYTUNNEL =>  1,
+            CURLOPT_RETURNTRANSFER  =>  true,
+            CURLOPT_HEADER          =>  1,
+            CURLOPT_TIMEOUT		    =>  0,
+            CURLOPT_CONNECTTIMEOUT	=>  35,
+            CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
+        ]);
     }
     /**
      * Verify exception is too many requests exception
@@ -743,7 +738,6 @@ class InstagramScraper
         if(get_class($ex) === \Unirest\Exception::class
                 || $ex->getCode() === 429 || $ex->getCode() === 56
                 || strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false
-                || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "Proxy CONNECT aborted") !== false
                 || strpos($ex->getMessage(), "proxy after CONNECT") !== false
