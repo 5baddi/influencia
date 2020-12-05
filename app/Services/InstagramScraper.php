@@ -102,33 +102,6 @@ class InstagramScraper
         // Init emoji parser
         $this->emojiParser = $emojiParser;
 
-        // Set proxy and Init HTTP Client
-        try{
-            $this->setProxy();
-        }catch(\Exception $ex){
-            $this->client = $client = new Client([
-                'base_uri'          =>  url('/'),
-                'verify'            =>  !config('app.debug'),
-                'debug'             =>  self::$debug,
-                'http_errors'       =>  false,
-                CURLOPT_SSL_VERIFYPEER  =>  0,
-                CURLOPT_SSL_VERIFYHOST  =>  0,
-                // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
-                // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
-                CURLOPT_FOLLOWLOCATION  =>  true,
-                CURLOPT_MAXREDIRS       =>  5,
-                CURLOPT_HTTPPROXYTUNNEL =>  1,
-                CURLOPT_RETURNTRANSFER  =>  true,
-                CURLOPT_HEADER          =>  1,
-                CURLOPT_TIMEOUT		    =>  0,
-                CURLOPT_CONNECTTIMEOUT	=>  35,
-                CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
-            ]);
-        }
-
-        // Init instagram scraper
-        $this->instagram = new Instagram($this->client);
-
         // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
 
@@ -166,6 +139,30 @@ class InstagramScraper
         // Clear Psr16 cache
         if($force)
             self::$cacheManager->clear();
+
+        // Set proxy and Init HTTP Client
+        try{
+            $this->setProxy();
+        }catch(\Exception $ex){
+            $this->client = $client = new Client([
+                'base_uri'          =>  url('/'),
+                'verify'            =>  !config('app.debug'),
+                'debug'             =>  self::$debug,
+                'http_errors'       =>  false,
+                CURLOPT_SSL_VERIFYPEER  =>  0,
+                CURLOPT_SSL_VERIFYHOST  =>  0,
+                // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
+                // CURLOPT_SSL_CIPHER_LIST =>  'TLSv1',
+                CURLOPT_FOLLOWLOCATION  =>  true,
+                CURLOPT_MAXREDIRS       =>  5,
+                CURLOPT_HTTPPROXYTUNNEL =>  1,
+                CURLOPT_RETURNTRANSFER  =>  true,
+                CURLOPT_HEADER          =>  1,
+                CURLOPT_TIMEOUT		    =>  0,
+                CURLOPT_CONNECTTIMEOUT	=>  35,
+                CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
+            ]);
+        }
 
         // Login to App Instagram account
         $this->instagram = Instagram::withCredentials($this->client, $scrapAccount->username, $scrapAccount->password, self::$cacheManager);
@@ -240,6 +237,9 @@ class InstagramScraper
     public function byUsername(string $username) : array
     {
         try{
+            // Authentification
+            $this->authenticate();
+
             // Scrap user
             $account = $this->instagram->getAccount($username);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
@@ -291,6 +291,9 @@ class InstagramScraper
     public function byId(int $id) : array
     {
         try{
+            // Authentification
+            $this->authenticate();
+            
             // Scrap user
             $account = $this->instagram->getAccountById($id);
             $this->log("User @{$account->getUsername()} details scraped successfully.");
