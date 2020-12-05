@@ -135,6 +135,9 @@ export default {
                     this.showSuccess({
                         message: response.message
                     });
+
+                    if(response.content)
+                        this.$store.dispatch("setActiveBrand", response.content);
                 }).catch(error => {
                     this.showError({
                         message: error.response.data.message
