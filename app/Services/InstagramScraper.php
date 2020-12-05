@@ -728,7 +728,7 @@ class InstagramScraper
         $this->log("It would be too many requests issue!", $ex);
 
         // Should try after a while
-        if($ex->getCode() === 403 || $ex->getCode() === 560 || $ex->getCode() === 302){
+        if($ex->getCode() === 403 || $ex->getCode() === 560){
             $this->authenticate(true);
 
             return true;
@@ -736,8 +736,9 @@ class InstagramScraper
 
         // Is too many requests or lost connection
         if(get_class($ex) === \Unirest\Exception::class
-                || $ex->getCode() === 429 || $ex->getCode() === 56
+                || $ex->getCode() === 429 || $ex->getCode() === 56 || $ex->getCode() === 302
                 || strpos($ex->getMessage(), "OpenSSL SSL_connect") !== false
+                || strpos($ex->getMessage(), "Response code is 302") !== false
                 || strpos($ex->getMessage(), "unable to connect to") !== false
                 || strpos($ex->getMessage(), "Proxy CONNECT aborted") !== false
                 || strpos($ex->getMessage(), "proxy after CONNECT") !== false
@@ -745,6 +746,10 @@ class InstagramScraper
 
             // Set proxy
             $this->setProxy();
+
+            // Maybe IP blocked and need re-authenticate
+            if($ex->getCode() === 302)
+                $this->authenticate(true);
 
             return true;
         }
