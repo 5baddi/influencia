@@ -133,17 +133,20 @@ class ScrapInstagramPostJob implements ShouldQueue
                         });
                     }
 
-                    // Set tracker to media
-                    $mediaTracker = TrackerInfluencerMedia::where(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id])->first();
-                    if(is_null($mediaTracker))
-                        TrackerInfluencerMedia::create(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id]);
-
                     // Update tracker influencers list
                     $influencerExists = TrackerInfluencer::where(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencerMedia->influencer_id])->first();
                     if(is_null($influencerExists))
                         TrackerInfluencer::create(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencerMedia->influencer_id]);
+
+                    // Set tracker to media
+                    $mediaTracker = TrackerInfluencerMedia::where(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id])->first();
+                    if(is_null($mediaTracker))
+                        TrackerInfluencerMedia::create(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id]);
                 }
             }
+
+            // Set tracker as finished
+            $this->tracker->update(['queued' => 'pending']);
         }catch(\Exception $ex){
             $this->fail($ex);
         }
