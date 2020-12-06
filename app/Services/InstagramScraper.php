@@ -405,7 +405,7 @@ class InstagramScraper
                 
             $lastPost = $lastPost->first();
             $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
-            $this->log("Start scraping from " . $maxID ?? '---');
+            $this->log("Start scraping from " . $maxID);
             
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
