@@ -148,10 +148,10 @@ class ScrapInstagramPostJob implements ShouldQueue
                 $trackerInfluencer = TrackerInfluencer::where(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencer->id])->first();
                 if(is_null($trackerInfluencer))
                     TrackerInfluencer::create(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencer->id]);
+            
+                // Set tracker as finished
+                $this->tracker->update(['queued' => 'finished']);
             }
-
-            // Set tracker as finished
-            $this->tracker->update(['queued' => 'finished']);
         }catch(\Exception $ex){
             $this->fail($ex);
         }
