@@ -27,7 +27,14 @@ class ScrapInstagramPostJob implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 3;
+    public $tries = 5;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 1800;
 
     /**
      * Tracker entity
@@ -44,6 +51,16 @@ class ScrapInstagramPostJob implements ShouldQueue
     public function __construct(Tracker $tracker)
     {
         $this->tracker = $tracker;
+    }
+
+    /**
+     * Determine the time at which the job should timeout.
+     *
+     * @return \DateTime
+     */
+    public function retryUntil()
+    {
+        return now()->addMinutes(5);
     }
 
     /**
@@ -80,58 +97,62 @@ class ScrapInstagramPostJob implements ShouldQueue
 
                     // Verify if media already exists
                     $influencerMedia = InfluencerPost::where('short_code', $shortCode)->first();
-                    if(is_null($influencerMedia)){
-                        // Scrap User details
-                        $media = $scraper->byMedia($shortCode);
-                        if(!is_object($media) || is_null($media->getOwner()))
-                            return $this->fail();
 
-                        // Parse owner data
-                        $account = $media->getOwner();
-                        $accountDetails = [
-                            'account_id'    =>  $account->getId(),
-                            'username'      =>  $account->getUsername(),
-                            'name'          =>  $account->getFullName(),
-                            'pic_url'       =>  $account->getProfilePicUrl(),
-                            'biography'     =>  $account->getBiography(),
-                            'website'       =>  $account->getExternalUrl(),
-                            'followers'     =>  $account->getFollowedByCount(),
-                            'follows'       =>  $account->getFollowsCount(),
-                            'medias'        =>  $account->getMediaCount(),
-                            'is_business'   =>  $account->isBusinessAccount(),
-                            'is_private'    =>  $account->isPrivate(),
-                            'is_verified'   =>  $account->isVerified(),
-                            'highlight_reel'    =>  $account->getHighlightReelCount(),
-                            'business_category' =>  $account->getBusinessCategoryName(),
-                            'business_email'    =>  $account->getBusinessEmail(),
-                            'business_phone'    =>  $account->getBusinessPhoneNumber(),
-                            'business_address'  =>  $account->getBusinessAddressJson(),
-                        ];
+                    // Scrap User details
+                    $media = $scraper->byMedia($shortCode);
+                    if(!is_object($media) || is_null($media->getOwner()))
+                        return $this->fail();
 
-                        // Check influencer if already exists
-                        $influencer = Influencer::where('account_id', $account->getId())->first();
-                        if(is_null($influencer))
-                            $influencer = Influencer::create($accountDetails);
+                    // Parse owner data
+                    $account = $media->getOwner();
+                    $accountDetails = [
+                        'account_id'    =>  $account->getId(),
+                        'username'      =>  $account->getUsername(),
+                        'name'          =>  $account->getFullName(),
+                        'pic_url'       =>  $account->getProfilePicUrl(),
+                        'biography'     =>  $account->getBiography(),
+                        'website'       =>  $account->getExternalUrl(),
+                        'followers'     =>  $account->getFollowedByCount(),
+                        'follows'       =>  $account->getFollowsCount(),
+                        'medias'        =>  $account->getMediaCount(),
+                        'is_business'   =>  $account->isBusinessAccount(),
+                        'is_private'    =>  $account->isPrivate(),
+                        'is_verified'   =>  $account->isVerified(),
+                        'highlight_reel'    =>  $account->getHighlightReelCount(),
+                        'business_category' =>  $account->getBusinessCategoryName(),
+                        'business_email'    =>  $account->getBusinessEmail(),
+                        'business_phone'    =>  $account->getBusinessPhoneNumber(),
+                        'business_address'  =>  $account->getBusinessAddressJson(),
+                    ];
 
-                        //  Analyze media
-                        $_media = $scraper->getMedia($media);
-                        $sentiments = $scraper->analyzeMedia($_media);
-                        $_media = array_merge($_media, $sentiments);
+                    // Check influencer if already exists
+                    $influencer = Influencer::where('account_id', $account->getId())->first();
+                    if(is_null($influencer))
+                        $influencer = Influencer::create($accountDetails);
 
-                        // Store media
-                        $_media['influencer_id'] = $influencer->id;
+                    //  Analyze media
+                    $_media = $scraper->getMedia($media);
+                    $sentiments = $scraper->analyzeMedia($_media);
+                    $_media = array_merge($_media, $sentiments);
+
+                    // Store media
+                    $_media['influencer_id'] = $influencer->id;
+
+                    // Update or create media
+                    if(is_null($influencerMedia))
                         $influencerMedia = InfluencerPost::create($_media);
+                    else
+                        $influencerMedia->update($_media);
 
-                        // Store media assets 
-                        array_walk($_media['files'], function($file) use ($influencerMedia){
-                            if(empty($file) || is_null($file) || !is_array($file))
-                                return;
-                
-                            // Push added media record
-                            $file = array_merge($file, ['post_id' =>  $influencerMedia->id]);
-                            InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-                        });
-                    }
+                    // Store media assets 
+                    array_walk($_media['files'], function($file) use ($influencerMedia){
+                        if(empty($file) || is_null($file) || !is_array($file))
+                            return;
+            
+                        // Push added media record
+                        $file = array_merge($file, ['post_id' =>  $influencerMedia->id]);
+                        InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
+                    });
 
                     // Update tracker influencers list
                     $influencerExists = TrackerInfluencer::where(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencerMedia->influencer_id])->first();
@@ -142,11 +163,6 @@ class ScrapInstagramPostJob implements ShouldQueue
                     $mediaTracker = TrackerInfluencerMedia::where(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id])->first();
                     if(is_null($mediaTracker))
                         TrackerInfluencerMedia::create(['tracker_id' => $this->tracker->id, 'influencer_post_id' => $influencerMedia->id]);
-                
-                    // Set tracker influencer
-                    $trackerInfluencer = TrackerInfluencer::where(['tracker_id' => $this->tracker->id, 'influencer_id' => $$influencerMedia->influencer_id])->first();
-                    if(is_null($trackerInfluencer))
-                        TrackerInfluencer::create(['tracker_id' => $this->tracker->id, 'influencer_id' => $$influencerMedia->influencer_id]);
                 }
 
                 // Set tracker as finished
