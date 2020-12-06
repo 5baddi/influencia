@@ -377,20 +377,7 @@ class InstagramScraper
      */
     public function analyzeMedia(array $media) : array
     {
-        // Fetch comments sentiments
-        $comments = $this->getSentimentsAndEmojis($media);
-
-        // Get number of emojis
-        $comments = array_merge($comments, ['emojis' => sizeof($comments['comments_emojis'])]);
-
-        // Update analyzed sentiments percentage of comments
-        if($media['comments'] > 0){
-            $comments['comments_positive'] = round($comments['comments_positive'] ?? 0 / $media['comments'], 2);
-            $comments['comments_neutral'] = round($comments['comments_neutral'] ?? 0 / $media['comments'], 2);
-            $comments['comments_negative'] = round($comments['comments_negative'] ?? 0 / $media['comments'], 2);
-        }
-
-        return $comments;
+        return $this->getSentimentsAndEmojis($media);
     }
 
     /**
@@ -660,10 +647,11 @@ class InstagramScraper
             $this->log("Sentiments for media {$media['short_code']} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
 
             return [
-                'comments_positive'  => $data['comments_positive'],
-                'comments_neutral'   => $data['comments_neutral'],
-                'comments_negative'  => $data['comments_negative'],
+                'comments_positive'  => round($data['comments_positive'] ?? 0 / $media['comments'], 2),
+                'comments_neutral'   => round($data['comments_neutral'] ?? 0 / $media['comments'], 2),
+                'comments_negative'  => round($data['comments_negative'] ?? 0 / $media['comments'], 2),
                 'comments_emojis'    => $data['comments_emojis'],
+                'emojis'             => sizeof($data['comments_emojis']),
                 'comments_hashtags'  => $data['comments_hashtags']
             ];
         }catch(\Exception $ex){
