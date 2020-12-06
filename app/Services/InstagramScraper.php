@@ -24,12 +24,12 @@ class InstagramScraper
     /**
      * Max media by each fetch
      */
-    const MAX_MEDIA = 25;
+    const MAX_MEDIA = 100;
     
     /**
      * Max comments by each fetch
      */
-    const MAX_COMMENTS = 300;
+    const MAX_COMMENTS = 500;
 
     /**
      * Sleep request seconds
