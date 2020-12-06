@@ -18,7 +18,7 @@ class CreateInfluencerPosts extends Migration
             $table->unsignedBigInteger('influencer_id');
             $table->string('uuid')->unique()->nullable(false);
             $table->unsignedBigInteger('post_id')->nullable(false);
-            $table->text('next_cursor')->nullable();
+            $table->text('next_cursor')->nullable()->default(null);
             // $table->unsignedBigInteger('campaign_id')->nullable();
             // $table->unsignedBigInteger('tracker_id')->nullable();
             $table->string('link')->nullable(false);

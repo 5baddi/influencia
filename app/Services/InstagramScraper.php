@@ -440,7 +440,7 @@ class InstagramScraper
                 $_media['influencer_id'] = $influencer->id;
 
                 // Set end cursor
-                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'])
+                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'] && isset($fetchedMedias['maxId']) && $fetchedMedias['maxId'] !== '')
                     $_media['next_cursor'] = $fetchedMedias['maxId'];
 
                 // Store media
