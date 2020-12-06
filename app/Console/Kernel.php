@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
             
         // Start jobs queue
         $schedule->command('queue:work --queue=high,default,trackers')
-            ->daily()
+            ->everyMinute()
             ->withoutOverlapping();
 
         // Instagram scraper
@@ -44,7 +44,7 @@ class Kernel extends ConsoleKernel
             
         // Influencers updater
         $schedule->command('scrap:instagram --update')
-            ->daily()
+            ->hourly()
             ->withoutOverlapping();
     }
 
