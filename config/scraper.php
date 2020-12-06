@@ -12,5 +12,8 @@ return [
     ],
     'shortlink' =>  [
         'length'    =>  env('SHORTLINK_LENGTH')
+    ],
+    'youtube'   =>  [
+        'key'   =>  env('YOUTUBE_KEY')
     ]
 ];
