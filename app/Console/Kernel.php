@@ -2,10 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\InstagramCommand;
 use App\Console\Commands\AppUpdaterCommand;
 use Illuminate\Console\Scheduling\Schedule;
-use App\Console\Commands\InfluencersUpdaterCommand;
-use App\Console\Commands\ScrapInstagramInfluencers;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -16,9 +15,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        ScrapInstagramInfluencers::class,
         AppUpdaterCommand::class,
-        InfluencersUpdaterCommand::class
+        InstagramCommand::class
     ];
 
     /**
@@ -29,9 +27,14 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // App updater
+        $schedule->command('updater:app')
+            ->dailyAt('00:00')
+            ->withoutOverlapping();
+            
         // Start jobs queue
         $schedule->command('queue:work --queue=high,default,trackers')
-            ->everyMinute()
+            ->daily()
             ->withoutOverlapping();
 
         // Instagram scraper
@@ -40,13 +43,8 @@ class Kernel extends ConsoleKernel
             ->withoutOverlapping();
             
         // Influencers updater
-        $schedule->command('updater:influencers')
+        $schedule->command('scrap:instagram --update')
             ->daily()
-            ->withoutOverlapping();
-
-        // App updater
-        $schedule->command('updater:app')
-            ->dailyAt('00:00')
             ->withoutOverlapping();
     }
 
