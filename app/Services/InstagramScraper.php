@@ -398,7 +398,7 @@ class InstagramScraper
 
             // Start from last inserted media
             $lastPost = InfluencerPost::where('influencer_id', $influencer->id);
-            if(is_null($nextCursor))
+            if(is_null($nextCursor) || $nextCursor === '')
                 $lastPost->whereNotNull('next_cursor')->latest();
             else
                 $lastPost->where('next_cursor', $nextCursor);
