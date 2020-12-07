@@ -81,7 +81,7 @@ class Influencer extends Model
      */
     public function getBusinessEmailAttribute() : ?string
     {
-        if(isset($this->attributes['business_email']))
+        if(isset($this->attributes['business_email']) || $this->attributes['platform'] !== 'instagram')
             return $this->attributes['business_email'];
 
         // Get email from biography
