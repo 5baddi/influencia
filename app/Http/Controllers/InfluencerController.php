@@ -39,7 +39,7 @@ class InfluencerController extends Controller
                 // Verify if influencer already exists
                 $exists = Influencer::where([
                     'platform' => 'instagram',
-                    (filter_var($value, FILTER_VALIDATE_INT) !== false && preg_match('/^[0-9]*$/', $data['username']) ? 'account_id' : 'username') => $data['username']
+                    (filter_var($data['username'], FILTER_VALIDATE_INT) !== false && preg_match('/^[0-9]*$/', $data['username']) ? 'account_id' : 'username') => $data['username']
                 ])->first();
                 if(!is_null($exists))
                     return response()->error("Influencer already exists!", [], 400);
