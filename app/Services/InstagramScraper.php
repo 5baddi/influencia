@@ -397,11 +397,9 @@ class InstagramScraper
             $this->authenticate();
 
             // Start from last inserted media
-            $lastPost = InfluencerPost::where('influencer_id', $influencer->id);
-            if(is_null($nextCursor) || $nextCursor === '')
-                $lastPost->whereNotNull('next_cursor')->latest();
-            else
-                $lastPost->where('next_cursor', $nextCursor);
+            $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest();
+            if(!is_null($nextCursor) && $nextCursor !== '')
+                $lastPost = InfluencerPost::where(['influencer_id' => $influencer->id,'next_cursor' => $nextCursor]);
                 
             $lastPost = $lastPost->first();
             $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
