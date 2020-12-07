@@ -75,7 +75,10 @@ class InfluencerController extends Controller
 
                 // Get channel details
                 $details = $youtube->getChannelByID($data['username']);
-                dd($details);
+                // Store account
+                $influencer = Influencer::create($details);
+                
+                return response()->success("Influencer @{$influencer->name} created successfully.", $influencer, 201);
             }
         }catch(\Exception $ex){
             dd($ex);
