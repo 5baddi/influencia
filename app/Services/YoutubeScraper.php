@@ -70,10 +70,6 @@ class YoutubeScraper
      */
     public function __construct()
     {
-        // Throw exception if no youtube api key
-        if(is_null(config('scraper.youtube.key')))
-            throw new \Exception("Please provide a valid Youtube API key!");
-
         // Init HTTP client
         $this->client = new Client([
             'base_uri'          =>  "https://www.googleapis.com/youtube/v3/",
