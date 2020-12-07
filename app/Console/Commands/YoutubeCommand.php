@@ -53,7 +53,7 @@ class YoutubeCommand extends Command
         $startTaskAt = microtime(true);
         $this->info("=== Start " . ($this->option('update') ? "updating" : "scraping") . " youtube influencers ===");
 
-        dd($this->youtubeScraper->getChannelByID("UCRb9ePdApcJ26L13tGQWptw"));
+        dd($this->youtubeScraper->extractChannelID("https://www.youtube.com/channel/UCCB1Byx5yTbLpQaV-rlfmtA"));
         // Start scraping or updating influencers
         // if(!$this->option('update'))
         //     $this->scrapInfluencers();

@@ -68,7 +68,14 @@ export default {
                     name: "Full name",
                     field: "name",
                     callback: function (row) {
-                        return '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';
+                        let $html = '';
+
+                        if(row.platform === "instagram")
+                            $html = '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';
+                        else if(row.platform === "youtube")
+                            $html = '<a href="https://www.youtube.com/channel/' + row.account_id + '" target="_blank">' + row.name + '</a>';
+                    
+                        return $html;
                     }
                 },
                 {
@@ -89,8 +96,11 @@ export default {
                         let icon = "";
 
                         if (row.platform === "instagram") {
-                            link = "https://instagram.com/" + row.username;
+                            link = "https://instagram.com/";
                             icon = "<i class=\"fab fa-instagram\"></i>";
+                        }else if(row.platform === "youtube"){
+                            link = "https://youtube.com/";
+                            icon = "<i class=\"fab fa-youtube\"></i>";
                         }
 
                         return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';

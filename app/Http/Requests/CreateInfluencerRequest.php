@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Rules\InfluencerUsernameRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CreateInfluencerRequest extends FormRequest
@@ -25,8 +24,8 @@ class CreateInfluencerRequest extends FormRequest
     public function rules()
     {
         return [
-            'username'  =>  ['required', new InfluencerUsernameRule()],
-            'platform'  =>  'required|in:instagram'
+            'username'  =>  'required|string',
+            'platform'  =>  'required|in:instagram,youtube'
         ];
     }
 }

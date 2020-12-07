@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Exception\RequestException;
 
 /**
@@ -79,6 +80,12 @@ class YoutubeScraper
             'verify'            =>  !config('app.debug'),
             'debug'             =>  self::$debug,
             'http_errors'       =>  false,
+            'config'            =>  [
+                'curl'          =>  [
+                    CURLOPT_SSL_VERIFYPEER  =>  0,
+                    CURLOPT_SSL_VERIFYHOST  =>  0,
+                ]
+            ]
         ]);
     }
 
@@ -190,7 +197,10 @@ class YoutubeScraper
             ];
         }catch(RequestException $reqEx){
             // Trace 
-        }   
+            dd($reqEx);
+        }catch(\Exception $ex){
+            dd($ex);
+        }
     }
 
     /**
@@ -202,7 +212,7 @@ class YoutubeScraper
     public function extractChannelID(string $channelURL) : ?string
     {
         // Get channel as html page
-        $html = file_get_contents($url);
+        $html = @file_get_contents($channelURL);
         // Match channel ID
         preg_match("'<meta itemprop=\"channelId\" content=\"(.*?)\"'si", $html, $match);
 

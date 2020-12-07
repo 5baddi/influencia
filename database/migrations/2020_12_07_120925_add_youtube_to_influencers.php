@@ -16,7 +16,7 @@ class AddYoutubeToInfluencers extends Migration
         Schema::table('influencers', function(Blueprint $table){
             $table->integer('video_views')->nullable();
             $table->string('country_code')->nullable();
-            $table->timestamp('published_at')->nullable(false);
+            $table->timestamp('published_at')->nullable();
         });
     }
 

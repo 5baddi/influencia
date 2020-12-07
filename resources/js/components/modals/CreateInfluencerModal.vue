@@ -20,14 +20,15 @@
                            <input type="radio" value="instagram" v-model="platform" :checked="platform === 'instagram'"/>
                            <span><i class="fab fa-instagram"></i>&nbsp;Instagram</span>
                         </label>
+                        <label for="youtube" class="youtube-radio">
+                           <input type="radio" value="youtube" v-model="platform" :checked="platform === 'youtube'"/>
+                           <span><i class="fab fa-youtube"></i>&nbsp;YouTube</span>
+                        </label>
                         <label for="snapchat" class="snapchat-radio">
                            <input type="radio" value="snapchat" v-model="platform" :checked="platform === 'snapchat'" :disabled="true"/>
                            <span><i class="fab fa-snapchat-ghost"></i>&nbsp;Snapchat</span>
                         </label>
-                        <label for="youtube" class="youtube-radio">
-                           <input type="radio" value="youtube" v-model="platform" :checked="platform === 'youtube'" :disabled="true"/>
-                           <span><i class="fab fa-youtube"></i>&nbsp;YouTube</span>
-                        </label>
+
                      </div>
                   </div>
             </div>
@@ -73,7 +74,7 @@ export default {
          });
       },
       isValidated(){
-         return ['instagram'].includes(this.platform) && typeof this.username !== "undefined" && this.username !== null && this.username.length >= 1;
+         return ['instagram', 'youtube'].includes(this.platform) && typeof this.username !== "undefined" && this.username !== null && this.username.length >= 1;
       }
    }
 };
