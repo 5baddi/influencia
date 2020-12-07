@@ -35,7 +35,7 @@ class ScrapPostJob implements ShouldQueue
      *
      * @var int
      */
-    public $timeout = 1800;
+    public $timeout = 3600;
 
     /**
      * Tracker entity
