@@ -121,9 +121,8 @@ class YoutubeScraper
             
         try{
             // Send get request to get video details
-            $response = $this->client->get("videos?part=snippet&id={$ID}&key=" . config('scraper.youtube.key'));
+            $response = $this->client->get("videos?part=snippet,statistics,contentDetails&id={$ID}&key=" . config('scraper.youtube.key'));
             $obj = json_decode($response->getBody()->getContents());
-            // dd($obj);
 
             return [
                 "short_code"        =>  $obj->items[0]->id,
@@ -131,7 +130,7 @@ class YoutubeScraper
                 "title"             =>  $obj->items[0]->snippet->title,
                 "type"              =>  "video",
                 "link"              =>  "https://www.youtube.com/watch?v={$obj->items[0]->id}",
-                "caption"           =>  $obj->items[0]->snippet->description,
+                "description"       =>  $obj->items[0]->snippet->description,
                 "tags"              =>  $obj->items[0]->snippet->tags,
                 "category_id"       =>  $obj->items[0]->snippet->categoryId,
                 "category"          =>  $this->getCategoryNameByID($obj->items[0]->snippet->categoryId),
@@ -139,6 +138,12 @@ class YoutubeScraper
                 "audio_language"    =>  $obj->items[0]->snippet->defaultAudioLanguage,
                 "is_livebroadcast"  =>  $obj->items[0]->snippet->liveBroadcastContent !== "none",
                 "thumbnail_url"     =>  $obj->items[0]->snippet->thumbnails->maxres->url,
+                "video_views"       =>  $obj->items[0]->statistics->viewCount,
+                "video_duration"    =>  Carbon::parse((new \DateInterval($obj->items[0]->contentDetails->duration))->format("%H:%I:%S"))->diffInSeconds(),
+                "comments"          =>  $obj->items[0]->statistics->commentCount,
+                "likes"             =>  $obj->items[0]->statistics->likeCount,
+                "dislikes"          =>  $obj->items[0]->statistics->dislikeCount,
+                "favorites"         =>  $obj->items[0]->statistics->favoriteCount,
                 "published_at"      =>  Carbon::parse($obj->items[0]->snippet->publishedAt)->format("Y-m-d H:i:s")
             ];
         }catch(RequestException $reqEx){
@@ -155,5 +160,52 @@ class YoutubeScraper
     public function getCategoryNameByID(int $categoryID) : ?string
     {
         return self::CATEGORIES[$categoryID] ?? null;
+    }
+
+    /**
+     * Get channel details by ID
+     *
+     * @param string $channelID
+     * @return array
+     */
+    public function getChannelByID(string $channelID) : array
+    {
+        try{
+            // Send get request to get video details
+            $response = $this->client->get("channels?part=snippet,statistics&id={$channelID}&key=" . config('scraper.youtube.key'));
+            $obj = json_decode($response->getBody()->getContents());
+
+            return [
+                "platform"          =>  "youtube",
+                "account_id"        =>  $obj->items[0]->id,
+                "username"          =>  $obj->items[0]->snippet->customUrl,
+                "name"              =>  $obj->items[0]->snippet->title,
+                "biography"         =>  $obj->items[0]->snippet->description,
+                "pic_url"           =>  $obj->items[0]->snippet->thumbnails->high->url,
+                "followers"         =>  $obj->items[0]->statistics->subscriberCount,
+                "medias"            =>  $obj->items[0]->statistics->videoCount,
+                "video_views"       =>  $obj->items[0]->statistics->viewCount,
+                "country_code"      =>  $obj->items[0]->snippet->country,
+                "published_at"      =>  Carbon::parse($obj->items[0]->snippet->publishedAt)->format("Y-m-d H:i:s") 
+            ];
+        }catch(RequestException $reqEx){
+            // Trace 
+        }   
+    }
+
+    /**
+     * Extract channel ID from channel URL
+     * 
+     * @param string $channelURL
+     * @return string|null
+     */
+    public function extractChannelID(string $channelURL) : ?string
+    {
+        // Get channel as html page
+        $html = file_get_contents($url);
+        // Match channel ID
+        preg_match("'<meta itemprop=\"channelId\" content=\"(.*?)\"'si", $html, $match);
+
+        return $match[1] ?? null;
     }
 }

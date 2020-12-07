@@ -20,7 +20,7 @@ class CreateInfluencerTable extends Migration
             $table->string('account_id')->nullable(false);
             $table->string('username')->nullable(false);
             $table->string('name')->nullable();
-            $table->text('biography')->nullable();
+            $table->longText('biography')->nullable();
             $table->string('website')->nullable();
             $table->text('pic_url')->nullable();
             $table->float('engagement_rate')->nullable();
