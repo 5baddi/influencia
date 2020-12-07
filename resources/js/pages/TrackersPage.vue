@@ -121,6 +121,9 @@ export default {
                     field: "platform",
                     callback: function (row) {
                         switch (row.platform) {
+                            case "youtube":
+                                return '<i class="fab fa-2 fa-youtube" title="' + row.platform + '"></i>';
+                                break;
                             case "instagram":
                                 return '<i class="fab fa-2 fa-instagram" title="' + row.platform + '"></i>';
                                 break;
