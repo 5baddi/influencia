@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Carbon\Carbon;
 use App\Influencer;
+use App\InfluencerPost;
 use App\InfluencerPostMedia;
 use App\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
@@ -82,15 +83,6 @@ class InstagramCommand extends Command
         // Scrap each influencer details
         foreach($influencers as $influencer){
             try{
-                // Scrap account details
-                $this->info("Start scraping account @" . $influencer->username);
-                $accountDetails = $this->instagramScraper->byUsername($influencer->username);
-
-                // Update influencer
-                $influencer->update($accountDetails);
-                $influencer->refresh();
-                $this->info("Successfully updated influencer @" . $influencer->username);
-
                 // Ignore last updated influencers
                 if($influencer->posts()->count() === $influencer->medias)
                     continue;
@@ -99,7 +91,12 @@ class InstagramCommand extends Command
                 $this->info("Number of posts: " . $influencer->medias);
                 $this->info("Already scraped posts: " . $influencer->posts()->count());
                 $this->info("Please wait until scraping all medias ...");
-                $this->instagramScraper->getMedias($influencer);
+
+                // Get next cursor
+                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
+
+                // Scrap new medias
+                $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
             }catch(\Exception $exception){
                 // Trace
                 Log::error($exception->getMessage(), [
@@ -142,7 +139,13 @@ class InstagramCommand extends Command
                         continue;
                     }
                         
-                    $this->info("Update Instagram influencer @{$influencer->username}");
+                    // Scrap account details
+                    $this->info("Start scraping account @" . $influencer->username);
+                    $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+
+                    // Update influencer
+                    $influencer->update($accountDetails);
+                    $this->info("Successfully updated influencer @" . $influencer->username);
                     
                     foreach($influencer->posts as $post){
                         // Get online media
