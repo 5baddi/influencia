@@ -411,8 +411,8 @@ class InstagramScraper
             
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            if(isset($fetchedMedias['medias']))
+                $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
 
             foreach($fetchedMedias['medias'] as $key => $media){
                 $this->log("Handle media {$media->getShortCode()}");
@@ -444,13 +444,13 @@ class InstagramScraper
                 $this->log("New post: {$_media['short_code']} | {$_media['link']}");
             }
 
-            // Save next cursor
-            if($fetchedMedias['hasNextPage'] && isset($post))
+            // Save next cursor & scrap more media
+            if($fetchedMedias['hasNextPage'] && isset($post)){
                 $post->update(['next_cursor' => $fetchedMedias['maxId']]);
+                sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
-            // Scraping more
-            if($fetchedMedias['hasNextPage'])
                 return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
+            }
         }catch(\Exception $ex){
             $this->log("Can't get media for influencer @{$influencer->username}", $ex);
 
