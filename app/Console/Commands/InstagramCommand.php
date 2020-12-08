@@ -83,7 +83,6 @@ class InstagramCommand extends Command
         // Scrap each influencer details
         foreach($influencers as $influencer){
             try{
-                dd($influencer->posts()->count(), $influencer->medias);
                 // Ignore last updated influencers
                 if($influencer->posts()->count() === $influencer->medias)
                     continue;
