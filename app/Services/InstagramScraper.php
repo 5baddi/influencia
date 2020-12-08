@@ -411,14 +411,11 @@ class InstagramScraper
             $max = $influencer->medias - $influencer->posts()->count();
 
             // Scrap medias
-            $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            dd($fetchedMedias['medias']);
-            if(!isset($fetchedMedias['medias']))
-                return;
+            $result = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
+            $fetchedMedias = $result['medias'] ?? $result;
+            $this->log("Start scraping next " . sizeof($fetchedMedias) . " posts...");
 
-            $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
-
-            foreach($fetchedMedias['medias'] as $key => $media){
+            foreach($fetchedMedias as $key => $media){
                 $this->log("Handle media {$media->getShortCode()}");
 
                 // Check media if already exists
@@ -449,18 +446,18 @@ class InstagramScraper
             }
 
             // Save next cursor & scrap more media
-            if($fetchedMedias['hasNextPage'] && isset($post)){
-                $post->update(['next_cursor' => $fetchedMedias['maxId']]);
+            if($result['hasNextPage'] && isset($result['maxId'], $post)){
+                $post->update(['next_cursor' => $result['maxId']]);
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
-                return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
+                return $this->getMedias($influencer, $result['maxId'], $max);
             }
         }catch(\Exception $ex){
             $this->log("Can't get media for influencer @{$influencer->username}", $ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex))
-                return $this->getMedias($influencer, (isset($fetchedMedias) && $fetchedMedias['hasNextPage']) ? $fetchedMedias['maxId'] : null, $max);
+                return $this->getMedias($influencer, (isset($result) && $result['hasNextPage']) ? $result['maxId'] : null, $max);
 
             throw $ex;
         }
