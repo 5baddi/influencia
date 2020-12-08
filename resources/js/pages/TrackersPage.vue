@@ -97,7 +97,7 @@ export default {
                     name: "Status",
                     field: "status",
                     callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued !== 'failed' ? row.queued : 'Waiting..') + '</span>';
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
                     }
                 },
                 {
