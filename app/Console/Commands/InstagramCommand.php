@@ -77,7 +77,7 @@ class InstagramCommand extends Command
     private function scrapInfluencers() : void
     {
         // Get influencers
-        $influencers = Influencer::with(['trackers', 'posts'])->get();
+        $influencers = Influencer::with(['trackers', 'posts'])->orderBy('created_at', 'asc')->get();
         $this->info("Number of account to sync: " . $influencers->count());
 
         // Scrap each influencer details
