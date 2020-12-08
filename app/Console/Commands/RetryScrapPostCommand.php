@@ -39,15 +39,25 @@ class RetryScrapPostCommand extends Command
      */
     public function handle()
     {
+        // Init start at time
+        $startTaskAt = microtime(true);
+        $this->info("=== Start retry failed scrap post jobs ===");
+
         // Get failed trackers
         $trackers = Tracker::where('queued', 'failed')->get();
+        $this->info("Failed jobs: {$trackers->count()}");
 
         foreach($trackers as $tracker){
             // Update tracker queued status
             $tracker->update(['queued', 'pending']);
-            
+            $this->info("Re-send tracker ID: {$tracker->id}");
+
             // Put tracker in the queue
             ScrapPostJob::dispatch($tracker)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
         }
+
+        $this->info("=== Done ===");
+        $endTaskAt = microtime(true) - $startTaskAt;
+        $this->info("Total Execution Time: " . Carbon::createFromTimestamp($endTaskAt)->toTimeString());
     }
 }
