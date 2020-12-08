@@ -445,6 +445,7 @@ class InstagramScraper
             // Save next cursor & scrap more media
             if(isset($result['maxId'], $result['hasNextPage'], $post) && $result['hasNextPage'] === true){
                 $post->update(['next_cursor' => $result['maxId']]);
+                $this->log("Get more media from next cursor: {$result['maxId']}");
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
                 return $this->getMedias($influencer, $result['maxId'], $max);
