@@ -45,7 +45,7 @@
                     </ul>
                 </div>
                 <div class="influencer-details-bar">
-                    <span class="influencer-details-bar-instagram" style="width:100%">
+                    <span :class="'influencer-details-bar-' + influencer.platform" style="width:100%">
                         <i class="fab fa-instagram"></i>&nbsp;{{ nbr().abbreviate(influencer.followers) }}
                     </span>
                 </div>
