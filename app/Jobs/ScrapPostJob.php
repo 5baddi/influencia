@@ -97,7 +97,7 @@ class ScrapPostJob implements ShouldQueue
         Log::error("Failed to extract Post info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
 
         // Set tracker as pending until retry
-        $this->tracker->update(['queued' => 'pending']);
+        $this->tracker->update(['queued' => 'failed']);
     }
 
     /**

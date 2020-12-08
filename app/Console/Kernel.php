@@ -5,6 +5,7 @@ namespace App\Console;
 use App\Console\Commands\InstagramCommand;
 use App\Console\Commands\AppUpdaterCommand;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\RetryScrapPostCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -16,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         AppUpdaterCommand::class,
-        InstagramCommand::class
+        InstagramCommand::class,
+        RetryScrapPostCommand::class,
     ];
 
     /**
@@ -39,6 +41,11 @@ class Kernel extends ConsoleKernel
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
+            ->everyMinute()
+            ->withoutOverlapping();
+        
+        // Retry failed scrap post jobs
+        $schedule->command('scrap:retry')
             ->everyMinute()
             ->withoutOverlapping();
             
