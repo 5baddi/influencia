@@ -397,24 +397,22 @@ class InstagramScraper
             $this->authenticate();
 
             // Start from last inserted media
-            $lastPost = InfluencerPost::where('influencer_id', $influencer->id);
-            if(!is_null($nextCursor) && $nextCursor !== '')
-                $lastPost->where('next_cursor', $nextCursor);
+            if(!is_null($nextCursor) && $nextCursor !== ''){
+                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)
+                                ->where('next_cursor', $nextCursor)
+                                ->first();
+            }
                 
-            $lastPost = $lastPost->first();
-            $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
+            $maxID = isset($lastPost) ? $lastPost->next_cursor : '';
             if($maxID !== '')
                 $this->log("Start scraping from " . $maxID);
 
-            // Calculate max per request
-            $max = $influencer->medias - $influencer->posts()->count();
-            
             // Scrap medias
-            $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            if(isset($fetchedMedias['medias']))
-                $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
+            $result = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
+            $fetchedMedias = $result['medias'] ?? $result;
+            $this->log("Start scraping next " . sizeof($fetchedMedias) . " posts...");
 
-            foreach($fetchedMedias['medias'] as $key => $media){
+            foreach($fetchedMedias as $key => $media){
                 $this->log("Handle media {$media->getShortCode()}");
 
                 // Check media if already exists
@@ -445,18 +443,20 @@ class InstagramScraper
             }
 
             // Save next cursor & scrap more media
-            if($fetchedMedias['hasNextPage'] && isset($post)){
-                $post->update(['next_cursor' => $fetchedMedias['maxId']]);
+            if(isset($result['maxId'], $result['hasNextPage'], $post) && $result['hasNextPage'] === true){
+                $nextCursor = $result['maxId'];
+                $post->update(['next_cursor' => $nextCursor]);
+                $this->log("Get more media from next cursor: {$nextCursor}");
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
-                return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
+                return $this->getMedias($influencer, $nextCursor, $max);
             }
         }catch(\Exception $ex){
             $this->log("Can't get media for influencer @{$influencer->username}", $ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex))
-                return $this->getMedias($influencer, (isset($fetchedMedias) && $fetchedMedias['hasNextPage']) ? $fetchedMedias['maxId'] : null, $max);
+                return $this->getMedias($influencer, $nextCursor, $max);
 
             throw $ex;
         }

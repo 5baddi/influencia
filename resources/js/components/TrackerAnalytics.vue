@@ -72,7 +72,7 @@
             <canvas id="sentiments-chart"></canvas>
             <span>Based on {{ tracker.comments_count }} comments</span>
         </div>
-        <div class="card emojis" v-if="tracker.top_three_emojis">
+        <div class="card emojis" v-if="tracker.top_three_emojis && tracker.top_three_emojis.top && Object.values(tracker.top_three_emojis.top).length > 0">
             <h5>Top {{ tracker.top_three_emojis.top && Object.values(tracker.top_three_emojis.top).length > 1 ? Object.values(tracker.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
                 <li v-for="(emoji, index) in tracker.top_three_emojis.top" :key="index">
@@ -84,7 +84,7 @@
         </div>
     </div>
 
-    <div class="by-influencers">
+    <div class="by-influencers" v-if="tracker.type === 'post' && tracker.influencers">
         <h4>Performance breakdown by Influencer</h4>
         <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" />
     </div>
@@ -141,83 +141,85 @@ export default {
         }
     },
     mounted() {
-        // Comments sentiments
-        if (typeof this.tracker.sentiments_positive === 'number' && typeof this.tracker.sentiments_neutral === 'number' && typeof this.tracker.sentiments_negative === 'number') {
-            this.createDoughtnutChart('sentiments-chart', {
-                datasets: [{
-                    data: [
-                        this.tracker.sentiments_positive.toFixed(2),
-                        this.tracker.sentiments_neutral.toFixed(2),
-                        this.tracker.sentiments_negative.toFixed(2)
-                    ],
-                    backgroundColor: [
-                        "#AFD75C",
-                        "#999999",
-                        "#ED435A" //#d93176
-                    ],
-                }],
-                labels: [
-                    'Positive ' + this.tracker.sentiments_positive.toFixed(2),
-                    'Neutral ' + this.tracker.sentiments_neutral.toFixed(2),
-                    'Negative ' + this.tracker.sentiments_negative.toFixed(2),
-                ]
-            });
-        }
+        if(typeof this.tracker.type !== "undefined" && this.tracker.type === "post"){
+            // Comments sentiments
+            if (typeof this.tracker.sentiments_positive === 'number' && typeof this.tracker.sentiments_neutral === 'number' && typeof this.tracker.sentiments_negative === 'number') {
+                this.createDoughtnutChart('sentiments-chart', {
+                    datasets: [{
+                        data: [
+                            this.tracker.sentiments_positive.toFixed(2),
+                            this.tracker.sentiments_neutral.toFixed(2),
+                            this.tracker.sentiments_negative.toFixed(2)
+                        ],
+                        backgroundColor: [
+                            "#AFD75C",
+                            "#999999",
+                            "#ED435A" //#d93176
+                        ],
+                    }],
+                    labels: [
+                        'Positive ' + this.tracker.sentiments_positive.toFixed(2),
+                        'Neutral ' + this.tracker.sentiments_neutral.toFixed(2),
+                        'Negative ' + this.tracker.sentiments_negative.toFixed(2),
+                    ]
+                });
+            }
 
-        // Communities
-        if (this.tracker.communities && this.tracker.communities > 0) {
-            this.createDoughtnutChart('communities-chart', {
-                datasets: [{
-                    data: [this.tracker.communities],
-                    backgroundColor: ['#d93176']
-                }],
-                labels: ['Instagram']
-            });
-        }
+            // Communities
+            if (this.tracker.communities && this.tracker.communities > 0) {
+                this.createDoughtnutChart('communities-chart', {
+                    datasets: [{
+                        data: [this.tracker.communities],
+                        backgroundColor: ['#d93176']
+                    }],
+                    labels: ['Instagram']
+                });
+            }
 
-        // Impressions
-        if (this.tracker.impressions && this.tracker.impressions > 0) {
-            this.createDoughtnutChart('impressions-chart', {
-                datasets: [{
-                    data: [this.tracker.impressions],
-                    backgroundColor: ['#d93176']
-                }],
-                labels: ['Instagram']
-            });
-        }
+            // Impressions
+            if (this.tracker.impressions && this.tracker.impressions > 0) {
+                this.createDoughtnutChart('impressions-chart', {
+                    datasets: [{
+                        data: [this.tracker.impressions],
+                        backgroundColor: ['#d93176']
+                    }],
+                    labels: ['Instagram']
+                });
+            }
 
-        // Videos views
-        if (this.tracker.views && this.tracker.views > 0) {
-            this.createDoughtnutChart('views-chart', {
-                datasets: [{
-                    data: [this.tracker.views],
-                    backgroundColor: ['#d93176']
-                }],
-                labels: ['Instagram']
-            });
-        }
+            // Videos views
+            if (this.tracker.views && this.tracker.views > 0) {
+                this.createDoughtnutChart('views-chart', {
+                    datasets: [{
+                        data: [this.tracker.views],
+                        backgroundColor: ['#d93176']
+                    }],
+                    labels: ['Instagram']
+                });
+            }
 
-        // Engagements
-        if (this.tracker.engagements && this.tracker.engagements > 0) {
-            this.createDoughtnutChart('engagements-chart', {
-                datasets: [{
-                    data: [this.tracker.engagements],
-                    backgroundColor: ['#d93176']
-                }],
-                labels: ['Instagram']
-            });
-        }
+            // Engagements
+            if (this.tracker.engagements && this.tracker.engagements > 0) {
+                this.createDoughtnutChart('engagements-chart', {
+                    datasets: [{
+                        data: [this.tracker.engagements],
+                        backgroundColor: ['#d93176']
+                    }],
+                    labels: ['Instagram']
+                });
+            }
 
-        // Posts
-        if (this.tracker.posts_count && this.tracker.posts_count > 0) {
-            let postsAndStoriesLabel = 'Instagram: ' + (this.tracker.posts_count ? this.tracker.posts_count : 0) + ' including ' + (this.tracker.stories_count ? this.tracker.stories_count : 0) + ' stories';
-            this.createDoughtnutChart('posts-chart', {
-                datasets: [{
-                    data: [this.tracker.posts_count],
-                    backgroundColor: ['#d93176']
-                }],
-                labels: [postsAndStoriesLabel]
-            });
+            // Posts
+            if (this.tracker.posts_count && this.tracker.posts_count > 0) {
+                let postsAndStoriesLabel = 'Instagram: ' + (this.tracker.posts_count ? this.tracker.posts_count : 0) + ' including ' + (this.tracker.stories_count ? this.tracker.stories_count : 0) + ' stories';
+                this.createDoughtnutChart('posts-chart', {
+                    datasets: [{
+                        data: [this.tracker.posts_count],
+                        backgroundColor: ['#d93176']
+                    }],
+                    labels: [postsAndStoriesLabel]
+                });
+            }
         }
     },
     data: () => ({
