@@ -28,7 +28,7 @@ class ScrapPostJob implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 5;
+    public $tries = 0;
 
     /**
      * The number of seconds the job can run before timing out.
@@ -52,16 +52,6 @@ class ScrapPostJob implements ShouldQueue
     public function __construct(Tracker $tracker)
     {
         $this->tracker = $tracker;
-    }
-
-    /**
-     * Determine the time at which the job should timeout.
-     *
-     * @return \DateTime
-     */
-    public function retryUntil()
-    {
-        return now()->addMinutes(5);
     }
 
     /**
