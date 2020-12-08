@@ -397,12 +397,13 @@ class InstagramScraper
             $this->authenticate();
 
             // Start from last inserted media
-            $lastPost = InfluencerPost::where('influencer_id', $influencer->id);
-            if(!is_null($nextCursor) && $nextCursor !== '')
-                $lastPost->where('next_cursor', $nextCursor);
+            if(!is_null($nextCursor) && $nextCursor !== ''){
+                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)
+                                ->where('next_cursor', $nextCursor)
+                                ->first();
+            }
                 
-            $lastPost = $lastPost->first();
-            $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
+            $maxID = isset($lastPost) ? $lastPost->next_cursor : '';
             if($maxID !== '')
                 $this->log("Start scraping from " . $maxID);
 
@@ -411,7 +412,7 @@ class InstagramScraper
 
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            dd($fetchedMedias);
+            dd($fetchedMedias['medias']);
             if(!isset($fetchedMedias['medias']))
                 return;
 
