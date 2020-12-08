@@ -72,6 +72,11 @@ class ScrapPostJob implements ShouldQueue
     public function handle(InstagramScraper $instagram, YoutubeScraper $youtube)
     {
         try{
+            // Verify tracker is not deleted yet
+            $exists = Tracker::where('id', $this->tracker->id)->exists();
+            if(!$exists)
+                throw new \Exception("Tracker not exists any more! Maybe it's deleted");
+
             // Check tracker type
             if($this->tracker->type !== 'post' || is_null($this->tracker->url))
                 throw new \Exception("Invalid tracker type or URL's incorrect!");
