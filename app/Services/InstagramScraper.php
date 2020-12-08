@@ -425,10 +425,6 @@ class InstagramScraper
                 // Set media influencer ID
                 $_media['influencer_id'] = $influencer->id;
 
-                // Set end cursor
-                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'] && isset($fetchedMedias['maxId']) && $fetchedMedias['maxId'] !== '')
-                    $_media['next_cursor'] = $fetchedMedias['maxId'];
-
                 // Store media
                 $post = InfluencerPost::create($_media);
 
@@ -443,10 +439,11 @@ class InstagramScraper
                 });
 
                 $this->log("New post: {$_media['short_code']} | {$_media['link']}");
-
-                // Unset scraped media
-                unset($fetchedMedias['medias'][$key]);
             }
+
+            // Save next cursor
+            if($fetchedMedias['hasNextPage'] && isset($post))
+                $post->update(['next_cursor' => $fetchedMedias['maxId']]);
 
             // Scraping more
             if($fetchedMedias['hasNextPage'])
