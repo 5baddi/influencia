@@ -131,9 +131,6 @@ class InstagramCommand extends Command
      */
     private function updateInfluencers() : void
     {
-        // Init 
-        $ignoreInstagram = false;
-
         try{
             // Load all influencers
             $influencers = Influencer::with(['posts'])->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())->get();
@@ -144,51 +141,42 @@ class InstagramCommand extends Command
                 if($influencer->posts->count() !== $influencer->medias)
                     continue;
 
-                // Update instagram media
-                if($influencer->platform === 'instagram' && !$ignoreInstagram){
-                    // Break process if last one executed less than 10 minutes
-                    if($influencer->updated_at->diffInMinutes(Carbon::now()->subMinutes(10)) === 0){
-                        $ignoreInstagram = true;
-                        continue;
-                    }
-                        
-                    // Scrap account details
-                    $this->info("Start scraping account @" . $influencer->username);
-                    $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+                // Scrap account details
+                $this->info("Start scraping account @" . $influencer->username);
+                $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
-                    // Update influencer
-                    $influencer->update($accountDetails);
-                    $this->info("Successfully updated influencer @" . $influencer->username);
-                    
-                    foreach($influencer->posts as $post){
-                        // Get online media
-                        $media = $this->instagramScraper->getMedia($post->short_code);
-                        $this->info("Post {$media['short_code']} successfully scraped!");
-
-                        // Update comments if post linked to a tracker
-                        $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
-                        if($mediaTrackersCount > 0){
-                            $sentiments = $this->instagramScraper->analyzeMedia($media);
-                            $media = array_merge($media, $sentiments);
-                        }
-
-                        // Update local media
-                        $files = $media['files'];
-                        unset($media['files']);
-                        $post->update($media);
-
-                        // Update media assets
-                        array_walk($files, function($file) use ($post){
-                            if(empty($file) || is_null($file) || !is_array($file))
-                                return;
+                // Update influencer
+                $influencer->update($accountDetails);
+                $this->info("Successfully updated influencer @" . $influencer->username);
                 
-                            // Push added media record
-                            $file = array_merge($file, ['post_id' =>  $post->id]);
-                            InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-                        });
+                foreach($influencer->posts as $post){
+                    // Get online media
+                    $media = $this->instagramScraper->getMedia($post->short_code);
+                    $this->info("Post {$media['short_code']} successfully scraped!");
 
-                        $this->info("Post {$post->short_code} successfully updated.");
+                    // Update comments if post linked to a tracker
+                    $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
+                    if($mediaTrackersCount > 0){
+                        $sentiments = $this->instagramScraper->analyzeMedia($media);
+                        $media = array_merge($media, $sentiments);
                     }
+
+                    // Update local media
+                    $files = $media['files'];
+                    unset($media['files']);
+                    $post->update($media);
+
+                    // Update media assets
+                    array_walk($files, function($file) use ($post){
+                        if(empty($file) || is_null($file) || !is_array($file))
+                            return;
+            
+                        // Push added media record
+                        $file = array_merge($file, ['post_id' =>  $post->id]);
+                        InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
+                    });
+
+                    $this->info("Post {$post->short_code} successfully updated.");
                 }
             }
         }catch(\Exception $exception){
