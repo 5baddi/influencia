@@ -152,7 +152,7 @@ class Tracker extends Model
         // Load visits
         $this->shortlink->load('visits');
 
-        $this->shortlink->visits->whereNotNull('country_code')->orWhere('country_code', '!=', '')->groupBy('country_code');
+        // $this->shortlink->visits->whereNotNull('country_code')->orWhere('country_code', '!=', '')->groupBy('country_code');
 
         return [];
     }
