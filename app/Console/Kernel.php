@@ -31,28 +31,29 @@ class Kernel extends ConsoleKernel
     {
         // App updater
         $schedule->command('updater:app')
-            ->dailyAt('00:00')
-            ->withoutOverlapping();
+            ->dailyAt('00:00');
             
         // Start jobs queue
         $schedule->command('queue:work --queue=high,default,trackers')
             ->everyMinute()
-            ->withoutOverlapping();
+            ->runInBackground()
+            ->withoutOverlapping(60);
+
+        // Retry failed scrap post jobs
+        $schedule->command('scrap:retry')
+            ->everyMinute()
+            ->runInBackground()
+            ->withoutOverlapping(10);
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
             ->everyMinute()
-            ->withoutOverlapping();
-        
-        // Retry failed scrap post jobs
-        $schedule->command('scrap:retry')
-            ->everyMinute()
-            ->withoutOverlapping();
+            ->withoutOverlapping(60);
             
         // Influencers updater
         $schedule->command('scrap:instagram --update')
             ->everyMinute()
-            ->withoutOverlapping();
+            ->withoutOverlapping(60);
     }
 
     /**

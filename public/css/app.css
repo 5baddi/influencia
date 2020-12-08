@@ -7527,6 +7527,10 @@ span.status-danger::before {
   background-color: #DD2A7B;
 }
 
+.influencer-details-bar-youtube {
+  background-color: #c4302b;
+}
+
 .influencer-posts {
   display: flex;
   flex-wrap: wrap;
