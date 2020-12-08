@@ -81,7 +81,6 @@ class InfluencerController extends Controller
                 return response()->success("Influencer @{$influencer->name} created successfully.", $influencer, 201);
             }
         }catch(\Exception $ex){
-            dd($ex);
             Log::error($ex->getMessage());
             
             // Influencer does not exists
