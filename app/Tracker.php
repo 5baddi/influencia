@@ -32,6 +32,7 @@ class Tracker extends Model
         'sentiments_positive',
         'sentiments_neutral',
         'sentiments_negative',
+        'top_countries'
     ];
 
     /**
@@ -135,6 +136,25 @@ class Tracker extends Model
     public function influencers()
     {
         return $this->belongsToMany(Influencer::class, 'tracker_influencers');
+    }
+
+    /**
+     * Get top countries for shortlink tracker
+     *
+     * @return array
+     */
+    public function getTopCountriesAttribute() : array
+    {
+        // Ignore not URL's tracker
+        if($this->attributes['type'] !== 'url')
+            return [];   
+
+        // Load visits
+        $this->shortlink->load('visits');
+
+        $this->shortlink->visits->whereNotNull('country_code')->orWhere('country_code', '!=', '')->groupBy('country_code');
+
+        return [];
     }
 
     /**
