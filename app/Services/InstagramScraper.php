@@ -405,11 +405,14 @@ class InstagramScraper
             $maxID = !is_null($lastPost) ? $lastPost->next_cursor : '';
             if($maxID !== '')
                 $this->log("Start scraping from " . $maxID);
+
+            // Calculate max per request
+            $max = $influencer->medias - $influencer->posts()->count();
             
             // Scrap medias
             $fetchedMedias = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
-            $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
-            sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+            if(isset($fetchedMedias['medias']))
+                $this->log("Start scraping next " . sizeof($fetchedMedias['medias']) . " posts...");
 
             foreach($fetchedMedias['medias'] as $key => $media){
                 $this->log("Handle media {$media->getShortCode()}");
@@ -425,10 +428,6 @@ class InstagramScraper
                 // Set media influencer ID
                 $_media['influencer_id'] = $influencer->id;
 
-                // Set end cursor
-                if($key === array_key_last($fetchedMedias['medias']) && $fetchedMedias['hasNextPage'] && isset($fetchedMedias['maxId']) && $fetchedMedias['maxId'] !== '')
-                    $_media['next_cursor'] = $fetchedMedias['maxId'];
-
                 // Store media
                 $post = InfluencerPost::create($_media);
 
@@ -443,14 +442,15 @@ class InstagramScraper
                 });
 
                 $this->log("New post: {$_media['short_code']} | {$_media['link']}");
-
-                // Unset scraped media
-                unset($fetchedMedias['medias'][$key]);
             }
 
-            // Scraping more
-            if($fetchedMedias['hasNextPage'])
+            // Save next cursor & scrap more media
+            if($fetchedMedias['hasNextPage'] && isset($post)){
+                $post->update(['next_cursor' => $fetchedMedias['maxId']]);
+                sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
+
                 return $this->getMedias($influencer, $fetchedMedias['maxId'], $max);
+            }
         }catch(\Exception $ex){
             $this->log("Can't get media for influencer @{$influencer->username}", $ex);
 

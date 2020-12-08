@@ -50,7 +50,7 @@ class RetryScrapPostCommand extends Command
 
         foreach($trackers as $tracker){
             // Update tracker queued status
-            $tracker->update(['queued', 'pending']);
+            $tracker->update(['queued' => 'pending']);
             $this->info("Re-send tracker ID: {$tracker->id}");
 
             // Put tracker in the queue

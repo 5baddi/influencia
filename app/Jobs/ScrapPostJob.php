@@ -28,7 +28,7 @@ class ScrapPostJob implements ShouldQueue
      *
      * @var int
      */
-    public $tries = 5;
+    public $tries = 0;
 
     /**
      * The number of seconds the job can run before timing out.
@@ -55,16 +55,6 @@ class ScrapPostJob implements ShouldQueue
     }
 
     /**
-     * Determine the time at which the job should timeout.
-     *
-     * @return \DateTime
-     */
-    public function retryUntil()
-    {
-        return now()->addMinutes(5);
-    }
-
-    /**
      * Execute the job.
      *
      * @return void
@@ -72,6 +62,11 @@ class ScrapPostJob implements ShouldQueue
     public function handle(InstagramScraper $instagram, YoutubeScraper $youtube)
     {
         try{
+            // Verify tracker is not deleted yet
+            $exists = Tracker::where('id', $this->tracker->id)->exists();
+            if(!$exists)
+                throw new \Exception("Tracker not exists any more! Maybe it's deleted");
+
             // Check tracker type
             if($this->tracker->type !== 'post' || is_null($this->tracker->url))
                 throw new \Exception("Invalid tracker type or URL's incorrect!");
@@ -140,35 +135,16 @@ class ScrapPostJob implements ShouldQueue
             // Verify if media already exists
             $influencerMedia = InfluencerPost::where('short_code', $shortCode)->first();
 
-            // Scrap User details
+            // Scrap media details
             $media = $instagram->byMedia($shortCode);
-            if(!is_object($media) || is_null($media->getOwner()))
+            if(!is_object($media) || is_null($media->getOwner()) || is_null($media->getOwner()->getId()))
                 continue;
 
-            // Parse owner data
-            $account = $media->getOwner();
-            $accountDetails = [
-                'account_id'    =>  $account->getId(),
-                'username'      =>  $account->getUsername(),
-                'name'          =>  $account->getFullName(),
-                'pic_url'       =>  $account->getProfilePicUrl(),
-                'biography'     =>  $account->getBiography(),
-                'website'       =>  $account->getExternalUrl(),
-                'followers'     =>  $account->getFollowedByCount(),
-                'follows'       =>  $account->getFollowsCount(),
-                'medias'        =>  $account->getMediaCount(),
-                'is_business'   =>  $account->isBusinessAccount(),
-                'is_private'    =>  $account->isPrivate(),
-                'is_verified'   =>  $account->isVerified(),
-                'highlight_reel'    =>  $account->getHighlightReelCount(),
-                'business_category' =>  $account->getBusinessCategoryName(),
-                'business_email'    =>  $account->getBusinessEmail(),
-                'business_phone'    =>  $account->getBusinessPhoneNumber(),
-                'business_address'  =>  $account->getBusinessAddressJson(),
-            ];
+            // Scrap User details
+            $accountDetails = $instagram->byId($media->getOwner()->getId());
 
             // Check influencer if already exists
-            $influencer = Influencer::where('account_id', $account->getId())->first();
+            $influencer = Influencer::where('account_id', $media->getOwner()->getId())->first();
             if(is_null($influencer))
                 $influencer = Influencer::create($accountDetails);
             else
