@@ -80,9 +80,9 @@ class ScrapPostJob implements ShouldQueue
             $this->tracker->update(['queued' => 'progress']);
 
             if($this->tracker->platform === "instagram")
-                $this->handleInstagram();
+                $this->handleInstagram($instagram);
             elseif($this->tracker->platform === "youtube")
-                $this->handleYoutube();
+                $this->handleYoutube($youtube);
 
             // Set tracker as finished
             $this->tracker->update(['queued' => 'finished']);
@@ -117,9 +117,10 @@ class ScrapPostJob implements ShouldQueue
     /**
      * Handle Instagram media or story
      * 
+     * @param \App\Services\InstagramScraper $instagram
      * @return void
      */
-    private function handleInstagram() : void
+    private function handleInstagram(InstagramScraper $instagram) : void
     {
         // Disable console debugging
         InstagramScraper::disableDebugging();
@@ -212,9 +213,10 @@ class ScrapPostJob implements ShouldQueue
     /**
      * Handle Youtube video
      * 
+     * @param \App\Services\YoutubeScraper $youtube
      * @return void
      */
-    private function handleYoutube() : void
+    private function handleYoutube(YoutubeScraper $youtube) : void
     {
         // Parse URL's
         $_urls = $this->parseURLs();
