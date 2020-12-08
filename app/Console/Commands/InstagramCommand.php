@@ -93,7 +93,12 @@ class InstagramCommand extends Command
                 $this->info("Please wait until scraping all medias ...");
 
                 // Get next cursor
-                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)->whereNotNull('next_cursor')->latest()->first();
+                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)
+                                ->whereNotNull('next_cursor')
+                                ->orWhere('next_cursor', '!=', '')
+                                ->orderBy('id', 'desc')
+                                ->latest()
+                                ->first();
 
                 // Scrap new medias
                 $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
