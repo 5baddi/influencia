@@ -32,12 +32,6 @@ class Kernel extends ConsoleKernel
         // App updater
         $schedule->command('updater:app')
             ->dailyAt('00:00');
-            
-        // Start jobs queue
-        $schedule->command('queue:work --queue=high,default,trackers')
-            ->everyMinute()
-            ->runInBackground()
-            ->withoutOverlapping(60);
 
         // Retry failed scrap post jobs
         $schedule->command('scrap:retry')
