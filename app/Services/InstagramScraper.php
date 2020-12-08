@@ -444,18 +444,19 @@ class InstagramScraper
 
             // Save next cursor & scrap more media
             if(isset($result['maxId'], $result['hasNextPage'], $post) && $result['hasNextPage'] === true){
-                $post->update(['next_cursor' => $result['maxId']]);
-                $this->log("Get more media from next cursor: {$result['maxId']}");
+                $nextCursor = $result['maxId'];
+                $post->update(['next_cursor' => $nextCursor]);
+                $this->log("Get more media from next cursor: {$nextCursor}");
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
-                return $this->getMedias($influencer, $result['maxId'], $max);
+                return $this->getMedias($influencer, $nextCursor, $max);
             }
         }catch(\Exception $ex){
             $this->log("Can't get media for influencer @{$influencer->username}", $ex);
 
             // Use proxy
             if($this->isTooManyRequests($ex))
-                return $this->getMedias($influencer, (isset($result, $result['hasNextPage'])) ? $result['maxId'] : null, $max);
+                return $this->getMedias($influencer, $nextCursor, $max);
 
             throw $ex;
         }
