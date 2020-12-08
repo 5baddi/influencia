@@ -83,6 +83,14 @@ class InstagramCommand extends Command
         // Scrap each influencer details
         foreach($influencers as $influencer){
             try{
+                // Scrap account details
+                $this->info("Start scraping account @" . $influencer->username);
+                $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+
+                // Update influencer
+                $influencer->update($accountDetails);
+                $this->info("Successfully updated influencer @" . $influencer->username);
+
                 // Ignore last updated influencers
                 if($influencer->posts()->count() === $influencer->medias)
                     continue;
