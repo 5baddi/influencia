@@ -18,11 +18,11 @@ miniToastr.init({
     style: {
         '.mini-toastr': {
             position: 'fixed',
-            'z-index': 99999,
-            right: '16px',
+            'z-index': 999999999,
+            right: '20px',
             left: "auto",
             top: 'auto',
-            bottom: "16px"
+            bottom: "20px"
         },
         '.mini-toastr__notification': {
             "font-family": 'inherit',

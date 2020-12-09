@@ -25,14 +25,14 @@
             </div>
          </header>
       </div>
-      <div class="card-with-table">
+      <!-- <div class="card-with-table">
          <h4>Latest added campaigns</h4>
          <DataTable :columns="latestCampaignsColumns" :nativeData="dashboard.latestCampaigns" :withPagination="false"/>
       </div>
       <div class="card-with-table">
          <h4>Latest added trackers</h4>
          <DataTable :columns="latestTrackersColumns" :nativeData="dashboard.latestTrackers" :withPagination="false"/>
-      </div>
+      </div> -->
    </div>
 </template>
 <script>

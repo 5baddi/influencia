@@ -31,7 +31,7 @@ class BrandPolicy
      */
     public function view(User $user, Brand $brand)
     {
-        $related = $brand->load('users')->find($user);
+        $related = $brand->load('users')->users->find($user);
 
         return !is_null($related) || $user->is_superadmin;
     }
@@ -56,7 +56,7 @@ class BrandPolicy
      */
     public function update(User $user, Brand $brand)
     {
-        $related = $brand->load('users')->find($user);
+        $related = $brand->load('users')->users->find($user);
 
         return (Gate::allows('edit_brand') && !is_null($related)) || $user->is_superadmin;
     }
@@ -70,7 +70,7 @@ class BrandPolicy
      */
     public function delete(User $user, Brand $brand)
     {
-        $related = $brand->load('users')->find($user);
+        $related = $brand->load('users')->users->find($user);
 
         return (Gate::allows('delete_brand') && !is_null($related)) || $user->is_superadmin;
     }

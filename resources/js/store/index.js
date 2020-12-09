@@ -226,7 +226,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/influencers", data)
                 .then(response => {
-                    if(response.status === 201){
+                    if(response.status === 200 && response.data.success){
                         resolve(response.data)
                     }else{
                         throw new Error("Something going wrong!");
@@ -266,7 +266,7 @@ const actions = {
                 }
             })
                 .then(response => {
-                    if(response.status === 201){
+                    if(response.status === 201 && response.data.success){
                         commit('setBrand', { brand: response.data.content })
                         resolve(response.data)
                     }else{
@@ -288,7 +288,7 @@ const actions = {
                     }
                 })
                     .then(response => {
-                        if(response.status === 200){
+                        if(response.status === 200 && response.data.success){
                             commit('setBrand', { brand: response.data.content })
                             resolve(response.data)
                         }else{
@@ -431,6 +431,8 @@ const actions = {
                         resolve(response.data);
                     })
                     .catch((error) => {
+                        commit("setActiveBrand", {brand: null});
+
                         reject(error);
                     });
             });
@@ -539,7 +541,7 @@ const mutations = {
         state.users.push(user)
     },
     setActiveBrand: (state, { brand }) => {
-        if (!brand && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
+        if (!brand && state.brands !== null && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
             state.brands.forEach((item, index) => {
                 if (item.id == state.user.selected_brand_id) {
                     brand = item

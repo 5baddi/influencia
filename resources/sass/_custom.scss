@@ -612,7 +612,13 @@ span.status{
     }
 }
 
-.mini-toastr {
-    z-index: 99999999 !important;
+.dashboard__navigation--item .text p{
+    line-height: unset !important;
+}
+.dashboard__navigation--item .text{
+    font-size: 10pt !important;
+}
+.dashboard__navigation--item img{
+    width: 35px !important;
 }
 

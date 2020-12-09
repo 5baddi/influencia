@@ -84,6 +84,12 @@ class ScrapURLContentJob implements ShouldQueue
         }
     }
 
+    /**
+     * On job failed
+     *
+     * @param \Exception|null $exception
+     * @return void
+     */
     public function fail($exception = null)
     {
         // Set tracker on failed status

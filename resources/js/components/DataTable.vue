@@ -195,9 +195,6 @@ export default {
         responseField: {
             type: String
         },
-        endPoint: {
-            type: String
-        },
         nativeData: {
             type: Array
         },
@@ -275,44 +272,14 @@ export default {
                 parsedData.push(rowData);
             });
 
+
+            // Set loading to false
+            this.isLoading = false;
+
             return parsedData;
         },
     },
-    notifications: {
-        // showErrorDT: {
-        //     type: "error",
-        //     title: "Error",
-        //     message: "Something going wrong! Please try again.."
-        // }
-    },
     methods: {
-        setupStream() {
-            if (typeof this.endPoint === "undefined")
-                return;
-
-            // Init Event source
-            this.es = new EventSource(this.endPoint);
-
-            // Listen to data
-            this.es.onmessage = function (event) {
-                this.data = JSON.parse(event.data);
-            };
-
-            // Catch error
-            this.es.addEventListener('error', event => {
-                // if (event.readyState == EventSource.CLOSED)
-                //     this.showErrorDT({
-                //         message: 'lost connection... giving up!'
-                //     });
-            }, false);
-
-            // Close
-            this.es.addEventListener('close', event => {
-                this.es.close();
-            }, false);
-
-            this.isLoading = false;
-        },
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
@@ -338,9 +305,6 @@ export default {
 
                 return this.data = this.nativeData;
             }
-            // Using Event source
-            // if (typeof this.endPoint !== "undefined" && this.es === null)
-            // return this.setupStream();
 
             // Using vuex
             if (typeof this.fetchMethod === "undefined")

@@ -174,7 +174,6 @@ export default {
             this.$store.dispatch("addInfluencer", influencer)
                 .then(response => {
                     this.$refs.influencerFormModal.close();
-                    this.$refs.influencersDT.reloadData();
                     this.showSuccess({
                         message: response.message
                     });
