@@ -111,7 +111,7 @@ class TrackerController extends Controller
         }
 
         // Dispatch scraping job
-        if($tracker->platform === 'instagram' && $tracker->type === 'post')
+        if(in_array($tracker->platform, ['instagram', 'youtube']) && $tracker->type === 'post')
             ScrapPostJob::dispatch($tracker)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
 
         return response()->success(
