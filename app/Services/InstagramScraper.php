@@ -416,28 +416,27 @@ class InstagramScraper
                 $this->log("Handle media {$media->getShortCode()}");
 
                 // Check media if already exists
-                $existsMedia = InfluencerPost::where('post_id', $media->getId())->first();
-                if(!is_null($existsMedia))
-                    continue;
+                $post = InfluencerPost::where('post_id', $media->getId())->first();
+                if(is_null($post)){
+                    // Scrap media
+                    $_media = $this->getMedia($media);
 
-                // Scrap media
-                $_media = $this->getMedia($media);
+                    // Set media influencer ID
+                    $_media['influencer_id'] = $influencer->id;
 
-                // Set media influencer ID
-                $_media['influencer_id'] = $influencer->id;
+                    // Store media
+                    $post = InfluencerPost::create($_media);
 
-                // Store media
-                $post = InfluencerPost::create($_media);
-
-                // Store media assets 
-                array_walk($_media['files'], function($file) use ($post){
-                    if(empty($file) || is_null($file) || !is_array($file))
-                        return;
-        
-                    // Push added media record
-                    $file = array_merge($file, ['post_id' =>  $post->id]);
-                    InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-                });
+                    // Store media assets 
+                    array_walk($_media['files'], function($file) use ($post){
+                        if(empty($file) || is_null($file) || !is_array($file))
+                            return;
+            
+                        // Push added media record
+                        $file = array_merge($file, ['post_id' =>  $post->id]);
+                        InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
+                    });
+                }
 
                 // Save next cursor
                 if($key === array_key_last($fetchedMedias) && isset($result['maxId'], $result['hasNextPage']) && $result['hasNextPage'] === true)
