@@ -140,7 +140,7 @@ class YoutubeScraper
                 "language"          =>  $obj->items[0]->snippet->defaultLanguage ?? null,
                 "audio_language"    =>  $obj->items[0]->snippet->defaultAudioLanguage ?? null,
                 "is_livebroadcast"  =>  $obj->items[0]->snippet->liveBroadcastContent !== "none",
-                "thumbnail_url"     =>  $obj->items[0]->snippet->thumbnails->maxres->url,
+                "thumbnail_url"     =>  $obj->items[0]->snippet->thumbnails->maxres->url ?? $obj->items[0]->snippet->thumbnails->default->url,
                 "video_views"       =>  $obj->items[0]->statistics->viewCount,
                 "video_duration"    =>  Carbon::parse((new \DateInterval($obj->items[0]->contentDetails->duration))->format("%H:%I:%S"))->diffInSeconds(),
                 "comments"          =>  $obj->items[0]->statistics->commentCount,
