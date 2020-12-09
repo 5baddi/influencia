@@ -144,8 +144,11 @@ class InstagramCommand extends Command
                 
                 foreach($influencer->posts as $post){
                     // Get online media
-                    $media = $this->instagramScraper->getMedia($post->short_code);
+                    $_media = $this->instagramScraper->byMedia($post->short_code);
+                    $media = $this->instagramScraper->getMedia($_media);
                     $this->info("Post {$media['short_code']} successfully scraped!");
+
+                    // TODO: remove deleted media
 
                     // Update comments if post linked to a tracker
                     $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
