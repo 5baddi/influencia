@@ -412,7 +412,6 @@ class InstagramScraper
             $fetchedMedias = $result['medias'] ?? $result;
             $this->log("Start scraping next " . sizeof($fetchedMedias) . " posts...");
 
-            dd($result);
             foreach($fetchedMedias as $key => $media){
                 $this->log("Handle media {$media->getShortCode()}");
 
