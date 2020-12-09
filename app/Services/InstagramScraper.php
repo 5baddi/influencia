@@ -439,17 +439,19 @@ class InstagramScraper
                     InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
                 });
 
+                // Save next cursor
+                if($key === array_key_last($fetchedMedias) && isset($result['maxId'], $result['hasNextPage']) && $result['hasNextPage'] === true)
+                    $post->update(['next_cursor' => $result['maxId']]);
+
                 $this->log("New post: {$_media['short_code']} | {$_media['link']}");
             }
 
             // Save next cursor & scrap more media
-            if(isset($result['maxId'], $result['hasNextPage'], $post) && $result['hasNextPage'] === true){
-                $nextCursor = $result['maxId'];
-                $post->update(['next_cursor' => $nextCursor]);
-                $this->log("Get more media from next cursor: {$nextCursor}");
+            if(isset($result['maxId'], $result['hasNextPage']) && $result['hasNextPage'] === true){
+                $this->log("Get more media from next cursor: {$result['maxId']}");
                 sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
-                return $this->getMedias($influencer, $nextCursor, $max);
+                return $this->getMedias($influencer, $result['maxId'], $max);
             }
         }catch(\Exception $ex){
             $this->log("Can't get media for influencer @{$influencer->username}", $ex);
