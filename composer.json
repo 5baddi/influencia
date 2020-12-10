@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "5baddi/php-goose-with-guzzlehttp7": "^1.0",
+        "beyondcode/laravel-websockets": "^1.9",
         "davmixcool/php-sentiment-analyzer": "^1.2",
         "fideloper/proxy": "^4.4",
         "florianv/laravel-swap": "^2.2",
@@ -30,7 +31,7 @@
         "phpfastcache/phpfastcache": "^8.0",
         "phpoffice/phpspreadsheet": "^1.15",
         "predis/predis": "^1.1",
-        "pusher/pusher-php-server": "^4.1",
+        "pusher/pusher-php-server": "~3.0",
         "raiym/instagram-php-scraper": "0.9.10",
         "ryancco/laravel-uuid-models": "^1.0",
         "spekulatius/phpscraper": "^0.4.1",

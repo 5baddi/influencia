@@ -83,9 +83,6 @@ class ScrapInfluencerJob implements ShouldQueue
         }
 
         // Notify user
-        $this->user->notify(new CreateInfluencerJobState([
-            'username'      =>  $this->username,
-            'influencer_id' =>  isset($influencer, $influencer->id) ? $influencer->id : null
-        ]));
+        $this->user->notify(new CreateInfluencerJobState($this->user, $this->username, $influencer ?? null));
     }
 }

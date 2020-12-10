@@ -3,30 +3,48 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
-class CreateInfluencerJobState extends Notification
+class CreateInfluencerJobState extends Notification implements ShouldQueue, ShouldBroadcast
 {
     use Queueable;
 
     /**
-     * Job details
+     * User
      * 
-     * @var array
+     * @var \App\User
      */
-    private $details;
+    private $user;
+    
+    /**
+     * Username
+     * 
+     * @var string
+     */
+    private $username;
+    
+    /**
+     * Influencer
+     * 
+     * @var \App\Influencer
+     */
+    private $influencer;
 
     /**
      * Create a new notification instance.
      *
-     * @param array $details
+     * @param \App\User $user
+     * @param string $username
+     * @param \App\Influencer|null $influencer
      * @return void
      */
-    public function __construct(array $details)
+    public function __construct(User $user, string $username, Influencer $influencer = null)
     {
-        $this->details = $details;
+        $this->user = $user;
+        $this->username = $username;
+        $this->influencer = $influencer;
     }
 
     /**
@@ -37,7 +55,7 @@ class CreateInfluencerJobState extends Notification
      */
     public function via($notifiable)
     {
-        return ['database'];
+        return ['database', 'broadcast'];
     }
 
     /**
@@ -49,7 +67,24 @@ class CreateInfluencerJobState extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'data'  =>  isset($this->details['influencer_id']) ? "Influencer @{$this->details['username']} added successfully." : "Failed to add influencer @{$this->details['username']}"
+            'data'  =>  !is_null($this->influencer) ? "Influencer @{$this->influencer->username} added successfully." : "Failed to add influencer @{$this->username}"
+        ];
+    }
+
+    /**
+     * Get the broadcast representation of the notification.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toBroadcast($notifiable)
+    {
+        return [
+            'data'  =>  [
+                'message'       =>  !is_null($this->influencer) ? "Influencer @{$this->influencer->username} added successfully." : "Failed to add influencer @{$this->username}",
+                'user'          =>  $this->user,
+                'influencer'    =>  $this->influencer
+            ]
         ];
     }
 }
