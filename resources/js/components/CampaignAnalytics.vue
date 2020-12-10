@@ -96,14 +96,21 @@
 
     <div class="by-influencers">
         <h4>List of trackers</h4>
-        <DataTable ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers" />
+        <DataTable ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers">
+            <th slot="header">Actions</th>
+            <td slot="body-row" slot-scope="row">
+                <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
+                    <i class="far fa-chart-bar"></i>
+                </router-link>
+            </td>
+        </DataTable>
     </div>
 
     <div class="posts-section" v-if="campaign && campaign.posts_count > 0">
         <h4>Posts</h4>
         <p>There are {{ campaign && campaign.posts_count ? campaign.posts_count : 0 }} posts for this campaign.</p>
-        <div class="campaign-posts" v-for="tracker in campaign.trackers" :key="tracker.id">
-            <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
+        <div class="campaign-posts" v-for="post in campaign.tracker_posts" :key="post.id">
+            <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" :href="post.link" target="_blank">
                 <img :src="post.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
                     <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>

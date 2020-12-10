@@ -48,7 +48,8 @@ class Campaign extends Model
         'comments_count',
         'all_trackers_count',
         'organic_posts',
-        'visits_evolution'
+        'visits_evolution',
+        'tracker_posts'
     ];
 
 
@@ -463,6 +464,30 @@ class Campaign extends Model
         }
 
         return $influencers;
+    }
+    
+    /**
+     * Merge trackers posts in one collection
+     * 
+     * @return mixed
+     */
+    public function getTrackerPostssAttribute()
+    {
+        $posts = collect();
+
+        foreach($this->trackers->load('posts') as $tracker){
+            if(is_null($tracker->posts))
+                continue;
+
+            foreach($tracker->posts as $post){
+                if($posts->contains('id', $post->id))
+                    continue;
+
+                $posts->add($post);
+            }
+        }
+
+        return $posts;
     }
 
     public function getInstagramPostsAttribute()
