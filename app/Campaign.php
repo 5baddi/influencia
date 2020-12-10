@@ -471,7 +471,7 @@ class Campaign extends Model
      * 
      * @return mixed
      */
-    public function getTrackerPostssAttribute()
+    public function getTrackerPostsAttribute()
     {
         $posts = collect();
 
