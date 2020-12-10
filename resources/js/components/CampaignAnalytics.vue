@@ -113,7 +113,7 @@
             <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" :href="post.link" target="_blank">
                 <img :src="post.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
-                    <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>
+                    <i class="fab fa-instagram"></i>
                     <i v-if="post.type === 'video' || post.type=== 'sidecar'" :class="'fas fa-' + (post.type === 'sidecar' ? 'images' : 'video')"></i>
                 </div>
                 <div :class="'campaign-posts-card-attr ' + (attrActive === post.id ? ' active' : '')">
