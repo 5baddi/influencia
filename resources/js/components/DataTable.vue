@@ -255,10 +255,10 @@ export default {
                             rowData[item.field] = item.callback.call(item, value);
                         // Currency symbol
                         else if (typeof item.currency === "string" && item.currency !== '')
-                            rowData[item.field] = val.toFixed(2).toLocaleString().replace(/,/g, ' ') + ' ' + item.currency;
+                            rowData[item.field] = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;
                         // Format number to K
                         else if (typeof item.isNbr === "boolean" && item.isNbr)
-                            rowData[item.field] = String(abbreviate(val)).toUpperCase().toLocaleString().replace(/,/g, ' ');
+                            rowData[item.field] = String(abbreviate(val)).toUpperCase();
                         else
                             rowData[item.field] = val;
 
