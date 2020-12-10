@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\User;
+use App\Influencer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -85,6 +87,13 @@ class CreateInfluencerJobState extends Notification implements ShouldQueue, Shou
                 'user'          =>  $this->user,
                 'influencer'    =>  $this->influencer
             ]
+        ];
+    }
+
+    public function broadcastOn()
+    {
+        return [
+            'useraction_' . $this->user->id
         ];
     }
 }
