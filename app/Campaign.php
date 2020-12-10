@@ -476,7 +476,7 @@ class Campaign extends Model
         $posts = collect();
 
         foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+            if($tracker->platform !== 'instagram' || is_null($tracker->posts))
                 continue;
 
             foreach($tracker->posts as $post){
