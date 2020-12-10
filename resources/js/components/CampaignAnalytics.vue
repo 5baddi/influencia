@@ -128,6 +128,9 @@
 </template>
 
 <script>
+import {
+    mapGetters
+} from "vuex";
 import abbreviate from 'number-abbreviate';
 import Chart from 'chart.js';
 
@@ -151,6 +154,9 @@ export default {
                 data: data
             });
         }
+    },
+    computed: {
+        ...mapGetters(["AuthenticatedUser"])
     },
     mounted() {
         // Comments sentiments
