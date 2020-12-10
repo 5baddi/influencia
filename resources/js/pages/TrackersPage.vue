@@ -19,19 +19,19 @@
     <div class="p-1" v-if="!tracker">
         <header class="cards">
             <div class="card">
-                <div class="number">{{ (campaigns.all && campaigns.all.length) ? campaigns.all.length : 0 }}</div>
+                <div class="number">{{ campaigns.all.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-                <div class="number">{{ (trackers && trackers.length) ? trackers.length : 0 }}</div>
+                <div class="number">{{ trackers.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
-                <div class="number">{{ campaigns && campaigns.impressions ? campaigns.impressions.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
+                <div class="number">{{ campaigns.impressions | formatedNbr }}</div>
                 <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
             <div class="card">
-                <div class="number">{{ campaigns && campaigns.communities ? campaigns.communities.toLocaleString().replace(/,/g, ' ') : '---' }}</div>
+                <div class="number">{{ campaigns.communities | formatedNbr }}</div>
                 <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
         </header>
@@ -79,6 +79,14 @@ export default {
     },
     watch: {
         $route: "initData"
+    },
+    filters: {
+        formatedNbr: function(value){
+            if(typeof value === "undefined" || value === 0 || value === null)
+                return '---';
+
+            return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
+        }
     },
     beforeRouteEnter(to, from, next) {
         next(vm => vm.initData());
