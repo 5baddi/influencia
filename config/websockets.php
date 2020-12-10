@@ -1,7 +1,5 @@
 <?php
 
-use BeyondCode\LaravelWebSockets\Dashboard\Http\Middleware\Authorize;
-
 return [
 
     /*
@@ -70,7 +68,7 @@ return [
      */
     'middleware' => [
         'web',
-        Authorize::class,
+        // \BeyondCode\LaravelWebSockets\Dashboard\Http\Middleware\Authorize::class,
         'internal'
     ],
 
