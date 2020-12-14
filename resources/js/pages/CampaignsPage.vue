@@ -40,16 +40,16 @@
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
-                        <i class="far fa-chart-bar"></i>
+                        <i class="far fa-chart-bar datatable-icon"></i>
                     </router-link>
                     <button v-if="($can('edit', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit campaign" @click="editCampaign(row.data.original)">
-                        <i class="fas fa-pen"></i>
+                        <i class="fas fa-pen datatable-icon"></i>
                     </button>
                     <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-                     <i class="far fa-stop-circle"></i>
+                     <i class="far fa-stop-circle datatable-icon"></i>
                   </button> -->
                     <button v-if="($can('delete', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Delete campaign" @click="deleteCampaign(row.data.original)">
-                        <i class="far fa-trash-alt"></i>
+                        <i class="far fa-trash-alt datatable-icon"></i>
                     </button>
                 </td>
             </DataTable>
@@ -81,21 +81,28 @@ export default {
                     field: "name"
                 },
                 {
-                    name: "Campaign status",
-                    field: "status",
-                    callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '"></span>';
-                    }
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
                 },
                 {
                     name: "Number of trackers",
                     field: "all_trackers_count"
                 },
                 {
-                    name: "Created by",
-                    field: "user_id",
+                    name: "Influencers",
+                    field: "influencers",
                     callback: function (row) {
-                        return '<span class="badge badge-success">' + row.user.name + '</span>';
+                        if (row.influencers.length === 0)
+                            return '-';
+
+                        let html = '';
+                        row.influencers.map(function (item, index) {
+                            // html += '<li>' + item.name.toUpperCase() + '</li>';
+                            html += '<span class="badge badge-success">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</span>';;
+                        });
+
+                        return html;
                     }
                 },
                 {
