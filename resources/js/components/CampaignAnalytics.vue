@@ -145,10 +145,14 @@ export default {
     },
     filters: {
         formatedNbr: function(value){
-            if(typeof value === "undefined" || value === 0 || value === null)
+            try{
+                if(typeof value === "undefined" || value === 0 || value === null)
                 return '---';
 
-            return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
+                return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
+            }catch(error){
+                return '---';
+            }
         }
     },
     methods: {
