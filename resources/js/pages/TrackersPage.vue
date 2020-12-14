@@ -137,7 +137,7 @@ export default {
                                 return '<i class="fab fa-2 fa-youtube" title="' + row.platform + '"></i>';
                                 break;
                             case "instagram":
-                                return '<i class="fab fa-2 fa-instagram" title="' + row.platform + '"></i>';
+                                return '<i class="fab fa-2 fa-instagram instagram-radio" title="' + row.platform + '"></i>';
                                 break;
                             default:
                                 return '<i class="fas fa-2 fa-globe" title="' + row.type + '"></i>';

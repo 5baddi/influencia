@@ -21,7 +21,7 @@
     color: #039be5 !important;
     margin-right: 8px;
     display: unset;
-    font-size: unset;
+    font-size: 1rem;
     padding: unset;
 
     &:hover{
@@ -30,6 +30,10 @@
     &:last-child{
         margin-right: 0;
     }
+}
+
+svg:not(:root).svg-inline--fa{
+    font-size: 1rem;
 }
 
 .instagram-radio{
