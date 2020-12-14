@@ -40,10 +40,10 @@
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
-                        <i class="far fa-chart-bar"></i>
+                        <i class="far fa-chart-bar datatable-icon"></i>
                     </router-link>
                     <button v-if="(($can('show', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))) && row.data.original.type == 'url'" class="btn icon-link" title="Copy shortlink" @click="copyShortlink(row.data.original)">
-                        <i class="fas fa-link"></i>
+                        <i class="fas fa-link datatable-icon"></i>
                     </button>
                     <button v-if="($can('change-status', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" :title="(row.data.original.status ? 'Stop' : 'Start') + ' tracker'" @click="enableTracker(row.data.original)">
                         <svg v-show="row.data.original.status" data-v-4b997e69="" class="svg-inline--fa fa-stop-circle fa-w-16" aria-hidden="true" focusable="false" data-prefix="far" data-icon="stop-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
@@ -54,7 +54,7 @@
                         </svg>
                     </button>
                     <button v-if="($can('delete', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Delete tracker" @click="deleteTracker(row.data.original)">
-                        <i class="far fa-trash-alt"></i>
+                        <i class="far fa-trash-alt datatable-icon"></i>
                     </button>
                 </td>
             </DataTable>
@@ -134,13 +134,13 @@ export default {
                     callback: function (row) {
                         switch (row.platform) {
                             case "youtube":
-                                return '<i class="fab fa-2 fa-youtube" title="' + row.platform + '"></i>';
+                                return '<i class="fab fa-2 fa-youtube datatable-icon" title="' + row.platform + '"></i>';
                                 break;
                             case "instagram":
-                                return '<i class="fab fa-2 fa-instagram instagram-radio" title="' + row.platform + '"></i>';
+                                return '<i class="fab fa-2 fa-instagram instagram-radio datatable-icon" title="' + row.platform + '"></i>';
                                 break;
                             default:
-                                return '<i class="fas fa-2 fa-globe" title="' + row.type + '"></i>';
+                                return '<i class="fas fa-2 fa-globe datatable-icon" title="' + row.type + '"></i>';
                                 break;
                         }
                     }
