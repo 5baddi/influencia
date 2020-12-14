@@ -7348,7 +7348,7 @@ button:disabled {
   color: #039be5 !important;
   margin-right: 8px;
   display: unset;
-  font-size: 1rem;
+  font-size: unset;
   padding: unset;
 }
 
@@ -7360,8 +7360,8 @@ button:disabled {
   margin-right: 0;
 }
 
-svg:not(:root).svg-inline--fa {
-  font-size: 1rem;
+.datatable-icon {
+  font-size: 1rem !important;
 }
 
 .instagram-radio {
