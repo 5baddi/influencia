@@ -106,10 +106,8 @@ export default {
                     }
                 },
                 {
-                    name: "Created at",
-                    field: "created_at",
-                    isDate: true,
-                    format: "DD/MM/YYYY"
+                    name: "Last update",
+                    field: "last_update",
                 }
             ]
         };

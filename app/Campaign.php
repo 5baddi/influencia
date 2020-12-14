@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
@@ -50,7 +51,8 @@ class Campaign extends Model
         'all_trackers_count',
         'organic_posts',
         'visits_evolution',
-        'tracker_posts'
+        'tracker_posts',
+        'last_update'
     ];
 
 
@@ -470,6 +472,16 @@ class Campaign extends Model
         }
 
         return $influencers;
+    }
+
+    /**
+     * Get last update datetime as humains readable
+     *
+     * @return string
+     */
+    public function getLastUpdateAttribute() : string
+    {
+        return Carbon::createFromTimeStamp(strtotime($this->attributes['updated_at']))->diffForHumans();
     }
     
     /**
