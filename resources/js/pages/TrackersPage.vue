@@ -134,13 +134,13 @@ export default {
                     callback: function (row) {
                         switch (row.platform) {
                             case "youtube":
-                                return '<i class="fab fa-2 fa-youtube datatable-icon" title="' + row.platform + '"></i>';
+                                return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
                                 break;
                             case "instagram":
-                                return '<i class="fab fa-2 fa-instagram instagram-radio datatable-icon" title="' + row.platform + '"></i>';
+                                return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
                                 break;
                             default:
-                                return '<i class="fas fa-2 fa-globe datatable-icon" title="' + row.type + '"></i>';
+                                return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
                                 break;
                         }
                     }
