@@ -22,18 +22,18 @@
         <tbody>
             <tr v-if="parsedData.length === 0">
                 <td class="no-data" :colspan="getColumnsCount()">
-                    <span v-show="!isLoading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
-                    <span v-show="isLoading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
+                    <span v-show="!loading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
+                    <span v-show="loading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
                 </td>
             </tr>
-            <tr v-show="parsedData.length > 0 && !isLoading" v-for="(obj, index) in parsedData" :key="index">
+            <tr v-show="parsedData.length > 0 && !loading" v-for="(obj, index) in parsedData" :key="index">
                 <td v-for="(col, idx) in columns" :key="idx">
                     <div v-if="typeof obj[col.field] !== 'undefined'" v-html="obj[col.field]"></div>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
         </tbody>
-        <tfoot v-if="data.length > 0 && !isLoading">
+        <tfoot v-if="data.length > 0 && !loading">
             <tr>
                 <td :colspan="getColumnsCount()" v-if="withPagination">
                     Rows per page:
@@ -152,7 +152,7 @@ table tbody>>>img {
 }
 
 table tbody>>>a {
-    color: #039be5 !important;
+    color: #039be5;
 }
 
 .table-card {
@@ -173,7 +173,7 @@ table tbody>>>a {
 
 <script>
 import {
-    mapGetters
+    mapState
 } from "vuex";
 import dayjs from "dayjs";
 import abbreviate from 'number-abbreviate';
@@ -216,7 +216,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["Token"]),
+        ...mapState("Loader", ["loading"]),
 
         parsedData() {
             if (this.data.length === 0)
@@ -272,10 +272,6 @@ export default {
                 parsedData.push(rowData);
             });
 
-
-            // Set loading to false
-            this.isLoading = false;
-
             return parsedData;
         },
     },
@@ -300,11 +296,8 @@ export default {
         },
         reloadData() {
             // Using native data
-            if (typeof this.nativeData !== "undefined") {
-                this.isLoading = false;
-
+            if (typeof this.nativeData !== "undefined")
                 return this.data = this.nativeData;
-            }
 
             // Using vuex
             if (typeof this.fetchMethod === "undefined")
@@ -315,19 +308,15 @@ export default {
                     this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
                 else
                     this.data = [];
-
-                this.isLoading = false;
             }).catch(error => {
                 console.log("DataTable Error: ");
                 console.log(error);
                 this.data = [];
-                this.isLoading = false;
             });
         }
     },
     data() {
         return {
-            isLoading: true,
             es: null,
             data: [],
             perPage: 10,

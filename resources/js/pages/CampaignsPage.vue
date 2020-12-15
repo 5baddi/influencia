@@ -76,9 +76,17 @@ export default {
     data() {
         return {
             isLoading: true,
-            columns: [{
+            columns: [
+                {
                     name: "Campaign name",
                     field: "name"
+                },
+                {
+                    name: "Status",
+                    field: "status",
+                    callback: function (row) {
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                    }
                 },
                 {
                     name: "Activated communities",
@@ -98,8 +106,7 @@ export default {
 
                         let html = '';
                         row.influencers.map(function (item, index) {
-                            // html += '<li>' + item.name.toUpperCase() + '</li>';
-                            html += '<span class="badge badge-success">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</span>';;
+                            html += '<a class="badge badge-success" href="/influencers/' + item.uuid + '" title="View influencer profile">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</a>';;
                         });
 
                         return html;
@@ -116,7 +123,15 @@ export default {
         next(vm => vm.initData());
     },
     beforeRouteUpdate(to, from, next) {
-        next(vm => vm.fetchCampaign())
+        let routeUUID = to.params.uuid
+        if (typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)) {
+            this.$store.commit("setCampaign", {
+                campaign: null
+            });
+            this.fetchCampaign();
+        }
+
+        next();
     },
     created() {
         this.initData();
@@ -138,18 +153,18 @@ export default {
     },
     methods: {
         initData() {
-            this.$store.dispatch("fetchCampaigns");
-            this.$store.dispatch("fetchTrackers");
-            this.fetchCampaign();
+            this.$store.dispatch("fetchCampaigns").catch(error => {});
+            this.$store.dispatch("fetchTrackers").catch(error => {});
         },
         fetchCampaign() {
             // Load user by UUID
-            if (typeof this.$route.params.uuid !== 'undefined')
-                this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
-            else
+            if(typeof this.$route.params.uuid !== 'undefined'){
+                this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid).catch(error => {});
+            }else{
                 this.$store.commit("setCampaign", {
                     campaign: null
                 });
+            }
         },
         addCampaign() {
             this.$refs.campaignFormModal.open();

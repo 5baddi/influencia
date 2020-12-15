@@ -7967,6 +7967,11 @@ span.status-danger::before {
   width: 35px !important;
 }
 
+.badge-success {
+  color: white !important;
+  text-decoration: none;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

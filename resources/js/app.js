@@ -95,6 +95,8 @@ const app = new Vue({
                 next('/login');
             }
 
+            // TODO: Load data after reload page
+
             next();
         });
     }

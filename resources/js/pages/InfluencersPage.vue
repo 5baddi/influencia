@@ -128,18 +128,18 @@ export default {
         };
     },
     beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData())
+        next(vm => vm.initData());
     },
     beforeRouteUpdate(to, from, next) {
         let routeUUID = to.params.uuid
         if (typeof routeUUID !== 'undefined' && (this.influencer !== null && this.influencer.uuid !== routeUUID)) {
             this.$store.commit("setInfluencer", {
                 influencer: null
-            })
-            this.fetchInfluencer()
+            });
+            this.fetchInfluencer();
         }
 
-        next()
+        next();
     },
     created() {
         this.initData();
