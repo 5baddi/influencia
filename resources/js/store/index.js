@@ -1,11 +1,10 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from 'axios';
 import { api } from '../api';
 import { Loader } from './loader';
 import ability from '../services/ability';
-import { reject } from 'lodash';
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -604,6 +603,20 @@ const updateAbilities = (store) => {
     });
 }
 
+// Save data state
+const dataState = createPersistedState({
+    paths: [
+        'brands',
+        'activeBrand',
+        'users',
+        'campaigns',
+        'campaignsStatistics',
+        'trackers',
+        'influencers',
+        'roles'
+    ]
+});
+
 export default new Vuex.Store({
     state: state,
     getters: getters,
@@ -613,6 +626,7 @@ export default new Vuex.Store({
         Loader
     },
     plugins: [
-        updateAbilities
+        updateAbilities,
+        dataState
     ]
 });

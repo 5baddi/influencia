@@ -7978,9 +7978,9 @@ span.status-danger::before {
 }
 
 .avatars-list a {
-  margin: 0.5rem;
+  margin: 0.2rem;
   box-sizing: border-box;
-  width: 10%;
+  width: 36px;
 }
 
 .table {

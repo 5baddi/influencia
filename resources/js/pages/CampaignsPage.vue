@@ -106,7 +106,7 @@ export default {
 
                         let html = '';
                         row.influencers.map(function (item, index) {
-                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View influencer profile"><img src="' + item.pic_url + '"/>';
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
                         });
 
                         return html;
