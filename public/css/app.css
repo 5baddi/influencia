@@ -7972,6 +7972,17 @@ span.status-danger::before {
   text-decoration: none;
 }
 
+.avatars-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.avatars-list a {
+  margin: 0.5rem;
+  box-sizing: border-box;
+  width: 10%;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

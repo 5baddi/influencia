@@ -639,3 +639,14 @@ span.status{
     color: white !important;
     text-decoration: none;
 }
+
+.avatars-list{
+    display: flex;
+    flex-wrap: wrap;
+
+    a{
+        margin: .5rem;
+        box-sizing: border-box;
+        width: 10%;
+    }
+}

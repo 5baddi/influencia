@@ -19,24 +19,24 @@
     <div class="p-1" v-if="!campaign">
         <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <div class="card">
-                <div class="number">{{ campaigns.all.length | formatedNbr }}</div>
+                <div class="number">{{ campaignsStatistics.campaigns_count | formatedNbr }}</div>
                 <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
-                <div class="number">{{ trackers.length | formatedNbr }}</div>
+                <div class="number">{{ campaignsStatistics.trackers_count | formatedNbr }}</div>
                 <p class="description">NUMBER OF TRACKERS</p>
             </div>
             <div class="card">
-                <div class="number">{{ campaigns.impressions | formatedNbr }}</div>
+                <div class="number">{{ campaignsStatistics.impressions | formatedNbr }}</div>
                 <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
             <div class="card">
-                <div class="number">{{ campaigns.communities | formatedNbr }}</div>
+                <div class="number">{{ campaignsStatistics.communities | formatedNbr }}</div>
                 <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
+            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
@@ -75,7 +75,6 @@ export default {
     },
     data() {
         return {
-            isLoading: true,
             columns: [
                 {
                     name: "Campaign name",
@@ -85,7 +84,7 @@ export default {
                     name: "Status",
                     field: "status",
                     callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
                     }
                 },
                 {
@@ -100,13 +99,14 @@ export default {
                 {
                     name: "Influencers",
                     field: "influencers",
+                    class: "avatars-list",
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
                         let html = '';
                         row.influencers.map(function (item, index) {
-                            html += '<a class="badge badge-success" href="/influencers/' + item.uuid + '" title="View influencer profile">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</a>';;
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View influencer profile"><img src="' + item.pic_url + '"/>';
                         });
 
                         return html;
@@ -123,7 +123,7 @@ export default {
         next(vm => vm.initData());
     },
     beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid
+        let routeUUID = to.params.uuid;
         if (typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)) {
             this.$store.commit("setCampaign", {
                 campaign: null
@@ -153,8 +153,7 @@ export default {
     },
     methods: {
         initData() {
-            this.$store.dispatch("fetchCampaigns").catch(error => {});
-            this.$store.dispatch("fetchTrackers").catch(error => {});
+            this.$store.dispatch("fetchCampaignsStatistics").catch(error => {});
         },
         fetchCampaign() {
             // Load user by UUID
@@ -222,7 +221,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "trackers"])
+        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaign", "campaignsStatistics"])
     },
     notifications: {
         showError: {

@@ -19,7 +19,7 @@
     <div class="p-1" v-if="!tracker">
         <header class="cards">
             <div class="card">
-                <div class="number">{{ campaigns.all.length | formatedNbr }}</div>
+                <div class="number">{{ campaigns.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card">
@@ -115,14 +115,14 @@ export default {
                 {
                     name: "Influencers",
                     field: "influencers",
+                    class: "avatars-list",
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
                         let html = '';
                         row.influencers.map(function (item, index) {
-                            // html += '<li>' + item.name.toUpperCase() + '</li>';
-                            html += '<span class="badge badge-success">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</span>';;
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View influencer profile"><img src="' + item.pic_url + '"/>';
                         });
 
                         return html;

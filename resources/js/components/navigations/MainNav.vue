@@ -55,6 +55,14 @@
                     <span class="text">Trackers</span>
                 </router-link>
             </li>
+            <li v-if="$can('list', 'influencer') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `influencers`}">
+                <router-link :to="{name: 'influencers'}">
+                    <div class="icon">
+                        <i class="fas fa-podcast"></i>
+                    </div>
+                    <div class="text">Influencers</div>
+                </router-link>
+            </li>
             <!-- <can I="list" a="brand"> -->
             <li v-if="$can('list', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `brands`}">
                 <router-link :to="{name: 'brands'}">
@@ -65,14 +73,6 @@
                 </router-link>
             </li>
             <!-- </can> -->
-            <li v-if="$can('list', 'influencer') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `influencers`}">
-                <router-link :to="{name: 'influencers'}">
-                    <div class="icon">
-                        <i class="fas fa-podcast"></i>
-                    </div>
-                    <div class="text">Influencers</div>
-                </router-link>
-            </li>
             <li v-if="$can('list', 'user') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `users`}">
                 <router-link :to="{name: 'users'}">
                     <div class="icon">

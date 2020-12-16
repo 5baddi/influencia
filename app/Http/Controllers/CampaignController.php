@@ -33,20 +33,41 @@ class CampaignController extends Controller
     {
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        // Load data
-        $campaigns = $brand->campaigns()
+        return response()->success("Campaigns fetched successfully.", 
+            $brand->campaigns()
                 ->with(['user', 'brand'])
                 ->withCount('trackers')
+                ->get()
+        );
+    }
+
+    /**
+     * Get campaigns statistics by active brand
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function statistics(Brand $brand)
+    {
+        abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Load campaigns
+        $trackers = $brand->campaigns()
+                ->withCount(['trackers'])
                 ->get();
+
+        $trackersCount = 0;
+        foreach($trackers as $item)
+            $trackersCount += $item->trackers_count;
 
         $impressions = $this->campaignRepo->getEstimatedImpressions();
         $communities = $this->campaignRepo->getEstimatedCommunities();
 
         return response()->success("Campaigns fetched successfully.", 
             [
-                'all'           =>  $campaigns,
-                'impressions'   =>  $impressions,
-                'communities'   =>  $communities,
+                'campaigns_count'       =>  $brand->campaigns->count(),
+                'trackers_count'        =>  $trackersCount,
+                'impressions'           =>  $impressions,
+                'communities'           =>  $communities,
             ]
         );
     }

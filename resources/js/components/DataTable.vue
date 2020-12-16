@@ -28,7 +28,7 @@
             </tr>
             <tr v-show="parsedData.length > 0 && !loading" v-for="(obj, index) in parsedData" :key="index">
                 <td v-for="(col, idx) in columns" :key="idx">
-                    <div v-if="typeof obj[col.field] !== 'undefined'" v-html="obj[col.field]"></div>
+                    <div v-if="typeof obj[col.field] !== 'undefined'" :class="col.class" v-html="obj[col.field]"></div>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -104,6 +104,7 @@ table tbody td {
     font-size: 0.8rem;
     padding: 0.8rem 0.6rem;
     color: rgba(0, 0, 0, 0.61);
+    min-width: 100px;
 }
 
 table tfoot td {
@@ -236,9 +237,13 @@ export default {
                     if (typeof vm.columns[key].sortable === "undefined")
                         vm.columns[key].sortable = true;
 
+                    // Handle custom css clasees
+                    if(typeof vm.columns[key].class !== "string")
+                        vm.columns[key].class = '';
+
                     // Parse data
                     let val = value[item.field];
-                    if (val !== "undefined") {
+                    if (typeof val !== "undefined" && val !== null) {
                         // DataTime format
                         if (typeof item.isDate === "boolean" && item.isDate) {
                             let date = dayjs(val).format(item.format !== "undefined" ? item.format : 'DD/MM/YYYY');
@@ -266,6 +271,8 @@ export default {
                         // Ignore zero or empty
                         if ((val == null || val == 0) && typeof item.callback === "undefined")
                             rowData[item.field] = '-';
+                    }else{
+                        rowData[item.field] = "---";
                     }
                 });
 

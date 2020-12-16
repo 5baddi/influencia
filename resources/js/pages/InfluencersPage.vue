@@ -131,7 +131,7 @@ export default {
         next(vm => vm.initData());
     },
     beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid
+        let routeUUID = to.params.uuid;
         if (typeof routeUUID !== 'undefined' && (this.influencer !== null && this.influencer.uuid !== routeUUID)) {
             this.$store.commit("setInfluencer", {
                 influencer: null

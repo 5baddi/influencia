@@ -27,8 +27,9 @@ const state = () => ({
     brands: [],
     activeBrand: null,
     users: [],
-    campaigns: {all: []},
+    campaigns: [],
     campaign: null,
+    campaignsStatistics: {},
     trackers: [],
     tracker: null,
     influencers: [],
@@ -46,6 +47,7 @@ const getters = {
     users: state => state.users,
     campaigns: state => state.campaigns,
     campaign: state => state.campaign,
+    campaignsStatistics: state => state.campaignsStatistics,
     trackers: state => state.trackers,
     tracker: state => state.tracker,
     influencers: state => state.influencers,
@@ -455,6 +457,14 @@ const actions = {
 
         });
     },
+    fetchCampaignsStatistics({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/campaigns/" + state.activeBrand.uuid + "/statistics").then(response => {
+                commit('setCampaignsStatistics', { campaignsStatistics: response.data.content })
+                resolve(response.data)
+            }).catch(response => reject(response))
+        });
+    },
     fetchCampaignAnalytics({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/campaigns/" + uuid + "/analytics").then(response => {
@@ -552,13 +562,11 @@ const mutations = {
         state.activeBrand = brand
     },
     setNewCampaign: (state, { campaign }) => {
-        if (!state.campaigns.all) {
-            state.campaigns = {
-                all: []
-            };
+        if (!state.campaigns) {
+            state.campaigns = [];
         }
 
-        state.campaigns.all.push(campaign);
+        state.campaigns.push(campaign);
     },
     setNewTracker: (state, { tracker }) => {
         if (!state.trackers) {
@@ -571,6 +579,9 @@ const mutations = {
     },
     setCampaign: (state, { campaign }) => {
         state.campaign = campaign;
+    },
+    setCampaignsStatistics: (state, { campaignsStatistics }) => {
+        state.campaignsStatistics = campaignsStatistics;
     },
     setTrackers: (state, { trackers }) => {
         state.trackers = trackers;
