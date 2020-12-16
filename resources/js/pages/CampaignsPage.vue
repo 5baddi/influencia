@@ -154,6 +154,7 @@ export default {
     methods: {
         initData() {
             this.$store.dispatch("fetchCampaignsStatistics").catch(error => {});
+            this.fetchCampaign();
         },
         fetchCampaign() {
             // Load user by UUID

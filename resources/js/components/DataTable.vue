@@ -150,6 +150,7 @@ table tfoot td>>>button:hover {
 table tbody>>>img {
     max-width: 36px;
     border-radius: 50%;
+    margin-right: 0.2rem;
 }
 
 table tbody>>>a {
