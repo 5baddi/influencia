@@ -97,10 +97,10 @@ export default {
 
                         if (row.platform === "instagram") {
                             link = "https://instagram.com/";
-                            icon = "<i class=\"fab fa-instagram\"></i>";
+                            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
                         }else if(row.platform === "youtube"){
                             link = "https://youtube.com/";
-                            icon = "<i class=\"fab fa-youtube\"></i>";
+                            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
                         }
 
                         return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
