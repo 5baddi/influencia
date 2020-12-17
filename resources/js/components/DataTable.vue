@@ -9,24 +9,23 @@
         <thead ref="headercolumns">
             <th v-for="(column, index) in columns" :key="index">
                 {{ (column.name ? column.name : " ") | headerColumn }}
-                <!-- TODO: fix sotring -->
-                <!-- <span v-show="column.sortable && this.sortKey == 'desc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
-                            <i class="fas fa-sort-up"></i>
-                        </span>
-                        <span v-show="column.sortable && this.sortKey == 'asc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
-                            <i class="fas fa-sort-down"></i>
-                        </span> -->
+                <span :ref="column.field + index + (column.isAsc ? 'asc' : 'desc')" v-show="column.sortable && !column.isAsc" @click="sortBy(column.field, index, true)">
+                    <svg data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
+                </span>
+                <span :ref="column.field + index + (column.isAsc ? 'asc' : 'desc')" v-show="column.sortable && column.isAsc" @click="sortBy(column.field, index, false)">
+                    <svg data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
+                </span>
             </th>
             <slot name="header"></slot>
         </thead>
         <tbody>
-            <tr v-if="parsedData.length === 0">
+            <tr v-if="formatedData.length === 0">
                 <td class="no-data" :colspan="getColumnsCount()">
                     <span v-show="!loading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
                     <span v-show="loading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
                 </td>
             </tr>
-            <tr v-show="parsedData.length > 0 && !loading" v-for="(obj, index) in parsedData" :key="index">
+            <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
                 <td v-for="(col, idx) in columns" :key="idx">
                     <div v-if="typeof obj[col.field] !== 'undefined'" :class="col.class" v-html="obj[col.field]"></div>
                 </td>
@@ -40,7 +39,7 @@
                     <select ref="itemsPerPage" @change="perPageOnChange($event)">
                         <option v-for="value in rowPerPage" :key="value" :value="(value !== 'All') ? value : data.length" :selected="perPage == value">{{ value }}</option>
                     </select>
-                    <span>{{ startIndex }} - {{ parsedData.length }} of {{ data.length }}</span>
+                    <span>{{ startIndex }} - {{ formatedData.length }} of {{ data.length }}</span>
                     <button v-if="startIndex > perPage" @click="previousPage()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
@@ -220,14 +219,14 @@ export default {
     computed: {
         ...mapState("Loader", ["loading"]),
 
-        parsedData() {
+        formatedData() {
             if (this.data.length === 0)
                 return [];
 
             let _data = this.data.slice(this.startIndex - 1, this.data.length < this.perPage ? this.data.length : this.perPage);
             // TODO: fix pagination...
             let vm = this;
-            let parsedData = [];
+            let _parsedData = [];
             _data.map(function (value, key) {
                 let rowData = {
                     original: value
@@ -235,6 +234,7 @@ export default {
 
                 vm.columns.map(function (item, key) {
                     // Init sort
+                    vm.columns[key].isAsc = false;
                     if (typeof vm.columns[key].sortable === "undefined")
                         vm.columns[key].sortable = true;
 
@@ -277,21 +277,46 @@ export default {
                     }
                 });
 
-                parsedData.push(rowData);
+                _parsedData.push(rowData);
             });
 
-            return parsedData;
+            // Update parsed data
+            this.parsedData = _parsedData;
+
+            return this.parsedData;
         },
     },
     methods: {
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
-        sortBy(column, key) {
-            if (this.sortColumn !== column.name)
-                this.sortColumn = column.name;
+        sortBy(field, index, isAsc) {
+            // this.formatedData = this.parsedData.sort((a, b) => {
+            //     // Init 
+            //     let result = 0;
 
-            this.sortKey = key;
+            //     // Verify array has field property
+            //     if(!a.hasOwnProperty(field) || !b.hasOwnProperty(field))
+            //         return result;
+
+            //     // Parse data for each type
+            //     let dataA = (typeof a[field] === "string") ? a[field].toUpperCase() : a[field];
+            //     let dataB = (typeof b[field] === "string") ? b[field].toUpperCase() : b[field];
+
+            //     // Compare
+            //     if(dataA > dataB)
+            //         result = 1;
+            //     else if(dataA < dataB)
+            //         result = -1;
+
+            //     return result * (isAsc ? 1 : -1);
+            // });
+            // // Hide action
+            // this.columns[index].isAsc = !isAsc;
+            // if(this.$refs.hasOwnProperty(field + index + 'asc'))
+            //     this.$refs[field + index + 'asc'].style.display = !this.columns[index].isAsc ? "inline" : "none";
+            // if(this.$refs.hasOwnProperty(field + index + 'desc'))
+            //     this.$refs[field + index + 'desc'].style.display = this.columns[index].isAsc ? "inline" : "none";
         },
         perPageOnChange(event) {
             this.perPage = event.target.value;
@@ -302,11 +327,12 @@ export default {
         previousPage() {
             this.startIndex = this.startIndex - this.perPage;
         },
-        reloadData() {
-            // Using native data
+        loadData(){
+            // Set native data
             if (typeof this.nativeData !== "undefined")
-                return this.data = this.nativeData;
-
+                this.data = this.nativeData;
+        },
+        reloadData() {
             // Using vuex
             if (typeof this.fetchMethod === "undefined")
                 return;
@@ -327,6 +353,7 @@ export default {
         return {
             es: null,
             data: [],
+            parsedData: [],
             perPage: 10,
             rowPerPage: [10, 25, 50, 100, 'All'],
             startIndex: 1,
@@ -336,12 +363,12 @@ export default {
         }
     },
     created() {
-        // Load data via vuex
-        this.reloadData();
+        // Load data via native data
+        this.loadData();
     },
     destroyed() {
-        if (this.es !== null)
-            this.es.close();
+        // if (this.es !== null)
+        //     this.es.close();
     }
 }
 </script>

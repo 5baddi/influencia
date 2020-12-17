@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
@@ -32,7 +33,8 @@ class Tracker extends Model
         'sentiments_positive',
         'sentiments_neutral',
         'sentiments_negative',
-        'top_countries'
+        'top_countries',
+        'last_update'
     ];
 
     /**
@@ -136,6 +138,16 @@ class Tracker extends Model
     public function influencers()
     {
         return $this->belongsToMany(Influencer::class, 'tracker_influencers');
+    }
+
+    /**
+     * Get last update datetime as humains readable
+     *
+     * @return string
+     */
+    public function getLastUpdateAttribute() : string
+    {
+        return Carbon::createFromTimeStamp(strtotime($this->attributes['updated_at']))->diffForHumans();
     }
 
     /**

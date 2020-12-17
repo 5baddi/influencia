@@ -36,7 +36,7 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" cssClasses="table-card">
+            <DataTable ref="campaignsDT" :columns="columns" :nativeData="parsedCampaigns" fetchMethod="fetchCampaigns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
@@ -83,6 +83,7 @@ export default {
                 {
                     name: "Status",
                     field: "status",
+                    sortable: false,
                     callback: function (row) {
                         return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
                     }
@@ -100,6 +101,7 @@ export default {
                     name: "Influencers",
                     field: "influencers",
                     class: "avatars-list",
+                    sortable: false,
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
@@ -154,6 +156,7 @@ export default {
     methods: {
         initData() {
             this.$store.dispatch("fetchCampaignsStatistics").catch(error => {});
+            this.$store.dispatch("fetchCampaigns").catch(error => {});
             this.fetchCampaign();
         },
         fetchCampaign() {
@@ -222,7 +225,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaign", "campaignsStatistics"])
+        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "campaignsStatistics"]),
+
+        parsedCampaigns(){
+            return this.campaigns;
+        }
     },
     notifications: {
         showError: {

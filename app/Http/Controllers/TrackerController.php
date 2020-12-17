@@ -44,6 +44,7 @@ class TrackerController extends Controller
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
                     })
+                    ->orderBy('created_at', 'desc')
                     ->get()
                     // ->paginate(Application::DEFAULT_PAGINATION)
         );

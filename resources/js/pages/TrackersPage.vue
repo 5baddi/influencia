@@ -36,7 +36,7 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" cssClasses="table-card">
+            <DataTable ref="trackersDT" :columns="columns" :nativeData="trackers" fetchMethod="fetchTrackers" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
@@ -108,21 +108,30 @@ export default {
                 {
                     name: "Status",
                     field: "status",
+                    sortable: false,
                     callback: function (row) {
                         return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                    }
+                },
+                {
+                    name: "Campaign",
+                    field: "campaign_id",
+                    callback: function (row) {
+                        return (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1));
                     }
                 },
                 {
                     name: "Influencers",
                     field: "influencers",
                     class: "avatars-list",
+                    sortable: false,
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
                         let html = '';
                         row.influencers.map(function (item, index) {
-                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View influencer profile"><img src="' + item.pic_url + '"/>';
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
                         });
 
                         return html;
@@ -131,6 +140,7 @@ export default {
                 {
                     name: "Meduim",
                     field: "platform",
+                    sortable: false,
                     callback: function (row) {
                         switch (row.platform) {
                             case "youtube":
@@ -145,10 +155,13 @@ export default {
                     }
                 },
                 {
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
+                },
+                {
                     name: "Last update",
-                    field: "updated_at",
-                    isData: true,
-                    format: "DD/MM/YYYY"
+                    field: "last_update",
                 }
             ]
         };

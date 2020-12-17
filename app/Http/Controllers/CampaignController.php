@@ -37,6 +37,7 @@ class CampaignController extends Controller
             $brand->campaigns()
                 ->with(['user', 'brand'])
                 ->withCount('trackers')
+                ->orderBy('created_at', 'desc')
                 ->get()
         );
     }
