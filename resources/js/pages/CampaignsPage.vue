@@ -19,20 +19,8 @@
     <div class="p-1" v-if="!campaign">
         <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <div class="card">
-                <div class="number">{{ campaignsStatistics.campaigns_count | formatedNbr }}</div>
+                <div class="number">{{ campaigns.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF CAMPAIGNS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaignsStatistics.trackers_count | formatedNbr }}</div>
-                <p class="description">NUMBER OF TRACKERS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaignsStatistics.impressions | formatedNbr }}</div>
-                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaignsStatistics.communities | formatedNbr }}</div>
-                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
@@ -155,7 +143,6 @@ export default {
     },
     methods: {
         initData() {
-            this.$store.dispatch("fetchCampaignsStatistics").catch(error => {});
             this.$store.dispatch("fetchCampaigns").catch(error => {});
             this.fetchCampaign();
         },
@@ -225,7 +212,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "campaignsStatistics"]),
+        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign"]),
 
         parsedCampaigns(){
             return this.campaigns;

@@ -19,20 +19,8 @@
     <div class="p-1" v-if="!tracker">
         <header class="cards">
             <div class="card">
-                <div class="number">{{ campaigns.length | formatedNbr }}</div>
-                <p class="description">NUMBER OF CAMPAIGNS</p>
-            </div>
-            <div class="card">
                 <div class="number">{{ trackers.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF TRACKERS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaigns.impressions | formatedNbr }}</div>
-                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaigns.communities | formatedNbr }}</div>
-                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">

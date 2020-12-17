@@ -7983,6 +7983,26 @@ span.status-danger::before {
   width: 36px;
 }
 
+.text-white {
+  color: white !important;
+}
+
+.purple-card {
+  background-color: #ae3ec9;
+}
+
+.orange-card {
+  background-color: #f76707;
+}
+
+.green-card {
+  background-color: #2fb344;
+}
+
+.cyan-card {
+  background-color: #17a2b8;
+}
+
 .table {
   background: #fff;
   border-radius: 4px;

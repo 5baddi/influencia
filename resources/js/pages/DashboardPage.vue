@@ -7,40 +7,52 @@
       </div>
       <div class="p-1">
          <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <div class="card">
-               <div class="number">{{ dashboard.brands && dashboard.brands.length ? dashboard.brands.length : '---' }}</div>
-               <p class="description">NUMBER OF BRANDS</p>
+            <div class="card purple-card">
+                <div class="number text-white">{{ statistics.impressions || formatedNbr }}</div>
+                <p class="description text-white">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
-            <div class="card">
-               <div class="number">{{ dashboard.campaigns && dashboard.campaigns.length ? dashboard.campaigns.length : '---' }}</div>
-               <p class="description">NUMBER OF CAMPAIGNS</p>
+            <div class="card orange-card">
+                <div class="number text-white">{{ statistics.communities || formatedNbr }}</div>
+                <p class="description text-white">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
-            <div class="card">
-               <div class="number">{{ dashboard.trackers && dashboard.trackers.length ? dashboard.trackers.length : '---' }}</div>
-               <p class="description">NUMBER OF TRACKERS</p>
+            <div class="card green-card">
+               <div class="number text-white">{{ statistics.campaigns_count || formatedNbr }}</div>
+               <p class="description text-white">NUMBER OF CAMPAIGNS</p>
             </div>
-            <div class="card">
-               <div class="number">{{ dashboard.influencers && dashboard.influencers.length ? dashboard.influencers.length : '---' }}</div>
-               <p class="description">NUMBER OF INFLUENCERS</p>
+            <div class="card cyan-card">
+               <div class="number text-white">{{ statistics.trackers_count || formatedNbr }}</div>
+               <p class="description text-white">NUMBER OF TRACKERS</p>
             </div>
          </header>
       </div>
-      <!-- <div class="card-with-table">
+      <div class="card-with-table">
          <h4>Latest added campaigns</h4>
-         <DataTable :columns="latestCampaignsColumns" :nativeData="dashboard.latestCampaigns" :withPagination="false"/>
+         <DataTable ref="latestCampaigns" :columns="latestCampaignsColumns" :nativeData="statistics.latestCampaigns" :withPagination="false"/>
       </div>
       <div class="card-with-table">
          <h4>Latest added trackers</h4>
-         <DataTable :columns="latestTrackersColumns" :nativeData="dashboard.latestTrackers" :withPagination="false"/>
-      </div> -->
+         <DataTable ref="latestTrackers" :columns="latestTrackersColumns" :nativeData="statistics.latestTrackers" :withPagination="false"/>
+      </div>
    </div>
 </template>
 <script>
 import {mapGetters} from "vuex";
 
-export default{
+export default {
    computed: {
-      ...mapGetters(["AuthenticatedUser", "dashboard"])
+      ...mapGetters(["AuthenticatedUser", "statistics"])
+   },
+   filters: {
+      formatedNbr: function(value){
+         try{
+               if(typeof value === "undefined" || value === 0 || value === null)
+               return '---';
+
+               return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
+         }catch(error){
+               return '---';
+         }
+      }
    },
    data(){
       return {
@@ -99,9 +111,8 @@ export default{
       }
    },
    created() {
-      // Fetch dashboard
-      this.$store.dispatch("fetchDashboard")
-         .catch(error => {});
+      // Fetch data
+      this.$store.dispatch("fetchStatistics").catch(error => {});
    },
 }
 </script>

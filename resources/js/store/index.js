@@ -22,13 +22,12 @@ function fatchLocalUser() {
 const state = () => ({
     user: fatchLocalUser(),
     token: null,
-    dashboard: {},
     brands: [],
     activeBrand: null,
     users: [],
     campaigns: [],
     campaign: null,
-    campaignsStatistics: {},
+    statistics: {},
     trackers: [],
     tracker: null,
     influencers: [],
@@ -41,12 +40,11 @@ const getters = {
     Token: state => state.token,
     isLogged: state => typeof state.user !== "undefined" && state.user !== null,
     isAdmin: state => state.user.is_superadmin,
-    dashboard: state => state.dashboard,
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
     campaign: state => state.campaign,
-    campaignsStatistics: state => state.campaignsStatistics,
+    statistics: state => state.statistics,
     trackers: state => state.trackers,
     tracker: state => state.tracker,
     influencers: state => state.influencers,
@@ -94,21 +92,6 @@ const actions = {
                 .catch(error => reject(error));
         })
 
-    },
-    fetchDashboard({commit, state}){
-        return new Promise((resolve, reject) => {
-            api.get('/api/v1/dashboard')
-                .then(response => {
-                    if(response.status === 200 && response.data.success){
-                        commit('setDashboard', { dashboard: response.data.content });
-                        resolve(response.data);
-                    }else{
-                        throw new Error("Something going wrong!");
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-        });
     },
     fetchUser({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
@@ -456,10 +439,10 @@ const actions = {
 
         });
     },
-    fetchCampaignsStatistics({ commit, state }) {
+    fetchStatistics({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/campaigns/" + state.activeBrand.uuid + "/statistics").then(response => {
-                commit('setCampaignsStatistics', { campaignsStatistics: response.data.content })
+                commit('setStatistics', { statistics: response.data.content })
                 resolve(response.data)
             }).catch(response => reject(response))
         });
@@ -510,9 +493,6 @@ const actions = {
 };
 
 const mutations = {
-    setDashboard: (state, { dashboard }) => {
-        state.dashboard = dashboard;
-    },
     setToken: (state, { token }) => {
         state.token = token;
     },
@@ -579,8 +559,8 @@ const mutations = {
     setCampaign: (state, { campaign }) => {
         state.campaign = campaign;
     },
-    setCampaignsStatistics: (state, { campaignsStatistics }) => {
-        state.campaignsStatistics = campaignsStatistics;
+    setStatistics: (state, { statistics }) => {
+        state.statistics = statistics;
     },
     setTrackers: (state, { trackers }) => {
         state.trackers = trackers;
@@ -610,7 +590,7 @@ const dataState = createPersistedState({
         'activeBrand',
         'users',
         'campaigns',
-        'campaignsStatistics',
+        'statistics',
         'trackers',
         'influencers',
         'roles'

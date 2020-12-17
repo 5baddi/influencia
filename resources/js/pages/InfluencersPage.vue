@@ -24,7 +24,7 @@
             </div>
         </header>
         <div class="datatable-scroll">
-            <DataTable ref="influencersDT" :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
+            <DataTable ref="influencersDT" :columns="columns" :nativeData="influencers" fetchMethod="fetchInfluencers" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Influencer details">
@@ -202,6 +202,7 @@ export default {
                 });
         },
         initData(){
+            this.$store.dispatch("fetchInfluencers").catch(error => {});
             this.fetchInfluencer();
         }
     },

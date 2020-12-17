@@ -24,7 +24,7 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="brandsDT" fetchMethod="fetchBrands" :columns="columns" cssClasses="table-card">
+            <DataTable ref="brandsDT" :nativeData="brands" fetchMethod="fetchBrands" :columns="columns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <button v-if="($can('edit', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit brand" @click="editBrand(row.data.original)">
@@ -99,9 +99,7 @@ export default {
         };
     },
     created() {
-        if (!this.$store.getters.brands) {
-            this.$store.dispatch("fetchBrands").catch(error => {});
-        }
+        this.$store.dispatch("fetchBrands").catch(error => {});
     },
     methods: {
         addBrand() {

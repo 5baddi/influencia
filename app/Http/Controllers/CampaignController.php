@@ -54,11 +54,19 @@ class CampaignController extends Controller
         // Load campaigns
         $trackers = $brand->campaigns()
                 ->withCount(['trackers'])
+                ->orderBy('created_at', 'desc')
                 ->get();
 
         $trackersCount = 0;
-        foreach($trackers as $item)
+        $trackersList = collect();
+        foreach($trackers as $item){
             $trackersCount += $item->trackers_count;
+
+            if($trackersList->contains('id', $item->id))
+                    continue;
+
+                $trackersList->add($item);
+        }
 
         $impressions = $this->campaignRepo->getEstimatedImpressions();
         $communities = $this->campaignRepo->getEstimatedCommunities();
@@ -69,6 +77,12 @@ class CampaignController extends Controller
                 'trackers_count'        =>  $trackersCount,
                 'impressions'           =>  $impressions,
                 'communities'           =>  $communities,
+                // 'brands'                =>  Auth::user()->brands,
+                // 'campaigns'             =>  Campaign::where('user_id', Auth::id())->get(),
+                // 'trackers'              =>  Tracker::where('user_id', Auth::id())->get(),
+                // 'influencers'           =>  Auth::user()->influencers,
+                'latestCampaigns'       =>  $brand->campaigns()->take(5)->get(),
+                'latestTrackers'        =>  $trackersList->take(5)->toArray()
             ]
         );
     }
