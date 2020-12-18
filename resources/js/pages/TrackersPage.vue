@@ -149,7 +149,8 @@ export default {
                 },
                 {
                     name: "Last update",
-                    field: "last_update",
+                    field: "updated_at",
+                    isTimeAgo: true
                 }
             ]
         };
