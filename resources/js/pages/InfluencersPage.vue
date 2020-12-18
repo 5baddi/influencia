@@ -121,7 +121,8 @@ export default {
                 {
                     name: "Last update",
                     field: "updated_at",
-                    isTimeAgo: true
+                    isDate: true,
+                    format: "DD/MM/YYYY"
                 }
             ]
         };

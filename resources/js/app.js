@@ -20,7 +20,6 @@ import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
-import VueTimeago from 'vue-timeago';
 
 Vue.prototype.$http = api;
 
@@ -29,10 +28,6 @@ window.jQuery = window.$ = jQuery
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
-Vue.use(VueTimeago, {
-    name: 'Timeago', // Component name, `Timeago` by default
-    locale: 'en',
-});
 
 // Register global component
 Vue.component('DataTable', DataTable);

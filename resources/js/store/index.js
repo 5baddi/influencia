@@ -5,7 +5,6 @@ import { api } from '../api';
 import { Loader } from './loader';
 import ability from '../services/ability';
 import createPersistedState from "vuex-persistedstate";
-import SecureLS from "secure-ls";
 
 Vue.use(Vuex);
 
@@ -585,23 +584,17 @@ const updateAbilities = (store) => {
 }
 
 // Save data state
-let ls = new SecureLS();
 const dataState = createPersistedState({
     paths: [
         'brands',
         'activeBrand',
-        'users',
-        'campaigns',
+        // 'users',
+        // 'campaigns',
         'statistics',
-        'trackers',
-        'influencers',
-        'roles'
-    ],
-    storage: {
-        getItem: (key) => ls.get(key),
-        setItem: (key, value) => ls.set(key, value),
-        removeItem: (key) => ls.remove(key),
-    },
+        // 'trackers',
+        // 'influencers',
+        // 'roles'
+    ]
 });
 
 export default new Vuex.Store({
