@@ -588,12 +588,12 @@ const dataState = createPersistedState({
     paths: [
         'brands',
         'activeBrand',
-        'users',
-        'campaigns',
+        // 'users',
+        // 'campaigns',
         'statistics',
-        'trackers',
-        'influencers',
-        'roles'
+        // 'trackers',
+        // 'influencers',
+        // 'roles'
     ]
 });
 
