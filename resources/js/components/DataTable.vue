@@ -9,7 +9,7 @@
         <thead>
             <tr v-if="typeof searchCols !== 'undefined'">
                 <th :colspan="getColumnsCount()" class="actions-header">
-                    <input type="text" v-model="searchQuery" :placeholder="'Search ' + Object.keys(searchCols).join(' or ')"/>
+                    <input style="margin-right:0.3rem" type="text" v-model="searchQuery" :placeholder="'Search ' + Object.keys(searchCols).join(' or ')"/>
                     <button class="btn icon-link" title="Reload all data" @click="reloadData()">
                         <i class="fas fa-sync-alt"></i>
                     </button>
