@@ -7,9 +7,12 @@
     </ul>-->
     <table>
         <thead>
-            <tr>
+            <tr v-if="typeof searchCols !== 'undefined'">
                 <th :colspan="getColumnsCount()" class="actions-header">
-                    <input type="text" v-model="searchQuery" placeholder="Search"/>
+                    <input style="margin-right:0.3rem" type="text" v-model="searchQuery" :placeholder="'Search ' + Object.keys(searchCols).join(' or ')"/>
+                    <button class="btn icon-link" title="Reload all data" @click="reloadData()">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
                 </th>
             </tr>
             <tr ref="headercolumns">
@@ -336,8 +339,14 @@ export default {
             if(typeof this.searchCols === "undefined" || this.searchCols.length === 0)
                 return;
 
+            // Reload data if query is empty
+            if(val === "")
+                this.reloadData();
+
             // Search by each key on data
-            this.searchCols.map(function(value, key){
+            console.log(this.searchCols.keys());
+            console.log(this.searchCols.values());
+            this.searchCols.keys().map(function(value, key){
                 console.log(key, value);
                 console.log(typeof value);
                 if(!this.data.hasOwnProperty(key))

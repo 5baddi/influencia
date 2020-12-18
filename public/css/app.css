@@ -7348,7 +7348,7 @@ button:disabled {
   color: #039be5 !important;
   margin-right: 8px;
   display: unset;
-  font-size: unset;
+  font-size: 12pt !important;
   padding: unset;
 }
 
