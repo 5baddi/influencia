@@ -19,31 +19,19 @@
     <div class="p-1" v-if="!tracker">
         <header class="cards">
             <div class="card">
-                <div class="number">{{ campaigns.all.length | formatedNbr }}</div>
-                <p class="description">NUMBER OF CAMPAIGNS</p>
-            </div>
-            <div class="card">
                 <div class="number">{{ trackers.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF TRACKERS</p>
             </div>
-            <div class="card">
-                <div class="number">{{ campaigns.impressions | formatedNbr }}</div>
-                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaigns.communities | formatedNbr }}</div>
-                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
-            </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="trackersDT" :columns="columns" fetchMethod="fetchTrackers" :exportable="true" :excelLink="'/api/v1/export/excel/' + activeBrand.uuid + '/trackers'" :endPoint="'/api/v1/stream/' + activeBrand.uuid + '/trackers'" cssClasses="table-card">
+            <DataTable ref="trackersDT" :columns="columns" :nativeData="trackers" fetchMethod="fetchTrackers" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
-                        <i class="far fa-chart-bar"></i>
+                        <i class="far fa-chart-bar datatable-icon"></i>
                     </router-link>
                     <button v-if="(($can('show', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))) && row.data.original.type == 'url'" class="btn icon-link" title="Copy shortlink" @click="copyShortlink(row.data.original)">
-                        <i class="fas fa-link"></i>
+                        <i class="fas fa-link datatable-icon"></i>
                     </button>
                     <button v-if="($can('change-status', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" :title="(row.data.original.status ? 'Stop' : 'Start') + ' tracker'" @click="enableTracker(row.data.original)">
                         <svg v-show="row.data.original.status" data-v-4b997e69="" class="svg-inline--fa fa-stop-circle fa-w-16" aria-hidden="true" focusable="false" data-prefix="far" data-icon="stop-circle" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg="">
@@ -54,7 +42,7 @@
                         </svg>
                     </button>
                     <button v-if="($can('delete', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Delete tracker" @click="deleteTracker(row.data.original)">
-                        <i class="far fa-trash-alt"></i>
+                        <i class="far fa-trash-alt datatable-icon"></i>
                     </button>
                 </td>
             </DataTable>
@@ -108,21 +96,30 @@ export default {
                 {
                     name: "Status",
                     field: "status",
+                    sortable: false,
                     callback: function (row) {
                         return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
                     }
                 },
                 {
+                    name: "Campaign",
+                    field: "campaign_id",
+                    callback: function (row) {
+                        return (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1));
+                    }
+                },
+                {
                     name: "Influencers",
                     field: "influencers",
+                    class: "avatars-list",
+                    sortable: false,
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
                         let html = '';
                         row.influencers.map(function (item, index) {
-                            // html += '<li>' + item.name.toUpperCase() + '</li>';
-                            html += '<span class="badge badge-success">' + (item.name ? item.name.toUpperCase() : ('@' + item.username)) + '</span>';;
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
                         });
 
                         return html;
@@ -131,25 +128,28 @@ export default {
                 {
                     name: "Meduim",
                     field: "platform",
+                    sortable: false,
                     callback: function (row) {
                         switch (row.platform) {
                             case "youtube":
-                                return '<i class="fab fa-2 fa-youtube" title="' + row.platform + '"></i>';
+                                return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
                                 break;
                             case "instagram":
-                                return '<i class="fab fa-2 fa-instagram" title="' + row.platform + '"></i>';
-                                break;
-                            default:
-                                return '<i class="fas fa-2 fa-globe" title="' + row.type + '"></i>';
+                                return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
                                 break;
                         }
+
+                        return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
                     }
                 },
                 {
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
+                },
+                {
                     name: "Last update",
-                    field: "updated_at",
-                    isData: true,
-                    format: "DD/MM/YYYY"
+                    field: "last_update",
                 }
             ]
         };

@@ -18,7 +18,7 @@
     </div>
     <div class="p-1">
         <div class="datatable-scroll" v-if="$can('list', 'user') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="usersDT" fetchMethod="fetchUsers" :columns="columns" cssClasses="table-card">
+            <DataTable ref="usersDT" :nativeData="users" fetchMethod="fetchUsers" :columns="columns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <button v-if="($can('edit', 'user') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && AuthenticatedUser.id !== row.data.original.id" class="btn icon-link" title="Reset user password" @click="resetUserPassword(row.data.original)">
@@ -196,6 +196,9 @@ export default {
                     });
                 });
         }
+    },
+    created() {
+        this.$store.dispatch("fetchUsers").catch(error => {});
     },
     computed: {
         ...mapGetters(["users", "AuthenticatedUser"])

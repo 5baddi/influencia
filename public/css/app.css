@@ -7360,6 +7360,22 @@ button:disabled {
   margin-right: 0;
 }
 
+.datatable-icon {
+  font-size: 1rem !important;
+}
+
+.instagram-icon {
+  color: #DD2A7B;
+}
+
+.youtube-icon {
+  color: #c4302b;
+}
+
+.web-icon {
+  color: #3277bc;
+}
+
 .instagram-radio {
   color: #DD2A7B;
 }
@@ -7939,8 +7955,52 @@ span.status-danger::before {
   font-size: 12pt;
 }
 
-.mini-toastr {
-  z-index: 99999999 !important;
+.dashboard__navigation--item .text p {
+  line-height: unset !important;
+}
+
+.dashboard__navigation--item .text {
+  font-size: 10pt !important;
+}
+
+.dashboard__navigation--item img {
+  width: 35px !important;
+}
+
+.badge-success {
+  color: white !important;
+  text-decoration: none;
+}
+
+.avatars-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.avatars-list a {
+  margin: 0.2rem;
+  box-sizing: border-box;
+  width: 36px;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.purple-card {
+  background-color: #ae3ec9;
+}
+
+.orange-card {
+  background-color: #f76707;
+}
+
+.green-card {
+  background-color: #2fb344;
+}
+
+.cyan-card {
+  background-color: #17a2b8;
 }
 
 .table {

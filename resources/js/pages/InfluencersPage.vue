@@ -24,7 +24,7 @@
             </div>
         </header>
         <div class="datatable-scroll">
-            <DataTable ref="influencersDT" :columns="columns" fetchMethod="fetchInfluencers" cssClasses="table-card">
+            <DataTable ref="influencersDT" :columns="columns" :nativeData="influencers" fetchMethod="fetchInfluencers" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link :to="{name : 'influencers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Influencer details">
@@ -97,10 +97,10 @@ export default {
 
                         if (row.platform === "instagram") {
                             link = "https://instagram.com/";
-                            icon = "<i class=\"fab fa-instagram\"></i>";
+                            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
                         }else if(row.platform === "youtube"){
                             link = "https://youtube.com/";
-                            icon = "<i class=\"fab fa-youtube\"></i>";
+                            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
                         }
 
                         return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
@@ -128,18 +128,18 @@ export default {
         };
     },
     beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData())
+        next(vm => vm.initData());
     },
     beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid
+        let routeUUID = to.params.uuid;
         if (typeof routeUUID !== 'undefined' && (this.influencer !== null && this.influencer.uuid !== routeUUID)) {
             this.$store.commit("setInfluencer", {
                 influencer: null
-            })
-            this.fetchInfluencer()
+            });
+            this.fetchInfluencer();
         }
 
-        next()
+        next();
     },
     created() {
         this.initData();
@@ -174,7 +174,6 @@ export default {
             this.$store.dispatch("addInfluencer", influencer)
                 .then(response => {
                     this.$refs.influencerFormModal.close();
-                    this.$refs.influencersDT.reloadData();
                     this.showSuccess({
                         message: response.message
                     });
@@ -203,6 +202,7 @@ export default {
                 });
         },
         initData(){
+            this.$store.dispatch("fetchInfluencers").catch(error => {});
             this.fetchInfluencer();
         }
     },

@@ -86,6 +86,12 @@ class ScrapPostJob implements ShouldQueue
         }
     }
 
+    /**
+     * On job failed
+     *
+     * @param \Exception|null $exception
+     * @return void
+     */
     public function fail($exception = null)
     {
         // Trace 
@@ -221,6 +227,7 @@ class ScrapPostJob implements ShouldQueue
                 $influencer->update($channel);
 
             // Update or create video
+            $video['influencer_id'] = $influencer->id;
             if(is_null($influencerVideo))
                 $influencerVideo = InfluencerPost::create($video);
             else

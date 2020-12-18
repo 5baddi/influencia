@@ -77,7 +77,10 @@ class InstagramCommand extends Command
     private function scrapInfluencers() : void
     {
         // Get influencers
-        $influencers = Influencer::with(['trackers', 'posts'])->orderBy('created_at', 'asc')->get();
+        $influencers = Influencer::with(['posts'])
+                            ->where('platform', 'instagram')
+                            ->orderBy('created_at', 'asc')
+                            ->get();
         $this->info("Number of account to sync: " . $influencers->count());
 
         // Scrap each influencer details
@@ -126,7 +129,10 @@ class InstagramCommand extends Command
     {
         try{
             // Load all influencers
-            $influencers = Influencer::with(['posts'])->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())->get();
+            $influencers = Influencer::with(['posts'])
+                                ->where('platform', 'instagram')
+                                ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
+                                ->get();
             $this->info("Influencers need update {$influencers->count()}");
 
             foreach($influencers as $influencer){

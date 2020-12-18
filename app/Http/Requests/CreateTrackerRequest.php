@@ -30,7 +30,7 @@ class CreateTrackerRequest extends FormRequest
             'name'          =>  'required|unique:trackers,name|max:255',
             'type'          =>  'required|in:url,post',
             'url'           =>  'required|url',
-            'platform'      =>  'nullable|in:instagram,snapchat',
+            'platform'      =>  'nullable|in:instagram,youtube,snapchat',
         ];
     }
 }

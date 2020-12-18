@@ -2,9 +2,7 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Symfony\Component\HttpFoundation\Response;
 
 class UpdateBrandRequest extends FormRequest
 {
@@ -26,8 +24,9 @@ class UpdateBrandRequest extends FormRequest
     public function rules()
     {
         return [
+            'id'        =>  'required|integer|exists:brands,id',
             'uuid'      =>  'required|string|exists:brands,uuid',
-            'name'      =>  'required|string|unique:brands,name',
+            'name'      =>  'required|string|unique:brands,name,' . $this->id,
             'image'     =>  'nullable|image|mimes:jpeg,png,jpg,gif',
         ];
     }

@@ -24,13 +24,13 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="brandsDT" fetchMethod="fetchBrands" :columns="columns" cssClasses="table-card">
+            <DataTable ref="brandsDT" :nativeData="brands" fetchMethod="fetchBrands" :columns="columns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <button v-if="($can('edit', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit brand" @click="editBrand(row.data.original)">
                         <i class="fas fa-pen"></i>
                     </button>
-                    <button v-if="($can('delete', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && AuthenticatedUser.selected_brand_id !== row.data.original.id" class="btn icon-link" title="Delete brand" @click="deleteBrand(row.data.original)">
+                    <button v-if="($can('delete', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && row.data.original.campaigns_count === 0 && row.data.original.trackers_count === 0" class="btn icon-link" title="Delete brand" @click="deleteBrand(row.data.original)">
                         <i class="far fa-trash-alt"></i>
                     </button>
                 </td>
@@ -99,9 +99,7 @@ export default {
         };
     },
     created() {
-        if (!this.$store.getters.brands) {
-            this.$store.dispatch("fetchBrands");
-        }
+        this.$store.dispatch("fetchBrands").catch(error => {});
     },
     methods: {
         addBrand() {
@@ -119,7 +117,11 @@ export default {
 
             this.$store.dispatch("deleteBrand", brand.uuid)
                 .then(response => {
+                    // Reload datatable
                     this.$refs.brandsDT.reloadData();
+                    // Switch selected brand
+                    this.$store.dispatch("setActiveBrand", this.activeBrand ?? null).catch(error => {});
+                    // Show success notification
                     this.showSuccess({
                         message: "Successfully deleted brand '" + brand.name + "'"
                     });
@@ -132,28 +134,51 @@ export default {
         create(brand) {
             this.$store.dispatch("addBrand", brand)
                 .then(response => {
-                    this.showSuccess({
-                        message: response.message
-                    });
-
+                    this.$refs.brandsDT.reloadData();
+                    this.$refs.brandFormModal.close();
+                    // Set new brand as active brand
                     if(response.content)
                         this.$store.dispatch("setActiveBrand", response.content);
+
+                    this.showSuccess({
+                        message: "Brand created successfully"
+                    });
                 }).catch(error => {
-                    this.showError({
-                        message: error.response.data.message
-                    })
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
                 });
         },
         update(brand) {
             this.$store.dispatch("updateBrand", brand)
                 .then(response => {
+                    this.$refs.brandsDT.reloadData();
+                    this.$refs.brandFormModal.close();
                     this.showSuccess({
                         message: response.message
                     });
                 }).catch(error => {
-                    this.showError({
-                        message: error.response.data.message
-                    })
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
                 });
         }
     },

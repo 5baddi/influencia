@@ -1,11 +1,10 @@
 
 import Vue from 'vue';
 import Vuex from 'vuex';
-import axios from 'axios';
 import { api } from '../api';
 import { Loader } from './loader';
 import ability from '../services/ability';
-import { reject } from 'lodash';
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -23,15 +22,15 @@ function fatchLocalUser() {
 const state = () => ({
     user: fatchLocalUser(),
     token: null,
-    dashboard: {},
-    brands: null,
+    brands: [],
     activeBrand: null,
-    users: null,
-    campaigns: {all: []},
+    users: [],
+    campaigns: [],
     campaign: null,
-    trackers: null,
+    statistics: {},
+    trackers: [],
     tracker: null,
-    influencers: null,
+    influencers: [],
     influencer: null,
     roles: [],
 })
@@ -41,11 +40,11 @@ const getters = {
     Token: state => state.token,
     isLogged: state => typeof state.user !== "undefined" && state.user !== null,
     isAdmin: state => state.user.is_superadmin,
-    dashboard: state => state.dashboard,
     brands: state => state.brands,
     users: state => state.users,
     campaigns: state => state.campaigns,
     campaign: state => state.campaign,
+    statistics: state => state.statistics,
     trackers: state => state.trackers,
     tracker: state => state.tracker,
     influencers: state => state.influencers,
@@ -93,21 +92,6 @@ const actions = {
                 .catch(error => reject(error));
         })
 
-    },
-    fetchDashboard({commit, state}){
-        return new Promise((resolve, reject) => {
-            api.get('/api/v1/dashboard')
-                .then(response => {
-                    if(response.status === 200 && response.data.success){
-                        commit('setDashboard', { dashboard: response.data.content });
-                        resolve(response.data);
-                    }else{
-                        throw new Error("Something going wrong!");
-                    }
-                }).catch(error => {
-                    reject(error);
-                });
-        });
     },
     fetchUser({ commit, state }, uuid) {
         return new Promise((resolve, reject) => {
@@ -226,7 +210,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/influencers", data)
                 .then(response => {
-                    if(response.status === 201){
+                    if(response.status === 200 && response.data.success){
                         resolve(response.data)
                     }else{
                         throw new Error("Something going wrong!");
@@ -266,7 +250,7 @@ const actions = {
                 }
             })
                 .then(response => {
-                    if(response.status === 201){
+                    if(response.status === 201 && response.data.success){
                         commit('setBrand', { brand: response.data.content })
                         resolve(response.data)
                     }else{
@@ -288,7 +272,7 @@ const actions = {
                     }
                 })
                     .then(response => {
-                        if(response.status === 200){
+                        if(response.status === 200 && response.data.success){
                             commit('setBrand', { brand: response.data.content })
                             resolve(response.data)
                         }else{
@@ -431,6 +415,8 @@ const actions = {
                         resolve(response.data);
                     })
                     .catch((error) => {
+                        commit("setActiveBrand", {brand: null});
+
                         reject(error);
                     });
             });
@@ -451,6 +437,14 @@ const actions = {
                     })
             }
 
+        });
+    },
+    fetchStatistics({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            api.get("/api/v1/campaigns/" + state.activeBrand.uuid + "/statistics").then(response => {
+                commit('setStatistics', { statistics: response.data.content })
+                resolve(response.data)
+            }).catch(response => reject(response))
         });
     },
     fetchCampaignAnalytics({ commit, state }, uuid) {
@@ -499,9 +493,6 @@ const actions = {
 };
 
 const mutations = {
-    setDashboard: (state, { dashboard }) => {
-        state.dashboard = dashboard;
-    },
     setToken: (state, { token }) => {
         state.token = token;
     },
@@ -539,7 +530,7 @@ const mutations = {
         state.users.push(user)
     },
     setActiveBrand: (state, { brand }) => {
-        if (!brand && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
+        if (!brand && state.brands !== null && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
             state.brands.forEach((item, index) => {
                 if (item.id == state.user.selected_brand_id) {
                     brand = item
@@ -550,13 +541,11 @@ const mutations = {
         state.activeBrand = brand
     },
     setNewCampaign: (state, { campaign }) => {
-        if (!state.campaigns.all) {
-            state.campaigns = {
-                all: []
-            };
+        if (!state.campaigns) {
+            state.campaigns = [];
         }
 
-        state.campaigns.all.push(campaign);
+        state.campaigns.push(campaign);
     },
     setNewTracker: (state, { tracker }) => {
         if (!state.trackers) {
@@ -569,6 +558,9 @@ const mutations = {
     },
     setCampaign: (state, { campaign }) => {
         state.campaign = campaign;
+    },
+    setStatistics: (state, { statistics }) => {
+        state.statistics = statistics;
     },
     setTrackers: (state, { trackers }) => {
         state.trackers = trackers;
@@ -591,6 +583,20 @@ const updateAbilities = (store) => {
     });
 }
 
+// Save data state
+const dataState = createPersistedState({
+    paths: [
+        'brands',
+        'activeBrand',
+        'users',
+        'campaigns',
+        'statistics',
+        'trackers',
+        'influencers',
+        'roles'
+    ]
+});
+
 export default new Vuex.Store({
     state: state,
     getters: getters,
@@ -600,6 +606,7 @@ export default new Vuex.Store({
         Loader
     },
     plugins: [
-        updateAbilities
+        updateAbilities,
+        dataState
     ]
 });

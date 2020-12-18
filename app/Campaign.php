@@ -2,6 +2,8 @@
 
 namespace App;
 
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
@@ -49,7 +51,8 @@ class Campaign extends Model
         'all_trackers_count',
         'organic_posts',
         'visits_evolution',
-        'tracker_posts'
+        'tracker_posts',
+        'last_update'
     ];
 
 
@@ -447,23 +450,38 @@ class Campaign extends Model
         return $views;
     }
 
-    public function getInfluencersAttribute()
+    /**
+     * Get list of influencers
+     * 
+     * @return Illuminate\Support\Collection
+     */
+    public function getInfluencersAttribute() : Collection
     {
-        $influencers = collect();
+        $influencers = new Collection();
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
+        foreach($this->trackers->load('influencers') as $tracker){
+            if(is_null($tracker->influencers) || $tracker->influencers->count() === 0)
                 continue;
 
-            foreach($tracker->posts->load('influencer') as $post){
-                if($influencers->contains('id', $post->influencer->id))
+            foreach($tracker->influencers as $influencer){
+                if($influencers->contains('id', $influencer->id))
                     continue;
 
-                $influencers->add($post->influencer);
+                $influencers->add($influencer);
             }
         }
 
         return $influencers;
+    }
+
+    /**
+     * Get last update datetime as humains readable
+     *
+     * @return string
+     */
+    public function getLastUpdateAttribute() : string
+    {
+        return Carbon::createFromTimeStamp(strtotime($this->attributes['updated_at']))->diffForHumans();
     }
     
     /**

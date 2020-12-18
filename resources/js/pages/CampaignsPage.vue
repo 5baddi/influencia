@@ -19,37 +19,25 @@
     <div class="p-1" v-if="!campaign">
         <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <div class="card">
-                <div class="number">{{ campaigns.all.length | formatedNbr }}</div>
+                <div class="number">{{ campaigns.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF CAMPAIGNS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ trackers.length | formatedNbr }}</div>
-                <p class="description">NUMBER OF TRACKERS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaigns.impressions | formatedNbr }}</div>
-                <p class="description">TOTAL ESTIMATED IMPRESSIONS</p>
-            </div>
-            <div class="card">
-                <div class="number">{{ campaigns.communities | formatedNbr }}</div>
-                <p class="description">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="campaignsDT" :columns="columns" fetchMethod="fetchCampaigns" responseField="all" cssClasses="table-card">
+            <DataTable ref="campaignsDT" :columns="columns" :nativeData="parsedCampaigns" fetchMethod="fetchCampaigns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
-                        <i class="far fa-chart-bar"></i>
+                        <i class="far fa-chart-bar datatable-icon"></i>
                     </router-link>
                     <button v-if="($can('edit', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit campaign" @click="editCampaign(row.data.original)">
-                        <i class="fas fa-pen"></i>
+                        <i class="fas fa-pen datatable-icon"></i>
                     </button>
                     <!-- <button class="btn icon-link" @click="disableCampaign(row)" title="Stop tracking" v-if="$can('start-stop-tracking', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-                     <i class="far fa-stop-circle"></i>
+                     <i class="far fa-stop-circle datatable-icon"></i>
                   </button> -->
                     <button v-if="($can('delete', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Delete campaign" @click="deleteCampaign(row.data.original)">
-                        <i class="far fa-trash-alt"></i>
+                        <i class="far fa-trash-alt datatable-icon"></i>
                     </button>
                 </td>
             </DataTable>
@@ -75,34 +63,48 @@ export default {
     },
     data() {
         return {
-            isLoading: true,
-            columns: [{
+            columns: [
+                {
                     name: "Campaign name",
                     field: "name"
                 },
                 {
-                    name: "Campaign status",
+                    name: "Status",
                     field: "status",
+                    sortable: false,
                     callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '"></span>';
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
                     }
+                },
+                {
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
                 },
                 {
                     name: "Number of trackers",
                     field: "all_trackers_count"
                 },
                 {
-                    name: "Created by",
-                    field: "user_id",
+                    name: "Influencers",
+                    field: "influencers",
+                    class: "avatars-list",
+                    sortable: false,
                     callback: function (row) {
-                        return '<span class="badge badge-success">' + row.user.name + '</span>';
+                        if (row.influencers.length === 0)
+                            return '-';
+
+                        let html = '';
+                        row.influencers.map(function (item, index) {
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
+                        });
+
+                        return html;
                     }
                 },
                 {
-                    name: "Created at",
-                    field: "created_at",
-                    isDate: true,
-                    format: "DD/MM/YYYY"
+                    name: "Last update",
+                    field: "last_update",
                 }
             ]
         };
@@ -111,7 +113,15 @@ export default {
         next(vm => vm.initData());
     },
     beforeRouteUpdate(to, from, next) {
-        next(vm => vm.fetchCampaign())
+        let routeUUID = to.params.uuid;
+        if (typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)) {
+            this.$store.commit("setCampaign", {
+                campaign: null
+            });
+            this.fetchCampaign();
+        }
+
+        next();
     },
     created() {
         this.initData();
@@ -133,18 +143,18 @@ export default {
     },
     methods: {
         initData() {
-            this.$store.dispatch("fetchCampaigns");
-            this.$store.dispatch("fetchTrackers");
+            this.$store.dispatch("fetchCampaigns").catch(error => {});
             this.fetchCampaign();
         },
         fetchCampaign() {
             // Load user by UUID
-            if (typeof this.$route.params.uuid !== 'undefined')
-                this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid);
-            else
+            if(typeof this.$route.params.uuid !== 'undefined'){
+                this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid).catch(error => {});
+            }else{
                 this.$store.commit("setCampaign", {
                     campaign: null
                 });
+            }
         },
         addCampaign() {
             this.$refs.campaignFormModal.open();
@@ -202,7 +212,11 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign", "trackers"])
+        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign"]),
+
+        parsedCampaigns(){
+            return this.campaigns;
+        }
     },
     notifications: {
         showError: {

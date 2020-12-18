@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Campaigns
     Route::get('/campaigns/{brand}', 'CampaignController@byBrand');
+    Route::get('/campaigns/{brand}/statistics', 'CampaignController@statistics');
     Route::get('/campaigns/{campaign}/analytics', 'CampaignController@analytics');
     Route::post('/campaigns', 'CampaignController@create');
     Route::put('/campaigns/{campaign}', 'CampaignController@update');
@@ -81,9 +82,6 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Export
     Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
-
-    // Data && statistics
-    Route::get('/dashboard', 'DataController@dashboardStatistics');
 });
 
 // Streamed data

@@ -5,7 +5,6 @@
             <h4 class="heading">{{ title }}</h4>
         </header>
         <div class="modal-form">
-            <input type="hidden" :value="brand.uuid" />
             <div class="control">
                 <input v-model="brand.name" type="text" placeholder="Brand name" />
             </div>
@@ -81,6 +80,8 @@ export default {
 
             // Set base brand info
             let formData = new FormData();
+            if(action === "update")
+                formData.append("id", this.brand.id);
             formData.append("name", this.brand.name);
             if(typeof this.brand.image !== "undefined")
                 formData.append("logo", this.brand.image);
@@ -88,8 +89,6 @@ export default {
                 formData.append("uuid", this.brand.uuid);
 
             this.$emit(action, formData);
-
-            this.close();
         }
     }
 };

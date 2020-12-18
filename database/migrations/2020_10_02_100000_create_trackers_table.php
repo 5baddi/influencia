@@ -21,7 +21,7 @@ class CreateTrackersTable extends Migration
             $table->string('uuid')->unique()->nullable(false);
             $table->enum('type', ['url', 'post', 'story'])->default('url');
             $table->string('name')->unique()->nullable(false);
-            $table->enum('platform', ['instagram', 'snapchat', null])->nullable();
+            $table->enum('platform', ['instagram', 'youtube', 'snapchat', null])->nullable();
             $table->longText('url')->nullable();
             $table->integer('nbr_squences')->nullable();
             $table->integer('nbr_squences_impressions')->nullable();

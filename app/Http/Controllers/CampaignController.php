@@ -33,20 +33,56 @@ class CampaignController extends Controller
     {
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        // Load data
-        $campaigns = $brand->campaigns()
+        return response()->success("Campaigns fetched successfully.", 
+            $brand->campaigns()
                 ->with(['user', 'brand'])
                 ->withCount('trackers')
+                ->orderBy('created_at', 'desc')
+                ->get()
+        );
+    }
+
+    /**
+     * Get campaigns statistics by active brand
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function statistics(Brand $brand)
+    {
+        abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Load campaigns
+        $trackers = $brand->campaigns()
+                ->withCount(['trackers'])
+                ->orderBy('created_at', 'desc')
                 ->get();
+
+        $trackersCount = 0;
+        $trackersList = collect();
+        foreach($trackers as $item){
+            $trackersCount += $item->trackers_count;
+
+            if($trackersList->contains('id', $item->id))
+                    continue;
+
+                $trackersList->add($item);
+        }
 
         $impressions = $this->campaignRepo->getEstimatedImpressions();
         $communities = $this->campaignRepo->getEstimatedCommunities();
 
         return response()->success("Campaigns fetched successfully.", 
             [
-                'all'           =>  $campaigns,
-                'impressions'   =>  $impressions,
-                'communities'   =>  $communities,
+                'campaigns_count'       =>  $brand->campaigns->count(),
+                'trackers_count'        =>  $trackersCount,
+                'impressions'           =>  $impressions,
+                'communities'           =>  $communities,
+                // 'brands'                =>  Auth::user()->brands,
+                // 'campaigns'             =>  Campaign::where('user_id', Auth::id())->get(),
+                // 'trackers'              =>  Tracker::where('user_id', Auth::id())->get(),
+                // 'influencers'           =>  Auth::user()->influencers,
+                'latestCampaigns'       =>  $brand->campaigns()->take(5)->get(),
+                'latestTrackers'        =>  $trackersList->take(5)->toArray()
             ]
         );
     }

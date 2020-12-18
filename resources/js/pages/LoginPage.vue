@@ -5,8 +5,8 @@
             <div class="logo">
                 <img src="../../assets/img/log-inf-mini.png" alt="logo" />
             </div>
-            <h1>Welcom to INFLUENCIA III</h1>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veniam quas facilis quibusdam tempore aperiam nostrum autem! Blanditiis sequi aut animi!</p>
+            <h1>Welcome to INFLUENCIA</h1>
+            <p>Now you can track campaigns of your influencers easy and on any social network!</p>
         </div>
     </div>
     <div class="login-form">
@@ -65,15 +65,16 @@ export default {
                     this.showLoginSuccess({
                         message: `Welcome ${response.user.name}`
                     });
+
                     // Redirect to create new brand
-                    // if(this.brands === null || (typeof this.brands.length !== "undefined" && this.brands.length === 0)){
-                    //     this.showLoginError({
-                    //         message: "You should create at least one brand"
-                    //     });
-                    //     this.$router.push({ name: 'brands' });
-                    // }else{
+                    if(this.brands === null || (typeof this.brands.length !== "undefined" && this.brands.length === 0)){
+                        this.showLoginError({
+                            message: "You should create at least one brand"
+                        });
+                        this.$router.push({ name: 'brands' });
+                    }else{
                         this.$router.push({ name: 'dashboard' });
-                    // }
+                    }
                 })
                 .catch((error) => {
                     this.showLoginError({
@@ -83,13 +84,13 @@ export default {
         },
     },
     notifications: {
-        showLoginError: {
-            title: "Error",
-            type: "error",
-        },
         showLoginSuccess: {
             title: "Login success",
             type: "success",
+        },
+        showLoginError: {
+            title: "Error",
+            type: "error",
         },
     },
     beforeRouteEnter(to, from, next) {

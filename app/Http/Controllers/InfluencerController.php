@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Influencer;
 use App\InfluencerPost;
+use App\Jobs\ScrapInfluencerJob;
 use App\Services\YoutubeScraper;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateInfluencerRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,18 +46,10 @@ class InfluencerController extends Controller
                 if(!is_null($exists))
                     return response()->error("Influencer already exists!", [], 400);
 
-                // Sleep for short time
-                InstagramScraper::isHTTPRequest();
-
-                if(preg_match('/^[0-9]*$/', $data['username']) && filter_var($data['username'], FILTER_VALIDATE_INT) !== false)
-                    $account = $instagram->byId((int)$data['username']);
-                else
-                    $account = $instagram->byUsername($data['username']);
-
-                // Store account
-                $influencer = Influencer::create($account);
+                // Send create new influencer job
+                ScrapInfluencerJob::dispatch(Auth::user(), $data['username'])->onQueue('influencers');
                 
-                return response()->success("Influencer @{$influencer->username} created successfully.", $influencer, 201);
+                return response()->success("Task executed in background, please wait...", [], 200);
             }elseif($data['platform'] === 'youtube'){
                 // Extract account ID
                 if(filter_var($data['username'], FILTER_VALIDATE_URL))

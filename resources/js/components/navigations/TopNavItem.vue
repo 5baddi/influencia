@@ -59,7 +59,7 @@ export default {
     },
     created() {
         if(this.is_switch && this.activeBrand)
-            this.$store.dispatch("setActiveBrand", this.activeBrand);
+            this.$store.dispatch("setActiveBrand", this.activeBrand).catch(error  => {});
     },
     computed: {
         ...mapGetters(["AuthenticatedUser", "brands", "activeBrand"])
@@ -69,7 +69,8 @@ export default {
             this.$store.dispatch("setActiveBrand", brand).then(() => {
                 this.$store.dispatch("fetchCampaigns");
                 this.showDropdown = false;
-            });
+            })
+            .catch(error  => {});
         },
         hideDropdown(e) {
             if (!e.target.closest(".dashboard__navigation--item")) {

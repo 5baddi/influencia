@@ -7,40 +7,37 @@
     </ul>-->
     <table>
         <thead ref="headercolumns">
-            <th v-for="(column, index) in columns" :key="index">
+            <th v-for="(column, index) in formatedColumns" :key="index">
                 {{ (column.name ? column.name : " ") | headerColumn }}
-                <!-- TODO: fix sotring -->
-                <!-- <span v-show="column.sortable && this.sortKey == 'desc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
-                            <i class="fas fa-sort-up"></i>
-                        </span>
-                        <span v-show="column.sortable && this.sortKey == 'asc' && (this.sortColumn == column.name || this.sortColumn)" @click="sortBy(column)">
-                            <i class="fas fa-sort-down"></i>
-                        </span> -->
+                <span v-if="column.sortable" @click="sort(column.field, index)">
+                    <svg v-show="!column.isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
+                    <svg v-show="column.isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
+                </span>
             </th>
             <slot name="header"></slot>
         </thead>
         <tbody>
-            <tr v-if="parsedData.length === 0">
+            <tr v-if="formatedData.length === 0">
                 <td class="no-data" :colspan="getColumnsCount()">
-                    <span v-show="!isLoading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
-                    <span v-show="isLoading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
+                    <span v-show="!loading"><i class="fas fa-exclamation-triangle"></i>&nbsp;No data found.</span>
+                    <span v-show="loading"><i class="fas fa-spinner fa-spin"></i>&nbsp;Loading...</span>
                 </td>
             </tr>
-            <tr v-show="parsedData.length > 0 && !isLoading" v-for="(obj, index) in parsedData" :key="index">
-                <td v-for="(col, idx) in columns" :key="idx">
-                    <div v-if="typeof obj[col.field] !== 'undefined'" v-html="obj[col.field]"></div>
+            <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof obj[col.field] !== 'undefined'" :class="col.class" v-html="obj[col.field]"></div>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
         </tbody>
-        <tfoot v-if="data.length > 0 && !isLoading">
+        <tfoot v-if="data.length > 0 && !loading">
             <tr>
                 <td :colspan="getColumnsCount()" v-if="withPagination">
                     Rows per page:
                     <select ref="itemsPerPage" @change="perPageOnChange($event)">
                         <option v-for="value in rowPerPage" :key="value" :value="(value !== 'All') ? value : data.length" :selected="perPage == value">{{ value }}</option>
                     </select>
-                    <span>{{ startIndex }} - {{ parsedData.length }} of {{ data.length }}</span>
+                    <span>{{ startIndex }} - {{ formatedData.length }} of {{ data.length }}</span>
                     <button v-if="startIndex > perPage" @click="previousPage()">
                         <i class="fas fa-chevron-left"></i>
                     </button>
@@ -104,6 +101,7 @@ table tbody td {
     font-size: 0.8rem;
     padding: 0.8rem 0.6rem;
     color: rgba(0, 0, 0, 0.61);
+    min-width: 100px;
 }
 
 table tfoot td {
@@ -149,10 +147,11 @@ table tfoot td>>>button:hover {
 table tbody>>>img {
     max-width: 36px;
     border-radius: 50%;
+    margin-right: 0.2rem;
 }
 
 table tbody>>>a {
-    color: #039be5 !important;
+    color: #039be5;
 }
 
 .table-card {
@@ -173,7 +172,7 @@ table tbody>>>a {
 
 <script>
 import {
-    mapGetters
+    mapState
 } from "vuex";
 import dayjs from "dayjs";
 import abbreviate from 'number-abbreviate';
@@ -193,9 +192,6 @@ export default {
             type: String
         },
         responseField: {
-            type: String
-        },
-        endPoint: {
             type: String
         },
         nativeData: {
@@ -219,16 +215,20 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["Token"]),
+        ...mapState("Loader", ["loading"]),
 
-        parsedData() {
+        formatedColumns(){
+            console.log(this.columns);
+            return this.columns;
+        },
+        formatedData() {
             if (this.data.length === 0)
                 return [];
 
             let _data = this.data.slice(this.startIndex - 1, this.data.length < this.perPage ? this.data.length : this.perPage);
             // TODO: fix pagination...
             let vm = this;
-            let parsedData = [];
+            let _parsedData = [];
             _data.map(function (value, key) {
                 let rowData = {
                     original: value
@@ -238,10 +238,16 @@ export default {
                     // Init sort
                     if (typeof vm.columns[key].sortable === "undefined")
                         vm.columns[key].sortable = true;
+                    if(vm.columns[key].sortable === true)
+                        vm.columns[key].isAsc = false;
+
+                    // Handle custom css clasees
+                    if(typeof vm.columns[key].class !== "string")
+                        vm.columns[key].class = '';
 
                     // Parse data
                     let val = value[item.field];
-                    if (val !== "undefined") {
+                    if (typeof val !== "undefined" && val !== null) {
                         // DataTime format
                         if (typeof item.isDate === "boolean" && item.isDate) {
                             let date = dayjs(val).format(item.format !== "undefined" ? item.format : 'DD/MM/YYYY');
@@ -269,58 +275,61 @@ export default {
                         // Ignore zero or empty
                         if ((val == null || val == 0) && typeof item.callback === "undefined")
                             rowData[item.field] = '-';
+                    }else{
+                        rowData[item.field] = "---";
                     }
                 });
 
-                parsedData.push(rowData);
+                _parsedData.push(rowData);
             });
 
-            return parsedData;
+            // Update parsed data
+            this.parsedData = _parsedData;
+
+            return this.parsedData;
         },
-    },
-    notifications: {
-        // showErrorDT: {
-        //     type: "error",
-        //     title: "Error",
-        //     message: "Something going wrong! Please try again.."
-        // }
     },
     methods: {
-        setupStream() {
-            if (typeof this.endPoint === "undefined")
-                return;
-
-            // Init Event source
-            this.es = new EventSource(this.endPoint);
-
-            // Listen to data
-            this.es.onmessage = function (event) {
-                this.data = JSON.parse(event.data);
-            };
-
-            // Catch error
-            this.es.addEventListener('error', event => {
-                // if (event.readyState == EventSource.CLOSED)
-                //     this.showErrorDT({
-                //         message: 'lost connection... giving up!'
-                //     });
-            }, false);
-
-            // Close
-            this.es.addEventListener('close', event => {
-                this.es.close();
-            }, false);
-
-            this.isLoading = false;
-        },
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
-        sortBy(column, key) {
-            if (this.sortColumn !== column.name)
-                this.sortColumn = column.name;
+        sort(col, index){
+            // Ignore when no index set
+            if(typeof index === "undefined")
+                return;
 
-            this.sortKey = key;
+            // Get sort key
+            let isAsc = this.columns[index].hasOwnProperty('isAsc') ? this.columns[index].isAsc : true;
+
+            // Sort data
+            this.data.sort(this.sortBy(col, isAsc));
+
+            // Update column sort icon
+            let _column = this.columns[index];
+            _column.isAsc = !isAsc;
+            this.columns.splice(index, 1, _column);
+        },
+        sortBy(field, isAsc) {
+            return function(a, b){
+                // Init 
+                let result = 0;
+
+                // Verify array has field property
+                if(!a.hasOwnProperty(field) || !b.hasOwnProperty(field))
+                    return result;
+
+                // Parse data for each type
+                let dataA = (typeof a[field] === "string") ? a[field].toUpperCase() : a[field];
+                let dataB = (typeof b[field] === "string") ? b[field].toUpperCase() : b[field];
+
+                // Compare
+                if(dataA > dataB)
+                    result = 1;
+                else if(dataA < dataB)
+                    result = -1;
+
+                return result * (isAsc ? 1 : -1);
+            };
         },
         perPageOnChange(event) {
             this.perPage = event.target.value;
@@ -331,17 +340,12 @@ export default {
         previousPage() {
             this.startIndex = this.startIndex - this.perPage;
         },
+        loadData(){
+            // Set native data
+            if (typeof this.nativeData !== "undefined")
+                this.data = this.nativeData;
+        },
         reloadData() {
-            // Using native data
-            if (typeof this.nativeData !== "undefined") {
-                this.isLoading = false;
-
-                return this.data = this.nativeData;
-            }
-            // Using Event source
-            // if (typeof this.endPoint !== "undefined" && this.es === null)
-            // return this.setupStream();
-
             // Using vuex
             if (typeof this.fetchMethod === "undefined")
                 return;
@@ -351,21 +355,18 @@ export default {
                     this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
                 else
                     this.data = [];
-
-                this.isLoading = false;
             }).catch(error => {
                 console.log("DataTable Error: ");
                 console.log(error);
                 this.data = [];
-                this.isLoading = false;
             });
         }
     },
     data() {
         return {
-            isLoading: true,
             es: null,
             data: [],
+            parsedData: [],
             perPage: 10,
             rowPerPage: [10, 25, 50, 100, 'All'],
             startIndex: 1,
@@ -375,12 +376,12 @@ export default {
         }
     },
     created() {
-        // Load data via vuex
-        this.reloadData();
+        // Load data via native data
+        this.loadData();
     },
     destroyed() {
-        if (this.es !== null)
-            this.es.close();
+        // if (this.es !== null)
+        //     this.es.close();
     }
 }
 </script>
