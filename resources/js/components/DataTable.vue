@@ -6,15 +6,22 @@
         </li>
     </ul>-->
     <table>
-        <thead ref="headercolumns">
-            <th v-for="(column, index) in formatedColumns" :key="index">
-                {{ (column.name ? column.name : " ") | headerColumn }}
-                <span v-if="column.sortable" @click="sort(column.field, index)">
-                    <svg v-show="!column.isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
-                    <svg v-show="column.isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
-                </span>
-            </th>
-            <slot name="header"></slot>
+        <thead>
+            <tr>
+                <th :colspan="getColumnsCount()" class="actions-header">
+                    <input type="text" v-model="searchQuery" placeholder="Search"/>
+                </th>
+            </tr>
+            <tr ref="headercolumns">
+                <th v-for="(column, index) in formatedColumns" :key="index">
+                    {{ (column.name ? column.name : " ") | headerColumn }}
+                    <span v-if="column.sortable" @click="sort(column.field, index)">
+                        <svg v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
+                        <svg v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
+                    </span>
+                </th>
+                <slot name="header"></slot>
+            </tr>
         </thead>
         <tbody>
             <tr v-if="formatedData.length === 0">
@@ -76,6 +83,32 @@ table {
     box-shadow: none;
     border: none;
     overflow-x: auto;
+}
+
+table thead>>>.actions-header{
+    /* border-bottom: none; */
+    text-align: right;
+}
+table thead>>>.actions-header input[type='text']{
+    min-width: 100px;
+    min-height: 32px;
+    border: 1px solid #e0e0e0;
+    padding: 0 0.6rem;
+    border-radius: 4px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    font-size: 0.9rem;
+    font-weight: 100;
+    color: #212121;
+}
+table thead>>>.actions-header input[type='text']::placeholder{
+    color: #e0e0e0;
+}
+table thead>>>.actions-header input[type='text']:active{
+    border-color: #2d323e;
+}
+table thead>>>.actions-header input[type='text']:hover{
+    border-color: #a9b0c1;
 }
 
 table thead th {
@@ -197,6 +230,9 @@ export default {
         nativeData: {
             type: Array
         },
+        searchCols: {
+            type: Object
+        },
         withPagination: {
             type: Boolean,
             default: true
@@ -214,11 +250,15 @@ export default {
             return text.split('_').join(' ').toUpperCase();
         }
     },
+    watch: {
+        searchQuery: function(val){
+            this.search(val);
+        }
+    }, 
     computed: {
         ...mapState("Loader", ["loading"]),
 
         formatedColumns(){
-            console.log(this.columns);
             return this.columns;
         },
         formatedData() {
@@ -238,8 +278,6 @@ export default {
                     // Init sort
                     if (typeof vm.columns[key].sortable === "undefined")
                         vm.columns[key].sortable = true;
-                    if(vm.columns[key].sortable === true)
-                        vm.columns[key].isAsc = false;
 
                     // Handle custom css clasees
                     if(typeof vm.columns[key].class !== "string")
@@ -293,21 +331,35 @@ export default {
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
+        search(val){
+            // Ignore if no search col has been set
+            if(typeof this.searchCols === "undefined" || this.searchCols.length === 0)
+                return;
+
+            // Search by each key on data
+            this.searchCols.map(function(value, key){
+                console.log(key, value);
+                console.log(typeof value);
+                if(!this.data.hasOwnProperty(key))
+                    return;
+            });
+        },
         sort(col, index){
             // Ignore when no index set
             if(typeof index === "undefined")
                 return;
 
             // Get sort key
-            let isAsc = this.columns[index].hasOwnProperty('isAsc') ? this.columns[index].isAsc : true;
+            // let isAsc = this.columns[index].hasOwnProperty('isAsc') ? this.columns[index].isAsc : true;
 
             // Sort data
-            this.data.sort(this.sortBy(col, isAsc));
+            this.data.sort(this.sortBy(col, this.isAsc));
 
             // Update column sort icon
-            let _column = this.columns[index];
-            _column.isAsc = !isAsc;
-            this.columns.splice(index, 1, _column);
+            // let _column = this.columns[index];
+            // _column.isAsc = !isAsc;
+            // this.columns.splice(index, 1, _column);
+            this.isAsc = !this.isAsc
         },
         sortBy(field, isAsc) {
             return function(a, b){
@@ -371,8 +423,8 @@ export default {
             rowPerPage: [10, 25, 50, 100, 'All'],
             startIndex: 1,
             endIndex: this.perPage,
-            sortKey: 'asc',
-            sortColumn: null
+            isAsc: false,
+            searchQuery: null
         }
     },
     created() {
