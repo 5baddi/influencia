@@ -67,7 +67,9 @@ export default {
     methods: {
         switchBrand(brand, index) {
             this.$store.dispatch("setActiveBrand", brand).then(() => {
-                this.$store.dispatch("fetchCampaigns");
+                this.$store.dispatch("fetchCampaigns").catch(error => {});
+                this.$store.dispatch("fetchTrackers").catch(error => {});
+                this.$store.dispatch("fetchInfluencers").catch(error => {});
                 this.showDropdown = false;
             })
             .catch(error  => {});

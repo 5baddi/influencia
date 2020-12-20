@@ -28,7 +28,6 @@
                            <input type="radio" value="snapchat" v-model="platform" :checked="platform === 'snapchat'" :disabled="true"/>
                            <span><i class="fab fa-snapchat-ghost"></i>&nbsp;Snapchat</span>
                         </label>
-
                      </div>
                   </div>
             </div>

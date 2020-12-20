@@ -91,6 +91,18 @@ class Campaign extends Model
                 ]);
     }
 
+    // public function scopeByInfluencers($query, $name)
+    // {
+    //     $found = $this->getInfluencersAttribute()->filter(function($item) use($name){
+    //         return strpos(strtolower($item->name), strtolower($name)) !== false || strpos(strtolower($item->username), strtolower($name)) !== false;
+    //     });
+
+    //     if($found->count() > 0)
+    //         return $query->where('id', $this->attributes['id']);
+
+    //     return $query;
+    // }
+
     public function getVisitsEvolutionAttribute()
     {
         // TODO: Get visits

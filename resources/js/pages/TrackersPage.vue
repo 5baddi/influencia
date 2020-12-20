@@ -24,7 +24,7 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="trackersDT" :columns="columns" :searchCols="{name: null, username: null}" :nativeData="trackers" fetchMethod="fetchTrackers" cssClasses="table-card">
+            <DataTable ref="trackersDT" :columns="columns" :searchable="true" :searchCols="['name', 'username']" :nativeData="trackers" fetchMethod="fetchTrackers" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">

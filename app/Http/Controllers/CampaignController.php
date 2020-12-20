@@ -43,6 +43,48 @@ class CampaignController extends Controller
     }
 
     /**
+     * Search for campaigns by active brand and search query
+     *
+     * @param \App\Brand $brand
+     * @param string $query
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Brand $brand, string $query)
+    {
+        abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        // Search by name
+        $byName = $brand->campaigns()
+                ->with(['user', 'brand'])
+                ->withCount('trackers')
+                ->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
+                ->get();
+
+        // By influencer name or username
+        $byInfluencer = $brand->campaigns()
+                ->with(['user', 'brand'])
+                ->withCount('trackers')
+                ->get()
+                ->filter(function($item) use($query){
+                    $found = $item->influencers->filter(function($item) use($query){
+                        return strpos(strtolower($item->name), strtolower($query)) !== false || strpos(strtolower($item->username), strtolower($query)) !== false;
+                    });
+
+                    if($found->count() !== 0)
+                        return true;
+
+                    return false;
+                });
+
+        $result = $byName->merge($byInfluencer);
+
+        return response()->success("Campaigns filtered successfully.", 
+            $result->unique()
+                ->orderBy('created_at', 'desc')
+        );
+    }
+
+    /**
      * Get campaigns statistics by active brand
      *
      * @return \Illuminate\Http\Response

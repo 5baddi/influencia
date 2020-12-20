@@ -29,6 +29,7 @@ class TrackerController extends Controller
             Tracker::all()
         );
     }
+    
     /**
      * Fetch trackers by brand.
      *
@@ -43,6 +44,33 @@ class TrackerController extends Controller
             Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    // ->paginate(Application::DEFAULT_PAGINATION)
+        );
+    }
+
+    /**
+     * Search for trackers by active brand and search query
+     *
+     * @param \App\Brand $brand
+     * @param string $query
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Brand $brand, string $query)
+    {
+        abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        return response()->success(
+            "Trackers filtered successfully.",
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
+                    ->whereHas('campaign', function($camp) use($brand){
+                        $camp->where('brand_id', $brand->id);
+                    })
+                    ->whereHas('influencers', function($inf) use($query){
+                        $inf->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
+                            ->orWhereRaw('LOWER(`username`) LIKE ?', ['%' . trim(strtolower($query)) . '%']);
                     })
                     ->orderBy('created_at', 'desc')
                     ->get()

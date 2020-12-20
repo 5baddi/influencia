@@ -22,10 +22,12 @@ import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
 import VueTimeago from 'vue-timeago';
 
+
 Vue.prototype.$http = api;
 
-// Init JQuery
-window.jQuery = window.$ = jQuery
+// Init JQuery & Lodash
+window.jQuery = window.$ = jQuery;
+window._ = require('lodash');
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
@@ -99,6 +101,13 @@ const app = new Vue({
             if(to.matched.some(record => record.meta.auth) && !loggedIn){
                 next('/login');
             }
+            // Ensure load data
+            // switch(to.name){
+            //     case 'trackers':
+            //         console.log("Loading trackers");
+            //         this.$store.dispatch("fetchTrackers").catch(error => {});
+            //     break;
+            // }
 
             next();
         });

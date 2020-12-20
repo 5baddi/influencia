@@ -4,14 +4,17 @@ import Vuex from 'vuex';
 import { api } from '../api';
 import { Loader } from './loader';
 import ability from '../services/ability';
-import createPersistedState from "vuex-persistedstate";
-// import SecureLS from "secure-ls";
+// import createPersistedState from "vuex-persistedstate";
+import SecureLS from "secure-ls";
 
 Vue.use(Vuex);
 
+// Init
+let ls = new SecureLS();
+
 function fatchLocalUser() {
-    if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
-        const user = JSON.parse(localStorage.getItem("user"));
+    if (ls.get("user") && ls.get("user") !== 'undefined') {
+        const user = JSON.parse(ls.get("user"));
         api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
 
         return user;
@@ -61,7 +64,7 @@ const actions = {
             api.post('/oauth', credentials).then((response) => {
                 let user = response.data.user;
                 user.token = response.data.token;
-                localStorage.setItem("user", JSON.stringify(user));
+                ls.set("user", JSON.stringify(user));
 
                 commit('setUser', { user: response.data.user });
                 commit('setToken', { token: response.data.token });
@@ -75,7 +78,7 @@ const actions = {
     logout({ commit, state }) {
         return new Promise((resolve, reject) => {
 
-            localStorage.removeItem("user");
+            ls.remove("user");
 
             if (!state.isLogged) {
                 commit('setUser', { user: null });
@@ -440,6 +443,21 @@ const actions = {
 
         });
     },
+    fetchCampaignsBy({ commit, state }, query) {
+        return new Promise((resolve, reject) => {
+            if (state.activeBrand) {
+                api.get(`/api/v1/campaigns/${state.activeBrand.uuid}/${query}`)
+                    .then((response) => {
+                        commit('setCampaigns', { campaigns: response.data.content })
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            }
+
+        });
+    },
     fetchStatistics({ commit, state }) {
         return new Promise((resolve, reject) => {
             api.get("/api/v1/campaigns/" + state.activeBrand.uuid + "/statistics").then(response => {
@@ -459,7 +477,22 @@ const actions = {
     fetchTrackers({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/v1/brands/${state.activeBrand.uuid}/trackers`)
+                api.get(`/api/v1/brand/${state.activeBrand.uuid}/trackers`)
+                    .then((response) => {
+                        commit('setTrackers', { trackers: response.data.content })
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            }
+
+        });
+    },
+    fetchTrackersBy({ commit, state }, query) {
+        return new Promise((resolve, reject) => {
+            if (state.activeBrand) {
+                api.get(`/api/v1/brand/${state.activeBrand.uuid}/trackers/${query}`)
                     .then((response) => {
                         commit('setTrackers', { trackers: response.data.content })
                         resolve(response.data);
@@ -585,24 +618,23 @@ const updateAbilities = (store) => {
 }
 
 // Save data state
-// let ls = new SecureLS();
-const dataState = createPersistedState({
-    paths: [
-        'brands',
-        'activeBrand',
-        'users',
-        'campaigns',
-        'statistics',
-        'trackers',
-        'influencers',
-        'roles'
-    ],
-    // storage: {
-    //     getItem: (key) => ls.get(key),
-    //     setItem: (key, value) => ls.set(key, value),
-    //     removeItem: (key) => ls.remove(key),
-    // },
-});
+// const dataState = createPersistedState({
+//     paths: [
+//         'brands',
+//         'activeBrand',
+//         'users',
+//         'campaigns',
+//         'statistics',
+//         'trackers',
+//         'influencers',
+//         'roles'
+//     ],
+//     storage: {
+//         getItem: (key) => ls.get(key),
+//         setItem: (key, value) => ls.set(key, value),
+//         removeItem: (key) => ls.remove(key),
+//     },
+// });
 
 export default new Vuex.Store({
     state: state,
@@ -614,6 +646,6 @@ export default new Vuex.Store({
     },
     plugins: [
         updateAbilities,
-        dataState
+        // dataState
     ]
 });
