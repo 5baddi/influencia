@@ -10,6 +10,9 @@ jobs:
   super-lint:
     # Name the Job
     name: Send mail after push
+    # Set the type of machine to run on
+    runs-on: ubuntu-latest
+
     steps:
       - name: Send mail
         uses: dawidd6/action-send-mail@v2
