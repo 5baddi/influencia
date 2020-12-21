@@ -399,8 +399,6 @@ export default {
             // Set native data
             if (typeof this.nativeData !== "undefined")
                 this.data = this.nativeData;
-
-            this.searchQuery = null;
         },
         reloadData() {
             // Using vuex
