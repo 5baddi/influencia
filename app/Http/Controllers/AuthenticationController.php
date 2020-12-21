@@ -9,40 +9,53 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthenticationController extends Controller
 {
+    /**
+     * Sign in
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function login(Request $request)
     {
+        // Validate sign in form
         $data = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email'     => 'required|email',
+            'password'  => 'required'
         ]);
-        $user = User::with('selectedBrand')->where('email', $request->email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response([
-                'message' => ['These credentials do not match our records.']
-            ], 404);
-        }
+        // Load user
+        $user = User::with(['selectedBrand', 'brands'])->where('email', $request->email)->first();
 
+        // Verify credentials
+        if(!$user || !Hash::check($request->password, $user->password))
+            return response()->error("These credentials do not match our records.", [], 404);
+
+        // Generate new token
         $token = $user->createToken('influencia')->plainTextToken;
-
+        // Update last login
         $user->update([
             'last_login' => now()
         ]);
 
-        $response = [
-            'user' => $user,
+        return response()->success("User sign in successfully.", [
+            'user'  => $user,
             'token' => $token
-        ];
-
-        return response($response, 201);
+        ]);
     }
 
+    /**
+     * Logout user
+     * 
+     * @return \Illuminate\Http\Response
+     */
     public function logout()
     {
+        // Get authenticated user
         $user = Auth::user();
-        if ($user) {
+
+        // Clear tokens 
+        if($user)
             $user->tokens()->delete();
-        }
-        return response('', 200);
+
+        return response()->success("User signed out.");
     }
 }

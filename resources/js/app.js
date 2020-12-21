@@ -60,11 +60,6 @@ const app = new Vue({
                 if(typeof this.$store.getters.AuthenticatedUser === "object" && this.$store.getters.AuthenticatedUser !== null){
                     // Refresh User
                     this.$store.dispatch("fetchUser", this.$store.getters.AuthenticatedUser.uuid)
-                        .then(() => {
-                            // Re-set active brand
-                            this.$store.dispatch("setActiveBrand")
-                                .catch(error => {});
-                        })
                         .catch(error => {});
                 }
             },

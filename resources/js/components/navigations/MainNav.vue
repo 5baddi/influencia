@@ -14,11 +14,11 @@
             <span></span>
         </button>
     </header>
-    <!--<div class="dashboard__sidebar__profile" v-if="AuthenticatedUser">
-        <h2>{{ AuthenticatedUser.name }}</h2>
-        <p>{{ AuthenticatedUser.email }}</p>
+    <!--<div class="dashboard__sidebar__profile" v-if="authenticatedUser">
+        <h2>{{ authenticatedUser.name }}</h2>
+        <p>{{ authenticatedUser.email }}</p>
         <div class="avatar">
-            <img v-bind:src="'https://ui-avatars.com/api/?color=039be5&name=' + AuthenticatedUser.name" alt="avatar" />
+            <img v-bind:src="'https://ui-avatars.com/api/?color=039be5&name=' + authenticatedUser.name" alt="avatar" />
         </div>
     </div>-->
     <nav class="dashboard__sidebar__navigation">
@@ -31,7 +31,7 @@
                     <span class="text">Dashboard</span>
                 </router-link>
             </li>
-            <li v-if="$can('search', 'scraper') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `search`}">
+            <li v-if="$can('search', 'scraper') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `search`}">
                 <router-link :to="{name : 'search'}">
                     <span class="icon">
                         <i class="fas fa-search"></i>
@@ -39,7 +39,7 @@
                     <span class="text">Search</span>
                 </router-link>
             </li>
-            <li v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `campaigns`}">
+            <li v-if="$can('list', 'campaign') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `campaigns`}">
                 <router-link :to="{name : 'campaigns'}">
                     <span class="icon">
                         <i class="fas fa-chart-pie"></i>
@@ -47,7 +47,7 @@
                     <span class="text">Campaigns</span>
                 </router-link>
             </li>
-            <li v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `trackers`}">
+            <li v-if="$can('list', 'tracker') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `trackers`}">
                 <router-link :to="{name: 'trackers'}">
                     <span class="icon">
                         <i class="fas fa-code-branch"></i>
@@ -55,7 +55,7 @@
                     <span class="text">Trackers</span>
                 </router-link>
             </li>
-            <li v-if="$can('list', 'influencer') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `influencers`}">
+            <li v-if="$can('list', 'influencer') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `influencers`}">
                 <router-link :to="{name: 'influencers'}">
                     <div class="icon">
                         <i class="fas fa-podcast"></i>
@@ -64,7 +64,7 @@
                 </router-link>
             </li>
             <!-- <can I="list" a="brand"> -->
-            <li v-if="$can('list', 'brand') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `brands`}">
+            <li v-if="$can('list', 'brand') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `brands`}">
                 <router-link :to="{name: 'brands'}">
                     <div class="icon">
                         <i class="fas fa-copyright"></i>
@@ -73,7 +73,7 @@
                 </router-link>
             </li>
             <!-- </can> -->
-            <li v-if="$can('list', 'user') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `users`}">
+            <li v-if="$can('list', 'user') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `users`}">
                 <router-link :to="{name: 'users'}">
                     <div class="icon">
                         <i class="fas fa-users"></i>
@@ -81,7 +81,7 @@
                     <div class="text">Users</div>
                 </router-link>
             </li>
-            <!-- <li v-if="$can('assign-role', 'user') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :class="{active : currentRouteName == `roles`}">
+            <!-- <li v-if="$can('assign-role', 'user') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `roles`}">
                <router-link :to="{name: 'roles'}">
                   <div class="icon">
                      <i class="fas fa-key"></i>
@@ -95,20 +95,22 @@
 </template>
 
 <script>
-import {
-    mapGetters
-} from "vuex";
 export default {
     data() {
         return {
             isNavOpen: true
         };
     },
+    props:{
+        authenticatedUser: {
+            type: Object,
+            required: true
+        }
+    },
     computed: {
         currentRouteName() {
             return this.$route.name;
-        },
-        ...mapGetters(["AuthenticatedUser"])
+        }
     },
     methods: {
         toggle() {

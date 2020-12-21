@@ -61,9 +61,9 @@ class BrandController extends Controller
         // Store the brand
         $brand = Brand::create($data);
         $brand->users()->attach($user);
-        $user->update([
-            'selected_brand_id' => $brand->id
-        ]);
+        // $user->update([
+        //     'selected_brand_id' => $brand->id
+        // ]);
 
         return response()->success("Brand created successfully.", Brand::with(['users', 'campaigns'])->find($brand->id), 201);
     }

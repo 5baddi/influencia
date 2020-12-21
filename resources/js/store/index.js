@@ -27,23 +27,10 @@ function fatchLocalUser() {
     return null;
 }
 
-function fetchActiveBrand(){
-    try{
-        if (ls.get("active-brand") && ls.get("active-brand") !== 'undefined') {
-            return JSON.parse(ls.get("active-brand"));
-        }
-    }catch(error){
-        return null;
-    }
-
-    return null;
-}
-
 const state = () => ({
     user: fatchLocalUser(),
     token: null,
     brands: [],
-    activeBrand: fetchActiveBrand(),
     users: [],
     campaigns: [],
     campaign: null,
@@ -69,25 +56,42 @@ const getters = {
     tracker: state => state.tracker,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
-    activeBrand: state => state.user && state.user.selected_brand ? state.user.selected_brand : state.activeBrand,
     roles: state => state.roles,
 };
 
 const actions = {
-    login({ commit, state }, credentials) {
+    login({ commit, dispatch }, credentials) {
 
         return new Promise((resolve, reject) => {
             api.post('/oauth', credentials).then((response) => {
-                let user = response.data.user;
-                user.token = response.data.token;
-                ls.set("user", JSON.stringify(user));
+                if(response.status === 200 && response.data.success && response.data.content){
+                    // Store user to local storage
+                    let user = response.data.content.user;
+                    user.token = response.data.content.token;
+                    ls.set("user", JSON.stringify(user));
 
-                commit('setUser', { user: response.data.user });
-                commit('setToken', { token: response.data.token });
+                    // Save user & token state
+                    commit("setUser", { user: user});
+                    commit("setToken", { token: user.token });
+                    commit("setToken", { token: user.token });
 
-                api.defaults.headers.common.Authorization = `Bearer ${state.token}`;
+                    // Send token to authorization header
+                    api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
 
-                resolve(response.data);
+                    // Set brands
+                    if(!user.is_superadmin){
+                        commit("setBrands", user.brands);
+                    }else{
+                        dispatch("fetchBrands");
+                    }
+
+                    // Load statistics
+                    dispatch("fetchStatistics");
+
+                    resolve(response.data);
+                }else{
+                    reject(new Error("Something going wrong!"));
+                }
             }).catch(error => reject(error));
         })
     },
@@ -427,8 +431,17 @@ const actions = {
             return new Promise((resolve, reject) => {
                 api.get(`/api/v1/users/active-brand/${brand.uuid}`)
                     .then((response) => {
-                        if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined"){
-                            commit("setActiveBrand", {brand: response.data.content.selected_brand});
+                        if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined" && (typeof state.user.selected_brand.uuid.id === "undefined" || response.data.content.selected_brand.id !== state.user.selected_brand.uuid.id)){
+                            let user = response.data.content;
+                            user.token = state.token;
+                            ls.set("user", JSON.stringify(user));
+
+                            commit('setUser', { user: user });
+
+                            // TODO: reload all data
+                            // this.$store.dispatch("fetchCampaigns").catch(error => {});
+                            // this.$store.dispatch("fetchTrackers").catch(error => {});
+                            // this.$store.dispatch("fetchInfluencers").catch(error => {});
                         }else{
                             throw new Error("Something going wrong!");
                         }
@@ -447,23 +460,25 @@ const actions = {
     },
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {
-            if (state.activeBrand) {
-                api.get(`/api/v1/${state.activeBrand.uuid}/campaigns`)
+            if (state.user.selected_brand.uuid) {
+                api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns`)
                     .then((response) => {
                         commit('setCampaigns', { campaigns: response.data.content })
                         resolve(response.data);
                     })
                     .catch((error) => {
                         reject(error)
-                    })
+                    });
+            }else{
+                reject(new Error("Something going wrong!"));
             }
 
         });
     },
     fetchCampaignsBy({ commit, state }, query) {
         return new Promise((resolve, reject) => {
-            if (state.activeBrand) {
-                api.get(`/api/v1/${state.activeBrand.uuid}/campaigns/search/${query}`)
+            if (state.user.selected_brand.uuid) {
+                api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns/search/${query}`)
                     .then((response) => {
                         commit('setCampaigns', { campaigns: response.data.content })
                         resolve(response.data);
@@ -477,7 +492,7 @@ const actions = {
     },
     fetchStatistics({ commit, state }) {
         return new Promise((resolve, reject) => {
-            api.get(`/api/v1/${state.activeBrand.uuid}/campaigns/statistics`).then(response => {
+            api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns/statistics`).then(response => {
                 commit('setStatistics', { statistics: response.data.content })
                 resolve(response.data)
             }).catch(response => reject(response))
@@ -493,8 +508,8 @@ const actions = {
     },
     fetchTrackers({ commit, state }) {
         return new Promise((resolve, reject) => {
-            if (state.activeBrand) {
-                api.get(`/api/v1/${state.activeBrand.uuid}/trackers`)
+            if (state.user.selected_brand.uuid) {
+                api.get(`/api/v1/${state.user.selected_brand.uuid}/trackers`)
                     .then((response) => {
                         commit('setTrackers', { trackers: response.data.content })
                         resolve(response.data);
@@ -508,8 +523,8 @@ const actions = {
     },
     fetchTrackersBy({ commit, state }, query) {
         return new Promise((resolve, reject) => {
-            if (state.activeBrand) {
-                api.get(`/api/v1/${state.activeBrand.uuid}/trackers/search/${query}`)
+            if (state.user.selected_brand.uuid) {
+                api.get(`/api/v1/${state.user.selected_brand.uuid}/trackers/search/${query}`)
                     .then((response) => {
                         commit('setTrackers', { trackers: response.data.content })
                         resolve(response.data);
@@ -523,8 +538,8 @@ const actions = {
     },
     fetchTrackersByCampaign({ commit, state }, campaign) {
         return new Promise((resolve, reject) => {
-            if (state.activeBrand) {
-                api.get(`/api/v1/${state.activeBrand.uuid}/trackers/${campaign}`)
+            if (state.user.selected_brand.uuid) {
+                api.get(`/api/v1/${state.user.selected_brand.uuid}/trackers/${campaign}`)
                     .then((response) => {
                         commit('setTrackers', { trackers: response.data.content })
                         resolve(response.data);
@@ -594,19 +609,6 @@ const mutations = {
             state.users = [];
         }
         state.users.push(user)
-    },
-    setActiveBrand: (state, { brand }) => {
-        if (!brand && state.brands !== null && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
-            state.brands.forEach((item, index) => {
-                if (item.id == state.user.selected_brand_id) {
-                    brand = item;
-                }
-            });
-        }
-
-        state.activeBrand = brand;
-        // Save active brand on storage for direct loading
-        ls.set('active-brand', JSON.stringify(brand));
     },
     setNewCampaign: (state, { campaign }) => {
         if (!state.campaigns) {
