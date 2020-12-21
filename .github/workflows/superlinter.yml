@@ -2,12 +2,15 @@
 name: Super-Linter
 
 # Run this workflow every time a new commit pushed to your repository
-on: push
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   # Set the job key. The key is displayed as the job name
   # when a job name is not provided
-  super-lint:
+  notify-after-push:
     # Name the Job
     name: Send mail after push
     # Set the type of machine to run on
@@ -24,7 +27,7 @@ jobs:
           subject: Github Actions job result
           # Literal body:
           body: Build job of ${{github.repository}} completed successfully!
-          to: mohamed@baddi.info
+          to: ${{secrets.CLIENT_MAIL}}
           from: BADDI Services
           # Optional carbon copy recipients
           cc: project@baddi.info,services@baddi.info
