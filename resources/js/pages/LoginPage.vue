@@ -43,6 +43,7 @@
 
 <script>
 import {mapGetters} from "vuex";
+import SecureLS from "secure-ls";
 
 export default {
     data() {
@@ -66,20 +67,21 @@ export default {
                         message: `Welcome ${response.user.name}`
                     });
 
-                    // Redirect to create new brand
-                    if(this.brands === null || (typeof this.brands.length !== "undefined" && this.brands.length === 0)){
-                        this.showLoginError({
-                            message: "You should create at least one brand"
-                        });
-                        this.$router.push({ name: 'brands' });
-                    }else{
-                        this.$router.push({ name: 'dashboard' });
-                    }
+                    this.$router.push({ name: 'dashboard' });
                 })
                 .catch((error) => {
-                    this.showLoginError({
-                        message: error.response.message
-                    });
+                    let errors = Object.values(error.response.data.message);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showLoginError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showLoginError({
+                            message: error.response.data.message
+                        });
+                    }
                 });
         },
     },
@@ -94,8 +96,10 @@ export default {
         },
     },
     beforeRouteEnter(to, from, next) {
+        let ls = new SecureLS();
+
         next((vm) => {
-            const loggedIn = localStorage.getItem("user");
+            const loggedIn = ls.get("user");
             if (loggedIn) {
                 next("/dashboard");
                 return;

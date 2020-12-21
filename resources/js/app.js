@@ -20,11 +20,19 @@ import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
+<<<<<<< HEAD
+=======
+import VueTimeago from 'vue-timeago';
+import SecureLS from "secure-ls";
+import './services/filters';
+
+>>>>>>> dev
 
 Vue.prototype.$http = api;
 
-// Init JQuery
-window.jQuery = window.$ = jQuery
+// Init JQuery & Lodash
+window.jQuery = window.$ = jQuery;
+window._ = require('lodash');
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
@@ -84,7 +92,8 @@ const app = new Vue({
         );
 
         this.$router.beforeEach((to, from, next) => {
-            const loggedIn = this.$store.getters.isLogged && localStorage.getItem('user');
+            let ls = new SecureLS();
+            const loggedIn = this.$store.getters.isLogged && ls.get('user');
 
             // let vm = this;
             // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){
@@ -94,6 +103,13 @@ const app = new Vue({
             if(to.matched.some(record => record.meta.auth) && !loggedIn){
                 next('/login');
             }
+            // Ensure load data
+            // switch(to.name){
+            //     case 'trackers':
+            //         console.log("Loading trackers");
+            //         this.$store.dispatch("fetchTrackers").catch(error => {});
+            //     break;
+            // }
 
             next();
         });

@@ -8,19 +8,19 @@
       <div class="p-1">
          <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <div class="card purple-card">
-                <div class="number text-white">{{ statistics.impressions || formatedNbr }}</div>
+                <div class="number text-white">{{ statistics.impressions | formatedNbr }}</div>
                 <p class="description text-white">TOTAL ESTIMATED IMPRESSIONS</p>
             </div>
             <div class="card orange-card">
-                <div class="number text-white">{{ statistics.communities || formatedNbr }}</div>
+                <div class="number text-white">{{ statistics.communities | formatedNbr }}</div>
                 <p class="description text-white">TOTAL SIZE OF ACTIVATED COMMUNITIES</p>
             </div>
             <div class="card green-card">
-               <div class="number text-white">{{ statistics.campaigns_count || formatedNbr }}</div>
+               <div class="number text-white">{{ statistics.campaigns_count | formatedNbr }}</div>
                <p class="description text-white">NUMBER OF CAMPAIGNS</p>
             </div>
             <div class="card cyan-card">
-               <div class="number text-white">{{ statistics.trackers_count || formatedNbr }}</div>
+               <div class="number text-white">{{ statistics.trackers_count | formatedNbr }}</div>
                <p class="description text-white">NUMBER OF TRACKERS</p>
             </div>
          </header>
@@ -42,17 +42,15 @@ export default {
    computed: {
       ...mapGetters(["AuthenticatedUser", "statistics"])
    },
-   filters: {
-      formatedNbr: function(value){
-         try{
-               if(typeof value === "undefined" || value === 0 || value === null)
-               return '---';
-
-               return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-         }catch(error){
-               return '---';
-         }
+   methods: {
+      loadStatistics(){
+         return this.$store.dispatch("fetchStatistics");
       }
+   },
+   mounted(){
+      // Load statistics
+      if(Object.keys(this.statistics).length === 0)
+         this.loadStatistics();
    },
    data(){
       return {
@@ -109,10 +107,6 @@ export default {
             },
          ]
       }
-   },
-   created() {
-      // Fetch data
-      this.$store.dispatch("fetchStatistics").catch(error => {});
-   },
+   }
 }
 </script>

@@ -959,7 +959,8 @@ button:disabled {
   margin-bottom: 2rem;
 }
 
-.card {
+.card,
+.actions-card {
   padding: 1rem;
   flex: 0 0 calc(25% - .777rem);
   background: #fff;
@@ -969,26 +970,33 @@ button:disabled {
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
 }
 
-.card + .card {
+.card + .card,
+.actions-card + .card,
+.card + .actions-card,
+.actions-card + .actions-card {
   margin-left: 1rem;
 }
 
-.cards .card .number {
+.cards .card .number,
+.cards .actions-card .number {
   color: #039be5;
   font-weight: bold;
   font-size: 2.4rem;
   text-align: center;
 }
 
-.cards .card:nth-child(2) .number {
+.cards .card:nth-child(2) .number,
+.cards .actions-card:nth-child(2) .number {
   color: #f44336;
 }
 
-.cards .card:nth-child(3) .number {
+.cards .card:nth-child(3) .number,
+.cards .actions-card:nth-child(3) .number {
   color: #09d261;
 }
 
-.card .description {
+.card .description,
+.actions-card .description {
   font-size: 0.7rem;
   font-weight: 400;
   text-align: center;
@@ -7690,7 +7698,8 @@ span.status-danger::before {
   gap: 1rem;
 }
 
-.campaign .cards.statistics .card {
+.campaign .cards.statistics .card,
+.campaign .cards.statistics .actions-card {
   display: flex;
   align-items: flex-start;
   flex-direction: column;
@@ -7698,11 +7707,13 @@ span.status-danger::before {
   margin: 0;
 }
 
-.campaign .cards.statistics .card .title {
+.campaign .cards.statistics .card .title,
+.campaign .cards.statistics .actions-card .title {
   display: inline-flex;
 }
 
-.campaign .cards.statistics .card .title svg {
+.campaign .cards.statistics .card .title svg,
+.campaign .cards.statistics .actions-card .title svg {
   padding: 12px 12px;
   font-size: 42pt;
   border-radius: 50%;
@@ -7710,50 +7721,59 @@ span.status-danger::before {
   height: 50px;
 }
 
-.campaign .cards.statistics .card .title .numbers {
+.campaign .cards.statistics .card .title .numbers,
+.campaign .cards.statistics .actions-card .title .numbers {
   margin: 0.2rem 1rem;
 }
 
-.campaign .cards.statistics .card .title .numbers h4 {
+.campaign .cards.statistics .card .title .numbers h4,
+.campaign .cards.statistics .actions-card .title .numbers h4 {
   font-size: 16pt;
   margin: 0;
   margin-bottom: 0.3rem;
   color: #000629;
 }
 
-.campaign .cards.statistics .card .title .numbers span {
+.campaign .cards.statistics .card .title .numbers span,
+.campaign .cards.statistics .actions-card .title .numbers span {
   font-size: 10pt;
   color: #a4abc1;
   text-transform: uppercase;
 }
 
-.campaign .cards.statistics .card span {
+.campaign .cards.statistics .card span,
+.campaign .cards.statistics .actions-card span {
   color: #000629;
   font-size: 10pt;
   font-weight: bold;
   margin-top: 1rem;
 }
 
-.campaign .cards.sentiments .card {
+.campaign .cards.sentiments .card,
+.campaign .cards.sentiments .actions-card {
   flex: 0 0 calc(50% - .777rem);
 }
 
-.campaign .cards.sentiments .card h5 {
+.campaign .cards.sentiments .card h5,
+.campaign .cards.sentiments .actions-card h5 {
   margin: 0;
 }
 
-.campaign .cards.sentiments .card canvas {
+.campaign .cards.sentiments .card canvas,
+.campaign .cards.sentiments .actions-card canvas {
   margin: 1rem 0rem;
 }
 
-.campaign .cards.sentiments .card span {
+.campaign .cards.sentiments .card span,
+.campaign .cards.sentiments .actions-card span {
   float: right;
   font-size: 8pt;
   font-style: italic;
   color: #333;
 }
 
-.campaign .cards.sentiments .card.emojis ul {
+.campaign .cards.sentiments .card.emojis ul,
+.campaign .cards.sentiments .emojis.actions-card ul {
   display: flex;
   gap: 5rem;
   align-items: center;
@@ -7761,7 +7781,8 @@ span.status-danger::before {
   height: calc(100% - 3.7rem);
 }
 
-.campaign .cards.sentiments .card.emojis ul li {
+.campaign .cards.sentiments .card.emojis ul li,
+.campaign .cards.sentiments .emojis.actions-card ul li {
   display: grid;
   text-align: center;
   padding: 1rem;
@@ -7769,7 +7790,8 @@ span.status-danger::before {
   cursor: pointer;
 }
 
-.campaign .cards.sentiments .card.emojis ul li span {
+.campaign .cards.sentiments .card.emojis ul li span,
+.campaign .cards.sentiments .emojis.actions-card ul li span {
   margin-top: 1rem;
   font-weight: bold;
   font-style: normal;
@@ -7779,7 +7801,8 @@ span.status-danger::before {
   color: #333;
 }
 
-.campaign .cards.sentiments .card.emojis span {
+.campaign .cards.sentiments .card.emojis span,
+.campaign .cards.sentiments .emojis.actions-card span {
   float: right;
   font-size: 8pt;
   font-style: italic;
@@ -8001,6 +8024,29 @@ span.status-danger::before {
 
 .cyan-card {
   background-color: #17a2b8;
+}
+
+.actions-card {
+  color: rgba(0, 0, 0, 0.61);
+}
+
+.actions-card h4 {
+  margin: 0;
+  margin-right: 0.5rem;
+  display: inline;
+}
+
+.actions-card select {
+  min-height: 35px;
+  border: 1px solid #e0e0e0;
+  padding: 0 0.6rem;
+  border-radius: 4px;
+  outline: none;
+  transition: all 0.3s ease-in-out;
+  font-size: 0.9rem;
+  font-weight: 100;
+  color: #212121;
+  text-transform: none;
 }
 
 .table {

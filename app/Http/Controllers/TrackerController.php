@@ -4,19 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Brand;
 use App\Tracker;
+use App\Campaign;
+use App\ShortLink;
 use Carbon\Carbon;
+use App\Influencer;
 use App\TrackerMedia;
-use Illuminate\Support\Str;
 use App\Jobs\ScrapPostJob;
+use Illuminate\Support\Str;
+use App\Jobs\ScrapURLContentJob;
+use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
-use App\Influencer;
-use App\Jobs\ScrapURLContentJob;
-use App\Services\InstagramScraper;
-use App\ShortLink;
 
 class TrackerController extends Controller
 {
@@ -29,6 +30,7 @@ class TrackerController extends Controller
             Tracker::all()
         );
     }
+    
     /**
      * Fetch trackers by brand.
      *
@@ -43,6 +45,55 @@ class TrackerController extends Controller
             Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    // ->paginate(Application::DEFAULT_PAGINATION)
+        );
+    }
+    
+    /**
+     * Fetch trackers by campaign.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function byCampaign(Brand $brand, Campaign $campaign)
+    {
+        abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        return response()->success(
+            "Trackers fetched successfully.",
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
+                    ->whereHas('campaign', function($camp) use($brand, $campaign){
+                        $camp->where('brand_id', $brand->id)
+                            ->where('id', $campaign->id);
+                    })
+                    ->orderBy('created_at', 'desc')
+                    ->get()
+                    // ->paginate(Application::DEFAULT_PAGINATION)
+        );
+    }
+
+    /**
+     * Search for trackers by active brand and search query
+     *
+     * @param \App\Brand $brand
+     * @param string $query
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Brand $brand, string $query)
+    {
+        abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
+
+        return response()->success(
+            "Trackers filtered successfully.",
+            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
+                    ->whereHas('campaign', function($camp) use($brand){
+                        $camp->where('brand_id', $brand->id);
+                    })
+                    ->whereHas('influencers', function($inf) use($query){
+                        $inf->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
+                            ->orWhereRaw('LOWER(`username`) LIKE ?', ['%' . trim(strtolower($query)) . '%']);
                     })
                     ->orderBy('created_at', 'desc')
                     ->get()

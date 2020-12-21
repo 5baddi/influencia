@@ -24,7 +24,7 @@
             </div>
         </header>
         <div class="datatable-scroll" v-if="$can('list', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
-            <DataTable ref="campaignsDT" :columns="columns" :searchCols="{name: null, influencer: 'name'}" :nativeData="parsedCampaigns" fetchMethod="fetchCampaigns" cssClasses="table-card">
+            <DataTable ref="campaignsDT" :columns="columns" :searchable="true" :searchCols="['name', 'influencer']" :nativeData="parsedCampaigns" fetchMethod="fetchCampaigns" cssClasses="table-card">
                 <th slot="header">Actions</th>
                 <td slot="body-row" slot-scope="row">
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
@@ -128,18 +128,6 @@ export default {
     },
     watch: {
         $route: "initData"
-    },
-    filters: {
-        formatedNbr: function(value){
-            try{
-                if(typeof value === "undefined" || value === 0 || value === null)
-                return '---';
-
-                return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-            }catch(error){
-                return '---';
-            }
-        }
     },
     methods: {
         initData() {

@@ -4,16 +4,40 @@ import Vuex from 'vuex';
 import { api } from '../api';
 import { Loader } from './loader';
 import ability from '../services/ability';
+<<<<<<< HEAD
 import createPersistedState from "vuex-persistedstate";
+=======
+// import createPersistedState from "vuex-persistedstate";
+import SecureLS from "secure-ls";
+>>>>>>> dev
 
 Vue.use(Vuex);
 
-function fatchLocalUser() {
-    if (localStorage.getItem("user") && localStorage.getItem("user") !== 'undefined') {
-        const user = JSON.parse(localStorage.getItem("user"));
-        api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+// Init
+let ls = new SecureLS();
 
-        return user;
+function fatchLocalUser() {
+    try{
+        if (ls.get("user") && ls.get("user") !== 'undefined') {
+            const user = JSON.parse(ls.get("user"));
+            api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+
+            return user;
+        }
+    }catch(error){
+        return null;
+    }
+
+    return null;
+}
+
+function fetchActiveBrand(){
+    try{
+        if (ls.get("active-brand") && ls.get("active-brand") !== 'undefined') {
+            return JSON.parse(ls.get("active-brand"));
+        }
+    }catch(error){
+        return null;
     }
 
     return null;
@@ -23,7 +47,7 @@ const state = () => ({
     user: fatchLocalUser(),
     token: null,
     brands: [],
-    activeBrand: null,
+    activeBrand: fetchActiveBrand(),
     users: [],
     campaigns: [],
     campaign: null,
@@ -33,7 +57,7 @@ const state = () => ({
     influencers: [],
     influencer: null,
     roles: [],
-})
+});
 
 const getters = {
     AuthenticatedUser: state => state.user,
@@ -60,7 +84,7 @@ const actions = {
             api.post('/oauth', credentials).then((response) => {
                 let user = response.data.user;
                 user.token = response.data.token;
-                localStorage.setItem("user", JSON.stringify(user));
+                ls.set("user", JSON.stringify(user));
 
                 commit('setUser', { user: response.data.user });
                 commit('setToken', { token: response.data.token });
@@ -74,7 +98,7 @@ const actions = {
     logout({ commit, state }) {
         return new Promise((resolve, reject) => {
 
-            localStorage.removeItem("user");
+            ls.remove("user");
 
             if (!state.isLogged) {
                 commit('setUser', { user: null });
@@ -407,15 +431,16 @@ const actions = {
             return new Promise((resolve, reject) => {
                 api.get(`/api/v1/users/active-brand/${brand.uuid}`)
                     .then((response) => {
-                        if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined")
+                        if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined"){
                             commit("setActiveBrand", {brand: response.data.content.selected_brand});
-                        else
+                        }else{
                             throw new Error("Something going wrong!");
+                        }
 
                         resolve(response.data);
                     })
                     .catch((error) => {
-                        commit("setActiveBrand", {brand: null});
+                        // commit("setActiveBrand", {brand: null});
 
                         reject(error);
                     });
@@ -427,7 +452,22 @@ const actions = {
     fetchCampaigns({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/v1/campaigns/${state.activeBrand.uuid}`)
+                api.get(`/api/v1/${state.activeBrand.uuid}/campaigns`)
+                    .then((response) => {
+                        commit('setCampaigns', { campaigns: response.data.content })
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            }
+
+        });
+    },
+    fetchCampaignsBy({ commit, state }, query) {
+        return new Promise((resolve, reject) => {
+            if (state.activeBrand) {
+                api.get(`/api/v1/${state.activeBrand.uuid}/campaigns/search/${query}`)
                     .then((response) => {
                         commit('setCampaigns', { campaigns: response.data.content })
                         resolve(response.data);
@@ -441,7 +481,7 @@ const actions = {
     },
     fetchStatistics({ commit, state }) {
         return new Promise((resolve, reject) => {
-            api.get("/api/v1/campaigns/" + state.activeBrand.uuid + "/statistics").then(response => {
+            api.get(`/api/v1/${state.activeBrand.uuid}/campaigns/statistics`).then(response => {
                 commit('setStatistics', { statistics: response.data.content })
                 resolve(response.data)
             }).catch(response => reject(response))
@@ -458,7 +498,37 @@ const actions = {
     fetchTrackers({ commit, state }) {
         return new Promise((resolve, reject) => {
             if (state.activeBrand) {
-                api.get(`/api/v1/brands/${state.activeBrand.uuid}/trackers`)
+                api.get(`/api/v1/${state.activeBrand.uuid}/trackers`)
+                    .then((response) => {
+                        commit('setTrackers', { trackers: response.data.content })
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            }
+
+        });
+    },
+    fetchTrackersBy({ commit, state }, query) {
+        return new Promise((resolve, reject) => {
+            if (state.activeBrand) {
+                api.get(`/api/v1/${state.activeBrand.uuid}/trackers/search/${query}`)
+                    .then((response) => {
+                        commit('setTrackers', { trackers: response.data.content })
+                        resolve(response.data);
+                    })
+                    .catch((error) => {
+                        reject(error)
+                    })
+            }
+
+        });
+    },
+    fetchTrackersByCampaign({ commit, state }, campaign) {
+        return new Promise((resolve, reject) => {
+            if (state.activeBrand) {
+                api.get(`/api/v1/${state.activeBrand.uuid}/trackers/${campaign}`)
                     .then((response) => {
                         commit('setTrackers', { trackers: response.data.content })
                         resolve(response.data);
@@ -533,12 +603,14 @@ const mutations = {
         if (!brand && state.brands !== null && typeof state.brands.length !== "undefined" && state.brands.length > 0) {
             state.brands.forEach((item, index) => {
                 if (item.id == state.user.selected_brand_id) {
-                    brand = item
+                    brand = item;
                 }
             });
         }
 
-        state.activeBrand = brand
+        state.activeBrand = brand;
+        // Save active brand on storage for direct loading
+        ls.set('active-brand', JSON.stringify(brand));
     },
     setNewCampaign: (state, { campaign }) => {
         if (!state.campaigns) {
@@ -584,6 +656,7 @@ const updateAbilities = (store) => {
 }
 
 // Save data state
+<<<<<<< HEAD
 const dataState = createPersistedState({
     paths: [
         'brands',
@@ -596,6 +669,25 @@ const dataState = createPersistedState({
         // 'roles'
     ]
 });
+=======
+// const dataState = createPersistedState({
+//     paths: [
+//         'brands',
+//         'activeBrand',
+//         'users',
+//         'campaigns',
+//         'statistics',
+//         'trackers',
+//         'influencers',
+//         'roles'
+//     ],
+//     storage: {
+//         getItem: (key) => ls.get(key),
+//         setItem: (key, value) => ls.set(key, value),
+//         removeItem: (key) => ls.remove(key),
+//     },
+// });
+>>>>>>> dev
 
 export default new Vuex.Store({
     state: state,
@@ -607,6 +699,6 @@ export default new Vuex.Store({
     },
     plugins: [
         updateAbilities,
-        dataState
+        // dataState
     ]
 });

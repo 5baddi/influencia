@@ -7,9 +7,9 @@
     </ul>-->
     <table>
         <thead>
-            <tr v-if="typeof searchCols === 'object'">
+            <tr v-if="searchable">
                 <th :colspan="getColumnsCount()" class="actions-header">
-                    <input style="margin-right:0.3rem" type="text" v-model="searchQuery" :placeholder="'Search ' + Object.keys(searchCols).join(' or ')"/>
+                    <input style="margin-right:0.3rem" type="text" @input="isTyping = true" v-model="searchQuery" :placeholder="'Search ' + (searchCols.length > 0 ? 'by ' + Object.values(searchCols).join(' or ') : '')"/>
                     <button class="btn icon-link" title="Reload all data" @click="reloadData()">
                         <i class="fas fa-sync-alt"></i>
                     </button>
@@ -93,7 +93,7 @@ table thead>>>.actions-header{
     text-align: right;
 }
 table thead>>>.actions-header input[type='text']{
-    min-width: 100px;
+    min-width: 300px;
     min-height: 32px;
     border: 1px solid #e0e0e0;
     padding: 0 0.6rem;
@@ -233,8 +233,15 @@ export default {
         nativeData: {
             type: Array
         },
+        searchable: {
+            type: Boolean,
+            default: false
+        },
         searchCols: {
-            type: Object
+            type: Array,
+            default: () => {
+                return [];
+            }
         },
         withPagination: {
             type: Boolean,
@@ -254,8 +261,13 @@ export default {
         }
     },
     watch: {
-        searchQuery: function(val){
-            this.search(val);
+        nativeData: "loadData",
+        searchQuery: function(){
+            this.debounceSearchQuery();
+        },
+        isTyping: function(value){
+            if(!value)
+                this.search(this.searchQuery);
         }
     }, 
     computed: {
@@ -335,29 +347,12 @@ export default {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
         search(val){
-            // Ignore if no search col has been set
-            if(typeof this.searchCols === "undefined" || this.searchCols.length === 0)
+            // Ignore empty query
+            if(this.searchQuery === "")
                 return;
 
-            // Reload data if query is empty
-            if(val === "")
-                this.reloadData();
-
-            // Search by each key on data
-            let vm  = this;
-            Object.keys(vm.searchCols).map(function(key, index){
-                if(!vm.data.hasOwnProperty(key) || typeof key !== "string")
-                    return;
-
-                // Search by key
-                vm.searchBy(key, val);
-            });
-        },
-        searchBy(key, value){
-            this.data.filter(function(item){
-                console.log(item[key]);
-                return item[key].toLowerCase().indexOf(value) >= 0
-            });
+            // Remote search
+            this.searchBy(val);
         },
         sort(col, index){
             // Ignore when no index set
@@ -426,12 +421,29 @@ export default {
                 console.log("DataTable Error: ");
                 console.log(error);
                 this.data = [];
+            }).finally(() => {
+                this.searchQuery = null;
+            });
+        },
+        searchBy(query) {
+            // Using vuex
+            if (typeof this.fetchMethod === "undefined")
+                return;
+
+            this.$store.dispatch(this.fetchMethod + 'By', query).then(response => {
+                if (response.success)
+                    this.data = (typeof this.responseField === "undefined") ? response.content : response.content[this.responseField];
+                else
+                    this.data = [];
+            }).catch(error => {
+                console.log("DataTable search error: ");
+                console.log(error);
+                this.data = [];
             });
         }
     },
     data() {
         return {
-            es: null,
             data: [],
             parsedData: [],
             perPage: 10,
@@ -439,10 +451,17 @@ export default {
             startIndex: 1,
             endIndex: this.perPage,
             isAsc: false,
-            searchQuery: null
+            searchQuery: null,
+            isTyping: false,
+            debounceSearchQuery: null
         }
     },
     created() {
+        // Init debounce instance
+        this.debounceSearchQuery = _.debounce(function(){
+            this.isTyping = false;
+        }, 1000);
+
         // Load data via native data
         this.loadData();
     },

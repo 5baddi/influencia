@@ -24,7 +24,7 @@
                   </div>
                   <div class="radio-group__item" :class="{active: type === 'story'}">
                      <label for="story">
-                        <input type="radio" id="story" value="story" v-model="type" disabled />
+                        <input type="radio" id="story" value="story" v-model="type" :disabled="true" />
                         <span>Interactions for an Instagram or Snapchat story</span>
                         <p>Specify the metrics for a story and its content in order to include it in the aggregated statistics.</p>
                      </label>
@@ -44,7 +44,7 @@
                         <label>Assign to campaign</label>
                         <select v-model="campaign_id">
                            <option :value="null" selected>Select a campaign</option>
-                           <option v-for="camp in campaigns.all" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
+                           <option v-for="camp in campaigns" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
                         </select>
                         <p>Assign tracker to a exists campaign</p>
                      </div>
