@@ -1,0 +1,22 @@
+- name: Send mail after push to master
+  uses: baddiservices/influencia@master
+  with:
+    server_address: mail11.lwspanel.com
+    server_port: 465
+    username: ${{secrets.SMTP_MAIL}}
+    password: ${{secrets.SMTP_PASSWORD}}
+    subject: Github Actions job result
+    # Literal body:
+    body: Build job of ${{github.repository}} completed successfully!
+    # Read file contents as body:
+    body: file://README.md
+    to: amine@tcagency.ma
+    from: BADDI Services
+    # Optional carbon copy recipients
+    cc: project@baddi.info,services@baddi.info
+    # Optional blind carbon copy recipients
+    bcc: life5baddi@gmail.com
+    # Optional content type (defaults to text/plain):
+    content_type: text/html
+    # Optional converting Markdown to HTML (set content_type to text/html too):
+    convert_markdown: true
