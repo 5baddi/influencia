@@ -61,72 +61,6 @@ export default {
         CreateCampaignModal,
         CampaignAnalytics
     },
-    data() {
-        return {
-            columns: [
-                {
-                    name: "Campaign name",
-                    field: "name"
-                },
-                {
-                    name: "Status",
-                    field: "status",
-                    sortable: false,
-                    callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
-                    }
-                },
-                {
-                    name: "Activated communities",
-                    field: "communities",
-                    isNbr: true
-                },
-                {
-                    name: "Number of trackers",
-                    field: "all_trackers_count"
-                },
-                {
-                    name: "Influencers",
-                    field: "influencers",
-                    class: "avatars-list",
-                    sortable: false,
-                    callback: function (row) {
-                        if (row.influencers.length === 0)
-                            return '-';
-
-                        let html = '';
-                        row.influencers.map(function (item, index) {
-                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-                        });
-
-                        return html;
-                    }
-                },
-                {
-                    name: "Last update",
-                    field: "updated_at",
-                    isTimeAgo: true
-                }
-            ]
-        };
-    },
-    beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData());
-    },
-    beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid;
-        if (typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)) {
-            this.$store.commit("setCampaign", {
-                campaign: null
-            });
-            this.fetchCampaign();
-        }
-
-        next();
-    },
-    created() {
-        this.initData();
-    },
     watch: {
         $route: "initData"
     },
@@ -205,6 +139,13 @@ export default {
 
         parsedCampaigns(){
             return this.campaigns;
+        },
+
+        activeBrand(){
+            if(this.AuthenticatedUser.selected_brand)
+                return this.AuthenticatedUser.selected_brand;
+
+            return null;
         }
     },
     notifications: {
@@ -222,6 +163,72 @@ export default {
         createCampaignSuccess: {
             type: "success"
         }
-    }
+    },
+    beforeRouteEnter(to, from, next) {
+        next(vm => vm.initData());
+    },
+    beforeRouteUpdate(to, from, next) {
+        let routeUUID = to.params.uuid;
+        if (typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)) {
+            this.$store.commit("setCampaign", {
+                campaign: null
+            });
+            this.fetchCampaign();
+        }
+
+        next();
+    },
+    data() {
+        return {
+            columns: [
+                {
+                    name: "Campaign name",
+                    field: "name"
+                },
+                {
+                    name: "Status",
+                    field: "status",
+                    sortable: false,
+                    callback: function (row) {
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
+                    }
+                },
+                {
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
+                },
+                {
+                    name: "Number of trackers",
+                    field: "all_trackers_count"
+                },
+                {
+                    name: "Influencers",
+                    field: "influencers",
+                    class: "avatars-list",
+                    sortable: false,
+                    callback: function (row) {
+                        if (row.influencers.length === 0)
+                            return '-';
+
+                        let html = '';
+                        row.influencers.map(function (item, index) {
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
+                        });
+
+                        return html;
+                    }
+                },
+                {
+                    name: "Last update",
+                    field: "updated_at",
+                    isTimeAgo: true
+                }
+            ]
+        };
+    },
+    created() {
+        this.initData();
+    },
 };
 </script>
