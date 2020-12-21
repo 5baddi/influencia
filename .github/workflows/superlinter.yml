@@ -1,20 +1,33 @@
-- name: Send mail
-  uses: dawidd6/action-send-mail@v2
-  with:
-    server_address: mail11.lwspanel.com
-    server_port: 465
-    username: ${{secrets.SMTP_MAIL}}
-    password: ${{secrets.SMTP_PASSWORD}}
-    subject: Github Actions job result
-    # Literal body:
-    body: Build job of ${{github.repository}} completed successfully!
-    to: mohamed@baddi.info
-    from: BADDI Services
-    # Optional carbon copy recipients
-    cc: project@baddi.info,services@baddi.info
-    # Optional blind carbon copy recipients
-    bcc: life5baddi@gmail.com
-    # Optional content type (defaults to text/plain):
-    content_type: text/html
-    # Optional converting Markdown to HTML (set content_type to text/html too):
-    convert_markdown: true
+
+name: Super-Linter
+
+# Run this workflow every time a new commit pushed to your repository
+on: push
+
+jobs:
+  # Set the job key. The key is displayed as the job name
+  # when a job name is not provided
+  super-lint:
+    # Name the Job
+    name: Send mail after push
+    steps:
+      - name: Send mail
+        uses: dawidd6/action-send-mail@v2
+        with:
+          server_address: mail11.lwspanel.com
+          server_port: 465
+          username: ${{secrets.SMTP_MAIL}}
+          password: ${{secrets.SMTP_PASSWORD}}
+          subject: Github Actions job result
+          # Literal body:
+          body: Build job of ${{github.repository}} completed successfully!
+          to: mohamed@baddi.info
+          from: BADDI Services
+          # Optional carbon copy recipients
+          cc: project@baddi.info,services@baddi.info
+          # Optional blind carbon copy recipients
+          bcc: life5baddi@gmail.com
+          # Optional content type (defaults to text/plain):
+          content_type: text/html
+          # Optional converting Markdown to HTML (set content_type to text/html too):
+          convert_markdown: true
