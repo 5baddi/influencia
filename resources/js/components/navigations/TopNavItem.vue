@@ -1,6 +1,6 @@
 <template>
 <div class="dashboard__navigation--item">
-    <template v-if="!is_switch">
+    <template v-if="!isSwitch">
         <button class="btn" @click="showDropdown = !showDropdown">
             <slot name="button"></slot>
         </button>
@@ -47,38 +47,21 @@ import {
 } from "vuex";
 export default {
     props: {
-        is_switch: {
+        isSwitch: {
             type: Boolean,
             default: false
+        },
+        brands: {
+            type: Array
+        },
+        activeBrand: {
+            type: Object
         }
     },
     data() {
         return {
             showDropdown: false
         };
-    },
-    created() {
-        if(this.is_switch && this.activeBrand)
-            this.$store.dispatch("setActiveBrand", this.activeBrand).catch(error  => {});
-    },
-    computed: {
-        ...mapGetters(["AuthenticatedUser", "brands", "activeBrand"])
-    },
-    methods: {
-        switchBrand(brand, index) {
-            this.$store.dispatch("setActiveBrand", brand).then(() => {
-                this.$store.dispatch("fetchCampaigns").catch(error => {});
-                this.$store.dispatch("fetchTrackers").catch(error => {});
-                this.$store.dispatch("fetchInfluencers").catch(error => {});
-                this.showDropdown = false;
-            })
-            .catch(error  => {});
-        },
-        hideDropdown(e) {
-            if (!e.target.closest(".dashboard__navigation--item")) {
-                this.showDropdown = false;
-            }
-        }
     },
     watch: {
         showDropdown: function (newValue, oldValue) {
@@ -87,6 +70,19 @@ export default {
             }
             if (!newValue) {
                 document.body.removeEventListener("click", this.hideDropdown);
+            }
+        }
+    },
+    methods: {
+        switchBrand(brand, index) {
+            this.$store.dispatch("setActiveBrand", brand).then(() => {
+                this.showDropdown = false;
+            })
+            .catch(error  => {});
+        },
+        hideDropdown(e) {
+            if (!e.target.closest(".dashboard__navigation--item")) {
+                this.showDropdown = false;
             }
         }
     }

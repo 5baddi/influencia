@@ -1,11 +1,11 @@
 <template>
 <main id="main" class="dashboard">
-    <MainNav />
+    <MainNav :authenticatedUser="AuthenticatedUser" />
     <div id="content" class="dashboard__content">
         <div class="dashboard__navigation">
-            <TopNavItem :is_switch="true" class="nav-switch"></TopNavItem>
+            <TopNavItem :brands="brands" :activeBrand="activeBrand" :isSwitch="true" class="nav-switch"></TopNavItem>
 
-            <TopNavItem :is_switch="false">
+            <TopNavItem :isSwitch="false">
                 <template v-slot:button v-if="AuthenticatedUser">
                     <div class="avatar">
                         <!-- <img
@@ -71,17 +71,38 @@ export default {
         TopNavItem,
         Loader,
     },
-    data() {
-        return {
-            showDropdown: false,
-        };
+    computed: {
+        ...mapState("Loader", ["loading"]),
+        ...mapGetters(["AuthenticatedUser", "brands"]),
+        activeBrand(){
+            if(this.AuthenticatedUser.selected_brand)
+                return this.AuthenticatedUser.selected_brand;
+
+            return null;
+        }
     },
-    created() {
-        // Fetch brands
-        this.$store.dispatch("fetchBrands")
-            .catch(error => {});
+    watch: {
+        showDropdown: function (newValue, oldValue) {
+            if (newValue && this.showDropdown) {
+                document.body.addEventListener("click", this.hideDropdown);
+            }
+            if (!newValue) {
+                document.body.removeEventListener("click", this.hideDropdown);
+            }
+        }
+    },
+    notifications: {
+        showSuccessLogout: {
+            type: "success",
+            message: "Bye!",
+        },
     },
     methods: {
+        loadBrands(){
+            // Fetch brands
+            this.$store.dispatch("fetchBrands")
+                .catch(error => {});
+        },
         hideDropdown(e) {
             if (!e.target.closest(".dashboard__navigation--item")) {
                 this.showDropdown = false;
@@ -96,26 +117,6 @@ export default {
             });
         },
     },
-    watch: {
-        showDropdown: function (newValue, oldValue) {
-            if (newValue && this.showDropdown) {
-                document.body.addEventListener("click", this.hideDropdown);
-            }
-            if (!newValue) {
-                document.body.removeEventListener("click", this.hideDropdown);
-            }
-        }
-    },
-    computed: {
-        ...mapGetters(["AuthenticatedUser", "brands", "activeBrand"]),
-        ...mapState("Loader", ["loading"])
-    },
-    notifications: {
-        showSuccessLogout: {
-            type: "success",
-            message: "Bye!",
-        },
-    },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
             let ls = new SecureLS();
@@ -128,5 +129,15 @@ export default {
             next();
         });
     },
+    mounted(){
+        // Load brands
+        if(Object.values(this.brands).length === 0)
+            this.loadBrands();
+    },
+    data() {
+        return {
+            showDropdown: false,
+        };
+    }
 };
 </script>

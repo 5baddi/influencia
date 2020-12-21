@@ -119,8 +119,7 @@ export default {
                 .then(response => {
                     // Reload datatable
                     this.$refs.brandsDT.reloadData();
-                    // Switch selected brand
-                    this.$store.dispatch("setActiveBrand", this.activeBrand ?? null).catch(error => {});
+                    // TODO:Switch selected brand
                     // Show success notification
                     this.showSuccess({
                         message: "Successfully deleted brand '" + brand.name + "'"
@@ -136,9 +135,6 @@ export default {
                 .then(response => {
                     this.$refs.brandsDT.reloadData();
                     this.$refs.brandFormModal.close();
-                    // Set new brand as active brand
-                    if(response.content)
-                        this.$store.dispatch("setActiveBrand", response.content);
 
                     this.showSuccess({
                         message: "Brand created successfully"

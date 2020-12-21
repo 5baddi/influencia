@@ -172,7 +172,7 @@ export default {
         },
         create(campaign) {
             // Set brand ID
-            campaign.brand_id = this.$store.getters.activeBrand && this.$store.getters.activeBrand.id;
+            campaign.brand_id = AuthenticatedUser.user.selected_brand;
 
             this.$store.dispatch("addNewCampaign", campaign)
                 .then(response => {
@@ -201,7 +201,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "campaign"]),
+        ...mapGetters(["AuthenticatedUser", "campaigns", "campaign"]),
 
         parsedCampaigns(){
             return this.campaigns;

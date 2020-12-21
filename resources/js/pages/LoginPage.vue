@@ -42,18 +42,36 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
 import SecureLS from "secure-ls";
 
 export default {
     data() {
         return {
-            email: "",
-            password: "",
+            email: null,
+            password: null,
         };
     },
-    computed: {
-      ...mapGetters(["brands"])
+    beforeRouteEnter(to, from, next) {
+        let ls = new SecureLS();
+
+        next((vm) => {
+            const loggedIn = ls.get("user");
+            if (loggedIn) {
+                next("/dashboard");
+                return;
+            }
+            next();
+        });
+    },
+    notifications: {
+        showLoginSuccess: {
+            title: "Login success",
+            type: "success",
+        },
+        showLoginError: {
+            title: "Error",
+            type: "error",
+        },
     },
     methods: {
         login() {
@@ -70,42 +88,15 @@ export default {
                     this.$router.push({ name: 'dashboard' });
                 })
                 .catch((error) => {
-                    let errors = Object.values(error.response.data.message);
-                    if(typeof errors === "object" && errors.length > 0){
-                        errors.forEach(element => {
-                            this.showLoginError({
-                                message: element
-                            });
-                        });
-                    }else{
-                        this.showLoginError({
-                            message: error.response.data.message
-                        });
-                    }
+                    let message = "Internal server error!";
+                    if(typeof error.response !== "undefined" && error.response.status !== 500 && error.response.hasOwnProperty("data") && error.response.data.hasOwnProperty("message"))
+                        message = error.response.data.message;
+
+                    this.showLoginError({
+                        message: message
+                    });
                 });
         },
-    },
-    notifications: {
-        showLoginSuccess: {
-            title: "Login success",
-            type: "success",
-        },
-        showLoginError: {
-            title: "Error",
-            type: "error",
-        },
-    },
-    beforeRouteEnter(to, from, next) {
-        let ls = new SecureLS();
-
-        next((vm) => {
-            const loggedIn = ls.get("user");
-            if (loggedIn) {
-                next("/dashboard");
-                return;
-            }
-            next();
-        });
-    },
+    }
 };
 </script>
