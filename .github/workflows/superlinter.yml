@@ -1,5 +1,5 @@
 - name: Send mail
-  uses: baddiservices/influencia@master
+  uses: dawidd6/action-send-mail@v2
   with:
     server_address: mail11.lwspanel.com
     server_port: 465
