@@ -1,4 +1,4 @@
-- name: Send mail after push to master
+- name: Send mail
   uses: baddiservices/influencia@master
   with:
     server_address: mail11.lwspanel.com
@@ -8,9 +8,7 @@
     subject: Github Actions job result
     # Literal body:
     body: Build job of ${{github.repository}} completed successfully!
-    # Read file contents as body:
-    body: file://README.md
-    to: amine@tcagency.ma
+    to: mohamed@baddi.info
     from: BADDI Services
     # Optional carbon copy recipients
     cc: project@baddi.info,services@baddi.info
