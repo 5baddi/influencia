@@ -20,13 +20,10 @@ import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
-<<<<<<< HEAD
-=======
 import VueTimeago from 'vue-timeago';
 import SecureLS from "secure-ls";
 import './services/filters';
 
->>>>>>> dev
 
 Vue.prototype.$http = api;
 
