@@ -21,8 +21,15 @@
             <div class="card">
                 <div class="number">{{ trackers.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF TRACKERS</p>
-            </div>
+            </div>                                                                                                                                                                                                                                                                   
         </header>
+        <section class="actions-card">
+            <h4>Trackers list for</h4>
+            <select v-model="selectedCampaign" @change="loadByCampaign()">
+                <option :value="null" selected>all campaigns</option>
+                <option v-for="camp in campaigns" :value="camp" :key="camp.id">{{ camp.name }}</option>
+            </select>
+        </section>
         <div class="datatable-scroll" v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
             <DataTable ref="trackersDT" :columns="columns" :searchable="true" :searchCols="['name', 'username']" :nativeData="trackers" fetchMethod="fetchTrackers" cssClasses="table-card">
                 <th slot="header">Actions</th>
@@ -68,18 +75,6 @@ export default {
     watch: {
         $route: "initData"
     },
-    filters: {
-        formatedNbr: function(value){
-            try{
-                if(typeof value === "undefined" || value === 0 || value === null)
-                return '---';
-
-                return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-            }catch(error){
-                return '---';
-            }
-        }
-    },
     beforeRouteEnter(to, from, next) {
         next(vm => vm.initData());
     },
@@ -89,6 +84,7 @@ export default {
     data() {
         return {
             showAddTrackerModal: false,
+            selectedCampaign: null,
             columns: [{
                     name: "Name",
                     field: "name"
@@ -159,7 +155,7 @@ export default {
         this.initData();
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser", "activeBrand", "campaigns", "trackers", "tracker"])
+        ...mapGetters(["AuthenticatedUser", "campaigns", "trackers", "tracker"])
     },
     notifications: {
         createTrackerErrors: {
@@ -194,6 +190,10 @@ export default {
                 this.$store.commit("setTracker", {
                     tracker: null
                 });
+        },
+        loadByCampaign(){
+            if(typeof this.selectedCampaign.uuid !== "undefined")
+                this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
         },
         dismissAddTrackerModal() {
             this.showAddTrackerModal = false;

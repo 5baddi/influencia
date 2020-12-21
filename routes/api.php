@@ -43,17 +43,18 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::delete('/brands/{brand}', 'BrandController@delete');
 
     // Campaigns
-    Route::get('/campaigns/{brand}', 'CampaignController@byBrand');
-    Route::get('/campaigns/{brand}/{query}', 'CampaignController@search');
-    Route::get('/campaigns/{brand}/statistics', 'CampaignController@statistics');
+    Route::get('/{brand}/campaigns/', 'CampaignController@byBrand');
+    Route::get('/{brand}/campaigns/search/{query}', 'CampaignController@search');
+    Route::get('/{brand}/campaigns/statistics', 'CampaignController@statistics');
     Route::get('/campaigns/{campaign}/analytics', 'CampaignController@analytics');
     Route::post('/campaigns', 'CampaignController@create');
     Route::put('/campaigns/{campaign}', 'CampaignController@update');
     Route::delete('/campaigns/{campaign}', 'CampaignController@delete');
 
     // Trackers
-    Route::get('/brand/{brand}/trackers', 'TrackerController@fetchByBrand');
-    Route::get('/brand/{brand}/trackers/{query}', 'TrackerController@search');
+    Route::get('/{brand}/trackers', 'TrackerController@fetchByBrand');
+    Route::get('/{brand}/trackers/search/{query}', 'TrackerController@search');
+    Route::get('/{brand}/trackers/{campaign}', 'TrackerController@byCampaign');
     Route::post('/trackers', 'TrackerController@create');
     Route::post('/trackers/story', 'TrackerController@createStory');
     Route::get('/trackers/{tracker}/status', 'TrackerController@changeStatus');

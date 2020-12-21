@@ -143,18 +143,6 @@ export default {
             })
         }
     },
-    filters: {
-        formatedNbr: function(value){
-            try{
-                if(typeof value === "undefined" || value === 0 || value === null)
-                return '---';
-
-                return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-            }catch(error){
-                return '---';
-            }
-        }
-    },
     methods: {
         formatNbr(value)
         {

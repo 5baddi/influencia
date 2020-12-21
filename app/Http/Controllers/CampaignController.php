@@ -80,7 +80,7 @@ class CampaignController extends Controller
 
         return response()->success("Campaigns filtered successfully.", 
             $result->unique()
-                ->orderBy('created_at', 'desc')
+                ->sortByDesc('created_at')
         );
     }
 

@@ -64,6 +64,7 @@ import {
     mapState
 } from "vuex";
 import Loader from '../components/Loader';
+import SecureLS from "secure-ls";
 export default {
     components: {
         MainNav,
@@ -117,7 +118,8 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            const loggedIn = vm.$store.getters.isLogged && localStorage.getItem("user");
+            let ls = new SecureLS();
+            let loggedIn = vm.$store.getters.isLogged && ls.get("user");
             if (!loggedIn) {
                 next("/login");
                 return;

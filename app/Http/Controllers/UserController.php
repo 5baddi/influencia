@@ -165,7 +165,7 @@ class UserController extends Controller
     {
         abort_if(Gate::denies('viewAny', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("Users fetched successfully.", User::with(['brands', 'role'])->get());
+        return response()->success("Users fetched successfully.", User::with(['selectedBrand', 'brands', 'role'])->get());
     }
 
     /**
@@ -178,7 +178,7 @@ class UserController extends Controller
     {
         abort_if(Gate::denies('show_user') && Gate::denies('view', $user), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("User fetched successfully.", User::with(['brands', 'selectedBrand'])->find($user->id));
+        return response()->success("User fetched successfully.", User::with(['brands', 'selectedBrand', 'role'])->find($user->id));
     }
 
     /**

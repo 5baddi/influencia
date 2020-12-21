@@ -42,17 +42,15 @@ export default {
    computed: {
       ...mapGetters(["AuthenticatedUser", "statistics"])
    },
-   filters: {
-      formatedNbr: function(value){
-         try{
-               if(typeof value === "undefined" || value === 0 || value === null)
-               return '---';
-
-               return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-         }catch(error){
-               return '---';
-         }
+   methods: {
+      loadStatistics(){
+         return this.$store.dispatch("fetchStatistics");
       }
+   },
+   mounted(){
+      // Load statistics
+      if(Object.keys(this.statistics).length === 0)
+         this.loadStatistics();
    },
    data(){
       return {
@@ -109,10 +107,6 @@ export default {
             },
          ]
       }
-   },
-   created() {
-      // Fetch data
-      this.$store.dispatch("fetchStatistics").catch(error => {});
-   },
+   }
 }
 </script>

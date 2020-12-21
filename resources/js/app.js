@@ -21,6 +21,8 @@ import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
 import VueTimeago from 'vue-timeago';
+import SecureLS from "secure-ls";
+import './services/filters';
 
 
 Vue.prototype.$http = api;
@@ -91,7 +93,8 @@ const app = new Vue({
         );
 
         this.$router.beforeEach((to, from, next) => {
-            const loggedIn = this.$store.getters.isLogged && localStorage.getItem('user');
+            let ls = new SecureLS();
+            const loggedIn = this.$store.getters.isLogged && ls.get('user');
 
             // let vm = this;
             // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){

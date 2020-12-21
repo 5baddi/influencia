@@ -399,6 +399,8 @@ export default {
             // Set native data
             if (typeof this.nativeData !== "undefined")
                 this.data = this.nativeData;
+
+            this.searchQuery = null;
         },
         reloadData() {
             // Using vuex
@@ -432,8 +434,6 @@ export default {
                 console.log("DataTable search error: ");
                 console.log(error);
                 this.data = [];
-            }).finally(() => {
-                this.searchQuery = null;
             });
         }
     },
