@@ -13,19 +13,27 @@ Vue.use(Vuex);
 let ls = new SecureLS();
 
 function fatchLocalUser() {
-    if (ls.get("user") && ls.get("user") !== 'undefined') {
-        const user = JSON.parse(ls.get("user"));
-        api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
+    try{
+        if (ls.get("user") && ls.get("user") !== 'undefined') {
+            const user = JSON.parse(ls.get("user"));
+            api.defaults.headers.common.Authorization = `Bearer ${user.token}`;
 
-        return user;
+            return user;
+        }
+    }catch(error){
+        return null;
     }
 
     return null;
 }
 
 function fetchActiveBrand(){
-    if (ls.get("active-brand") && ls.get("active-brand") !== 'undefined') {
-        return JSON.parse(ls.get("active-brand"));
+    try{
+        if (ls.get("active-brand") && ls.get("active-brand") !== 'undefined') {
+            return JSON.parse(ls.get("active-brand"));
+        }
+    }catch(error){
+        return null;
     }
 
     return null;
