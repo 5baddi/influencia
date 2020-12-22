@@ -49,7 +49,7 @@ export default {
    },
    mounted(){
       // Load statistics
-      if(Object.keys(this.statistics).length === 0)
+      if(Object.values(this.statistics).length === 0)
          this.loadStatistics();
    },
    data(){

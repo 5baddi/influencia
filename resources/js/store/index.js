@@ -439,6 +439,7 @@ const actions = {
                             commit('setUser', { user: user });
 
                             // Reload all data
+                            dispatch("fetchStatistics");
                             dispatch("fetchCampaigns");
                             dispatch("fetchTrackers");
                             dispatch("fetchInfluencers");

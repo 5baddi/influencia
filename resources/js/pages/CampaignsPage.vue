@@ -61,23 +61,31 @@ export default {
         CreateCampaignModal,
         CampaignAnalytics
     },
-    watch: {
-        $route: "initData"
+    notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        },
+        createCampaignErrors: {
+            type: "error"
+        },
+        createCampaignSuccess: {
+            type: "success"
+        }
     },
     methods: {
-        initData() {
-            this.$store.dispatch("fetchCampaigns").catch(error => {});
-            this.fetchCampaign();
+        loadCampaigns() {            
+            // Load campaigns
+            if(Object.values(this.campaigns).length === 0)
+                this.$store.dispatch("fetchCampaigns").catch(error => {});
         },
         fetchCampaign() {
-            // Load user by UUID
-            if(typeof this.$route.params.uuid !== 'undefined'){
-                this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid).catch(error => {});
-            }else{
-                this.$store.commit("setCampaign", {
-                    campaign: null
-                });
-            }
+            // Load campaign analytics by UUID
+            this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid).catch(error => {});
         },
         addCampaign() {
             this.$refs.campaignFormModal.open();
@@ -136,11 +144,9 @@ export default {
     },
     computed: {
         ...mapGetters(["AuthenticatedUser", "campaigns", "campaign"]),
-
         parsedCampaigns(){
             return this.campaigns;
         },
-
         activeBrand(){
             if(this.AuthenticatedUser.selected_brand)
                 return this.AuthenticatedUser.selected_brand;
@@ -148,35 +154,27 @@ export default {
             return null;
         }
     },
-    notifications: {
-        showError: {
-            type: "error",
-            title: "Error",
-            message: "Something going wrong! Please try again.."
-        },
-        showSuccess: {
-            type: "success",
-        },
-        createCampaignErrors: {
-            type: "error"
-        },
-        createCampaignSuccess: {
-            type: "success"
+    watch: {
+        "$route.params.uuid": function(value){
+            // Load campaign analytics or unset campaign state
+            if(typeof value !== "undefined")
+                this.fetchCampaign();
+            else
+                this.$store.commit("setCampaign", {campaign: null});
         }
     },
-    beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData());
-    },
-    beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid;
-        if (typeof routeUUID !== 'undefined' && (this.campaign !== null && this.campaign.uuid !== routeUUID)) {
-            this.$store.commit("setCampaign", {
-                campaign: null
-            });
+    mounted(){
+        // Load campaign analytics
+        if(typeof this.$route.params.uuid !== "undefined"){
             this.fetchCampaign();
-        }
+        }else{
+            // Unset campaign state
+            this.$store.commit("setCampaign", {campaign: null});
 
-        next();
+            // Load campaigns
+            if(Object.values(this.campaigns).length === 0)
+                this.loadCampaigns();
+        }
     },
     data() {
         return {
@@ -226,9 +224,6 @@ export default {
                 }
             ]
         };
-    },
-    created() {
-        this.initData();
-    },
+    }
 };
 </script>
