@@ -55,7 +55,7 @@
             </DataTable>
         </div>
     </div>
-    <CreateTrackerModal :show="showAddTrackerModal" @create="create" @dismiss="dismissAddTrackerModal" />
+    <CreateTrackerModal :show="showAddTrackerModal" :campaigns="campaigns" @create="create" @dismiss="dismissAddTrackerModal" />
     <ConfirmationModal ref="confirmModal" v-on:custom="deleteAction" />
     <TrackerAnalytics v-if="tracker" :tracker="tracker" />
 </div>
@@ -176,7 +176,7 @@ export default {
             let formData = new FormData();
 
             // Set base tracker info
-            formData.append("user_id", data.user_id);
+            formData.append("user_id", this.AuthenticatedUser.id);
             formData.append("campaign_id", data.campaign_id);
             formData.append("name", data.name);
             formData.append("type", data.type);

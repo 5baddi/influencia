@@ -61,11 +61,11 @@ const app = new Vue({
                 }).catch(error => {});
 
                 // Refresh user and active brand
-                if(typeof this.$store.getters.AuthenticatedUser === "object" && this.$store.getters.AuthenticatedUser !== null){
-                    // Refresh User
-                    this.$store.dispatch("fetchUser", this.$store.getters.AuthenticatedUser.uuid)
-                        .catch(error => {});
-                }
+                // if(typeof this.$store.getters.AuthenticatedUser === "object" && this.$store.getters.AuthenticatedUser !== null){
+                //     // Refresh User
+                //     this.$store.dispatch("fetchUser", this.$store.getters.AuthenticatedUser.uuid)
+                //         .catch(error => {});
+                // }
             },
             immediate: true
         }
