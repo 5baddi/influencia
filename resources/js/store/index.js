@@ -426,7 +426,7 @@ const actions = {
                 });
         });
     },
-    setActiveBrand({ commit, state }, brand) {
+    setActiveBrand({ commit, state, dispatch }, brand) {
         if(brand !== null && typeof brand.uuid !== "undefined"){
             return new Promise((resolve, reject) => {
                 api.get(`/api/v1/users/active-brand/${brand.uuid}`)
@@ -438,10 +438,10 @@ const actions = {
 
                             commit('setUser', { user: user });
 
-                            // TODO: reload all data
-                            // this.$store.dispatch("fetchCampaigns").catch(error => {});
-                            // this.$store.dispatch("fetchTrackers").catch(error => {});
-                            // this.$store.dispatch("fetchInfluencers").catch(error => {});
+                            // Reload all data
+                            dispatch("fetchCampaigns");
+                            dispatch("fetchTrackers");
+                            dispatch("fetchInfluencers");
                         }else{
                             throw new Error("Something going wrong!");
                         }

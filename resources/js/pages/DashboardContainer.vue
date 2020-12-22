@@ -75,10 +75,11 @@ export default {
         ...mapState("Loader", ["loading"]),
         ...mapGetters(["AuthenticatedUser", "brands"]),
         activeBrand(){
-            if(this.AuthenticatedUser.selected_brand)
+            if(typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand){
                 return this.AuthenticatedUser.selected_brand;
-
-            return null;
+            }else{
+                return null;
+            }
         }
     },
     watch: {

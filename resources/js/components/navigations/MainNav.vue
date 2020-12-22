@@ -103,8 +103,7 @@ export default {
     },
     props:{
         authenticatedUser: {
-            type: Object,
-            required: true
+            type: [Object, undefined]
         }
     },
     computed: {
