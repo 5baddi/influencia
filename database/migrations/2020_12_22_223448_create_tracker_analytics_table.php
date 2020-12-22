@@ -24,6 +24,13 @@ class CreateTrackersAnalyticsTable extends Migration
             $table->bigInteger('organic_video_views')->nullable();
             $table->bigInteger('impressions')->nullable();
             $table->bigInteger('organic_impressions')->nullable();
+            $table->integer('comments')->nullable();
+            $table->json('top_emojis')->nullable();
+            $table->double('sentiments_positive')->nullable();
+            $table->double('sentiments_neutral')->nullable();
+            $table->double('sentiments_negative')->nullable();
+            $table->integer('posts')->nullable();
+            $table->integer('organic_posts')->nullable();
             $table->timestamps();
 
             $table->foreign('tracker_id')->references('id')->on('trackers')->cascadeOnDelete();

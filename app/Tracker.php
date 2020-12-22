@@ -99,6 +99,16 @@ class Tracker extends Model
     {
         return $this->belongsTo(Campaign::class);
     }
+    
+    /**
+     * Get tracker analytics
+     *
+     * @return \App\TrackerAnalytics
+     */
+    public function analytics()
+    {
+        return $this->hasOne(TrackerAnalytics::class, 'tracker_id', 'id');
+    }
 
     /**
      * Get tracker media files
