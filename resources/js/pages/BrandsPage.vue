@@ -52,56 +52,23 @@ export default {
     components: {
         CreateBrandModal
     },
-    data() {
-        return {
-            columns: [{
-                field: "pic_url",
-                callback: function (row) {
-                    return '<img src="' + row.public_logo + '"/>';
-                },
-                sortable: false
-            }, {
-                name: "name",
-                field: "name"
-            }, {
-                name: "Number of users",
-                field: "users_count",
-                isNbr: true
-            }, {
-                name: 'users',
-                field: 'users',
-                callback: function (row) {
-                    if (!row.users)
-                        return '-';
-
-                    let html = '';
-                    row.users.map(function (item, index) {
-                        // html += '<li>' + item.name.toUpperCase() + '</li>';
-                        html += '<span class="badge badge-success">' + item.name.toUpperCase() + '</span>';
-                    });
-
-                    return html;
-                }
-            }, {
-                name: "Number of campaigns",
-                field: "campaigns_count",
-                isNbr: true
-            }, {
-                name: "Number of trackers",
-                field: "trackers_count",
-                isNbr: true
-            }, {
-                name: "Created at",
-                field: "created_at",
-                isData: true,
-                format: "DD/MM/YYYY"
-            }]
-        };
+    notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        }
     },
-    created() {
-        this.$store.dispatch("fetchBrands").catch(error => {});
+    computed: {
+        ...mapGetters(["brands", "AuthenticatedUser"])
     },
     methods: {
+        loadBrands(){
+            this.$store.dispatch("fetchBrands").catch(error => {});
+        },
         addBrand() {
             this.$refs.brandFormModal.open();
         },
@@ -119,7 +86,6 @@ export default {
                 .then(response => {
                     // Reload datatable
                     this.$refs.brandsDT.reloadData();
-                    // TODO:Switch selected brand
                     // Show success notification
                     this.showSuccess({
                         message: "Successfully deleted brand '" + brand.name + "'"
@@ -178,18 +144,56 @@ export default {
                 });
         }
     },
-    computed: {
-        ...mapGetters(["brands", "AuthenticatedUser"])
-    },
-    notifications: {
-        showError: {
-            type: "error",
-            title: "Error",
-            message: "Something going wrong! Please try again.."
-        },
-        showSuccess: {
-            type: "success",
-        }
+    mounted(){
+        // Load brands
+        if(Object.values(this.brands).length === 0)
+            this.loadBrands();
+   },
+    data() {
+        return {
+            columns: [{
+                field: "public_logo",
+                callback: function (row) {
+                    return '<img src="' + row.public_logo + '"/>';
+                },
+                sortable: false
+            }, {
+                name: "name",
+                field: "name"
+            }, {
+                name: "Number of users",
+                field: "users_count",
+                isNbr: true
+            }, {
+                name: 'users',
+                field: 'users',
+                callback: function (row) {
+                    if (!row.users)
+                        return '-';
+
+                    let html = '';
+                    row.users.map(function (item, index) {
+                        // html += '<li>' + item.name.toUpperCase() + '</li>';
+                        html += '<span class="badge badge-success">' + item.name.toUpperCase() + '</span>';
+                    });
+
+                    return html;
+                }
+            }, {
+                name: "Number of campaigns",
+                field: "campaigns_count",
+                isNbr: true
+            }, {
+                name: "Number of trackers",
+                field: "trackers_count",
+                isNbr: true
+            }, {
+                name: "Created at",
+                field: "created_at",
+                isData: true,
+                format: "DD/MM/YYYY"
+            }]
+        };
     }
 };
 </script>

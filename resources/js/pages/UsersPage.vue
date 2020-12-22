@@ -57,51 +57,23 @@ export default {
     components: {
         CreateUserModal,
     },
-    data() {
-        return {
-            columns: [{
-                    name: 'name',
-                    field: 'name'
-                }, {
-                    name: 'email',
-                    field: 'email'
-                }, {
-                    name: 'account type',
-                    field: 'is_superadmin',
-                    callback: function (row) {
-                        return row.is_superadmin && row.role == null ? 'Super Admin' : row.role.name.toUpperCase();
-                    }
-                },
-                {
-                    name: 'brands',
-                    field: 'brands',
-                    callback: function (row) {
-                        if (!row.brands)
-                            return '-';
-
-                        let html = '';
-                        row.brands.map(function (item, index) {
-                            // html += '<li>' + item.name.toUpperCase() + '</li>';
-                            html += '<span class="badge badge-success">' + item.name.toUpperCase() + '</span>';;
-                        });
-
-                        return html;
-                    }
-                }, {
-                    name: 'last login',
-                    field: 'last_login',
-                    isDate: true,
-                    format: 'DD-MMMM-YYYY HH:mm'
-                }, {
-                    name: 'Joined at',
-                    field: 'created_at',
-                    isDate: true
-                },
-            ],
-            showAddUserModal: false,
-        };
+    notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        }
+    },
+    computed: {
+        ...mapGetters(["users", "AuthenticatedUser"])
     },
     methods: {
+        loadUsers(){
+            this.$store.dispatch("fetchUsers").catch(error => {});
+        },
         addUser() {
             this.$refs.userFormModal.open();
         },
@@ -197,21 +169,54 @@ export default {
                 });
         }
     },
-    created() {
-        this.$store.dispatch("fetchUsers").catch(error => {});
+    mounted(){
+        // Load users
+        if(Object.values(this.users).length === 0)
+            this.loadUsers();
     },
-    computed: {
-        ...mapGetters(["users", "AuthenticatedUser"])
-    },
-    notifications: {
-        showError: {
-            type: "error",
-            title: "Error",
-            message: "Something going wrong! Please try again.."
-        },
-        showSuccess: {
-            type: "success",
-        }
+    data() {
+        return {
+            columns: [{
+                    name: 'name',
+                    field: 'name'
+                }, {
+                    name: 'email',
+                    field: 'email'
+                }, {
+                    name: 'account type',
+                    field: 'is_superadmin',
+                    callback: function (row) {
+                        return row.is_superadmin && row.role == null ? 'Super Admin' : row.role.name.toUpperCase();
+                    }
+                },
+                {
+                    name: 'brands',
+                    field: 'brands',
+                    callback: function (row) {
+                        if (!row.brands)
+                            return '-';
+
+                        let html = '';
+                        row.brands.map(function (item, index) {
+                            // html += '<li>' + item.name.toUpperCase() + '</li>';
+                            html += '<span class="badge badge-success">' + item.name.toUpperCase() + '</span>';;
+                        });
+
+                        return html;
+                    }
+                }, {
+                    name: 'last login',
+                    field: 'last_login',
+                    isDate: true,
+                    format: 'DD-MMMM-YYYY HH:mm'
+                }, {
+                    name: 'Joined at',
+                    field: 'created_at',
+                    isDate: true
+                },
+            ],
+            showAddUserModal: false,
+        };
     }
 };
 </script>

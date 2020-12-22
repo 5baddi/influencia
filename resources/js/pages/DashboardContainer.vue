@@ -123,11 +123,9 @@ export default {
             let ls = new SecureLS();
             let loggedIn = vm.$store.getters.isLogged && ls.get("user");
             if (!loggedIn) {
-                next("/login");
+                next({ name: 'login' });
                 return;
             }
-
-            next();
         });
     },
     mounted(){
