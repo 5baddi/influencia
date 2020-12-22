@@ -9,12 +9,12 @@
         </div>
     </template>
     <template v-else>
-        <button class="btn" @click="showDropdown = !showDropdown" v-if="activeBrand">
+        <button class="btn" @click="showDropdown = !showDropdown" v-if="selectedBrand">
             <div class="avatar">
-                <img :src="activeBrand.public_logo" alt />
+                <img :src="selectedBrand.public_logo" alt />
             </div>
             <div class="text">
-                <p>{{ activeBrand.name }}</p>
+                <p>{{ selectedBrand.name }}</p>
                 <div class="icon">
                     <svg width="24" height="24" viewBox="0 0 24 24" color="#000629" class="sc-fzqAbL fPXfOL">
                         <g fill="none" fill-rule="evenodd">
@@ -55,7 +55,7 @@ export default {
             type: Array
         },
         activeBrand: {
-            type: Object
+            type: [Object, undefined]
         }
     },
     data() {
@@ -70,6 +70,18 @@ export default {
             }
             if (!newValue) {
                 document.body.removeEventListener("click", this.hideDropdown);
+            }
+        }
+    },
+    computed: {
+        selectedBrand(){
+            if(!this.activeBrand || typeof this.activeBrand === "undefined" || typeof this.activeBrand.name === "undefined"){
+                return {
+                    name: null,
+                    public_logo: null
+                };
+            }else{
+                return this.activeBrand;
             }
         }
     },

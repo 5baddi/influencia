@@ -81,11 +81,15 @@ export default {
                     password: this.password,
                 })
                 .then((response) => {
-                    this.showLoginSuccess({
-                        message: `Welcome ${response.user.name}`
-                    });
+                    if(response.success){
+                            this.showLoginSuccess({
+                            message: `Welcome back ${response.content.user.name}`
+                        });
 
-                    this.$router.push({ name: 'dashboard' });
+                        this.$router.push({ name: 'dashboard' });
+                    }else{
+                        throw new Error("Something going wrong!");
+                    }
                 })
                 .catch((error) => {
                     let message = "Internal server error!";
