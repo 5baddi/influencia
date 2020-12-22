@@ -72,90 +72,6 @@ export default {
         CreateTrackerModal,
         TrackerAnalytics
     },
-    watch: {
-        $route: "initData"
-    },
-    beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData());
-    },
-    beforeRouteUpdate(to, from, next) {
-        next(vm => vm.fatchTracker())
-    },
-    data() {
-        return {
-            showAddTrackerModal: false,
-            selectedCampaign: null,
-            columns: [{
-                    name: "Name",
-                    field: "name"
-                },
-                {
-                    name: "Status",
-                    field: "status",
-                    sortable: false,
-                    callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
-                    }
-                },
-                {
-                    name: "Campaign",
-                    field: "campaign_id",
-                    callback: function (row) {
-                        return (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1));
-                    }
-                },
-                {
-                    name: "Influencers",
-                    field: "influencers",
-                    class: "avatars-list",
-                    sortable: false,
-                    callback: function (row) {
-                        if (row.influencers.length === 0)
-                            return '-';
-
-                        let html = '';
-                        row.influencers.map(function (item, index) {
-                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-                        });
-
-                        return html;
-                    }
-                },
-                {
-                    name: "Meduim",
-                    field: "platform",
-                    sortable: false,
-                    callback: function (row) {
-                        switch (row.platform) {
-                            case "youtube":
-                                return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
-                                break;
-                            case "instagram":
-                                return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
-                                break;
-                        }
-
-                        return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
-                    }
-                },
-                {
-                    name: "Activated communities",
-                    field: "communities",
-                    isNbr: true
-                },
-                {
-                    name: "Last update",
-                    field: "last_update",
-                }
-            ]
-        };
-    },
-    created() {
-        this.initData();
-    },
-    computed: {
-        ...mapGetters(["AuthenticatedUser", "campaigns", "trackers", "tracker"])
-    },
     notifications: {
         createTrackerErrors: {
             type: "error"
@@ -172,14 +88,26 @@ export default {
             type: "success",
         }
     },
+    computed: {
+        ...mapGetters(["AuthenticatedUser", "campaigns", "trackers", "tracker"])
+    },
+    watch: {
+        "$route.params.uuid": function(value){
+            // Load tracker analytics or unset tracker state
+            if(typeof value !== "undefined")
+                this.fetchTracker();
+            else
+                this.$store.commit("setTracker", {tracker: null});
+        }
+    },
     methods: {
-        initData() {
-            // Fetch brand compaigns
-            this.$store.dispatch("fetchCampaigns");
-            // Fetch brand trackers
-            this.$store.dispatch("fetchTrackers");
-            // Fetch tracker analytics
-            this.fetchTracker();
+        loadTrackers() {
+            // Fetch compaigns
+            if(Object.values(this.campaigns).length === 0)
+                this.$store.dispatch("fetchCampaigns");
+            // Fetch trackers
+            if(Object.values(this.trackers).length === 0)
+                this.$store.dispatch("fetchTrackers");
         },
         fetchTracker() {
             // Load user by UUID
@@ -280,11 +208,89 @@ export default {
                         title: "Error",
                         message: `${error.message}`
                     });
-                    // error.errors.map((v, i) => {
-                    //    console.log(v);
-                    // });
                 });
         }
+    },
+    mounted(){
+        // Load tracker analytics
+        if(typeof this.$route.params.uuid !== "undefined"){
+            this.fetchTracker();
+        }else{
+            // Unset tracker state
+            this.$store.commit("setTracker", {tracker: null});
+
+            // Load trackers
+            this.loadTrackers();
+        }
+    },
+    data() {
+        return {
+            showAddTrackerModal: false,
+            selectedCampaign: null,
+            columns: [{
+                    name: "Name",
+                    field: "name"
+                },
+                {
+                    name: "Status",
+                    field: "status",
+                    sortable: false,
+                    callback: function (row) {
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                    }
+                },
+                {
+                    name: "Campaign",
+                    field: "campaign_id",
+                    callback: function (row) {
+                        return (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1));
+                    }
+                },
+                {
+                    name: "Influencers",
+                    field: "influencers",
+                    class: "avatars-list",
+                    sortable: false,
+                    callback: function (row) {
+                        if (row.influencers.length === 0)
+                            return '-';
+
+                        let html = '';
+                        row.influencers.map(function (item, index) {
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
+                        });
+
+                        return html;
+                    }
+                },
+                {
+                    name: "Meduim",
+                    field: "platform",
+                    sortable: false,
+                    callback: function (row) {
+                        switch (row.platform) {
+                            case "youtube":
+                                return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
+                                break;
+                            case "instagram":
+                                return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
+                                break;
+                        }
+
+                        return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
+                    }
+                },
+                {
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
+                },
+                {
+                    name: "Last update",
+                    field: "last_update",
+                }
+            ]
+        };
     }
 };
 </script>

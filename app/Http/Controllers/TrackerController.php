@@ -42,13 +42,13 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
+            Tracker::with(['campaign', 'influencers'])
                     ->whereHas('campaign', function($camp) use($brand){
                         $camp->where('brand_id', $brand->id);
                     })
                     ->orderBy('created_at', 'desc')
                     ->get()
-                    // ->paginate(Application::DEFAULT_PAGINATION)
+                    // ->paginate(10)
         );
     }
     
