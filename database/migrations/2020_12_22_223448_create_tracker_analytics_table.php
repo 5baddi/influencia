@@ -15,7 +15,7 @@ class CreateTrackersAnalyticsTable extends Migration
     {
         Schema::create('tracker_analytics', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tracker_id')->unique();
+            $table->unsignedBigInteger('tracker_id');
             $table->bigInteger('communities')->nullable();
             $table->bigInteger('organic_communities')->nullable();
             $table->bigInteger('engagements')->nullable();

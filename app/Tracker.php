@@ -107,7 +107,7 @@ class Tracker extends Model
      */
     public function analytics()
     {
-        return $this->hasOne(TrackerAnalytics::class, 'tracker_id', 'id');
+        return $this->hasMany(TrackerAnalytics::class, 'tracker_id', 'id')->latest()->first();
     }
 
     /**
