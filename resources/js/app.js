@@ -33,6 +33,10 @@ window._ = require('lodash');
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
+Vue.use(VueTimeago, {
+    name: 'Timeago', // Component name, `Timeago` by default
+    locale: 'en',
+});
 
 // Register global component
 Vue.component('DataTable', DataTable);
