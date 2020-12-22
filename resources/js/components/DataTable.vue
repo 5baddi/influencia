@@ -35,8 +35,7 @@
             </tr>
             <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
                 <td v-for="(col, idx) in formatedColumns" :key="idx">
-                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo" :class="col.class" v-html="obj[col.field]"></div>
-                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                    <div v-if="typeof obj[col.field] !== 'undefined'" :class="col.class" v-html="obj[col.field]"></div>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -302,6 +301,14 @@ export default {
                     // Parse data
                     let val = value[item.field];
                     if (typeof val !== "undefined" && val !== null) {
+                        // DataTime format
+                        if (typeof item.isDate === "boolean" && item.isDate) {
+                            let date = dayjs(val).format(item.format !== "undefined" ? item.format : 'DD/MM/YYYY');
+
+                            // if (date.isValid())
+                            //     rowData[item.field] = date.toString();
+                        }
+
                         // Callback
                         if (typeof item.callback === "function")
                             rowData[item.field] = item.callback.call(item, value);
