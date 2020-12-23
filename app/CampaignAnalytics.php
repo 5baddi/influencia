@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TrackerAnalytics extends Model
+class CampaignAnalytics extends Model
 {
     protected $guarded = [];
 
@@ -13,7 +13,7 @@ class TrackerAnalytics extends Model
      *
      * @var string
      */
-    protected $table = 'tracker_analytics';
+    protected $table = 'campaign_analytics';
 
     /**
      * The attributes that are mass assignable.
@@ -21,18 +21,20 @@ class TrackerAnalytics extends Model
      * @var array
      */
     protected $fillable = [
-        'tracker_id',
+        'campaign_id',
         'communities',
         'engagements',
         'engagement_rate',
         'video_views',
         'impressions',
         'comments_count',
-        'posts_count',
         'top_emojis',
         'sentiments_positive',
         'sentiments_neutral',
-        'sentiments_negative'
+        'sentiments_negative',
+        'posts_count',
+        'stories_count',
+        'links_count',
     ];
 
     /**
@@ -41,13 +43,15 @@ class TrackerAnalytics extends Model
      * @var array
      */
     protected $casts = [
-        'tracker_id'            =>  'unsignedInteger',
+        'campaign_id'           =>  'unsignedInteger',
         'communities'           =>  'bigInteger',
         'engagements'           =>  'bigInteger',
         'video_views'           =>  'bigInteger',
         'impressions'           =>  'bigInteger',
         'comments_count'        =>  'integer',
         'posts_count'           =>  'integer',
+        'stories_count'         =>  'integer',
+        'links_count'           =>  'integer',
         'top_emojis'            =>  'json',
         'sentiments_positive'   =>  'double',
         'sentiments_neutral'    =>  'double',

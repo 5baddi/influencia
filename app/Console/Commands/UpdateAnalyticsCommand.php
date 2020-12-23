@@ -3,8 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Tracker;
+use App\Campaign;
 use Carbon\Carbon;
 use App\TrackerAnalytics;
+use App\CampaignAnalytics;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 
@@ -49,6 +51,9 @@ class UpdateAnalyticsCommand extends Command
         // Update trackers analytics
         $this->trackersAnalytics();
 
+        // Update campaigns analytics
+        $this->campaignsAnalytics();
+
         $this->output->progressFinish();
         $this->info("=== Done ===");
         $endTaskAt = microtime(true) - $startTaskAt;
@@ -56,11 +61,87 @@ class UpdateAnalyticsCommand extends Command
     }
 
     /**
+     * Update campaigns analytics
+     *
+     * @return void
+     */
+    private function campaignsAnalytics()
+    {
+        Campaign::with('trackers')->orderBy('created_at', 'desc')->chunk(50, function($campaigns){
+            $campaigns->each(function($campaign){
+                // Get exists analytics for today
+                $existsAnalytics = CampaignAnalytics::where('campaign_id', $campaign->id)->whereDate('created_at', Carbon::today())->first();
+                if(is_null($existsAnalytics)){
+                    // Init
+                    $analytics = [
+                        'campaign_id'           => $campaign->id,
+                        'engagements'           => 0,
+                        'engagement_rate'       => 0,
+                        'communities'           => 0,
+                        'impressions'           => 0,
+                        'video_views'           => 0,
+                        'comments_count'        => 0,
+                        'posts_count'           => 0,
+                        'stories_count'         => 0,
+                        'links_count'           => 0,
+                        'top_emojis'            => [
+                            'top'               => [],
+                            'all'               => 0
+                        ],
+                        'sentiments_positive'   => 0.0,
+                        'sentiments_neutral'    => 0.0,
+                        'sentiments_negative'   => 0.0,
+                    ];
+
+                    // Calculate analytics
+                    foreach($campaign->trackers->load('analytics') as $trackerAnalytics){
+                        if(is_null($trackerAnalytics->analytics))
+                            continue;
+
+                        $analytics['engagements'] += $trackerAnalytics->analytics->engagements;
+                        $analytics['communities'] += $trackerAnalytics->analytics->communities;
+                        $analytics['impressions'] += $trackerAnalytics->analytics->impressions;
+                        $analytics['comments_count'] += $trackerAnalytics->analytics->comments;
+                        $analytics['video_views'] += $trackerAnalytics->analytics->video_views;
+                        $analytics['sentiments_positive'] += $trackerAnalytics->analytics->comments_positive;
+                        $analytics['sentiments_neutral'] += $trackerAnalytics->analytics->comments_neutral;
+                        $analytics['sentiments_negative'] += $trackerAnalytics->analytics->comments_negative;
+                        $analytics['posts_count'] += $trackerAnalytics->analytics->posts_count;
+
+                        // Engagement rate
+                        if($analytics['impressions'] > 0)
+                            $analytics['engagement_rate'] += $trackerAnalytics->analytics->engagement_rate;
+
+                        // Emojis
+                        if(isset($trackerAnalytics->analytics->top_emojis['top'], $trackerAnalytics->analytics->top_emojis['all'])){
+                            $analytics['top_emojis']['top'] = array_merge($analytics['top_emojis']['top'], $trackerAnalytics->analytics->top_emojis['top']);
+                            $analytics['top_emojis']['all'] += $trackerAnalytics->analytics->top_emojis['all'];
+                        }
+                    }
+
+                    // Re-calculate sentiments
+                    $analytics['sentiments_positive'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_positive'] / $analytics['posts_count'] : 0.0;
+                    $analytics['sentiments_neutral'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_neutral'] / $analytics['posts_count'] : 0.0;
+                    $analytics['sentiments_negative'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_negative'] / $analytics['posts_count'] : 0.0;
+
+                    // Get top emojis
+                    $analytics['top_emojis'] = isset($analytics['top_emojis']['top']) ? array_slice($analytics['top_emojis']['top'], 0, sizeof($analytics['top_emojis']['top']) < 3 ? sizeof($analytics['top_emojis']['top']) : 3, true) : [];
+
+                    // Save the analytics
+                    CampaignAnalytics::create($analytics);
+                }
+
+                $this->output->progressAdvance();
+            });
+        });
+    }
+
+    /**
      * Update trackers analytics
      *
      * @return void
      */
-    public function trackersAnalytics()
+    private function trackersAnalytics()
     {
         Tracker::with('posts')->orderBy('created_at', 'desc')->chunk(50, function($trackers){
             $trackers->each(function($tracker){
@@ -75,19 +156,27 @@ class UpdateAnalyticsCommand extends Command
                         'communities'           => 0,
                         'impressions'           => 0,
                         'video_views'           => 0,
-                        'comments'              => 0,
+                        'comments_count'        => 0,
+                        'posts_count'           => 0,
                         'top_emojis'            => [],
                         'sentiments_positive'   => 0.0,
                         'sentiments_neutral'    => 0.0,
                         'sentiments_negative'   => 0.0,
                     ];
 
+                    // Save tracker posts count
+                    switch($tracker->type){
+                        case "post":
+                            $analytics['posts_count'] = $tracker->posts->count();
+                        break;
+                    }
+
                     // Calculate analytics
                     foreach($tracker->posts->load('influencer') as $post){
                         $analytics['engagements'] += $post->likes + $post->comments;
                         $analytics['communities'] += $post->influencer->followers;
                         $analytics['impressions'] += ($post->likes + $post->comments) * $post->influencer->engagement_rate;
-                        $analytics['comments'] += $post->comments;
+                        $analytics['comments_count'] += $post->comments;
                         $analytics['video_views'] += $post->video_views;
                         $analytics['sentiments_positive'] += $post->comments_positive;
                         $analytics['sentiments_neutral'] += $post->comments_neutral;

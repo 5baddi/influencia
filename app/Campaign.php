@@ -91,6 +91,16 @@ class Campaign extends Model
                 ]);
     }
 
+    /**
+     * Get tracker analytics
+     *
+     * @return \App\TrackerAnalytics
+     */
+    public function analytics()
+    {
+        return $this->hasOne(TrackerAnalytics::class)->latest();
+    }
+
     // public function scopeByInfluencers($query, $name)
     // {
     //     $found = $this->getInfluencersAttribute()->filter(function($item) use($name){

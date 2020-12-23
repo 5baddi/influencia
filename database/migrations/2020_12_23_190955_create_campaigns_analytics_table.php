@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrackersAnalyticsTable extends Migration
+class CreateCampaignsAnalyticsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateTrackersAnalyticsTable extends Migration
      */
     public function up()
     {
-        Schema::create('tracker_analytics', function (Blueprint $table) {
+        Schema::create('campaign_analytics', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('tracker_id');
+            $table->unsignedBigInteger('campaign_id');
             $table->bigInteger('communities')->nullable();
             $table->bigInteger('engagements')->nullable();
             $table->bigInteger('impressions')->nullable();
@@ -31,7 +31,7 @@ class CreateTrackersAnalyticsTable extends Migration
             $table->double('sentiments_negative')->nullable();
             $table->timestamps();
 
-            $table->foreign('tracker_id')->references('id')->on('trackers')->cascadeOnDelete();
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
         });
     }
 
@@ -42,6 +42,6 @@ class CreateTrackersAnalyticsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tracker_analytics');
+        Schema::dropIfExists('campaign_analytics');
     }
 }
