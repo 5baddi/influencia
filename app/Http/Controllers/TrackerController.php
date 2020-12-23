@@ -63,16 +63,18 @@ class TrackerController extends Controller
     {
         abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
+        // Get trackers
+        $trackers = Tracker::with(['campaign', 'analytics', 'influencers'])
+                        ->whereHas('campaign', function($camp) use($brand, $campaign){
+                            $camp->where('brand_id', $brand->id)
+                                ->where('id', $campaign->id);
+                        })
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
         return response()->success(
             "Trackers fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
-                    ->whereHas('campaign', function($camp) use($brand, $campaign){
-                        $camp->where('brand_id', $brand->id)
-                            ->where('id', $campaign->id);
-                    })
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-                    // ->paginate(Application::DEFAULT_PAGINATION)
+            $trackers->toArray()
         );
     }
 

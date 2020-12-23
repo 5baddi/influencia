@@ -119,7 +119,9 @@ export default {
                 });
         },
         loadByCampaign(){
-            if(typeof this.selectedCampaign.uuid !== "undefined")
+            if(this.selectedCampaign === null)
+                this.$refs.trackersDT.reloadData();
+            else if(typeof this.selectedCampaign.uuid !== "undefined")
                 this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
         },
         dismissAddTrackerModal() {
@@ -282,12 +284,19 @@ export default {
                 },
                 {
                     name: "Activated communities",
-                    field: "communities",
+                    field: "analytics",
+                    callback: function (row) {
+                        return typeof row.analytics.communities !== "undefined" ? row.analytics.communities : 0;
+                    },
                     isNbr: true
                 },
                 {
                     name: "Last update",
-                    field: "last_update",
+                    field: "updated_at",
+                    callback: function (row) {
+                        return typeof row.analytics.updated_at !== "undefined" ? row.analytics.updated_at : row.updated_at;
+                    },
+                    isTimeAgo: true
                 }
             ]
         };

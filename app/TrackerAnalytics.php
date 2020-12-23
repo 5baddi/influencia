@@ -23,13 +23,15 @@ class TrackerAnalytics extends Model
     protected $fillable = [
         'tracker_id',
         'communities',
-        'organic_communities',
         'engagements',
-        'organic_engagements',
+        'engagement_rate',
         'video_views',
-        'organic_video_views',
         'impressions',
-        'organic_impressions',
+        'comments',
+        'top_emojis',
+        'sentiments_positive',
+        'sentiments_neutral',
+        'sentiments_negative'
     ];
 
     /**
@@ -40,20 +42,15 @@ class TrackerAnalytics extends Model
     protected $casts = [
         'tracker_id'            =>  'unsignedInteger',
         'communities'           =>  'bigInteger',
-        'organic_communities'   =>  'bigInteger',
         'engagements'           =>  'bigInteger',
-        'organic_engagements'   =>  'bigInteger',
         'video_views'           =>  'bigInteger',
-        'organic_video_views'   =>  'bigInteger',
         'impressions'           =>  'bigInteger',
-        'organic_impressions'   =>  'bigInteger',
         'comments'              =>  'integer',
-        'posts'                 =>  'integer',
-        'organic_posts'         =>  'integer',
         'top_emojis'            =>  'json',
         'sentiments_positive'   =>  'double',
         'sentiments_neutral'    =>  'double',
         'sentiments_negative'   =>  'double',
+        'engagement_rate'       =>  'double',
         'updated_at'            =>  'datetime:Y-m-d H:i',
         'created_at'            =>  'datetime:Y-m-d H:i',
     ];

@@ -304,23 +304,25 @@ export default {
                     if (typeof val !== "undefined" && val !== null) {
                         // Callback
                         if (typeof item.callback === "function")
-                            rowData[item.field] = item.callback.call(item, value);
+                            val = item.callback.call(item, value);
+                        
                         // Currency symbol
-                        else if (typeof item.currency === "string" && item.currency !== '')
-                            rowData[item.field] = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;
+                        if (typeof item.currency === "string" && item.currency !== '')
+                            val = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;
+                        
                         // Format number to K
-                        else if (typeof item.isNbr === "boolean" && item.isNbr)
-                            rowData[item.field] = String(abbreviate(val)).toUpperCase();
-                        else
-                            rowData[item.field] = val;
+                        if (typeof item.isNbr === "boolean" && item.isNbr)
+                            val = String(abbreviate(val)).toUpperCase();
 
                         // Capitalize string
                         if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
-                            rowData[item.field] = val.charAt(0).toUpperCase() + val.slice(1);
+                            val = val.charAt(0).toUpperCase() + val.slice(1);
 
                         // Ignore zero or empty
-                        if ((val == null || val == 0) && typeof item.callback === "undefined")
-                            rowData[item.field] = '-';
+                        if ((val == null || val == 0 || val == '') && typeof item.callback === "undefined")
+                            val = '-';
+
+                        rowData[item.field] = val;
                     }else{
                         rowData[item.field] = "---";
                     }

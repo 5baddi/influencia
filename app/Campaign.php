@@ -128,12 +128,12 @@ class Campaign extends Model
         $trackers = $this->trackers()->where('type', 'post')->withCount('posts')->get();
 
         $count = 0;
-        foreach($trackers as $tracker){
-            if(!isset($tracker->posts_count))
-                continue;
+        // foreach($trackers as $tracker){
+        //     if(!isset($tracker->posts_count))
+        //         continue;
 
-            $count += $tracker->posts_count;
-        }
+        //     $count += $tracker->posts_count;
+        // }
 
         return $count;
     }
@@ -148,12 +148,12 @@ class Campaign extends Model
         $trackers = $this->trackers()->where('type', 'story')->withCount('posts')->get();
 
         $count = 0;
-        foreach($trackers as $tracker){
-            if(!isset($tracker->posts_count))
-                continue;
+        // foreach($trackers as $tracker){
+        //     if(!isset($tracker->posts_count))
+        //         continue;
 
-            $count += $tracker->posts_count;
-        }
+        //     $count += $tracker->posts_count;
+        // }
 
         return $count;
     }
@@ -168,12 +168,12 @@ class Campaign extends Model
         $trackers = $this->trackers()->where('type', 'url')->withCount('posts')->get();
 
         $count = 0;
-        foreach($trackers as $tracker){
-            if(!isset($tracker->posts_count))
-                continue;
+        // foreach($trackers as $tracker){
+        //     if(!isset($tracker->posts_count))
+        //         continue;
 
-            $count += $tracker->posts_count;
-        }
+        //     $count += $tracker->posts_count;
+        // }
 
         return $count;
     }
@@ -187,102 +187,106 @@ class Campaign extends Model
     {
         $count = 0;
 
-        foreach($this->trackers as $tracker){
-            if(!$tracker->comments_count)
-                continue;
+        // foreach($this->trackers as $tracker){
+        //     if(!$tracker->comments_count)
+        //         continue;
 
-            $count += $tracker->comments_count;
-        }
+        //     $count += $tracker->comments_count;
+        // }
 
         return $count;
     }
 
     public function getAllPostsCountAttribute() : int
     {
-        return $this->getStoriesCountAttribute() + $this->getPostsCountAttribute() + $this->getUrlsCountAttribute();
+        return 0;
+        // return $this->getStoriesCountAttribute() + $this->getPostsCountAttribute() + $this->getUrlsCountAttribute();
     }
 
     public function getSentimentsPositiveAttribute() : float
     {
-        $semtiments = 0.0;
-        $allCount = $this->getAllPostsCountAttribute();
-        $trackers = $this->trackers()->get();
+        $sentiments = 0.0;
+        // $allCount = $this->getAllPostsCountAttribute();
+        // $trackers = $this->trackers()->get();
 
-        foreach($trackers as $tracker){
-            if($tracker->posts->count() === 0)
-                continue;
+        // foreach($trackers as $tracker){
+        //     if($tracker->posts->count() === 0)
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                $semtiments += $post->comments_positive;
-            }
-        }
+        //     foreach($tracker->posts as $post){
+        //         $semtiments += $post->comments_positive;
+        //     }
+        // }
 
-        return $allCount > 0 ? $semtiments / $allCount : 0;
+        // return $allCount > 0 ? $semtiments / $allCount : 0;
+        return $sentiments;
     }
 
     public function getSentimentsNeutralAttribute() : float
     {
-        $semtiments = 0.0;
-        $allCount = $this->getAllPostsCountAttribute();
-        $trackers = $this->trackers()->get();
+        $sentiments = 0.0;
+        // $allCount = $this->getAllPostsCountAttribute();
+        // $trackers = $this->trackers()->get();
 
-        foreach($trackers as $tracker){
-            if($tracker->posts->count() === 0)
-                continue;
+        // foreach($trackers as $tracker){
+        //     if($tracker->posts->count() === 0)
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                $semtiments += $post->comments_neutral;
-            }
-        }
+        //     foreach($tracker->posts as $post){
+        //         $semtiments += $post->comments_neutral;
+        //     }
+        // }
 
-        return $allCount > 0 ? $semtiments / $allCount : 0;
+        // return $allCount > 0 ? $semtiments / $allCount : 0;
+        return $sentiments;
     }
 
     public function getSentimentsNegativeAttribute() : float
     {
-        $semtiments = 0.0;
-        $allCount = $this->getAllPostsCountAttribute();
-        $trackers = $this->trackers()->get();
+        $sentiments = 0.0;
+        // $allCount = $this->getAllPostsCountAttribute();
+        // $trackers = $this->trackers()->get();
 
-        foreach($trackers as $tracker){
-            if($tracker->posts->count() === 0)
-                continue;
+        // foreach($trackers as $tracker){
+        //     if($tracker->posts->count() === 0)
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                $semtiments += $post->comments_negative;
-            }
-        }
+        //     foreach($tracker->posts as $post){
+        //         $semtiments += $post->comments_negative;
+        //     }
+        // }
 
-        return $allCount > 0 ? $semtiments / $allCount : 0;
+        // return $allCount > 0 ? $semtiments / $allCount : 0;
+        return $sentiments;
     }
 
     public function getTopThreeEmojisAttribute() : array
     {
         $topThreeEmojis = [];
         $emojisCount = 0;
-        $trackers = $this->trackers()->get();
+        // $trackers = $this->trackers()->get();
 
-        foreach($trackers as $tracker){
-            if($tracker->posts->count() === 0)
-                continue;
+        // foreach($trackers as $tracker){
+        //     if($tracker->posts->count() === 0)
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                $emojis = json_decode(json_encode($post->comments_emojis), true);
-                if(is_null($emojis) || empty($emojis))
-                    continue;
+        //     foreach($tracker->posts as $post){
+        //         $emojis = json_decode(json_encode($post->comments_emojis), true);
+        //         if(is_null($emojis) || empty($emojis))
+        //             continue;
 
-                $topThreeEmojis = array_merge($topThreeEmojis, $emojis);
-                $emojisCount += sizeof($emojis);
-            }
-        }
+        //         $topThreeEmojis = array_merge($topThreeEmojis, $emojis);
+        //         $emojisCount += sizeof($emojis);
+        //     }
+        // }
 
-        // Ignore empty emojis list
-        if(is_null($topThreeEmojis) || empty($topThreeEmojis))
-            return $topThreeEmojis;
+        // // Ignore empty emojis list
+        // if(is_null($topThreeEmojis) || empty($topThreeEmojis))
+        //     return $topThreeEmojis;
 
-        $topThreeEmojis = array_flip(array_count_values($topThreeEmojis));
-        // Sort emojis desc
-        krsort($topThreeEmojis);
+        // $topThreeEmojis = array_flip(array_count_values($topThreeEmojis));
+        // // Sort emojis desc
+        // krsort($topThreeEmojis);
 
         // Slice top emojis
         return [
@@ -300,12 +304,12 @@ class Campaign extends Model
     {
         $engagement = 0;
 
-        foreach($this->trackers as $tracker){
-            if(!$tracker->engagement)
-                continue;
+        // foreach($this->trackers as $tracker){
+        //     if(!$tracker->engagement)
+        //         continue;
 
-            $engagement += $tracker->engagement;
-        }
+        //     $engagement += $tracker->engagement;
+        // }
 
         return $engagement;
     }
@@ -319,12 +323,12 @@ class Campaign extends Model
     {
         $views = 0;
 
-        foreach($this->trackers as $tracker){
-            if(!$tracker->views)
-                continue;
+        // foreach($this->trackers as $tracker){
+        //     if(!$tracker->views)
+        //         continue;
 
-            $views += $tracker->views;
-        }
+        //     $views += $tracker->views;
+        // }
 
         return $views;
     }
@@ -338,12 +342,12 @@ class Campaign extends Model
     {
         $impressions = 0;
 
-        foreach($this->trackers as $tracker){
-            if(!$tracker->impressions)
-                continue;
+        // foreach($this->trackers as $tracker){
+        //     if(!$tracker->impressions)
+        //         continue;
 
-            $impressions += $tracker->impressions;
-        }
+        //     $impressions += $tracker->impressions;
+        // }
 
         return $impressions;
     }
@@ -357,12 +361,12 @@ class Campaign extends Model
     {
         $communities = 0;
 
-        foreach($this->trackers as $tracker){
-            if(!$tracker->communities)
-                continue;
+        // foreach($this->trackers as $tracker){
+        //     if(!$tracker->communities)
+        //         continue;
 
-            $communities += $tracker->communities;
-        }
+        //     $communities += $tracker->communities;
+        // }
 
         return $communities;
     }
@@ -376,12 +380,12 @@ class Campaign extends Model
     {
         $posts = 0;
 
-        foreach($this->trackers as $tracker){
-            if(!$tracker->organic_posts)
-                continue;
+        // foreach($this->trackers as $tracker){
+        //     if(!$tracker->organic_posts)
+        //         continue;
 
-            $posts += $tracker->organic_posts;
-        }
+        //     $posts += $tracker->organic_posts;
+        // }
 
         return $posts;
     }
@@ -390,17 +394,17 @@ class Campaign extends Model
     {
         $communities = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
-                continue;
+        // foreach($this->trackers->load('posts') as $tracker){
+        //     if(is_null($tracker->posts))
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                if($post->is_ad)
-                    continue;
+        //     foreach($tracker->posts as $post){
+        //         if($post->is_ad)
+        //             continue;
 
-                $communities += $post->likes + $post->comments;
-            }
-        }
+        //         $communities += $post->likes + $post->comments;
+        //     }
+        // }
 
         return $communities;
     }
@@ -409,17 +413,17 @@ class Campaign extends Model
     {
         $engagement = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
-                continue;
+        // foreach($this->trackers->load('posts') as $tracker){
+        //     if(is_null($tracker->posts))
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                if($post->is_ad)
-                    continue;
+        //     foreach($tracker->posts as $post){
+        //         if($post->is_ad)
+        //             continue;
 
-                $engagement += $post->likes + $post->comments;
-            }
-        }
+        //         $engagement += $post->likes + $post->comments;
+        //     }
+        // }
 
         return $engagement;
     }
@@ -428,17 +432,17 @@ class Campaign extends Model
     {
         $impressions = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
-                continue;
+        // foreach($this->trackers->load('posts') as $tracker){
+        //     if(is_null($tracker->posts))
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                if($post->is_ad)
-                    continue;
+        //     foreach($tracker->posts as $post){
+        //         if($post->is_ad)
+        //             continue;
 
-                $impressions += $post->likes + $post->video_views;
-            }
-        }
+        //         $impressions += $post->likes + $post->video_views;
+        //     }
+        // }
 
         return $impressions;
     }
@@ -447,17 +451,17 @@ class Campaign extends Model
     {
         $views = 0;
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if(is_null($tracker->posts))
-                continue;
+        // foreach($this->trackers->load('posts') as $tracker){
+        //     if(is_null($tracker->posts))
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                if($post->is_ad)
-                    continue;
+        //     foreach($tracker->posts as $post){
+        //         if($post->is_ad)
+        //             continue;
 
-                $views += $post->video_views;
-            }
-        }
+        //         $views += $post->video_views;
+        //     }
+        // }
 
         return $views;
     }
@@ -471,17 +475,17 @@ class Campaign extends Model
     {
         $influencers = new Collection();
 
-        foreach($this->trackers->load('influencers') as $tracker){
-            if(is_null($tracker->influencers) || $tracker->influencers->count() === 0)
-                continue;
+        // foreach($this->trackers->load('influencers') as $tracker){
+        //     if(is_null($tracker->influencers) || $tracker->influencers->count() === 0)
+        //         continue;
 
-            foreach($tracker->influencers as $influencer){
-                if($influencers->contains('id', $influencer->id))
-                    continue;
+        //     foreach($tracker->influencers as $influencer){
+        //         if($influencers->contains('id', $influencer->id))
+        //             continue;
 
-                $influencers->add($influencer);
-            }
-        }
+        //         $influencers->add($influencer);
+        //     }
+        // }
 
         return $influencers;
     }
@@ -505,17 +509,17 @@ class Campaign extends Model
     {
         $posts = collect();
 
-        foreach($this->trackers->load('posts') as $tracker){
-            if($tracker->platform !== 'instagram' || is_null($tracker->posts))
-                continue;
+        // foreach($this->trackers->load('posts') as $tracker){
+        //     if($tracker->platform !== 'instagram' || is_null($tracker->posts))
+        //         continue;
 
-            foreach($tracker->posts as $post){
-                if($posts->contains('id', $post->id))
-                    continue;
+        //     foreach($tracker->posts as $post){
+        //         if($posts->contains('id', $post->id))
+        //             continue;
 
-                $posts->add($post);
-            }
-        }
+        //         $posts->add($post);
+        //     }
+        // }
 
         return $posts;
     }
@@ -524,26 +528,26 @@ class Campaign extends Model
     {
         $posts = collect();
 
-        foreach($this->trackers->where('platform', 'instagram')->load('posts') as $tracker){
-            if(is_null($tracker->posts) || $tracker->type === 'url')
-                continue;
+        // foreach($this->trackers->where('platform', 'instagram')->load('posts') as $tracker){
+        //     if(is_null($tracker->posts) || $tracker->type === 'url')
+        //         continue;
 
-            if($tracker->type === 'story'){
-                if($posts->contains('id', $tracker->id))
-                    continue;
+        //     if($tracker->type === 'story'){
+        //         if($posts->contains('id', $tracker->id))
+        //             continue;
 
-                $posts->add($tracker->load('influencer'));
+        //         $posts->add($tracker->load('influencer'));
 
-                continue;
-            }
+        //         continue;
+        //     }
 
-            foreach($tracker->posts->load('influencer') as $post){
-                if($posts->contains('id', $post->id))
-                    continue;
+        //     foreach($tracker->posts->load('influencer') as $post){
+        //         if($posts->contains('id', $post->id))
+        //             continue;
 
-                $posts->add($post);
-            }
-        }
+        //         $posts->add($post);
+        //     }
+        // }
 
         return $posts;
     }
