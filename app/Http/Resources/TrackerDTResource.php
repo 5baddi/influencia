@@ -24,6 +24,7 @@ class TrackerDTResource extends JsonResource
             'influencers'   =>  $this->influencers->map(function($influencer){
                 return $influencer->only(['uuid', 'name', 'username', 'pic_url']);
             }),
+            'type'          =>  $this->type,
             'platform'      =>  $this->platform ?? null,
             'communities'   =>  isset($this->analytics) ? $this->analytics->communities : 0,
             'updated_at'    =>  isset($this->analytics) ? $this->analytics->updated_at : $this->updated_at
