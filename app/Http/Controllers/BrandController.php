@@ -7,6 +7,7 @@ use App\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\BrandDTResource;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,19 +21,27 @@ class BrandController extends Controller
      */
     public function index()
     {
+        // Check abilities
         abort_if(Gate::denies('list_brand') && Gate::denies('viewAny', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        $brands = Brand::withCount(['users', 'campaigns'])
-                        ->with(['users', 'campaigns']);
-
         if(!Auth::user()->is_superadmin){
-            $brands = $brands->whereHas('users', function($query){
-                $query->where('user_id', Auth::id());
-            });
+            // Get only user brands
+            $brands = Brand::with('users')
+                            ->withCount(['users', 'campaigns'])
+                            ->whereHas('users', function($query){
+                                $query->where('user_id', Auth::id());
+                            })
+                            ->get();
+        }else{
+            // Get all brands because it's a superadmin
+            $brands = Brand::with('users')
+                            ->withCount(['users', 'campaigns'])
+                            ->get();
         }
 
-        return response()->success("Brands fetched successfully.",
-            $brands->get()
+        return response()->success(
+            "Brands fetched successfully.",
+            BrandDTResource::collection($brands)
         );
     }
 
@@ -76,9 +85,13 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
+        // Check abilities
         abort_if(Gate::denies('show_brand') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("Brand fetched successfully.", Brand::with(['users', 'campaigns'])->find($brand->id));
+        return response()->success(
+            "Brand fetched successfully.", 
+            Brand::findOrFail($brand->id)
+        );
     }
 
     /**

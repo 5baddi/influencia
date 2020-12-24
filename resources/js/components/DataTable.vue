@@ -225,14 +225,14 @@ export default {
             required: true,
             type: Array
         },
+        nativeData: {
+            type: Array
+        },
         fetchMethod: {
             type: String
         },
         responseField: {
             type: String
-        },
-        nativeData: {
-            type: Array
         },
         searchable: {
             type: Boolean,
@@ -305,7 +305,7 @@ export default {
                         // Callback
                         if (typeof item.callback === "function")
                             val = item.callback.call(item, value);
-                        
+
                         // Currency symbol
                         if (typeof item.currency === "string" && item.currency !== '')
                             val = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;
@@ -319,7 +319,7 @@ export default {
                             val = val.charAt(0).toUpperCase() + val.slice(1);
 
                         // Ignore zero or empty
-                        if ((val == null || val == 0 || val == '') && typeof item.callback === "undefined")
+                        if (val == null || val == 0 || val == '')
                             val = '-';
 
                         rowData[item.field] = val;
@@ -451,18 +451,16 @@ export default {
             debounceSearchQuery: null
         }
     },
+    mounted(){        
+        // Init Data
+        if(typeof this.nativeData === "undefined" || this.nativeData === null || Object.values(this.nativeData).length > 0)
+            this.loadData();
+    },
     created() {
         // Init debounce instance
         this.debounceSearchQuery = _.debounce(function(){
             this.isTyping = false;
         }, 1000);
-
-        // Load data via native data
-        this.loadData();
-    },
-    destroyed() {
-        // if (this.es !== null)
-        //     this.es.close();
     }
 }
 </script>

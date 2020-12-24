@@ -184,10 +184,7 @@ export default {
                     field: 'email'
                 }, {
                     name: 'account type',
-                    field: 'is_superadmin',
-                    callback: function (row) {
-                        return row.is_superadmin && row.role == null ? 'Super Admin' : row.role.name.toUpperCase();
-                    }
+                    field: 'role_name'
                 },
                 {
                     name: 'brands',
@@ -207,12 +204,11 @@ export default {
                 }, {
                     name: 'last login',
                     field: 'last_login',
-                    isDate: true,
-                    format: 'DD-MMMM-YYYY HH:mm'
+                    isTimeAgo: true
                 }, {
                     name: 'Joined at',
                     field: 'created_at',
-                    isDate: true
+                    isTimeAgo: true
                 },
             ],
             showAddUserModal: false,

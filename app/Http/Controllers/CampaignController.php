@@ -7,6 +7,7 @@ use App\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\CampaignDTResource;
 use App\Repositories\CampaignRepository;
 use App\Http\Requests\UpdateCampaignRequest;
 use Symfony\Component\HttpFoundation\Response;
@@ -31,14 +32,19 @@ class CampaignController extends Controller
      */
     public function byBrand(Brand $brand)
     {
+        // Check abilities
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("Campaigns fetched successfully.", 
-            $brand->campaigns()
-                ->with(['user', 'brand'])
-                ->withCount('trackers')
-                ->orderBy('created_at', 'desc')
-                ->get()
+        // Load campaigns
+        $campaigns = Campaign::with(['analytics'])
+                        ->withCount('trackers')
+                        ->where('brand_id', $brand->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return response()->success(
+            "Campaigns fetched successfully.", 
+            CampaignDTResource::collection($campaigns)
         );
     }
 
@@ -54,16 +60,16 @@ class CampaignController extends Controller
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Search by name
-        $byName = $brand->campaigns()
-                ->with(['user', 'brand'])
+        $byName = Campaign::with('analytics')
                 ->withCount('trackers')
+                ->where('brand_id', $brand->id)
                 ->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
                 ->get();
 
         // By influencer name or username
-        $byInfluencer = $brand->campaigns()
-                ->with(['user', 'brand'])
+        $byInfluencer = Campaign::with('aalytics')
                 ->withCount('trackers')
+                ->where('brand_id', $brand->id)
                 ->get()
                 ->filter(function($item) use($query){
                     $found = $item->influencers->filter(function($item) use($query){
@@ -78,9 +84,9 @@ class CampaignController extends Controller
 
         $result = $byName->merge($byInfluencer);
 
-        return response()->success("Campaigns filtered successfully.", 
-            $result->unique()
-                ->sortByDesc('created_at')
+        return response()->success(
+            "Campaigns filtered successfully.", 
+            CampaignDTResource::collection($result->unique()->sortByDesc('created_at'))
         );
     }
 
@@ -165,9 +171,12 @@ class CampaignController extends Controller
      */
     public function analytics(Campaign $campaign)
     {
+        // Load analytics 
+        $analytics = $campaign->load(['trackers', 'analytics']);
+
         return response()->success(
             "Campaign fetched successfully.",
-            $campaign->load('trackers')
+            $analytics->toArray()
         );
     }
 

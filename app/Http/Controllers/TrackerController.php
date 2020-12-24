@@ -15,6 +15,7 @@ use App\Jobs\ScrapURLContentJob;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\TrackerDTResource;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
@@ -41,7 +42,7 @@ class TrackerController extends Controller
         abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Load trackers
-        $trackers = Tracker::with(['campaign', 'analytics', 'influencers'])
+        $trackers = Tracker::with(['campaign', 'analytics', 'influencers', 'shortlink'])
                         ->whereHas('campaign', function($camp) use($brand){
                             $camp->where('brand_id', $brand->id);
                         })
@@ -50,7 +51,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            $trackers->toArray()
+            TrackerDTResource::collection($trackers)
         );
     }
     
@@ -64,7 +65,7 @@ class TrackerController extends Controller
         abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Get trackers
-        $trackers = Tracker::with(['campaign', 'analytics', 'influencers'])
+        $trackers = Tracker::with(['campaign', 'analytics', 'influencers', 'shortlink'])
                         ->whereHas('campaign', function($camp) use($brand, $campaign){
                             $camp->where('brand_id', $brand->id)
                                 ->where('id', $campaign->id);
@@ -74,7 +75,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Trackers fetched successfully.",
-            $trackers->toArray()
+            TrackerDTResource::collection($trackers)
         );
     }
 
@@ -89,19 +90,21 @@ class TrackerController extends Controller
     {
         abort_if(Gate::denies('list_tracker') && Gate::denies('view', $brand), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
+        // Search for trackers
+        $trackers = Tracker::with(['user', 'campaign', 'shortlink', 'influencers'])
+                            ->whereHas('campaign', function($camp) use($brand){
+                                $camp->where('brand_id', $brand->id);
+                            })
+                            ->whereHas('influencers', function($inf) use($query){
+                                $inf->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
+                                    ->orWhereRaw('LOWER(`username`) LIKE ?', ['%' . trim(strtolower($query)) . '%']);
+                            })
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
         return response()->success(
             "Trackers filtered successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])
-                    ->whereHas('campaign', function($camp) use($brand){
-                        $camp->where('brand_id', $brand->id);
-                    })
-                    ->whereHas('influencers', function($inf) use($query){
-                        $inf->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
-                            ->orWhereRaw('LOWER(`username`) LIKE ?', ['%' . trim(strtolower($query)) . '%']);
-                    })
-                    ->orderBy('created_at', 'desc')
-                    ->get()
-                    // ->paginate(Application::DEFAULT_PAGINATION)
+            TrackerDTResource::collection($trackers)
         );
     }
 

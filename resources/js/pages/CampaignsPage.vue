@@ -198,7 +198,8 @@ export default {
                 },
                 {
                     name: "Number of trackers",
-                    field: "all_trackers_count"
+                    field: "trackers_count",
+                    isNbr: true
                 },
                 {
                     name: "Influencers",

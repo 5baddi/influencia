@@ -128,12 +128,12 @@ export default {
             this.showAddTrackerModal = false;
         },
         copyShortlink(tracker) {
-            if (typeof tracker.shortlink.fulllink === "undefined")
+            if (typeof tracker.fulllink === "undefined")
                 this.showError();
 
             let input = document.createElement("textarea");
             document.body.appendChild(input);
-            input.value = tracker.shortlink.fulllink;
+            input.value = tracker.fulllink;
             input.select();
             document.execCommand("copy");
             document.body.removeChild(input);
@@ -243,9 +243,9 @@ export default {
                 },
                 {
                     name: "Campaign",
-                    field: "campaign_id",
+                    field: "campaign_name",
                     callback: function (row) {
-                        return (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1));
+                        return (row.campaign_name.charAt(0).toUpperCase() + row.campaign_name.slice(1));
                     }
                 },
                 {
@@ -284,18 +284,12 @@ export default {
                 },
                 {
                     name: "Activated communities",
-                    field: "analytics",
-                    callback: function (row) {
-                        return typeof row.analytics.communities !== "undefined" ? row.analytics.communities : 0;
-                    },
+                    field: "communities",
                     isNbr: true
                 },
                 {
                     name: "Last update",
                     field: "updated_at",
-                    callback: function (row) {
-                        return typeof row.analytics.updated_at !== "undefined" ? row.analytics.updated_at : row.updated_at;
-                    },
                     isTimeAgo: true
                 }
             ]

@@ -6,10 +6,11 @@ use App\User;
 use App\Brand;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\UserDTResource;
 use App\Http\Requests\CreateUserRequest;
-use App\Http\Requests\ResetUserPasswordRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\ResetUserPasswordRequest;
 
 class UserController extends Controller
 {
@@ -165,7 +166,10 @@ class UserController extends Controller
     {
         abort_if(Gate::denies('viewAny', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("Users fetched successfully.", User::with(['selectedBrand', 'brands', 'role'])->get());
+        return response()->success(
+            "Users fetched successfully.", 
+            UserDTResource::collection(User::with(['brands', 'role'])->get())
+        );
     }
 
     /**

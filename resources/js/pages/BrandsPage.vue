@@ -190,8 +190,7 @@ export default {
             }, {
                 name: "Created at",
                 field: "created_at",
-                isData: true,
-                format: "DD/MM/YYYY"
+                isTimeAgo: true,
             }]
         };
     }

@@ -94,28 +94,28 @@ class UpdateAnalyticsCommand extends Command
                     ];
 
                     // Calculate analytics
-                    foreach($campaign->trackers->load('analytics') as $trackerAnalytics){
-                        if(is_null($trackerAnalytics->analytics))
+                    foreach($campaign->trackers->load('analytics') as $tracker){
+                        if($tracker->queued !== 'finished' || is_null($tracker->analytics))
                             continue;
 
-                        $analytics['engagements'] += $trackerAnalytics->analytics->engagements;
-                        $analytics['communities'] += $trackerAnalytics->analytics->communities;
-                        $analytics['impressions'] += $trackerAnalytics->analytics->impressions;
-                        $analytics['comments_count'] += $trackerAnalytics->analytics->comments;
-                        $analytics['video_views'] += $trackerAnalytics->analytics->video_views;
-                        $analytics['sentiments_positive'] += $trackerAnalytics->analytics->comments_positive;
-                        $analytics['sentiments_neutral'] += $trackerAnalytics->analytics->comments_neutral;
-                        $analytics['sentiments_negative'] += $trackerAnalytics->analytics->comments_negative;
-                        $analytics['posts_count'] += $trackerAnalytics->analytics->posts_count;
+                        $analytics['engagements'] += $tracker->analytics->engagements;
+                        $analytics['communities'] += $tracker->analytics->communities;
+                        $analytics['impressions'] += $tracker->analytics->impressions;
+                        $analytics['comments_count'] += $tracker->analytics->comments;
+                        $analytics['video_views'] += $tracker->analytics->video_views;
+                        $analytics['sentiments_positive'] += $tracker->analytics->comments_positive;
+                        $analytics['sentiments_neutral'] += $tracker->analytics->comments_neutral;
+                        $analytics['sentiments_negative'] += $tracker->analytics->comments_negative;
+                        $analytics['posts_count'] += $tracker->analytics->posts_count;
 
                         // Engagement rate
                         if($analytics['impressions'] > 0)
-                            $analytics['engagement_rate'] += $trackerAnalytics->analytics->engagement_rate;
+                            $analytics['engagement_rate'] += $tracker->analytics->engagement_rate;
 
                         // Emojis
-                        if(isset($trackerAnalytics->analytics->top_emojis['top'], $trackerAnalytics->analytics->top_emojis['all'])){
-                            $analytics['top_emojis']['top'] = array_merge($analytics['top_emojis']['top'], $trackerAnalytics->analytics->top_emojis['top']);
-                            $analytics['top_emojis']['all'] += $trackerAnalytics->analytics->top_emojis['all'];
+                        if(isset($tracker->analytics->top_emojis['top'], $tracker->analytics->top_emojis['all'])){
+                            $analytics['top_emojis']['top'] = array_merge($analytics['top_emojis']['top'], $tracker->analytics->top_emojis['top']);
+                            $analytics['top_emojis']['all'] += $tracker->analytics->top_emojis['all'];
                         }
                     }
 
@@ -143,7 +143,7 @@ class UpdateAnalyticsCommand extends Command
      */
     private function trackersAnalytics()
     {
-        Tracker::with('posts')->orderBy('created_at', 'desc')->chunk(50, function($trackers){
+        Tracker::with('posts')->where('queued', 'finished')->orderBy('created_at', 'desc')->chunk(50, function($trackers){
             $trackers->each(function($tracker){
                 // Get exists analytics for today
                 $existsAnalytics = TrackerAnalytics::where('tracker_id', $tracker->id)->whereDate('created_at', Carbon::today())->first();

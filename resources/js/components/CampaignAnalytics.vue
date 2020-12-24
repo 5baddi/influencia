@@ -9,78 +9,78 @@
         </li>
     </ul>
     <div class="cards statistics">
-        <div class="card" v-if="campaign.communities > 0">
+        <div class="card" v-if="campaign.analytics.communities > 0">
             <div class="title">
                 <i class="fas fa-users egg-blue"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.communities | formatedNbr }}</h4>
+                    <h4>{{ campaign.analytics.communities | formatedNbr }}</h4>
                     <span>Total size of activated communities</span>
                 </div>
             </div>
             <canvas id="communities-chart"></canvas>
-            <span>Organic communities {{ String(nbr().abbreviate(campaign.organic_communities)).toUpperCase() }} ({{ campaign.communities > 0 ? ((campaign.organic_communities / campaign.communities) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic communities {{ String(nbr().abbreviate(campaign.organic_communities)).toUpperCase() }} ({{ campaign.analytics.communities > 0 ? ((campaign.organic_communities / campaign.analytics.communities) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.impressions > 0">
+        <div class="card" v-if="campaign.analytics.impressions > 0">
             <div class="title">
                 <i class="fas fa-bullhorn purple"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.impressions | formatedNbr }}</h4>
+                    <h4>{{ campaign.analytics.impressions | formatedNbr }}</h4>
                     <span>Total estimated impressions</span>
                 </div>
             </div>
             <canvas id="impressions-chart"></canvas>
-            <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.analytics.impressions > 0 ? ((campaign.organic_impressions / campaign.analytics.impressions) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.views > 0">
+        <div class="card" v-if="campaign.analytics.views > 0">
             <div class="title">
                 <i class="far fa-eye green"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.views | formatedNbr }}</h4>
+                    <h4>{{ campaign.analytics.views | formatedNbr }}</h4>
                     <span>Total videos views</span>
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_views)).toUpperCase() }} ({{ campaign.views > 0 ? ((campaign.organic_views / campaign.views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_views)).toUpperCase() }} ({{ campaign.analytics.views > 0 ? ((campaign.organic_views / campaign.analytics.views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.engagements > 0">
+        <div class="card" v-if="campaign.analytics.engagements > 0">
             <div class="title">
                 <i class="fas fa-thumbs-up blue"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.engagements | formatedNbr }}</h4>
+                    <h4>{{ campaign.analytics.engagements | formatedNbr }}</h4>
                     <span>Total engagements</span>
                 </div>
             </div>
             <canvas id="engagements-chart"></canvas>
-            <span>Organic engagements {{ String(nbr().abbreviate(campaign.organic_engagements)).toUpperCase() }} ({{ campaign.engagements > 0 ? ((campaign.organic_engagements / campaign.engagements) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic engagements {{ String(nbr().abbreviate(campaign.organic_engagements)).toUpperCase() }} ({{ campaign.analytics.engagements > 0 ? ((campaign.organic_engagements / campaign.analytics.engagements) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.posts_count > 0">
+        <div class="card" v-if="campaign.analytics.posts_count > 0">
             <div class="title">
                 <i class="fas fa-hashtag yellow"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.posts_count | formatedNbr }}</h4>
+                    <h4>{{ campaign.analytics.posts_count | formatedNbr }}</h4>
                     <span>Total number of posts</span>
                 </div>
             </div>
             <canvas id="posts-chart"></canvas>
-            <span>Organic posts {{ String(nbr().abbreviate(campaign.organic_posts)).toUpperCase() }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic posts {{ String(nbr().abbreviate(campaign.organic_posts)).toUpperCase() }} ({{ campaign.analytics.posts_count > 0 ? ((campaign.organic_posts / campaign.analytics.posts_count) * 100).toFixed(2) : 0  }}%)</span>
         </div>
     </div>
 
     <div class="cards sentiments">
-        <div class="card" v-if="campaign.comments_count > 0">
+        <div class="card" v-if="campaign.analytics.comments_count > 0">
             <h5>Comments sentiment</h5>
             <canvas id="sentiments-chart"></canvas>
-            <span>Based on {{ campaign.comments_count | formatedNbr }} comments</span>
+            <span>Based on {{ campaign.analytics.comments_count | formatedNbr }} comments</span>
         </div>
-        <div class="card emojis" v-if="campaign.top_three_emojis">
-            <h5>Top {{ campaign.top_three_emojis.top && Object.values(campaign.top_three_emojis.top).length > 1 ? Object.values(campaign.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
+        <div class="card emojis" v-if="campaign.analytics.top_emojis">
+            <h5>Top {{ campaign.analytics.top_emojis.top && Object.values(campaign.analytics.top_emojis.top).length > 1 ? Object.values(campaign.analytics.top_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
-                <li v-for="(emoji, index) in campaign.top_three_emojis.top" :key="index">
+                <li v-for="(emoji, index) in campaign.analytics.top_emojis.top" :key="index">
                     {{ emoji }}
-                    <span>{{ ((index / (campaign.top_three_emojis.all ? campaign.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((index / (campaign.analytics.top_emojis.all ? campaign.analytics.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ campaign.top_three_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ campaign.analytics.top_emojis.all | formatedNbr }} emojis</span>
         </div>
     </div>
 
@@ -106,9 +106,9 @@
         </DataTable>
     </div>
 
-    <div class="posts-section" v-if="campaign && campaign.posts_count > 0">
+    <div class="posts-section" v-if="campaign && campaign.analytics.posts_count > 0">
         <h4>Posts</h4>
-        <p>There are {{ campaign && campaign.posts_count ? campaign.posts_count : 0 }} posts for this campaign.</p>
+        <p>There are {{ campaign && campaign.analytics.posts_count ? campaign.analytics.posts_count : 0 }} posts for this campaign.</p>
         <div class="campaign-posts">
             <a v-for="post in campaign.tracker_posts" :key="post.id" @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" :href="post.link" target="_blank">
                 <img :src="post.thumbnail_url" loading="lazy" />
@@ -167,13 +167,13 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
+        if (typeof this.campaign.analytics.sentiments_positive === 'number' && typeof this.campaign.analytics.sentiments_neutral === 'number' && typeof this.campaign.analytics.sentiments_negative === 'number') {
             this.createDoughtnutChart('sentiments-chart', {
                 datasets: [{
                     data: [
-                        this.campaign.sentiments_positive.toFixed(2),
-                        this.campaign.sentiments_neutral.toFixed(2),
-                        this.campaign.sentiments_negative.toFixed(2)
+                        this.campaign.analytics.sentiments_positive.toFixed(2),
+                        this.campaign.analytics.sentiments_neutral.toFixed(2),
+                        this.campaign.analytics.sentiments_negative.toFixed(2)
                     ],
                     backgroundColor: [
                         "#AFD75C",
@@ -182,18 +182,18 @@ export default {
                     ],
                 }],
                 labels: [
-                    'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-                    'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-                    'Negative ' + this.campaign.sentiments_negative.toFixed(2),
+                    'Positive ' + this.campaign.analytics.sentiments_positive.toFixed(2),
+                    'Neutral ' + this.campaign.analytics.sentiments_neutral.toFixed(2),
+                    'Negative ' + this.campaign.analytics.sentiments_negative.toFixed(2),
                 ]
             });
         }
 
         // Communities
-        if (this.campaign.communities && this.campaign.communities > 0) {
+        if (this.campaign.analytics.communities && this.campaign.analytics.communities > 0) {
             this.createDoughtnutChart('communities-chart', {
                 datasets: [{
-                    data: [this.campaign.communities.toFixed(2)],
+                    data: [this.campaign.analytics.communities.toFixed(2)],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -201,10 +201,10 @@ export default {
         }
 
         // Impressions
-        if (this.campaign.impressions && this.campaign.impressions > 0) {
+        if (this.campaign.analytics.impressions && this.campaign.analytics.impressions > 0) {
             this.createDoughtnutChart('impressions-chart', {
                 datasets: [{
-                    data: [this.campaign.impressions.toFixed(2)],
+                    data: [this.campaign.analytics.impressions.toFixed(2)],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -212,10 +212,10 @@ export default {
         }
 
         // Videos views
-        if (this.campaign.views && this.campaign.views > 0) {
+        if (this.campaign.analytics.views && this.campaign.analytics.views > 0) {
             this.createDoughtnutChart('views-chart', {
                 datasets: [{
-                    data: [this.campaign.views],
+                    data: [this.campaign.analytics.views],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -223,10 +223,10 @@ export default {
         }
 
         // Engagements
-        if (this.campaign.engagements && this.campaign.engagements > 0) {
+        if (this.campaign.analytics.engagements && this.campaign.analytics.engagements > 0) {
             this.createDoughtnutChart('engagements-chart', {
                 datasets: [{
-                    data: [this.campaign.engagements.toFixed(2)],
+                    data: [this.campaign.analytics.engagements.toFixed(2)],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -234,11 +234,11 @@ export default {
         }
 
         // Posts
-        if (this.campaign.posts_count && this.campaign.posts_count > 0) {
-            let postsAndStoriesLabel = 'Instagram: ' + (this.campaign.posts_count ? this.campaign.posts_count : 0) + ' including ' + (this.campaign.stories_count ? this.campaign.stories_count : 0) + ' stories';
+        if (this.campaign.analytics.posts_count && this.campaign.analytics.posts_count > 0) {
+            let postsAndStoriesLabel = 'Instagram: ' + (this.campaign.analytics.posts_count ? this.campaign.analytics.posts_count : 0) + ' including ' + (this.campaign.analytics.stories_count ? this.campaign.analytics.stories_count : 0) + ' stories';
             this.createDoughtnutChart('posts-chart', {
                 datasets: [{
-                    data: [this.campaign.posts_count.toFixed(2)],
+                    data: [this.campaign.analytics.posts_count.toFixed(2)],
                     backgroundColor: ['#d93176']
                 }],
                 labels: [postsAndStoriesLabel]
@@ -358,7 +358,7 @@ export default {
         }, {
             name: "Created at",
             field: "created_at",
-            isDate: true
+            isTimeAgo: true
         }, ],
         attrActive: null,
         sentimentData: {
