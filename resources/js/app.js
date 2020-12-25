@@ -59,55 +59,11 @@ const app = new Vue({
                         ability.update(response.data.content);
                     }
                 }).catch(error => {});
-
-                // Refresh user and active brand
-                // if(typeof this.$store.getters.AuthenticatedUser === "object" && this.$store.getters.AuthenticatedUser !== null){
-                //     // Refresh User
-                //     this.$store.dispatch("fetchUser", this.$store.getters.AuthenticatedUser.uuid)
-                //         .catch(error => {});
-                // }
             },
             immediate: true
         }
     },
     created() {
         setupInterceptors(store);
-
-        api.interceptors.response.use(response => {
-                return Promise.resolve(response);
-            }, error => {
-                // if(error.response.status === 401){
-                //     this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
-                // }
-                if(error.response.status === 429){
-                    console.log("Too many requests!");
-                }
-
-                return Promise.reject(error);
-            }
-        );
-
-        this.$router.beforeEach((to, from, next) => {
-            let ls = new SecureLS();
-            const loggedIn = this.$store.getters.isLogged && ls.get('user');
-
-            // let vm = this;
-            // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){
-            //     next('/')
-            // }
-
-            if(to.matched.some(record => record.meta.auth) && !loggedIn){
-                next('/login');
-            }
-            // Ensure load data
-            // switch(to.name){
-            //     case 'trackers':
-            //         console.log("Loading trackers");
-            //         this.$store.dispatch("fetchTrackers").catch(error => {});
-            //     break;
-            // }
-
-            next();
-        });
     }
 });

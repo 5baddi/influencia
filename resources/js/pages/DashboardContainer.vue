@@ -63,7 +63,7 @@ import {
     mapGetters,
     mapState
 } from "vuex";
-import Loader from '../components/Loader';
+import Loader from '../components/partials/Loader';
 import SecureLS from "secure-ls";
 export default {
     components: {

@@ -277,9 +277,10 @@ export default {
                             case "instagram":
                                 return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
                                 break;
+                            case null:
+                                return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
+                                break;
                         }
-
-                        return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
                     }
                 },
                 {
