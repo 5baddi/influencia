@@ -7,7 +7,7 @@ use App\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\BrandDTResource;
+use App\Http\Resources\DataTable\BrandDTResource;
 use App\Http\Requests\StoreBrandRequest;
 use App\Http\Requests\UpdateBrandRequest;
 use Symfony\Component\HttpFoundation\Response;

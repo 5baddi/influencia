@@ -65,6 +65,7 @@ class InfluencerPost extends Model
         'comments_emojis'        =>  'json',
         'comments_hashtags'      =>  'json',
         'location_json'          =>  'json',
+        'published_at'           =>  'datetime:Y-m-d H:i',
     ];
 
     /**

@@ -3,7 +3,7 @@
     <ul v-show="typeof tracker.influencers !== 'undefined' && tracker.influencers.length > 0" class="influencers-avatars">
         <h4>influencers</h4>
         <li v-for="influencer in tracker.influencers" :key="influencer.id">
-            <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.username">
+            <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.name ?  influencer.name : influencer.username">
                 <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
@@ -31,16 +31,16 @@
             <canvas id="impressions-chart"></canvas>
             <span>Organic impressions {{ String(nbr().abbreviate(tracker.organic_impressions)).toUpperCase() }} ({{ tracker.impressions > 0 ? ((tracker.organic_impressions / tracker.impressions) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="tracker.views > 0">
+        <div class="card" v-if="tracker.video_views > 0">
             <div class="title">
                 <i class="far fa-eye green"></i>
                 <div class="numbers">
-                    <h4>{{ tracker.views | formatedNbr }}</h4>
+                    <h4>{{ tracker.video_views | formatedNbr }}</h4>
                     <span>Total videos views</span>
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_views)).toUpperCase() }} ({{ tracker.views > 0 ? ((tracker.organic_views / tracker.views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_views)).toUpperCase() }} ({{ tracker.video_views > 0 ? ((tracker.organic_views / tracker.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="tracker.engagements > 0">
             <div class="title">
@@ -72,15 +72,15 @@
             <canvas id="sentiments-chart"></canvas>
             <span>Based on {{ tracker.comments_count | formatedNbr }} comments</span>
         </div>
-        <div class="card emojis" v-if="tracker.top_three_emojis && tracker.top_three_emojis.top && Object.values(tracker.top_three_emojis.top).length > 0">
-            <h5>Top {{ tracker.top_three_emojis.top && Object.values(tracker.top_three_emojis.top).length > 1 ? Object.values(tracker.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
+        <div class="card emojis" v-if="tracker.top_emojis && typeof tracker.top_emojis.top !== 'undefined' && Object.values(tracker.top_emojis.top).length > 0">
+            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
-                <li v-for="(emoji, index) in tracker.top_three_emojis.top" :key="index">
+                <li v-for="(emoji, index) in tracker.top_emojis.top" :key="index">
                     {{ emoji }}
-                    <span>{{ ((index / (tracker.top_three_emojis.all ? tracker.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((index / (tracker.top_emojis.all ? tracker.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ tracker.top_three_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ tracker.top_emojis.all | formatedNbr }} emojis</span>
         </div>
     </div>
 
@@ -91,7 +91,7 @@
 
     <div class="by-instagram-posts" v-if="tracker.platform === 'instagram'">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.posts" />
+        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.instagram_posts" />
     </div>
 
     <div class="posts-section" v-if="tracker && tracker.posts_count > 0">
@@ -188,10 +188,10 @@ export default {
             }
 
             // Videos views
-            if (this.tracker.views && this.tracker.views > 0) {
+            if (this.tracker.video_views && this.tracker.video_views > 0) {
                 this.createDoughtnutChart('views-chart', {
                     datasets: [{
-                        data: [this.tracker.views],
+                        data: [this.tracker.video_views],
                         backgroundColor: ['#d93176']
                     }],
                     labels: ['Instagram']
@@ -225,7 +225,7 @@ export default {
     data: () => ({
         influencersColumns: [{
             name: 'Influencer',
-            field: 'id',
+            field: 'uuid',
             callback: function (row) {
                 return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
             }
@@ -248,7 +248,7 @@ export default {
         }],
         instaPostsColumns: [{
                 name: 'Influencer',
-                field: 'influencer_id',
+                field: 'influencer',
                 callback: function (row) {
                     return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
                 }
@@ -309,9 +309,7 @@ export default {
                 name: 'Sequence impressions'
             }, {
                 name: 'Posted at',
-                field: 'published_at',
-                isDate: true,
-                format: 'DD/MM/YYYY'
+                field: 'published_at'
             }, {
                 name: 'Earned Media Value',
                 field: 'earned_media_value',

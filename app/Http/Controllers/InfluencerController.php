@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateInfluencerRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\DataTable\InfluencerDTResource;
 
 class InfluencerController extends Controller
 {
@@ -22,8 +23,12 @@ class InfluencerController extends Controller
      */
     public function index()
     {
-        return response()->success("Influencers fetched successfully.", 
-            Influencer::withCount(['posts', 'trackers'])->get()
+        // Load influencers
+        $influencers = Influencer::withCount(['posts', 'trackers'])->get();
+
+        return response()->success(
+            "Influencers fetched successfully.", 
+            InfluencerDTResource::collection($influencers)
         );
     }
 

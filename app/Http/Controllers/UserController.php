@@ -6,7 +6,7 @@ use App\User;
 use App\Brand;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\UserDTResource;
+use App\Http\Resources\DataTable\UserDTResource;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Symfony\Component\HttpFoundation\Response;

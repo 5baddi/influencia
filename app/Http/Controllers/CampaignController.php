@@ -7,7 +7,7 @@ use App\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\CampaignDTResource;
+use App\Http\Resources\DataTable\CampaignDTResource;
 use App\Repositories\CampaignRepository;
 use App\Http\Requests\UpdateCampaignRequest;
 use Symfony\Component\HttpFoundation\Response;

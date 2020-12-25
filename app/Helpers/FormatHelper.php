@@ -86,4 +86,18 @@ class FormatHelper
         
         return isset($matches[1]) ? $matches[1] : [];
     }
+
+    /**
+     * Convert emoji to Unicode
+     *
+     * @param string $emoji
+     * @return string
+     */
+    public static function emojiUnicode($emoji) 
+    {
+        $emoji = mb_convert_encoding($emoji, 'UTF-32', 'UTF-8');
+        $unicode = strtoupper(preg_replace("/^[0]+/","U+",bin2hex($emoji)));
+        
+        return $unicode;
+    }
 }

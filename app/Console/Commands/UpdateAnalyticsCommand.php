@@ -225,8 +225,16 @@ class UpdateAnalyticsCommand extends Command
 
         foreach($posts as $post){
             $emojis = json_decode(json_encode($post->comments_emojis), true);
-            if(is_null($emojis) || empty($emojis) || $emojis === '')
+            // Ignore if no result
+            if(is_null($emojis) || empty($emojis) || $emojis == '')
                 continue;
+
+            // Ignore empty emojis
+            array_walk($emojis, function($value, $key){
+                $value = trim($value);
+                if(empty($value) || is_null($value) || $value == '')
+                    unset($emojis[$key]);
+            });
 
             $topThreeEmojis = array_merge($topThreeEmojis, $emojis);
             $emojisCount += sizeof($emojis);

@@ -15,10 +15,11 @@ use App\Jobs\ScrapURLContentJob;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\TrackerDTResource;
+use App\Http\Resources\DataTable\TrackerDTResource;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
+use App\Http\Resources\TrackerAnalyticsResource;
 
 class TrackerController extends Controller
 {
@@ -116,9 +117,12 @@ class TrackerController extends Controller
      */
     public function analytics(Tracker $tracker)
     {
+        // Load tracker analytics
+        $analytics = Tracker::with(['posts', 'medias', 'campaign', 'shortlink', 'influencers'])->findOrFail($tracker->id);
+        
         return response()->success(
             "Tracker fetched successfully.",
-            Tracker::with(['posts', 'user', 'medias', 'campaign', 'shortlink', 'influencers'])->find($tracker->id)
+            new TrackerAnalyticsResource($analytics)
         );
     }
 
