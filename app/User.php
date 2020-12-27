@@ -26,7 +26,7 @@ class User extends Authenticatable
         'last_login',
         'selected_brand_id',
         'is_superadmin',
-        'banned'
+        'banned',
     ];
 
     /**

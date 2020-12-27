@@ -1,8 +1,8 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[16],{
 
-/***/ "./resources/js/components/partials/error.vue":
+/***/ "./resources/js/components/partials/Error.vue":
 /*!****************************************************!*\
-  !*** ./resources/js/components/partials/error.vue ***!
+  !*** ./resources/js/components/partials/Error.vue ***!
   \****************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -27,7 +27,7 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
   
 )
 
-component.options.__file = "resources/js/components/partials/error.vue"
+component.options.__file = "resources/js/components/partials/Error.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ })

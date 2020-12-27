@@ -270,16 +270,16 @@ export default {
                     field: "platform",
                     sortable: false,
                     callback: function (row) {
+                        if(row.platform === null)
+                            return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
+
                         switch (row.platform) {
                             case "youtube":
                                 return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
-                                break;
+                            break;
                             case "instagram":
                                 return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
-                                break;
-                            case null:
-                                return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
-                                break;
+                            break;
                         }
                     }
                 },

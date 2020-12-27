@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Format;
 use Carbon\Carbon;
 use App\Influencer;
 use App\InfluencerPost;
@@ -144,6 +145,9 @@ class InstagramCommand extends Command
                 $this->info("Start scraping account @" . $influencer->username);
                 $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
+                // Store influencer picture locally
+                $accountDetails['pic_url'] = Format::storePicture($accountDetails['pic_url']);
+
                 // Update influencer
                 $influencer->update($accountDetails);
                 $this->info("Successfully updated influencer @" . $influencer->username);
@@ -157,26 +161,18 @@ class InstagramCommand extends Command
                     // TODO: remove deleted media
 
                     // Update comments if post linked to a tracker
-                    $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $influencerMedia->id)->count();
+                    $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $post->id)->count();
                     if($mediaTrackersCount > 0){
+                        // Analyze media comments
                         $sentiments = $this->instagramScraper->analyzeMedia($media);
                         $media = array_merge($media, $sentiments);
+
+                        // Store media thumbnail locally
+                        $media['thumbnail_url'] = Format::storePicture($media['thumbnail_url'], "influencers/instagram/thumbnails/");
                     }
 
                     // Update local media
-                    $files = $media['files'];
-                    unset($media['files']);
                     $post->update($media);
-
-                    // Update media assets
-                    array_walk($files, function($file) use ($post){
-                        if(empty($file) || is_null($file) || !is_array($file))
-                            return;
-            
-                        // Push added media record
-                        $file = array_merge($file, ['post_id' =>  $post->id]);
-                        InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-                    });
 
                     $this->info("Post {$post->short_code} successfully updated.");
                 }

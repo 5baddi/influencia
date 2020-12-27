@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\DataTable\InstagramMediaDTResource;
 
 class TrackerAnalyticsResource extends JsonResource
 {
@@ -22,7 +23,7 @@ class TrackerAnalyticsResource extends JsonResource
             'campaign_name' =>  $this->campaign->name,
             'fulllink'      =>  isset($this->shortlink) ? $this->shortlink->fulllink : null,
             'influencers'   =>  $this->influencers->map(function($influencer){
-                return $influencer->only(['uuid', 'name', 'username', 'pic_url', 'posts', 'estimated_communities', 'estimated_impressions', 'earned_media_value']);
+                return $influencer->only(['uuid', 'name', 'username', 'pic_url', 'medias', 'estimated_communities', 'estimated_impressions', 'earned_media_value']);
             }),
             'type'          =>  $this->type,
             'platform'      =>  $this->platform ?? null,
@@ -38,13 +39,7 @@ class TrackerAnalyticsResource extends JsonResource
             'sentiments_positive'   =>  $this->analytics->sentiments_positive ?? 0.0,
             'sentiments_neutral'    =>  $this->analytics->sentiments_neutral ?? 0.0,
             'sentiments_negative'   =>  $this->analytics->sentiments_negative ?? 0.0,
-            'instagram_posts'       =>  $this->platform !== 'instagram' ? [] : $this->posts->map(function($instaMedia){
-                return $instaMedia->only([
-                    'link', 'caption', 'type', 'comments', 'influencer.pic_url', 'influencer.name', 'influencer.username',
-                    'activated_communities', 'estimated_impressions', 'engagements', 'organic_impressions', 'video_views',
-                    'likes', 'published_at', 'earned_media_value'
-                ]);
-            }),
+            'instagram_posts'       =>  $this->platform !== 'instagram' ? [] : InstagramMediaDTResource::collection($this->posts),
         ];
     }
 }

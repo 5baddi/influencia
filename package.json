@@ -39,11 +39,14 @@
         "number-abbreviate": "^2.0.0",
         "number-format.js": "^2.0.9",
         "pusher-js": "^7.0.0",
+        "secure-ls": "^1.2.6",
+        "vue-auth-image": "0.0.3",
         "vue-good-table": "^2.21.0",
         "vue-loading-overlay": "^3.4.0",
         "vue-materialize-datatable": "^1.0.4",
         "vue-notifications": "^1.0.2",
         "vue-router": "^3.3.4",
+        "vue-timeago": "^5.1.2",
         "vuex": "^3.5.1",
         "vuex-persistedstate": "^4.0.0-beta.1"
     }

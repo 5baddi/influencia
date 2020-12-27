@@ -4,7 +4,7 @@
         <h4>influencers</h4>
         <li v-for="influencer in tracker.influencers" :key="influencer.id">
             <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.name ?  influencer.name : influencer.username">
-                <img :src="influencer.pic_url" loading="lazy" />
+                <img v-auth-image="'/cdn/' + influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
     </ul>
@@ -84,14 +84,14 @@
         </div>
     </div>
 
-    <div class="by-influencers" v-if="tracker.type === 'post' && tracker.influencers">
+    <div class="datatable-scroll" v-if="tracker.type === 'post' && tracker.influencers">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" />
+        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" cssClasses="table-card" />
     </div>
 
-    <div class="by-instagram-posts" v-if="tracker.platform === 'instagram'">
+    <div class="datatable-scroll" v-if="tracker.platform === 'instagram'">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.instagram_posts" />
+        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.instagram_posts" cssClasses="table-card" />
     </div>
 
     <div class="posts-section" v-if="tracker && tracker.posts_count > 0">
@@ -223,36 +223,62 @@ export default {
         }
     },
     data: () => ({
-        influencersColumns: [{
-            name: 'Influencer',
-            field: 'uuid',
-            callback: function (row) {
-                return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
+        influencersColumns: [
+            {
+                field: 'pic_url',
+                isImage: true,
+                isAvatar: true,
+                sortable: false,
+                callback: function(row){
+                    return '/cdn/' + row.pic_url;
+                }
+            },
+            {
+                name: 'Influencer',
+                field: 'uuid',
+                callback: function (row) {
+                    return row.name ? row.name : row.username;
+                }
+            }, 
+            {
+                name: 'Number of posts',
+                field: 'medias',
+                isNbr: true
+            },
+            {
+                name: 'Size of activated communities',
+                field: 'estimated_communities',
+                isNbr: true
+            }, 
+            {
+                name: 'Estimated impressions',
+                field: 'estimated_impressions',
+                isNbr: true
+            }, 
+            {
+                name: 'Earned Media Value',
+                field: 'earned_media_value',
+                currency: '€'
             }
-        }, {
-            name: 'Number of posts',
-            field: 'posts',
-            isNbr: true
-        }, {
-            name: 'Size of activated communities',
-            field: 'estimated_communities',
-            isNbr: true
-        }, {
-            name: 'Estimated impressions',
-            field: 'estimated_impressions',
-            isNbr: true
-        }, {
-            name: 'Earned Media Value',
-            field: 'earned_media_value',
-            currency: '€'
-        }],
-        instaPostsColumns: [{
+        ],
+        instaPostsColumns: [
+            {
+                field: 'influencer',
+                isImage: true,
+                isAvatar: true,
+                sortable: false,
+                callback: function(row){
+                    return '/cdn/' + row.influencer.pic_url;
+                }
+            },
+            {
                 name: 'Influencer',
                 field: 'influencer',
                 callback: function (row) {
-                    return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+                    return row.influencer.name ? row.influencer.name : row.influencer.username;
                 }
-            }, {
+            }, 
+            {
                 name: 'Post',
                 field: 'link',
                 callback: function (row) {
@@ -261,7 +287,8 @@ export default {
 
                     return '<a href="' + row.link + '" target="_blank">' + row.caption.substr(1, 100) + '...</a>';
                 }
-            }, {
+            }, 
+            {
                 name: 'Media type',
                 field: 'type',
                 capitalize: true
@@ -270,7 +297,8 @@ export default {
                 name: 'Size of activated communities',
                 field: 'activated_communities',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
                 isNbr: true
@@ -279,38 +307,46 @@ export default {
                 name: 'Engagements',
                 field: 'engagements',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Engagements rate (reach)',
                 field: 'engagement_rate',
                 callback: function (row) {
                     return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
                 }
-            }, {
+            }, 
+            {
                 name: 'Likes',
                 field: 'likes',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Views',
                 field: 'video_views',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Comments',
                 field: 'comments',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Impressions (first sequence)'
             }, {
                 name: 'Story sequences'
             }, {
                 name: 'Sequence impressions'
-            }, {
+            }, 
+            {
                 name: 'Posted at',
                 field: 'published_at'
-            }, {
+            }, 
+            {
                 name: 'Earned Media Value',
                 field: 'earned_media_value',
                 currency: '€'

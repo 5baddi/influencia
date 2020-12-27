@@ -16,7 +16,7 @@
                 </th>
             </tr>
             <tr ref="headercolumns">
-                <th v-for="(column, index) in formatedColumns" :key="index">
+                <th v-for="(column, index) in formatedColumns" :key="index" :class="{'is-avatar': column.isAvatar}">
                     {{ (column.name ? column.name : " ") | headerColumn }}
                     <span v-if="column.sortable" @click="sort(column.field, index)">
                         <svg v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
@@ -34,9 +34,10 @@
                 </td>
             </tr>
             <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
-                <td v-for="(col, idx) in formatedColumns" :key="idx">
-                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo" :class="col.class" v-html="obj[col.field]"></div>
-                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                <td v-for="(col, idx) in formatedColumns" :key="idx" :class="{'is-avatar': col.isAvatar}">
+                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage" :class="col.class" v-html="obj[col.field]"></div>
+                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                    <img v-if="typeof obj[col.field] !== 'undefined' && col.isImage" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -184,7 +185,6 @@ table tfoot td>>>button:hover {
 table tbody>>>img {
     max-width: 36px;
     border-radius: 50%;
-    margin-right: 0.2rem;
 }
 
 table tbody>>>a {
@@ -204,6 +204,11 @@ table tbody>>>a {
 .no-data svg {
     margin-right: .2rem;
     color: rgba(0, 0, 0, 0.61);
+}
+
+.is-avatar{
+    width: 36px !important;
+    min-width: 36px !important;
 }
 </style>
 
@@ -301,11 +306,12 @@ export default {
 
                     // Parse data
                     let val = value[item.field];
-                    if (typeof val !== "undefined" && val !== null) {
-                        // Callback
-                        if (typeof item.callback === "function")
-                            val = item.callback.call(item, value);
 
+                    // Callback
+                    if (typeof item.callback === "function")
+                        val = item.callback.call(item, value);
+                        
+                    if (typeof val !== "undefined" && val !== null) {
                         // Currency symbol
                         if (typeof item.currency === "string" && item.currency !== '')
                             val = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;

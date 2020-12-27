@@ -85,10 +85,10 @@ export default {
                     this.showLoginError({
                         message: message
                     });
+                    this.$refs.signInBtn.setAttribute('disabled', false);
                 })
                 .finally(() => {
                     if(typeof this.$refs.signInBtn !== "undefined"){
-                        this.$refs.signInBtn.setAttribute('disabled', false);
                         this.$refs.signInBtn.innerHTML = "login";
                     }
                 });

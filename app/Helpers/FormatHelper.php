@@ -3,6 +3,8 @@
 namespace App\Helpers;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class FormatHelper
 {
@@ -99,5 +101,64 @@ class FormatHelper
         $unicode = strtoupper(preg_replace("/^[0]+/","U+",bin2hex($emoji)));
         
         return $unicode;
+    }
+
+    /**
+     * Store picture locally
+     *
+     * @param string $pictureURL Picture URL
+     * @param string $destPath Destination path
+     * @return string|null
+     */
+    public static function storePicture(string $pictureURL, string $destPath = "influencers/instagram/pictures/") : ?string
+    {
+        if(!empty($pictureURL) && !is_null($pictureURL)){
+            try{
+                // Get picture info
+                $fileDestPath = self::mergePaths($destPath, strtok(basename($pictureURL), '?'));
+                // Store picture to private desc
+                Storage::disk('local')->put($fileDestPath, file_get_contents($pictureURL));
+    
+                // Picture local path
+                return $fileDestPath;
+            }catch(\Exception $exception){
+                // Trace
+                Log::error($exception->getMessage());
+            }
+        }
+
+        return $pictureURL;
+    }
+
+    /**
+     * Merge several parts of URL or filesystem path in one path
+     * 
+     * @param string $path1
+     * @param string $path2
+     */
+    private static function mergePaths($path1, $path2){
+        $paths = func_get_args();
+        $last_key = func_num_args() - 1;
+        array_walk($paths, function(&$val, $key) use ($last_key) {
+            switch ($key) {
+                case 0:
+                    $val = rtrim($val, '/ ');
+                    break;
+                case $last_key:
+                    $val = ltrim($val, '/ ');
+                    break;
+                default:
+                    $val = trim($val, '/ ');
+                    break;
+            }
+        });
+    
+        $first = array_shift($paths);
+        $last = array_pop($paths);
+        $paths = array_filter($paths); // clean empty elements to prevent double slashes
+        array_unshift($paths, $first);
+        $paths[] = $last;
+        
+        return implode('/', $paths);
     }
 }

@@ -21,8 +21,8 @@ import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import jQuery from 'jquery';
 import VueTimeago from 'vue-timeago';
-import SecureLS from "secure-ls";
 import './services/filters';
+import VueAuthImage from 'vue-auth-image';
 
 
 Vue.prototype.$http = api;
@@ -33,6 +33,7 @@ window._ = require('lodash');
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
+Vue.use(VueAuthImage);
 Vue.use(VueTimeago, {
     name: 'Timeago', // Component name, `Timeago` by default
     locale: 'en',
@@ -43,8 +44,8 @@ Vue.component('DataTable', DataTable);
 Vue.component('ConfirmationModal', ConfirmationModal);
 
 // Stylesheet
-import '@fortawesome/fontawesome-free/css/all.css'
-import '@fortawesome/fontawesome-free/js/all.js'
+import '@fortawesome/fontawesome-free/css/all.css';
+import '@fortawesome/fontawesome-free/js/all.js';
 
 const app = new Vue({
     el: '#app',
@@ -52,16 +53,16 @@ const app = new Vue({
     store,
     router,
     watch: {
-        $route: {
-            handler(){
-                api.get("/api/abilities").then(response => {
-                    if(typeof response.data.content !== 'undefined'){
-                        ability.update(response.data.content);
-                    }
-                }).catch(error => {});
-            },
-            immediate: true
-        }
+        // $route: {
+        //     handler(){
+        //         api.get("/api/abilities").then(response => {
+        //             if(typeof response.data.content !== 'undefined'){
+        //                 ability.update(response.data.content);
+        //             }
+        //         }).catch(error => {});
+        //     },
+        //     immediate: true
+        // }
     },
     created() {
         setupInterceptors(store);

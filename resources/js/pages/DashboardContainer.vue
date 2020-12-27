@@ -75,7 +75,7 @@ export default {
         ...mapState("Loader", ["loading"]),
         ...mapGetters(["AuthenticatedUser", "brands"]),
         activeBrand(){
-            if(typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand){
+            if(this.AuthenticatedUser !== null && typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand){
                 return this.AuthenticatedUser.selected_brand;
             }else{
                 return null;
