@@ -277,13 +277,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_InfluencerProfile__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/InfluencerProfile */ "./resources/js/components/InfluencerProfile.vue");
 /* harmony import */ var _components_modals_CreateInfluencerModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/modals/CreateInfluencerModal */ "./resources/js/components/modals/CreateInfluencerModal.vue");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 //
 //
@@ -338,88 +338,36 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
     InfluencerProfile: _components_InfluencerProfile__WEBPACK_IMPORTED_MODULE_0__["default"],
     CreateInfluencerModal: _components_modals_CreateInfluencerModal__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  data: function data() {
-    return {
-      columns: [{
-        field: "pic_url",
-        callback: function callback(row) {
-          return '<img src="' + row.pic_url + '"/>';
-        },
-        sortable: false
-      }, {
-        name: "Full name",
-        field: "name",
-        callback: function callback(row) {
-          var $html = '';
-          if (row.platform === "instagram") $html = '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';else if (row.platform === "youtube") $html = '<a href="https://www.youtube.com/channel/' + row.account_id + '" target="_blank">' + row.name + '</a>';
-          return $html;
-        }
-      }, {
-        name: "Followers",
-        field: "followers",
-        isNbr: true
-      }, {
-        name: "Media",
-        field: "medias",
-        isNbr: true
-      }, {
-        name: "Platform",
-        field: "platform",
-        callback: function callback(row) {
-          var link = "";
-          var icon = "";
-
-          if (row.platform === "instagram") {
-            link = "https://instagram.com/";
-            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
-          } else if (row.platform === "youtube") {
-            link = "https://youtube.com/";
-            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
-          }
-
-          return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
-        }
-      }, {
-        name: "Engagement rate",
-        field: "engagement_rate",
-        isNbr: true
-      }, {
-        name: "Analyzed",
-        field: "posts_count",
-        callback: function callback(row) {
-          return row.posts_count + ' of ' + row.medias;
-        }
-      }, {
-        name: "Last update",
-        field: "updated_at",
-        isTimeAgo: true
-      }]
-    };
+  notifications: {
+    showError: {
+      type: "error",
+      title: "Error",
+      message: "Something going wrong! Please try again.."
+    },
+    showSuccess: {
+      type: "success"
+    }
   },
-  beforeRouteEnter: function beforeRouteEnter(to, from, next) {
-    next(function (vm) {
-      return vm.initData();
-    });
-  },
-  beforeRouteUpdate: function beforeRouteUpdate(to, from, next) {
-    var routeUUID = to.params.uuid;
-
-    if (typeof routeUUID !== 'undefined' && this.influencer !== null && this.influencer.uuid !== routeUUID) {
-      this.$store.commit("setInfluencer", {
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["AuthenticatedUser", "influencers", "influencer"])),
+  watch: {
+    "$route.params.uuid": function $routeParamsUuid(value) {
+      // Load influencer or unset influencer state
+      if (typeof value !== "undefined") this.fetchInfluencer();else this.$store.commit("setInfluencer", {
         influencer: null
       });
-      this.fetchInfluencer();
     }
-
-    next();
-  },
-  created: function created() {
-    this.initData();
-  },
-  watch: {
-    '$route': 'initData'
   },
   methods: {
+    loadInfluencers: function loadInfluencers() {
+      // Fetch influencers
+      if (typeof this.influencers !== "undefined" && this.influencers !== null && Object.values(this.influencers).length === 0) this.$store.dispatch("fetchInfluencers");
+    },
+    fetchInfluencer: function fetchInfluencer() {
+      // Load influencer by UUID
+      if (typeof this.$route.params.uuid !== 'undefined') this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);else this.$store.commit("setInfluencer", {
+        influencer: null
+      });
+    },
     addInfluencer: function addInfluencer() {
       this.$refs.influencerFormModal.open();
     },
@@ -466,28 +414,80 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
           });
         }
       });
-    },
-    fetchInfluencer: function fetchInfluencer() {
-      // Load user by UUID
-      if (typeof this.$route.params.uuid !== 'undefined') this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);else this.$store.commit("setInfluencer", {
-        influencer: null
-      });
-    },
-    initData: function initData() {
-      this.$store.dispatch("fetchInfluencers")["catch"](function (error) {});
-      this.fetchInfluencer();
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["AuthenticatedUser", "influencers", "influencer"])),
-  notifications: {
-    showError: {
-      type: "error",
-      title: "Error",
-      message: "Something going wrong! Please try again.."
-    },
-    showSuccess: {
-      type: "success"
+  mounted: function mounted() {
+    // Load influencer
+    if (typeof this.$route.params.uuid !== "undefined") {
+      this.fetchInfluencer();
+    } else {
+      // Unset tracker state
+      this.$store.commit("setInfluencer", {
+        influencer: null
+      }); // Load influencers
+
+      this.loadInfluencers();
     }
+  },
+  data: function data() {
+    return {
+      columns: [{
+        field: "pic_url",
+        isImage: true,
+        isAvatar: true,
+        callback: function callback(row) {
+          return '/cdn/' + row.pic_url;
+        },
+        sortable: false
+      }, {
+        name: "Full name",
+        field: "name",
+        callback: function callback(row) {
+          var $html = '';
+          if (row.platform === "instagram") $html = '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';else if (row.platform === "youtube") $html = '<a href="https://www.youtube.com/channel/' + row.account_id + '" target="_blank">' + row.name + '</a>';
+          return $html;
+        }
+      }, {
+        name: "Followers",
+        field: "followers",
+        isNbr: true
+      }, {
+        name: "Media",
+        field: "medias",
+        isNbr: true
+      }, {
+        name: "Platform",
+        field: "platform",
+        callback: function callback(row) {
+          var link = "";
+          var icon = "";
+
+          if (row.platform === "instagram") {
+            link = "https://instagram.com/";
+            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
+          } else if (row.platform === "youtube") {
+            link = "https://youtube.com/";
+            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
+          }
+
+          return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
+        }
+      }, {
+        name: "Engagement rate",
+        field: "engagement_rate",
+        isPercentage: true
+      }, {
+        name: "Analyzed",
+        field: "posts_count",
+        callback: function callback(row) {
+          return row.posts_count + ' of ' + row.medias;
+        }
+      }, {
+        name: "Last update",
+        field: "updated_at",
+        isTimeAgo: true
+      }]
+    };
   }
 });
 
@@ -1179,13 +1179,7 @@ var render = function() {
             _c("header", { staticClass: "cards" }, [
               _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "number" }, [
-                  _vm._v(
-                    _vm._s(
-                      _vm.influencers && _vm.influencers.length
-                        ? _vm.influencers.length
-                        : 0
-                    )
-                  )
+                  _vm._v(_vm._s(_vm._f("formatedNbr")(_vm.influencers.length)))
                 ]),
                 _vm._v(" "),
                 _c("p", { staticClass: "description" }, [

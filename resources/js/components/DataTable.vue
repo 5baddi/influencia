@@ -19,8 +19,8 @@
                 <th v-for="(column, index) in formatedColumns" :key="index" :class="{'is-avatar': column.isAvatar}">
                     {{ (column.name ? column.name : " ") | headerColumn }}
                     <span v-if="column.sortable" @click="sort(column.field, index)">
-                        <svg v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
-                        <svg v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
+                        <svg :class="{'is-sorting-column': 'test'}" v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
+                        <svg :class="{'is-sorting-column': 'test'}" v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
                     </span>
                 </th>
                 <slot name="header"></slot>
@@ -195,6 +195,7 @@ table tbody>>>a {
     box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
     border: 1px solid rgba(0, 0, 0, 0.12);
     margin: 1rem 0;
+    overflow-x: auto;
 }
 
 .no-data {
@@ -209,6 +210,10 @@ table tbody>>>a {
 .is-avatar{
     width: 36px !important;
     min-width: 36px !important;
+}
+
+.is-sorting-column{
+    color: rgba(0, 0, 0, 0.7);
 }
 </style>
 
@@ -253,6 +258,10 @@ export default {
             type: Boolean,
             default: true
         },
+        defaultSorting: {
+            type: String,
+            default: "desc"
+        },
         exportable: {
             type: Boolean,
             default: false
@@ -280,7 +289,24 @@ export default {
         ...mapState("Loader", ["loading"]),
 
         formatedColumns(){
-            return this.columns;
+            let vm = this;
+            let columns = [];
+            vm.columns.map(function(value, key){
+                if(!vm.columns[key].field || typeof vm.columns[key].field === "undefined")
+                    return;
+                    
+                // Init sort
+                if (typeof vm.columns[key].sortable === "undefined")
+                    vm.columns[key].sortable = true;
+
+                // Handle custom css clasees
+                if(typeof vm.columns[key].class !== "string")
+                    vm.columns[key].class = '';
+
+                columns.push(vm.columns[key]);
+            });
+
+            return columns;
         },
         formatedData() {
             if (this.data.length === 0)
@@ -296,14 +322,6 @@ export default {
                 };
 
                 vm.columns.map(function (item, key) {
-                    // Init sort
-                    if (typeof vm.columns[key].sortable === "undefined")
-                        vm.columns[key].sortable = true;
-
-                    // Handle custom css clasees
-                    if(typeof vm.columns[key].class !== "string")
-                        vm.columns[key].class = '';
-
                     // Parse data
                     let val = value[item.field];
 
@@ -319,6 +337,10 @@ export default {
                         // Format number to K
                         if (typeof item.isNbr === "boolean" && item.isNbr)
                             val = String(abbreviate(val)).toUpperCase();
+
+                        // Percentage
+                        if(typeof item.isPercentage === "boolean" && item.isPercentage)
+                            val = new Intl.NumberFormat('en-US').format((val * 100).toFixed(2)).replace(/,/g, ' ') + '%';
 
                         // Capitalize string
                         if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
@@ -451,7 +473,8 @@ export default {
             rowPerPage: [10, 25, 50, 100, 'All'],
             startIndex: 1,
             endIndex: this.perPage,
-            isAsc: false,
+            isAsc: String(this.defaultSorting).toLowerCase() === 'asc',
+            sortingColumn: null,
             searchQuery: null,
             isTyping: false,
             debounceSearchQuery: null

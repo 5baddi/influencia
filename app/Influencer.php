@@ -73,7 +73,7 @@ class Influencer extends Model
         'estimated_communities',
         'earned_media_value'
     ];
-
+    
     /**
      * Get business email attribute
      * 

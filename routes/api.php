@@ -77,7 +77,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::post('/permissions', 'OAuthController@storePermission');
 
     // Influencers
-    Route::get('/influencers', 'InfluencerController@index');
+    Route::get('{brand}/influencers', 'InfluencerController@byBrand');
     Route::get('/influencers/{influencer}', 'InfluencerController@show');
     Route::get('/influencers/{influencer}/content', 'InfluencerController@content');
     Route::post('/influencers', 'InfluencerController@create');

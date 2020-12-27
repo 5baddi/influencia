@@ -257,8 +257,8 @@ __webpack_require__.r(__webpack_exports__);
         field: 'earned_media_value',
         currency: '€'
       }],
-      instaPostsColumns: [{
-        field: 'influencer',
+      instaMediaColumns: [{
+        field: 'influencer_pic',
         isImage: true,
         isAvatar: true,
         sortable: false,
@@ -780,7 +780,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (Object.values(this.trackers).length === 0) this.$store.dispatch("fetchTrackers");
     },
     fetchTracker: function fetchTracker() {
-      // Load user by UUID
+      // Load tracker analytics by UUID
       if (typeof this.$route.params.uuid !== 'undefined') this.$store.dispatch("fetchTrackerAnalytics", this.$route.params.uuid);else this.$store.commit("setTracker", {
         tracker: null
       });
@@ -1401,8 +1401,8 @@ var render = function() {
                 _c("DataTable", {
                   ref: "byInstaPosts",
                   attrs: {
-                    columns: _vm.instaPostsColumns,
-                    nativeData: _vm.tracker.instagram_posts,
+                    columns: _vm.instaMediaColumns,
+                    nativeData: _vm.tracker.instagram_media,
                     cssClasses: "table-card"
                   }
                 })
@@ -1430,16 +1430,16 @@ var render = function() {
               _c(
                 "div",
                 { staticClass: "campaign-posts" },
-                _vm._l(_vm.tracker.posts, function(post) {
+                _vm._l(_vm.tracker.media, function(media) {
                   return _c(
                     "a",
                     {
-                      key: post.id,
+                      key: media.uuid,
                       staticClass: "campaign-posts-card",
-                      attrs: { href: post.link, target: "_blank" },
+                      attrs: { href: media.link, target: "_blank" },
                       on: {
                         mouseover: function($event) {
-                          _vm.attrActive = post.id
+                          _vm.attrActive = media.uuid
                         },
                         mouseleave: function($event) {
                           _vm.attrActive = null
@@ -1448,7 +1448,7 @@ var render = function() {
                     },
                     [
                       _c("img", {
-                        attrs: { src: post.thumbnail_url, loading: "lazy" }
+                        attrs: { src: media.thumbnail_url, loading: "lazy" }
                       }),
                       _vm._v(" "),
                       _c("div", { staticClass: "campaign-posts-card-icons" }, [
@@ -1456,11 +1456,11 @@ var render = function() {
                           ? _c("i", { staticClass: "fab fa-instagram" })
                           : _vm._e(),
                         _vm._v(" "),
-                        post.type === "video" || post.type === "sidecar"
+                        media.type === "video" || media.type === "sidecar"
                           ? _c("i", {
                               class:
                                 "fas fa-" +
-                                (post.type === "sidecar" ? "images" : "video")
+                                (media.type === "sidecar" ? "images" : "video")
                             })
                           : _vm._e()
                       ]),
@@ -1470,42 +1470,42 @@ var render = function() {
                         {
                           class:
                             "campaign-posts-card-attr " +
-                            (_vm.attrActive === post.id ? " active" : "")
+                            (_vm.attrActive === media.uuid ? " active" : "")
                         },
                         [
-                          post.video_views
+                          media.video_views
                             ? _c("span", [
                                 _c("i", { staticClass: "fas fa-eye" }),
                                 _vm._v(
                                   _vm._s(
                                     String(
-                                      _vm.nbr().abbreviate(post.video_views)
+                                      _vm.nbr().abbreviate(media.video_views)
                                     ).toUpperCase()
                                   )
                                 )
                               ])
                             : _vm._e(),
                           _vm._v(" "),
-                          post.likes
+                          media.likes
                             ? _c("span", [
                                 _c("i", { staticClass: "fas fa-heart" }),
                                 _vm._v(
                                   _vm._s(
                                     String(
-                                      _vm.nbr().abbreviate(post.likes)
+                                      _vm.nbr().abbreviate(media.likes)
                                     ).toUpperCase()
                                   )
                                 )
                               ])
                             : _vm._e(),
                           _vm._v(" "),
-                          post.comments
+                          media.comments
                             ? _c("span", [
                                 _c("i", { staticClass: "fas fa-comment" }),
                                 _vm._v(
                                   _vm._s(
                                     String(
-                                      _vm.nbr().abbreviate(post.comments)
+                                      _vm.nbr().abbreviate(media.comments)
                                     ).toUpperCase()
                                   )
                                 )

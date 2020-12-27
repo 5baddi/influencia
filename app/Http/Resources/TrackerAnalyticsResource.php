@@ -33,13 +33,16 @@ class TrackerAnalyticsResource extends JsonResource
             'video_views'   =>  $this->analytics->video_views ?? 0,
             'engagements'   =>  $this->analytics->engagements ?? 0,
             'posts_count'   =>  $this->analytics->posts_count ?? 0,
+            'media'         =>  $this->posts->map(function($post){
+                return $post->only(['uuid', 'thumbnail_url', 'type', 'link', 'likes', 'video_views', 'comments']);
+            }),
             'comments_count'   =>  $this->analytics->comments_count ?? 0,
             'engagement_rate'  =>  $this->analytics->engagement_rate ?? 0,
             'top_emojis'       =>  $this->analytics->top_emojis ?? [],
             'sentiments_positive'   =>  $this->analytics->sentiments_positive ?? 0.0,
             'sentiments_neutral'    =>  $this->analytics->sentiments_neutral ?? 0.0,
             'sentiments_negative'   =>  $this->analytics->sentiments_negative ?? 0.0,
-            'instagram_posts'       =>  $this->platform !== 'instagram' ? [] : InstagramMediaDTResource::collection($this->posts),
+            'instagram_media'       =>  $this->platform !== 'instagram' ? [] : InstagramMediaDTResource::collection($this->posts),
         ];
     }
 }

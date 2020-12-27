@@ -110,7 +110,7 @@ export default {
                 this.$store.dispatch("fetchTrackers");
         },
         fetchTracker() {
-            // Load user by UUID
+            // Load tracker analytics by UUID
             if (typeof this.$route.params.uuid !== 'undefined')
                 this.$store.dispatch("fetchTrackerAnalytics", this.$route.params.uuid);
             else

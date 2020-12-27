@@ -63,7 +63,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {
     // Load statistics
-    if (Object.values(this.statistics).length === 0) this.loadStatistics();
+    if (typeof this.statistics === "undefined" || this.statistics === null || Object.values(this.statistics).length === 0) this.loadStatistics();
   },
   data: function data() {
     return {
@@ -84,7 +84,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         isNbr: true
       }, {
         name: "Videos views",
-        field: "views",
+        field: "video_views",
         isNbr: true
       }],
       latestTrackersColumns: [{
@@ -104,7 +104,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         isNbr: true
       }, {
         name: "Videos views",
-        field: "views",
+        field: "video_views",
         isNbr: true
       }]
     };
@@ -134,7 +134,7 @@ var render = function() {
     _c("div", { staticClass: "p-1" }, [
       _vm.$can("analytics", "campaign") ||
       (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-        ? _c("header", { staticClass: "cards" }, [
+        ? _c("div", { staticClass: "cards" }, [
             _c("div", { staticClass: "card purple-card" }, [
               _c("div", { staticClass: "number text-white" }, [
                 _vm._v(
@@ -183,44 +183,46 @@ var render = function() {
               ])
             ])
           ])
-        : _vm._e()
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "card-with-table" },
-      [
-        _c("h4", [_vm._v("Latest added campaigns")]),
-        _vm._v(" "),
-        _c("DataTable", {
-          ref: "latestCampaigns",
-          attrs: {
-            columns: _vm.latestCampaignsColumns,
-            nativeData: _vm.statistics.latestCampaigns,
-            withPagination: false
-          }
-        })
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "card-with-table" },
-      [
-        _c("h4", [_vm._v("Latest added trackers")]),
-        _vm._v(" "),
-        _c("DataTable", {
-          ref: "latestTrackers",
-          attrs: {
-            columns: _vm.latestTrackersColumns,
-            nativeData: _vm.statistics.latestTrackers,
-            withPagination: false
-          }
-        })
-      ],
-      1
-    )
+        : _vm._e(),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "datatable-scroll" },
+        [
+          _c("h4", [_vm._v("Latest added campaigns")]),
+          _vm._v(" "),
+          _c("DataTable", {
+            ref: "latestCampaigns",
+            attrs: {
+              cssClasses: "table-card",
+              columns: _vm.latestCampaignsColumns,
+              nativeData: _vm.statistics.campaigns,
+              withPagination: false
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "datatable-scroll" },
+        [
+          _c("h4", [_vm._v("Latest added trackers")]),
+          _vm._v(" "),
+          _c("DataTable", {
+            ref: "latestTrackers",
+            attrs: {
+              cssClasses: "table-card",
+              columns: _vm.latestTrackersColumns,
+              nativeData: _vm.statistics.trackers,
+              withPagination: false
+            }
+          })
+        ],
+        1
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -228,7 +230,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "hero" }, [
+    return _c("header", { staticClass: "hero" }, [
       _c("div", { staticClass: "hero__intro" }, [
         _c("h1", [_vm._v("Dashboard")])
       ])

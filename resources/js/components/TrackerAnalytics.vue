@@ -91,23 +91,23 @@
 
     <div class="datatable-scroll" v-if="tracker.platform === 'instagram'">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.instagram_posts" cssClasses="table-card" />
+        <DataTable ref="byInstaPosts" :columns="instaMediaColumns" :nativeData="tracker.instagram_media" cssClasses="table-card" />
     </div>
 
     <div class="posts-section" v-if="tracker && tracker.posts_count > 0">
         <h4>Posts</h4>
         <p>There are {{ tracker && tracker.posts_count ? tracker.posts_count : 0 }} posts for this tracker.</p>
         <div class="campaign-posts">
-            <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
-                <img :src="post.thumbnail_url" loading="lazy" />
+            <a @mouseover="attrActive=media.uuid" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="media in tracker.media" :key="media.uuid" :href="media.link" target="_blank">
+                <img :src="media.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
                     <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>
-                    <i v-if="post.type === 'video' || post.type=== 'sidecar'" :class="'fas fa-' + (post.type === 'sidecar' ? 'images' : 'video')"></i>
+                    <i v-if="media.type === 'video' || media.type=== 'sidecar'" :class="'fas fa-' + (media.type === 'sidecar' ? 'images' : 'video')"></i>
                 </div>
-                <div :class="'campaign-posts-card-attr ' + (attrActive === post.id ? ' active' : '')">
-                    <span v-if="post.video_views"><i class="fas fa-eye"></i>{{ String(nbr().abbreviate(post.video_views)).toUpperCase() }}</span>
-                    <span v-if="post.likes"><i class="fas fa-heart"></i>{{ String(nbr().abbreviate(post.likes)).toUpperCase() }}</span>
-                    <span v-if="post.comments"><i class="fas fa-comment"></i>{{ String(nbr().abbreviate(post.comments)).toUpperCase() }}</span>
+                <div :class="'campaign-posts-card-attr ' + (attrActive === media.uuid ? ' active' : '')">
+                    <span v-if="media.video_views"><i class="fas fa-eye"></i>{{ String(nbr().abbreviate(media.video_views)).toUpperCase() }}</span>
+                    <span v-if="media.likes"><i class="fas fa-heart"></i>{{ String(nbr().abbreviate(media.likes)).toUpperCase() }}</span>
+                    <span v-if="media.comments"><i class="fas fa-comment"></i>{{ String(nbr().abbreviate(media.comments)).toUpperCase() }}</span>
                 </div>
             </a>
         </div>
@@ -261,9 +261,9 @@ export default {
                 currency: '€'
             }
         ],
-        instaPostsColumns: [
+        instaMediaColumns: [
             {
-                field: 'influencer',
+                field: 'influencer_pic',
                 isImage: true,
                 isAvatar: true,
                 sortable: false,

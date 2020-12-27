@@ -19,7 +19,7 @@
     <div class="p-1" v-if="!influencer">
         <header class="cards">
             <div class="card">
-                <div class="number">{{ (influencers && influencers.length ) ? influencers.length : 0 }}</div>
+                <div class="number">{{ influencers.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF INFLUENCERS</p>
             </div>
         </header>
@@ -55,12 +55,108 @@ export default {
         InfluencerProfile,
         CreateInfluencerModal
     },
+    notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        }
+    },
+    computed: {
+        ...mapGetters(["AuthenticatedUser", "influencers", "influencer"])
+    },
+    watch: {
+        "$route.params.uuid": function(value){
+            // Load influencer or unset influencer state
+            if(typeof value !== "undefined")
+                this.fetchInfluencer();
+            else
+                this.$store.commit("setInfluencer", {influencer: null});
+        }
+    },
+    methods: {
+        loadInfluencers() {
+            // Fetch influencers
+            if(typeof this.influencers !== "undefined" && this.influencers !== null && Object.values(this.influencers).length === 0)
+                this.$store.dispatch("fetchInfluencers");
+        },
+        fetchInfluencer() {
+            // Load influencer by UUID
+            if (typeof this.$route.params.uuid !== 'undefined')
+                this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);
+            else
+                this.$store.commit("setInfluencer", {
+                    influencer: null
+                });
+        },
+        addInfluencer(){
+            this.$refs.influencerFormModal.open();
+        },
+        deleteInfluencer(influencer){
+            this.$refs.confirmDeleteInfluencerModal.open("Are sure to delete this influencer?", influencer);
+        },
+        deleteInfluencerAction(influencer){
+            if (typeof influencer.uuid === "undefined")
+                this.showError();
+
+            this.$store.dispatch("deleteInfluencer", influencer.uuid)
+                .then(response => {
+                    this.$refs.influencersDT.reloadData();
+                    this.showSuccess({
+                        message: "Successfully deleted influencer @" + influencer.username
+                    });
+                }).catch(error => {
+                    this.showError({
+                        message: error.message
+                    });
+                });
+        },
+        create(influencer) {
+            this.$store.dispatch("addInfluencer", influencer)
+                .then(response => {
+                    this.$refs.influencerFormModal.close();
+                    this.showSuccess({
+                        message: response.message
+                    });
+                }).catch(error => {
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
+                });
+        }
+    },
+    mounted(){
+        // Load influencer
+        if(typeof this.$route.params.uuid !== "undefined"){
+            this.fetchInfluencer();
+        }else{
+            // Unset tracker state
+            this.$store.commit("setInfluencer", {influencer: null});
+
+            // Load influencers
+            this.loadInfluencers();
+        }
+    },
     data() {
         return {
             columns: [{
                     field: "pic_url",
+                    isImage: true,
+                    isAvatar: true,
                     callback: function (row) {
-                        return '<img src="' + row.pic_url + '"/>';
+                        return '/cdn/' + row.pic_url;
                     },
                     sortable: false
                 },
@@ -109,7 +205,7 @@ export default {
                 {
                     name: "Engagement rate",
                     field: "engagement_rate",
-                    isNbr: true
+                    isPercentage: true
                 },
                 {
                     name: "Analyzed",
@@ -125,98 +221,6 @@ export default {
                 }
             ]
         };
-    },
-    beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData());
-    },
-    beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid;
-        if (typeof routeUUID !== 'undefined' && (this.influencer !== null && this.influencer.uuid !== routeUUID)) {
-            this.$store.commit("setInfluencer", {
-                influencer: null
-            });
-            this.fetchInfluencer();
-        }
-
-        next();
-    },
-    created() {
-        this.initData();
-    },
-    watch: {
-        '$route': 'initData'
-    },
-    methods: {
-        addInfluencer(){
-            this.$refs.influencerFormModal.open();
-        },
-        deleteInfluencer(influencer){
-            this.$refs.confirmDeleteInfluencerModal.open("Are sure to delete this influencer?", influencer);
-        },
-        deleteInfluencerAction(influencer){
-            if (typeof influencer.uuid === "undefined")
-                this.showError();
-
-            this.$store.dispatch("deleteInfluencer", influencer.uuid)
-                .then(response => {
-                    this.$refs.influencersDT.reloadData();
-                    this.showSuccess({
-                        message: "Successfully deleted influencer @" + influencer.username
-                    });
-                }).catch(error => {
-                    this.showError({
-                        message: error.message
-                    });
-                });
-        },
-        create(influencer) {
-            this.$store.dispatch("addInfluencer", influencer)
-                .then(response => {
-                    this.$refs.influencerFormModal.close();
-                    this.showSuccess({
-                        message: response.message
-                    });
-                }).catch(error => {
-                    let errors = Object.values(error.response.data.errors);
-                    if(typeof errors === "object" && errors.length > 0){
-                        errors.forEach(element => {
-                            this.showError({
-                                message: element
-                            });
-                        });
-                    }else{
-                        this.showError({
-                            message: error.response.data.message
-                        });
-                    }
-                });
-        },
-        fetchInfluencer() {
-            // Load user by UUID
-            if (typeof this.$route.params.uuid !== 'undefined')
-                this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);
-            else
-                this.$store.commit("setInfluencer", {
-                    influencer: null
-                });
-        },
-        initData(){
-            this.$store.dispatch("fetchInfluencers").catch(error => {});
-            this.fetchInfluencer();
-        }
-    },
-    computed: {
-        ...mapGetters(["AuthenticatedUser", "influencers", "influencer"])
-    },
-    notifications: {
-        showError: {
-            type: "error",
-            title: "Error",
-            message: "Something going wrong! Please try again.."
-        },
-        showSuccess: {
-            type: "success",
-        }
     }
 };
 </script>

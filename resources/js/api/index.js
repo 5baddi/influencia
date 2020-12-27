@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { router } from '../routes';
+import store from '../store';
 
 const api = axios.create({
     headers: {
@@ -12,12 +13,12 @@ const api = axios.create({
 
 api.interceptors.response.use(null, error => {
     // Init
-    let path = "/error";
+    let path = "/login";
 
     // Handle each response status
     switch(error.response.status){
         case 401:
-            path = "/login";
+            store.dispatch("logout");
         break;
         case 404:
             path = "/404";
