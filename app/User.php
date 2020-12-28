@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Support\Str;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Notifications\Notifiable;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
