@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class InfluencerPost extends Model
