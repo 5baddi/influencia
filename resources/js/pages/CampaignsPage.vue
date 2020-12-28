@@ -114,7 +114,7 @@ export default {
         },
         create(campaign) {
             // Set brand ID
-            campaign.brand_id = AuthenticatedUser.user.selected_brand;
+            campaign.brand_id = this.AuthenticatedUser.selected_brand;
 
             this.$store.dispatch("addNewCampaign", campaign)
                 .then(response => {

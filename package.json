@@ -41,7 +41,6 @@
         "number-format.js": "^2.0.9",
         "pusher-js": "^7.0.0",
         "secure-ls": "^1.2.6",
-        "vue-auth-image": "0.0.3",
         "vue-good-table": "^2.21.0",
         "vue-loading-overlay": "^3.4.0",
         "vue-materialize-datatable": "^1.0.4",

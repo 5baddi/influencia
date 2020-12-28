@@ -154,6 +154,7 @@ export default {
             columns: [{
                     field: "pic_url",
                     isAvatar: true,
+                    isImage: true,
                     callback: function (row) {
                         return row.pic_url;
                     },
