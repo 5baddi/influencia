@@ -345,25 +345,49 @@ export default {
                 currency: '€'
             }
         ],
-        trackersColumns: [{
-            name: "type",
-            field: "type",
-            capitalize: true
-        }, {
-            name: "name",
-            field: "name",
-            capitalize: true
-        }, {
-            name: "status",
-            field: "status",
-            callback: function (row) {
-                return row.status ? "Active" : "Inactive";
-            }
-        }, {
-            name: "Created at",
-            field: "created_at",
-            isTimeAgo: true
-        }, ],
+        trackersColumns: [
+            {
+                name: "name",
+                field: "name",
+                capitalize: true
+            },
+            {
+                name: "Platform",
+                field: "platform",
+                callback: function (row) {
+                    let link = "";
+                    let icon = "";
+
+                    if (row.platform === "instagram") {
+                        link = "https://instagram.com/";
+                        icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
+                    }else if(row.platform === "youtube"){
+                        link = "https://youtube.com/";
+                        icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
+                    }
+
+                    return '<a href="' + link + '" target="_blank" title="' + row.platform + '" class="icon-link">' + icon + '</a>';
+                }
+            },
+            {
+                name: "type",
+                field: "type",
+                capitalize: true
+            }, 
+            {
+                name: "Status",
+                field: "status",
+                sortable: false,
+                callback: function (row) {
+                    return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                }
+            },
+            {
+                name: "Created at",
+                field: "created_at",
+                isTimeAgo: true
+            },
+        ],
         attrActive: null,
         sentimentData: {
             labels: [

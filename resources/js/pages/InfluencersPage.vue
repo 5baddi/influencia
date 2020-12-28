@@ -198,7 +198,7 @@ export default {
                             icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
                         }
 
-                        return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
+                        return '<a href="' + link + '" target="_blank" title="' + row.platform + '" class="icon-link">' + icon + '</a>';
                     }
                 },
                 {
