@@ -35,9 +35,9 @@
             </tr>
             <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
                 <td v-for="(col, idx) in formatedColumns" :key="idx" :class="{'is-avatar': col.isAvatar}">
-                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage && !col.isAvatar && !col.isAvatarList" :class="col.class" v-html="obj[col.field]"></div>
-                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage && !col.isAvatar && !col.isAvatarList" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
-                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && (col.isImage || col.isAvatar)" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
+                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage" :class="col.class" v-html="obj[col.field]"></div>
+                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && col.isImage" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
