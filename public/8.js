@@ -831,10 +831,9 @@ var render = function() {
                           key: "body-row",
                           fn: function(row) {
                             return _c("td", {}, [
-                              (_vm.$can("edit", "user") ||
-                                (_vm.AuthenticatedUser &&
-                                  _vm.AuthenticatedUser.is_superadmin)) &&
-                              _vm.AuthenticatedUser.id !== row.data.original.id
+                              _vm.$can("edit", "user") ||
+                              (_vm.AuthenticatedUser &&
+                                _vm.AuthenticatedUser.is_superadmin)
                                 ? _c(
                                     "button",
                                     {
@@ -855,7 +854,8 @@ var render = function() {
                               (_vm.$can("edit", "user") ||
                                 (_vm.AuthenticatedUser &&
                                   _vm.AuthenticatedUser.is_superadmin)) &&
-                              _vm.AuthenticatedUser.id !== row.data.original.id
+                              _vm.AuthenticatedUser.uuid !==
+                                row.data.original.uuid
                                 ? _c(
                                     "button",
                                     {
@@ -874,7 +874,8 @@ var render = function() {
                               (_vm.$can("ban", "user") ||
                                 (_vm.AuthenticatedUser &&
                                   _vm.AuthenticatedUser.is_superadmin)) &&
-                              _vm.AuthenticatedUser.id !== row.data.original.id
+                              _vm.AuthenticatedUser.uuid !==
+                                row.data.original.uuid
                                 ? _c(
                                     "button",
                                     {
@@ -967,7 +968,8 @@ var render = function() {
                               (_vm.$can("delete", "user") ||
                                 (_vm.AuthenticatedUser &&
                                   _vm.AuthenticatedUser.is_superadmin)) &&
-                              _vm.AuthenticatedUser.id !== row.data.original.id
+                              _vm.AuthenticatedUser.uuid !==
+                                row.data.original.uuid
                                 ? _c(
                                     "button",
                                     {
@@ -994,7 +996,7 @@ var render = function() {
                       ],
                       null,
                       false,
-                      4036008399
+                      3574816149
                     )
                   },
                   [

@@ -509,13 +509,6 @@ button:disabled {
   font-weight: 100;
 }
 
-.control input::-ms-input-placeholder {
-  font-family: "Muli", sans-serif;
-  font-size: 0.8rem;
-  color: #cccc;
-  font-weight: 100;
-}
-
 .control input::placeholder {
   font-family: "Muli", sans-serif;
   font-size: 0.8rem;

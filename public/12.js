@@ -95,11 +95,11 @@ __webpack_require__.r(__webpack_exports__);
         _this.showLoginError({
           message: message
         });
-
-        _this.$refs.signInBtn.setAttribute('disabled', false);
       })["finally"](function () {
         if (typeof _this.$refs.signInBtn !== "undefined") {
           _this.$refs.signInBtn.innerHTML = "login";
+
+          _this.$refs.signInBtn.setAttribute('disabled', false);
         }
       });
     }

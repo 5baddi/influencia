@@ -14,7 +14,7 @@
         height: 100vh;
     }
     img{
-        width: 50%;
+        width: 30%;
     }
     h4{
         font-size: 16pt;

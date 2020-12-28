@@ -19,18 +19,12 @@ import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
-import jQuery from 'jquery';
 import VueTimeago from 'vue-timeago';
 import './services/filters';
 import VueAuthImage from 'vue-auth-image';
 import SecureLS from "secure-ls";
 
-
 Vue.prototype.$http = api;
-
-// Init JQuery & Lodash
-window.jQuery = window.$ = jQuery;
-window._ = require('lodash');
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);

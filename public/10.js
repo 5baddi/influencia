@@ -12,7 +12,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\ndiv[data-v-63650f06]{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-direction: column;\n    height: 100vh;\n}\nimg[data-v-63650f06]{\n    width: 50%;\n}\nh4[data-v-63650f06]{\n    font-size: 16pt;\n    color: rgba(0, 0, 0, 0.87);\n}\n", ""]);
+exports.push([module.i, "\ndiv[data-v-63650f06]{\n    display: flex;\n    justify-content: center;\n    align-items: center;\n    flex-direction: column;\n    height: 100vh;\n}\nimg[data-v-63650f06]{\n    width: 30%;\n}\nh4[data-v-63650f06]{\n    font-size: 16pt;\n    color: rgba(0, 0, 0, 0.87);\n}\n", ""]);
 
 // exports
 
