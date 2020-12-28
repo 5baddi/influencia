@@ -7042,7 +7042,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (this.data.length === 0) return [];
       var vm = this;
       var _parsedData = [];
-      vm.data.map(function (value, key) {
+      this.data.map(function (value, key) {
         var rowData = {
           original: value
         };
@@ -7123,7 +7123,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.paginateData();
     },
     paginateData: function paginateData() {
-      this.data = this.nativeData.slice(this.startIndex - 1, this.perPage);
+      this.data = _.slice(this.nativeData, this.startIndex - 1, this.perPage);
     },
     loadData: function loadData() {
       // Set native data
