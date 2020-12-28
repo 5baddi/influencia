@@ -37,7 +37,7 @@
                 <td v-for="(col, idx) in formatedColumns" :key="idx" :class="{'is-avatar': col.isAvatar}">
                     <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage" :class="col.class" v-html="obj[col.field]"></div>
                     <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
-                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && col.isImage" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
+                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && col.isImage" :class="col.class" :src="obj[col.field]" loading="lazy"/>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -315,8 +315,6 @@ export default {
             if (this.data.length === 0)
                 return [];
 
-            let _data = this.data.slice(this.startIndex - 1, this.data.length < this.perPage ? this.data.length : this.perPage);
-            // TODO: fix pagination...
             let vm = this;
             let _parsedData = [];
             _data.map(function (value, key) {
@@ -419,9 +417,18 @@ export default {
         },
         nextPage() {
             this.startIndex = this.startIndex + this.perPage;
+
+            // Paginate data
+            this.paginateData();
         },
         previousPage() {
             this.startIndex = this.startIndex - this.perPage;
+
+            // Paginate data
+            this.paginateData();
+        },
+        paginateData(){
+            this.data = this.nativeData.slice(this.startIndex - 1, this.data.length < this.perPage ? this.nativeData.length : this.perPage);
         },
         loadData(){
             // Set native data

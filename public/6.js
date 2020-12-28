@@ -612,7 +612,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this2 = this;
 
       // Set brand ID
-      campaign.brand_id = AuthenticatedUser.user.selected_brand;
+      campaign.brand_id = this.AuthenticatedUser.selected_brand;
       this.$store.dispatch("addNewCampaign", campaign).then(function (response) {
         _this2.$refs.campaignsDT.reloadData();
 

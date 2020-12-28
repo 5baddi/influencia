@@ -21,14 +21,12 @@ import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
 import VueTimeago from 'vue-timeago';
 import './services/filters';
-import VueAuthImage from 'vue-auth-image';
 import SecureLS from "secure-ls";
 
 Vue.prototype.$http = api;
 
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
-Vue.use(VueAuthImage);
 Vue.use(VueTimeago, {
     name: 'Timeago', // Component name, `Timeago` by default
     locale: 'en',

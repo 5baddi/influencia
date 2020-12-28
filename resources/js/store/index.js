@@ -478,7 +478,7 @@ const actions = {
     },
     fetchCampaignsBy({ commit, state }, query) {
         return new Promise((resolve, reject) => {
-            if (state.user.selected_brand.uuid) {
+            if (state.user && state.user.selected_brand && state.user.selected_brand.uuid) {
                 api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns/search/${query}`)
                     .then((response) => {
                         commit('setCampaigns', { campaigns: response.data.content })
@@ -493,7 +493,7 @@ const actions = {
     },
     fetchStatistics({ commit, state }) {
         return new Promise((resolve, reject) => {
-            if (state.user && state.user.selected_brand.uuid) {
+            if (state.user && state.user.selected_brand && state.user.selected_brand.uuid) {
                 api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns/statistics`).then(response => {
                     commit('setStatistics', { statistics: response.data.content })
                     resolve(response.data)
