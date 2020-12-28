@@ -164,6 +164,9 @@ class ScrapPostJob implements ShouldQueue
             // Store media
             $_media['influencer_id'] = $influencer->id;
 
+            // Store media thumbnail locally
+            $account['thumbnail_url'] = Format::storePicture($account['thumbnail_url'], "influencers/instagram/thumbnails/");
+
             // Update or create media
             if(is_null($influencerMedia))
                 $influencerMedia = InfluencerPost::create($_media);
