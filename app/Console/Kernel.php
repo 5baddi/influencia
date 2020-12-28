@@ -6,6 +6,7 @@ use App\Console\Commands\InstagramCommand;
 use App\Console\Commands\AppUpdaterCommand;
 use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\RetryScrapPostCommand;
+use App\Console\Commands\UpdateAnalyticsCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -19,6 +20,7 @@ class Kernel extends ConsoleKernel
         AppUpdaterCommand::class,
         InstagramCommand::class,
         RetryScrapPostCommand::class,
+        UpdateAnalyticsCommand::class,
     ];
 
     /**
@@ -32,6 +34,10 @@ class Kernel extends ConsoleKernel
         // App updater
         $schedule->command('updater:app')
             ->dailyAt('00:00');
+            
+        // Analytics updater
+        $schedule->command('analytics:update')
+            ->daily();
 
         // Retry failed scrap post jobs
         $schedule->command('scrap:retry')
