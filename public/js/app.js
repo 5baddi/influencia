@@ -69652,7 +69652,7 @@ var actions = {
     var commit = _ref28.commit,
         state = _ref28.state;
     return new Promise(function (resolve, reject) {
-      if (state.user.selected_brand.uuid) {
+      if (state.user && state.user.selected_brand && state.user.selected_brand.uuid) {
         _api__WEBPACK_IMPORTED_MODULE_2__["api"].get("/api/v1/".concat(state.user.selected_brand.uuid, "/campaigns/search/").concat(query)).then(function (response) {
           commit('setCampaigns', {
             campaigns: response.data.content
@@ -69668,7 +69668,7 @@ var actions = {
     var commit = _ref29.commit,
         state = _ref29.state;
     return new Promise(function (resolve, reject) {
-      if (state.user && state.user.selected_brand.uuid) {
+      if (state.user && state.user.selected_brand && state.user.selected_brand.uuid) {
         _api__WEBPACK_IMPORTED_MODULE_2__["api"].get("/api/v1/".concat(state.user.selected_brand.uuid, "/campaigns/statistics")).then(function (response) {
           commit('setStatistics', {
             statistics: response.data.content
