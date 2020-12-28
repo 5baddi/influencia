@@ -3,7 +3,6 @@
 namespace App;
 
 use App\Tracker;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
@@ -83,7 +82,7 @@ class Influencer extends Model
      */
     public function getPicUrlAttribute() : ?string
     {
-        if(isset($this->attributes['pic_url'], Auth::user()->access_token))
+        if(isset($this->attributes['pic_url']))
             return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
 
         return null;

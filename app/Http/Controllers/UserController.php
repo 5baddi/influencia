@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Format;
 use App\User;
 use App\Brand;
 use Illuminate\Support\Facades\Auth;
@@ -30,6 +31,11 @@ class UserController extends Controller
             $data['is_superadmin'] = true;
         else
             $data['role_id'] = $request->input('role');
+
+        // TODO: use custom avatar
+        // Store user avatar locally
+        if(!isset($data['avatar']))
+            $data['avatar'] = Format::storePicture("https://ui-avatars.com/api/?color=039be5&name={$data['name']}", "avatars/" . uniqid());
 
         // Create user row
         $user = User::create($data);

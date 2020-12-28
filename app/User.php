@@ -28,6 +28,7 @@ class User extends Authenticatable
         'selected_brand_id',
         'is_superadmin',
         'banned',
+        'avatar'
     ];
 
     /**
@@ -74,6 +75,19 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
 
         return $this;
+    }
+
+    /**
+     * Get user avatar as base64
+     * 
+     * @return string|null
+     */
+    public function getAvatarAttribute() : ?string
+    {
+        if(isset($this->attributes['avatar']))
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['avatar']));
+
+        return null;
     }
 
     public function selectedBrand()

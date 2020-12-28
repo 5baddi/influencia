@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use Format;
 use App\User;
 use App\Influencer;
 use Illuminate\Bus\Queueable;
@@ -75,6 +76,9 @@ class ScrapInfluencerJob implements ShouldQueue
                 $account = $instagram->byId((int)$this->username);
             else
                 $account = $instagram->byUsername($this->username);
+
+            // Store influencer picture locally
+            $account['pic_url'] = Format::storePicture($account['pic_url']);
 
             // Store account
             $influencer = Influencer::create($account);
