@@ -52213,9 +52213,7 @@ var render = function() {
                     [
                       typeof obj[col.field] !== "undefined" &&
                       !col.isTimeAgo &&
-                      !col.isImage &&
-                      !col.isAvatar &&
-                      !col.isAvatarList
+                      !col.isImage
                         ? _c("div", {
                             class: col.class,
                             domProps: { innerHTML: _vm._s(obj[col.field]) }
@@ -52224,9 +52222,7 @@ var render = function() {
                       _vm._v(" "),
                       typeof obj[col.field] !== "undefined" &&
                       col.isTimeAgo &&
-                      !col.isImage &&
-                      !col.isAvatar &&
-                      !col.isAvatarList
+                      !col.isImage
                         ? _c("timeago", {
                             class: col.class,
                             attrs: { datetime: Date.parse(obj[col.field]) }
@@ -52235,7 +52231,7 @@ var render = function() {
                       _vm._v(" "),
                       typeof obj[col.field] !== "undefined" &&
                       !col.isTimeAgo &&
-                      (col.isImage || col.isAvatar)
+                      col.isImage
                         ? _c("img", {
                             directives: [
                               {
