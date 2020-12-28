@@ -1,25 +1,16 @@
-// window._ = require('lodash');
 
-/**
- * We'll load jQuery and the Bootstrap jQuery plugin which provides support
- * for JavaScript based Bootstrap features such as modals and tabs. This
- * code may be modified to fit the specific needs of your application.
- */
+import axios from 'axios';
+import SecureLS from "secure-ls";
 
-try {
+try{
+    // Init JQuery & Lodash
+    window._ = require('lodash');
     window.Popper = require('popper.js').default;
-    // window.$ = window.jQuery = require('jquery');
-
+    window.$ = window.jQuery = require('jquery');
     require('bootstrap');
-} catch (e) {}
 
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
-window.axios = require('axios');
-
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-window.axios.defaults.withCredentials = true;
+    // Set Authorization header
+    let ls = new SecureLS();
+    let user = JSON.parse(ls.get("user"));
+    axios.defaults.headers.common['Authorization'] = `Bearer ${user.token}`;
+}catch(e){}

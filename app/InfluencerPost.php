@@ -65,6 +65,7 @@ class InfluencerPost extends Model
         'comments_emojis'        =>  'json',
         'comments_hashtags'      =>  'json',
         'location_json'          =>  'json',
+        'published_at'           =>  'datetime:Y-m-d H:i',
     ];
 
     /**
@@ -84,6 +85,25 @@ class InfluencerPost extends Model
         'calculated_engagement_rate',
         'earned_media_value'
     ];
+
+    /**
+     * Get media thumbnail as base64
+     * 
+     * @return string|null
+     */
+    public function getThumbnailUrlAttribute() : ?string
+    {
+        if(isset($this->attributes['thumbnail_url'])){
+            // External link
+            if(filter_var($this->attributes['thumbnail_url'], FILTER_VALIDATE_URL))
+                return $this->attributes['thumbnail_url'];
+
+            // Picture as base64
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail_url']));
+        }
+
+        return null;
+    }
 
     /**
      * Get Emojis list

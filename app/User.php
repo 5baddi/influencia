@@ -2,12 +2,13 @@
 
 namespace App;
 
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Notifications\Notifiable;
+use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\HasApiTokens;
-use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,8 @@ class User extends Authenticatable
         'last_login',
         'selected_brand_id',
         'is_superadmin',
-        'banned'
+        'banned',
+        'avatar'
     ];
 
     /**
@@ -73,6 +75,19 @@ class User extends Authenticatable
         $this->attributes['password'] = Hash::make($value);
 
         return $this;
+    }
+
+    /**
+     * Get user avatar as base64
+     * 
+     * @return string|null
+     */
+    public function getAvatarAttribute() : ?string
+    {
+        if(isset($this->attributes['avatar']))
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['avatar']));
+
+        return null;
     }
 
     public function selectedBrand()

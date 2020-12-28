@@ -206,10 +206,10 @@ const actions = {
     },
     fetchInfluencers({ commit, state }) {
         return new Promise((resolve, reject) => {
-            api.get("/api/v1/influencers").then(response => {
+            api.get(`/api/v1/${state.user.selected_brand.uuid}/influencers`).then(response => {
                 commit('setInfluencers', { influencers: response.data.content })
                 resolve(response.data)
-            }).catch(response => reject(response))
+            }).catch(response => reject(response));
         });
     },
     fetchInfluencer({ commit, state }, uuid) {
@@ -493,10 +493,14 @@ const actions = {
     },
     fetchStatistics({ commit, state }) {
         return new Promise((resolve, reject) => {
-            api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns/statistics`).then(response => {
-                commit('setStatistics', { statistics: response.data.content })
-                resolve(response.data)
-            }).catch(response => reject(response))
+            if (state.user && state.user.selected_brand.uuid) {
+                api.get(`/api/v1/${state.user.selected_brand.uuid}/campaigns/statistics`).then(response => {
+                    commit('setStatistics', { statistics: response.data.content })
+                    resolve(response.data)
+                }).catch(response => reject(response));
+            }else{
+                // TODO: return 401
+            }
         });
     },
     fetchCampaignAnalytics({ commit, state }, uuid) {

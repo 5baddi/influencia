@@ -19,7 +19,7 @@
     <div class="p-1" v-if="!influencer">
         <header class="cards">
             <div class="card">
-                <div class="number">{{ (influencers && influencers.length ) ? influencers.length : 0 }}</div>
+                <div class="number">{{ influencers.length | formatedNbr }}</div>
                 <p class="description">NUMBER OF INFLUENCERS</p>
             </div>
         </header>
@@ -55,99 +55,43 @@ export default {
         InfluencerProfile,
         CreateInfluencerModal
     },
-    data() {
-        return {
-            columns: [{
-                    field: "pic_url",
-                    callback: function (row) {
-                        return '<img src="' + row.pic_url + '"/>';
-                    },
-                    sortable: false
-                },
-                {
-                    name: "Full name",
-                    field: "name",
-                    callback: function (row) {
-                        let $html = '';
-
-                        if(row.platform === "instagram")
-                            $html = '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';
-                        else if(row.platform === "youtube")
-                            $html = '<a href="https://www.youtube.com/channel/' + row.account_id + '" target="_blank">' + row.name + '</a>';
-                    
-                        return $html;
-                    }
-                },
-                {
-                    name: "Followers",
-                    field: "followers",
-                    isNbr: true
-                },
-                {
-                    name: "Media",
-                    field: "medias",
-                    isNbr: true
-                },
-                {
-                    name: "Platform",
-                    field: "platform",
-                    callback: function (row) {
-                        let link = "";
-                        let icon = "";
-
-                        if (row.platform === "instagram") {
-                            link = "https://instagram.com/";
-                            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
-                        }else if(row.platform === "youtube"){
-                            link = "https://youtube.com/";
-                            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
-                        }
-
-                        return '<a href="' + link + '" target="_blank" title="' + row.platform + '">' + icon + '</a>';
-                    }
-                },
-                {
-                    name: "Engagement rate",
-                    field: "engagement_rate",
-                    isNbr: true
-                },
-                {
-                    name: "Analyzed",
-                    field: "posts_count",
-                    callback: function (row) {
-                        return row.posts_count + ' of ' + row.medias;
-                    }
-                },
-                {
-                    name: "Last update",
-                    field: "updated_at",
-                    isDate: true,
-                    format: "DD/MM/YYYY"
-                }
-            ]
-        };
-    },
-    beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData());
-    },
-    beforeRouteUpdate(to, from, next) {
-        let routeUUID = to.params.uuid;
-        if (typeof routeUUID !== 'undefined' && (this.influencer !== null && this.influencer.uuid !== routeUUID)) {
-            this.$store.commit("setInfluencer", {
-                influencer: null
-            });
-            this.fetchInfluencer();
+    notifications: {
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
         }
-
-        next();
     },
-    created() {
-        this.initData();
+    computed: {
+        ...mapGetters(["AuthenticatedUser", "influencers", "influencer"])
     },
     watch: {
-        '$route': 'initData'
+        "$route.params.uuid": function(value){
+            // Load influencer or unset influencer state
+            if(typeof value !== "undefined")
+                this.fetchInfluencer();
+            else
+                this.$store.commit("setInfluencer", {influencer: null});
+        }
     },
     methods: {
+        loadInfluencers() {
+            // Fetch influencers
+            if(typeof this.influencers === "undefined" || this.influencers === null || Object.values(this.influencers).length === 0)
+                this.$store.dispatch("fetchInfluencers");
+        },
+        fetchInfluencer() {
+            // Load influencer by UUID
+            if (typeof this.$route.params.uuid !== 'undefined')
+                this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);
+            else
+                this.$store.commit("setInfluencer", {
+                    influencer: null
+                });
+        },
         addInfluencer(){
             this.$refs.influencerFormModal.open();
         },
@@ -191,33 +135,91 @@ export default {
                         });
                     }
                 });
-        },
-        fetchInfluencer() {
-            // Load user by UUID
-            if (typeof this.$route.params.uuid !== 'undefined')
-                this.$store.dispatch("fetchInfluencer", this.$route.params.uuid);
-            else
-                this.$store.commit("setInfluencer", {
-                    influencer: null
-                });
-        },
-        initData(){
-            this.$store.dispatch("fetchInfluencers").catch(error => {});
+        }
+    },
+    mounted(){
+        // Load influencer
+        if(typeof this.$route.params.uuid !== "undefined"){
             this.fetchInfluencer();
+        }else{
+            // Unset tracker state
+            this.$store.commit("setInfluencer", {influencer: null});
+
+            // Load influencers
+            this.loadInfluencers();
         }
     },
-    computed: {
-        ...mapGetters(["AuthenticatedUser", "influencers", "influencer"])
-    },
-    notifications: {
-        showError: {
-            type: "error",
-            title: "Error",
-            message: "Something going wrong! Please try again.."
-        },
-        showSuccess: {
-            type: "success",
-        }
+    data() {
+        return {
+            columns: [{
+                    field: "pic_url",
+                    isAvatar: true,
+                    callback: function (row) {
+                        return row.pic_url;
+                    },
+                    sortable: false
+                },
+                {
+                    name: "Full name",
+                    field: "name",
+                    callback: function (row) {
+                        let $html = '';
+
+                        if(row.platform === "instagram")
+                            $html = '<a href="https://instagram.com/' + row.username + '" target="_blank">' + (row.name ? row.name : '@' + row.username) + '</a>';
+                        else if(row.platform === "youtube")
+                            $html = '<a href="https://www.youtube.com/channel/' + row.account_id + '" target="_blank">' + row.name + '</a>';
+                    
+                        return $html;
+                    }
+                },
+                {
+                    name: "Followers",
+                    field: "followers",
+                    isNbr: true
+                },
+                {
+                    name: "Media",
+                    field: "medias",
+                    isNbr: true
+                },
+                {
+                    name: "Platform",
+                    field: "platform",
+                    callback: function (row) {
+                        let link = "";
+                        let icon = "";
+
+                        if (row.platform === "instagram") {
+                            link = "https://instagram.com/";
+                            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
+                        }else if(row.platform === "youtube"){
+                            link = "https://youtube.com/";
+                            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
+                        }
+
+                        return '<a href="' + link + '" target="_blank" title="' + row.platform + '" class="icon-link">' + icon + '</a>';
+                    }
+                },
+                {
+                    name: "Engagement rate",
+                    field: "engagement_rate",
+                    isPercentage: true
+                },
+                {
+                    name: "Analyzed",
+                    field: "posts_count",
+                    callback: function (row) {
+                        return row.posts_count + ' of ' + row.medias;
+                    }
+                },
+                {
+                    name: "Last update",
+                    field: "updated_at",
+                    isTimeAgo: true
+                }
+            ]
+        };
     }
 };
 </script>

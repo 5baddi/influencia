@@ -168,6 +168,12 @@ export default {
       show: {
          default: false,
          type: Boolean
+      },
+      campaigns: {
+         type: Array,
+         default: () => {
+            return [];
+         }
       }
    },
    data() {
@@ -201,11 +207,6 @@ export default {
             this.dismiss();
          }
       });
-
-      this.$store.dispatch("fetchCampaigns");
-   },
-   computed: {
-      ...mapGetters(["campaigns", "AuthenticatedUser"])
    },
    methods: {
       init(){
@@ -267,7 +268,6 @@ export default {
             name: this.name,
             type: this.type,
             campaign_id: this.campaign_id,
-            user_id: this.AuthenticatedUser.id,
             platform: this.type !== 'url' ? this.platform : null
          };
 

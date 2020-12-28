@@ -31,16 +31,16 @@
             <canvas id="impressions-chart"></canvas>
             <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="campaign.views > 0">
+        <div class="card" v-if="campaign.video_views > 0">
             <div class="title">
                 <i class="far fa-eye green"></i>
                 <div class="numbers">
-                    <h4>{{ campaign.views | formatedNbr }}</h4>
+                    <h4>{{ campaign.video_views | formatedNbr }}</h4>
                     <span>Total videos views</span>
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_views)).toUpperCase() }} ({{ campaign.views > 0 ? ((campaign.organic_views / campaign.views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_views)).toUpperCase() }} ({{ campaign.video_views > 0 ? ((campaign.organic_views / campaign.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="campaign.engagements > 0">
             <div class="title">
@@ -72,34 +72,34 @@
             <canvas id="sentiments-chart"></canvas>
             <span>Based on {{ campaign.comments_count | formatedNbr }} comments</span>
         </div>
-        <div class="card emojis" v-if="campaign.top_three_emojis">
-            <h5>Top {{ campaign.top_three_emojis.top && Object.values(campaign.top_three_emojis.top).length > 1 ? Object.values(campaign.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
+        <div class="card emojis" v-if="campaign.top_emojis">
+            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
-                <li v-for="(emoji, index) in campaign.top_three_emojis.top" :key="index">
+                <li v-for="(emoji, index) in campaign.top_emojis.top" :key="index">
                     {{ emoji }}
-                    <span>{{ ((index / (campaign.top_three_emojis.all ? campaign.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((index / (campaign.top_emojis.all ? campaign.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ campaign.top_three_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ campaign.top_emojis.all | formatedNbr }} emojis</span>
         </div>
     </div>
 
-    <div class="by-influencers">
+    <div class="datatable-scroll">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" />
+        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" />
     </div>
 
-    <div class="by-instagram-posts">
+    <div class="datatable-scroll">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_posts" />
+        <DataTable cssClasses="table-card" ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_media" />
     </div>
 
-    <div class="by-influencers">
+    <div class="datatable-scroll">
         <h4>List of trackers</h4>
-        <DataTable ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers">
+        <DataTable cssClasses="table-card" ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers">
             <th slot="header">Actions</th>
             <td slot="body-row" slot-scope="row">
-                <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
+                <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                     <i class="far fa-chart-bar"></i>
                 </router-link>
             </td>
@@ -110,16 +110,16 @@
         <h4>Posts</h4>
         <p>There are {{ campaign && campaign.posts_count ? campaign.posts_count : 0 }} posts for this campaign.</p>
         <div class="campaign-posts">
-            <a v-for="post in campaign.tracker_posts" :key="post.id" @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" :href="post.link" target="_blank">
-                <img :src="post.thumbnail_url" loading="lazy" />
+            <a @mouseover="attrActive=media.uuid" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="media in campaign.media" :key="media.uuid" :href="media.link" target="_blank">
+                <img :src="media.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
-                    <i class="fab fa-instagram"></i>
-                    <i v-if="post.type === 'video' || post.type=== 'sidecar'" :class="'fas fa-' + (post.type === 'sidecar' ? 'images' : 'video')"></i>
+                    <i v-if="media.platform === 'instagram'" class="fab fa-instagram"></i>
+                    <i v-if="media.type === 'video' || media.type=== 'sidecar'" :class="'fas fa-' + (media.type === 'sidecar' ? 'images' : 'video')"></i>
                 </div>
-                <div :class="'campaign-posts-card-attr ' + (attrActive === post.id ? ' active' : '')">
-                    <span v-if="post.video_views"><i class="fas fa-eye"></i>{{ String(nbr().abbreviate(post.video_views)).toUpperCase() }}</span>
-                    <span v-if="post.likes"><i class="fas fa-heart"></i>{{ String(nbr().abbreviate(post.likes)).toUpperCase() }}</span>
-                    <span v-if="post.comments"><i class="fas fa-comment"></i>{{ String(nbr().abbreviate(post.comments)).toUpperCase() }}</span>
+                <div :class="'campaign-posts-card-attr ' + (attrActive === media.uuid ? ' active' : '')">
+                    <span v-if="media.video_views"><i class="fas fa-eye"></i>{{ String(nbr().abbreviate(media.video_views)).toUpperCase() }}</span>
+                    <span v-if="media.likes"><i class="fas fa-heart"></i>{{ String(nbr().abbreviate(media.likes)).toUpperCase() }}</span>
+                    <span v-if="media.comments"><i class="fas fa-comment"></i>{{ String(nbr().abbreviate(media.comments)).toUpperCase() }}</span>
                 </div>
             </a>
         </div>
@@ -167,27 +167,27 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
-            this.createDoughtnutChart('sentiments-chart', {
-                datasets: [{
-                    data: [
-                        this.campaign.sentiments_positive.toFixed(2),
-                        this.campaign.sentiments_neutral.toFixed(2),
-                        this.campaign.sentiments_negative.toFixed(2)
-                    ],
-                    backgroundColor: [
-                        "#AFD75C",
-                        "#999999",
-                        "#ED435A" //#d93176
-                    ],
-                }],
-                labels: [
-                    'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-                    'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-                    'Negative ' + this.campaign.sentiments_negative.toFixed(2),
-                ]
-            });
-        }
+        // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
+        //     this.createDoughtnutChart('sentiments-chart', {
+        //         datasets: [{
+        //             data: [
+        //                 this.campaign.sentiments_positive.toFixed(2),
+        //                 this.campaign.sentiments_neutral.toFixed(2),
+        //                 this.campaign.sentiments_negative.toFixed(2)
+        //             ],
+        //             backgroundColor: [
+        //                 "#AFD75C",
+        //                 "#999999",
+        //                 "#ED435A" //#d93176
+        //             ],
+        //         }],
+        //         labels: [
+        //             'Positive ' + this.campaign.sentiments_positive.toFixed(2),
+        //             'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
+        //             'Negative ' + this.campaign.sentiments_negative.toFixed(2),
+        //         ]
+        //     });
+        // }
 
         // Communities
         if (this.campaign.communities && this.campaign.communities > 0) {
@@ -212,10 +212,10 @@ export default {
         }
 
         // Videos views
-        if (this.campaign.views && this.campaign.views > 0) {
+        if (this.campaign.video_views && this.campaign.video_views > 0) {
             this.createDoughtnutChart('views-chart', {
                 datasets: [{
-                    data: [this.campaign.views],
+                    data: [this.campaign.video_views],
                     backgroundColor: ['#d93176']
                 }],
                 labels: ['Instagram']
@@ -250,13 +250,17 @@ export default {
             name: 'Influencer',
             field: 'id',
             callback: function (row) {
-                return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
+                return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '" style="margin-right:0.2rem"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
             }
         }, {
             name: 'Number of posts',
-            field: 'posts',
+            field: 'medias',
             isNbr: true
         }, {
+            name: 'Engagemnets rate',
+            field: 'engagement_rate',
+            isPercentage: true
+        },{
             name: 'Size of activated communities',
             field: 'estimated_communities',
             isNbr: true
@@ -271,9 +275,9 @@ export default {
         }],
         instaPostsColumns: [{
                 name: 'Influencer',
-                field: 'influencer_id',
+                field: 'influencer',
                 callback: function (row) {
-                    return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+                    return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
                 }
             }, {
                 name: 'Post',
@@ -341,25 +345,49 @@ export default {
                 currency: '€'
             }
         ],
-        trackersColumns: [{
-            name: "type",
-            field: "type",
-            capitalize: true
-        }, {
-            name: "name",
-            field: "name",
-            capitalize: true
-        }, {
-            name: "status",
-            field: "status",
-            callback: function (row) {
-                return row.status ? "Active" : "Inactive";
-            }
-        }, {
-            name: "Created at",
-            field: "created_at",
-            isDate: true
-        }, ],
+        trackersColumns: [
+            {
+                name: "name",
+                field: "name",
+                capitalize: true
+            },
+            {
+                name: "Platform",
+                field: "platform",
+                callback: function (row) {
+                    let link = "";
+                    let icon = "";
+
+                    if (row.platform === "instagram") {
+                        link = "https://instagram.com/";
+                        icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
+                    }else if(row.platform === "youtube"){
+                        link = "https://youtube.com/";
+                        icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
+                    }
+
+                    return '<a href="' + link + '" target="_blank" title="' + row.platform + '" class="icon-link">' + icon + '</a>';
+                }
+            },
+            {
+                name: "type",
+                field: "type",
+                capitalize: true
+            }, 
+            {
+                name: "Status",
+                field: "status",
+                sortable: false,
+                callback: function (row) {
+                    return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                }
+            },
+            {
+                name: "Created at",
+                field: "created_at",
+                isTimeAgo: true
+            },
+        ],
         attrActive: null,
         sentimentData: {
             labels: [

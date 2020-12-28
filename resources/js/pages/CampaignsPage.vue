@@ -172,7 +172,7 @@ export default {
             this.$store.commit("setCampaign", {campaign: null});
 
             // Load campaigns
-            if(Object.values(this.campaigns).length === 0)
+            if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0)
                 this.loadCampaigns();
         }
     },
@@ -198,7 +198,8 @@ export default {
                 },
                 {
                     name: "Number of trackers",
-                    field: "all_trackers_count"
+                    field: "trackers_count",
+                    isNbr: true
                 },
                 {
                     name: "Influencers",

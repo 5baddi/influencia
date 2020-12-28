@@ -1,26 +1,13 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-
-import LoginPage from "./pages/LoginPage";
-import DashboardContainer from "./pages/DashboardContainer";
-import DashboardPage from "./pages/DashboardPage";
-import CampaignsPage from "./pages/CampaignsPage";
-import SearchPage from "./pages/SearchPage";
-import TrackersPage from "./pages/TrackersPage";
-import BrandsPage from "./pages/BrandsPage";
-import UsersPage from "./pages/UsersPage";
-import SettingsPage from "./pages/SettingsPage";
-import InfluencersPage from "./pages/InfluencersPage";
-import RolesPage from "./pages/RolesPage";
-
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
     {
 
         path: '/',
-        component: DashboardContainer,
+        component: () => import("./pages/DashboardContainer"),
         redirect: {
             name: 'dashboard'
         },
@@ -29,9 +16,19 @@ const routes = [
         },
         children: [
             {
+                name: 'Not found',
+                path: '/404',
+                component: () => import("./components/partials/404"),
+            },
+            {
+                name: 'Internal server error',
+                path: '/error',
+                component: () => import("./components/partials/Error"),
+            },
+            {
                 name: 'search',
                 path: '/search',
-                component: SearchPage,
+                component: () => import("./pages/SearchPage"),
                 meta: {
                     auth: true
                 },
@@ -40,7 +37,7 @@ const routes = [
             {
                 name: 'trackers',
                 path: '/trackers/:uuid?',
-                component: TrackersPage,
+                component: () => import("./pages/TrackersPage"),
                 meta: {
                     auth: true,
                     // subject: 'tracker'
@@ -49,7 +46,7 @@ const routes = [
             {
                 name: 'brands',
                 path: '/brands',
-                component: BrandsPage,
+                component: () => import("./pages/BrandsPage"),
                 meta: {
                     auth: true,
                     actions: ['list'],
@@ -60,7 +57,7 @@ const routes = [
             {
                 name: 'dashboard',
                 path: '/dashboard',
-                component: DashboardPage,
+                component: () => import("./pages/DashboardPage"),
                 meta: {
                     auth: true
                 },
@@ -69,7 +66,7 @@ const routes = [
             {
                 name: 'campaigns',
                 path: '/campaigns/:uuid?',
-                component: CampaignsPage,
+                component: () => import("./pages/CampaignsPage"),
                 meta: {
                     auth: true
                 },
@@ -77,7 +74,7 @@ const routes = [
             {
                 name: 'users',
                 path: '/users',
-                component: UsersPage,
+                component: () => import("./pages/UsersPage"),
                 meta: {
                     auth: true
                 },
@@ -86,7 +83,7 @@ const routes = [
             {
                 name: 'roles',
                 path: '/roles',
-                component: RolesPage,
+                component: () => import("./pages/RolesPage"),
                 meta: {
                     auth: true
                 },
@@ -95,7 +92,7 @@ const routes = [
             {
                 name: 'settings',
                 path: '/settings',
-                component: SettingsPage,
+                component: () => import("./pages/SettingsPage"),
                 meta: {
                     auth: true
                 },
@@ -104,7 +101,7 @@ const routes = [
             {
                 name: 'influencers',
                 path: '/influencers/:uuid?',
-                component: InfluencersPage,
+                component: () => import("./pages/InfluencersPage"),
                 meta: {
                     auth: true
                 },
@@ -115,11 +112,11 @@ const routes = [
     {
         name: 'login',
         path: '/login',
-        component: LoginPage,
+        component: () => import("./pages/LoginPage"),
     }
-]
+];
 
 export const router = new VueRouter({
     mode: 'history',
-    routes // short for `routes: routes`
-})
+    routes: routes
+});

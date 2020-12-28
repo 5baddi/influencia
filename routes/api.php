@@ -77,7 +77,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::post('/permissions', 'OAuthController@storePermission');
 
     // Influencers
-    Route::get('/influencers', 'InfluencerController@index');
+    Route::get('{brand}/influencers', 'InfluencerController@byBrand');
     Route::get('/influencers/{influencer}', 'InfluencerController@show');
     Route::get('/influencers/{influencer}/content', 'InfluencerController@content');
     Route::post('/influencers', 'InfluencerController@create');
@@ -87,29 +87,5 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/export/excel/{brand}/trackers', 'ExcelExportController@trackers');
 });
 
-// Streamed data
-Route::group(['prefix' => 'v1/stream'], function(){
-    // Trackers
-    Route::get('/{brand}/trackers', 'StreamController@trackers');
-});
-
-// Scraper
-Route::group(['prefix' => '/v1/scraper/insta/'], function(){
-    Route::get('/{username}', 'ScraperController@instagramByUsername');
-    Route::get('/{id}', 'ScraperController@instagramById')->where('id', '[0-9]+');
-    Route::get('/{influencer}/medias', 'ScraperController@instagramMedias');
-});
-
-// Route::middleware('auth:sanctum')->post('/register', 'UserController@register');
-
-// Route::middleware('auth:sanctum')->get('/brands', 'BrandController@index');
-// Route::middleware('auth:sanctum')->post('/brands', 'BrandController@create');
-// Route::middleware('auth:sanctum')->put('/brand/{brand}', 'BrandController@update');
-// Route::middleware('auth:sanctum')->get('/brand/{brand}/trackers', 'TrackerController@fetchByBrand');
-
-// Route::middleware('auth:sanctum')->get('/users', 'UserController@index');
+// Instagram old search
 Route::middleware('auth:sanctum')->post('/search', 'SearchController@search');
-// Route::middleware('auth:sanctum')->post('/campaigns', 'CampaignController@create');
-// Route::middleware('auth:sanctum')->get('/campaigns/{brand}', 'CampaignController@index');
-// Route::middleware('auth:sanctum')->post('/trackers', 'TrackerController@create');
-// Route::middleware('auth:sanctum')->post('/trackers/story', 'TrackerController@createStory');

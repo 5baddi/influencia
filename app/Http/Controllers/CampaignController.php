@@ -7,23 +7,14 @@ use App\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use App\Repositories\CampaignRepository;
 use App\Http\Requests\UpdateCampaignRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\CampaignAnalyticsResource;
+use App\Http\Resources\DataTable\TrackerDTResource;
+use App\Http\Resources\DataTable\CampaignDTResource;
 
 class CampaignController extends Controller
 {
-    /**
-     * 
-     * @var \App\Repositories\CampaignRepository
-     */
-    private $campaignRepo;
-
-    public function __construct(CampaignRepository $campaignRepo)
-    {
-        $this->campaignRepo = $campaignRepo;
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -31,14 +22,19 @@ class CampaignController extends Controller
      */
     public function byBrand(Brand $brand)
     {
+        // Check abilities
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        return response()->success("Campaigns fetched successfully.", 
-            $brand->campaigns()
-                ->with(['user', 'brand'])
-                ->withCount('trackers')
-                ->orderBy('created_at', 'desc')
-                ->get()
+        // Load campaigns
+        $campaigns = Campaign::with(['analytics'])
+                        ->withCount('trackers')
+                        ->where('brand_id', $brand->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return response()->success(
+            "Campaigns fetched successfully.", 
+            CampaignDTResource::collection($campaigns)
         );
     }
 
@@ -54,16 +50,16 @@ class CampaignController extends Controller
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Search by name
-        $byName = $brand->campaigns()
-                ->with(['user', 'brand'])
+        $byName = Campaign::with('analytics')
                 ->withCount('trackers')
+                ->where('brand_id', $brand->id)
                 ->whereRaw('LOWER(`name`) LIKE ?', ['%' . trim(strtolower($query)) . '%'])
                 ->get();
 
         // By influencer name or username
-        $byInfluencer = $brand->campaigns()
-                ->with(['user', 'brand'])
+        $byInfluencer = Campaign::with('aalytics')
                 ->withCount('trackers')
+                ->where('brand_id', $brand->id)
                 ->get()
                 ->filter(function($item) use($query){
                     $found = $item->influencers->filter(function($item) use($query){
@@ -78,9 +74,9 @@ class CampaignController extends Controller
 
         $result = $byName->merge($byInfluencer);
 
-        return response()->success("Campaigns filtered successfully.", 
-            $result->unique()
-                ->sortByDesc('created_at')
+        return response()->success(
+            "Campaigns filtered successfully.", 
+            CampaignDTResource::collection($result->unique()->sortByDesc('created_at'))
         );
     }
 
@@ -93,38 +89,41 @@ class CampaignController extends Controller
     {
         abort_if(Gate::denies('list_campaign'), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        // Load campaigns
-        $trackers = $brand->campaigns()
-                ->withCount(['trackers'])
-                ->orderBy('created_at', 'desc')
-                ->get();
+        // Load data
+        $campaigns = Campaign::with(['trackers', 'analytics'])
+                        ->withCount(['trackers'])
+                        ->where('brand_id', $brand->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+        $trackers = collect();
+        $impressions = 0;
+        $communities = 0;
 
-        $trackersCount = 0;
-        $trackersList = collect();
-        foreach($trackers as $item){
-            $trackersCount += $item->trackers_count;
+        // Format data
+        $campaigns->map(function($campaign) use(&$impressions, &$communities, &$trackers){
+            // Sum impressions
+            if(isset($campaign->analytics, $campaign->analytics->impressions))
+                $impressions += $campaign->analytics->impressions;
 
-            if($trackersList->contains('id', $item->id))
-                    continue;
+            // Sum communities
+            if(isset($campaign->analytics, $campaign->analytics->communities))
+                $communities += $campaign->analytics->communities;
 
-                $trackersList->add($item);
-        }
+            // Load trackers
+            $campaign->trackers->each(function($tracker) use(&$trackers){
+                $trackers->add($tracker);
+            });
+        });
 
-        $impressions = $this->campaignRepo->getEstimatedImpressions();
-        $communities = $this->campaignRepo->getEstimatedCommunities();
-
-        return response()->success("Campaigns fetched successfully.", 
+        return response()->success(
+            "Statistics fetched successfully.", 
             [
-                'campaigns_count'       =>  $brand->campaigns->count(),
-                'trackers_count'        =>  $trackersCount,
+                'campaigns_count'       =>  $campaigns->count(),
+                'trackers_count'        =>  $trackers->count(),
                 'impressions'           =>  $impressions,
                 'communities'           =>  $communities,
-                // 'brands'                =>  Auth::user()->brands,
-                // 'campaigns'             =>  Campaign::where('user_id', Auth::id())->get(),
-                // 'trackers'              =>  Tracker::where('user_id', Auth::id())->get(),
-                // 'influencers'           =>  Auth::user()->influencers,
-                'latestCampaigns'       =>  $brand->campaigns()->take(5)->get(),
-                'latestTrackers'        =>  $trackersList->take(5)->toArray()
+                'campaigns'             =>  CampaignDTResource::collection($campaigns)->take(5),
+                'trackers'              =>  TrackerDTResource::collection($trackers)->take(5),
             ]
         );
     }
@@ -165,9 +164,12 @@ class CampaignController extends Controller
      */
     public function analytics(Campaign $campaign)
     {
+        // Load analytics 
+        $analytics = $campaign->load(['trackers', 'analytics']);
+
         return response()->success(
             "Campaign fetched successfully.",
-            $campaign->load('trackers')
+            new CampaignAnalyticsResource($analytics)
         );
     }
 

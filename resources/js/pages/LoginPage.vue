@@ -12,7 +12,7 @@
     <div class="login-form">
         <div class="login-form__content">
             <h2>LOGIN TO YOUR ACCOUNT</h2>
-            <form @submit.prevent="login" autocomplete="on">
+            <form @submit.prevent="login()" autocomplete="on">
                 <div class="control has-icon">
                     <input v-model="email" type="email" class="input-email" placeholder="john@example.com" autocomplete="email" />
                     <div class="icon">
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="control">
-                    <button type="submit" class="btn btn-blue btn-primary">LOGIN</button>
+                    <button type="submit" class="btn btn-blue btn-primary" ref="signInBtn">LOGIN</button>
                 </div>
             </form>
         </div>
@@ -45,24 +45,6 @@
 import SecureLS from "secure-ls";
 
 export default {
-    data() {
-        return {
-            email: null,
-            password: null,
-        };
-    },
-    beforeRouteEnter(to, from, next) {
-        let ls = new SecureLS();
-
-        next((vm) => {
-            const loggedIn = ls.get("user");
-            if (loggedIn) {
-                next("/dashboard");
-                return;
-            }
-            next();
-        });
-    },
     notifications: {
         showLoginSuccess: {
             title: "Login success",
@@ -75,6 +57,10 @@ export default {
     },
     methods: {
         login() {
+            // Disable sign in button
+            this.$refs.signInBtn.setAttribute('disabled', true);
+            this.$refs.signInBtn.innerHTML = '<svg class="svg-inline--fa fa-spinner fa-w-16 fa-spin" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="spinner" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" data-fa-i2svg=""><path fill="currentColor" d="M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z"></path></svg>';
+
             this.$store
                 .dispatch("login", {
                     email: this.email,
@@ -99,8 +85,32 @@ export default {
                     this.showLoginError({
                         message: message
                     });
+                })
+                .finally(() => {
+                    if(typeof this.$refs.signInBtn !== "undefined"){
+                        this.$refs.signInBtn.innerHTML = "login";
+                        this.$refs.signInBtn.setAttribute('disabled', false);
+                    }
                 });
         },
+    },
+    beforeRouteEnter(to, from, next) {
+        let ls = new SecureLS();
+
+        next((vm) => {
+            const loggedIn = ls.get("user");
+            if (loggedIn) {
+                next("/dashboard");
+                return;
+            }
+            next();
+        });
+    },
+    data() {
+        return {
+            email: null,
+            password: null,
+        };
     }
 };
 </script>

@@ -19,20 +19,16 @@ import { abilitiesPlugin } from '@casl/vue';
 import ability from './services/ability';
 import DataTable from './components/DataTable.vue';
 import ConfirmationModal from "./components/modals/ConfirmationModal";
-import jQuery from 'jquery';
 import VueTimeago from 'vue-timeago';
-import SecureLS from "secure-ls";
 import './services/filters';
-
+import VueAuthImage from 'vue-auth-image';
+import SecureLS from "secure-ls";
 
 Vue.prototype.$http = api;
 
-// Init JQuery & Lodash
-window.jQuery = window.$ = jQuery;
-window._ = require('lodash');
-
 // Use plugins
 Vue.use(abilitiesPlugin, ability);
+Vue.use(VueAuthImage);
 Vue.use(VueTimeago, {
     name: 'Timeago', // Component name, `Timeago` by default
     locale: 'en',
@@ -43,71 +39,28 @@ Vue.component('DataTable', DataTable);
 Vue.component('ConfirmationModal', ConfirmationModal);
 
 // Stylesheet
-import '@fortawesome/fontawesome-free/css/all.css'
-import '@fortawesome/fontawesome-free/js/all.js'
+import '@fortawesome/fontawesome-free/css/all.css';
+import '@fortawesome/fontawesome-free/js/all.js';
+
+// Routes auth validation
+router.beforeEach((to, from, next) => {
+    if(to.matched.some(route => route.meta.auth)){
+        let ls = new SecureLS();
+        let loggedIn = store.getters.isLogged && ls.get("user");
+        if(!loggedIn){
+            next({ name: 'login' });
+        }
+    }
+
+    next();
+});
 
 const app = new Vue({
     el: '#app',
     components: { App },
     store,
     router,
-    watch: {
-        $route: {
-            handler(){
-                api.get("/api/abilities").then(response => {
-                    if(typeof response.data.content !== 'undefined'){
-                        ability.update(response.data.content);
-                    }
-                }).catch(error => {});
-
-                // Refresh user and active brand
-                if(typeof this.$store.getters.AuthenticatedUser === "object" && this.$store.getters.AuthenticatedUser !== null){
-                    // Refresh User
-                    this.$store.dispatch("fetchUser", this.$store.getters.AuthenticatedUser.uuid)
-                        .catch(error => {});
-                }
-            },
-            immediate: true
-        }
-    },
     created() {
         setupInterceptors(store);
-
-        api.interceptors.response.use(response => {
-                return Promise.resolve(response);
-            }, error => {
-                // if(error.response.status === 401){
-                //     this.$store.dispatch('logout').then(() => this.$router.push({ name: "login" }).catch(()=>{}))
-                // }
-                if(error.response.status === 429){
-                    console.log("Too many requests!");
-                }
-
-                return Promise.reject(error);
-            }
-        );
-
-        this.$router.beforeEach((to, from, next) => {
-            let ls = new SecureLS();
-            const loggedIn = this.$store.getters.isLogged && ls.get('user');
-
-            // let vm = this;
-            // if(!to.matched.some(record => (typeof record.meta.subject === "undefined") ? true : vm.$store.getters.AuthenticatedUser !== null && (vm.$store.getters.AuthenticatedUser.is_superadmin || vm.$can('list', record.meta.subject)))){
-            //     next('/')
-            // }
-
-            if(to.matched.some(record => record.meta.auth) && !loggedIn){
-                next('/login');
-            }
-            // Ensure load data
-            // switch(to.name){
-            //     case 'trackers':
-            //         console.log("Loading trackers");
-            //         this.$store.dispatch("fetchTrackers").catch(error => {});
-            //     break;
-            // }
-
-            next();
-        });
     }
 });

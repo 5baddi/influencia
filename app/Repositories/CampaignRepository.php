@@ -26,21 +26,21 @@ class CampaignRepository extends BaseRepository
    {
        // Init
        $engagements = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $engagements;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $engagements;
 
-       // calculate total estimated impressions
-       foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts))
-                    continue;
+    //    // calculate total estimated impressions
+    //    foreach($campaigns as $campaign){
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts))
+    //                 continue;
 
-                foreach($tracker->posts->load('influencer') as $post){
-                    $engagements += $post->likes + $post->comments;
-                }
-            }
-       }
+    //             foreach($tracker->posts->load('influencer') as $post){
+    //                 $engagements += $post->likes + $post->comments;
+    //             }
+    //         }
+    //    }
 
        return $engagements;
    }
@@ -49,24 +49,24 @@ class CampaignRepository extends BaseRepository
    {
        // Init
        $engagements = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $engagements;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $engagements;
 
-       // calculate total estimated engagements
-       foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts))
-                    continue;
+    //    // calculate total estimated engagements
+    //    foreach($campaigns as $campaign){
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts))
+    //                 continue;
 
-                foreach($tracker->posts as $post){
-                    if($post->is_ad)
-                        continue;
+    //             foreach($tracker->posts as $post){
+    //                 if($post->is_ad)
+    //                     continue;
 
-                    $engagements += $post->likes + $post->comments;
-                }
-            }
-       }
+    //                 $engagements += $post->likes + $post->comments;
+    //             }
+    //         }
+    //    }
 
        return $engagements;
    }
@@ -75,21 +75,21 @@ class CampaignRepository extends BaseRepository
    {
        // Init
        $views = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $views;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $views;
 
-       // calculate total estimated impressions
-       foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts))
-                    continue;
+    //    // calculate total estimated impressions
+    //    foreach($campaigns as $campaign){
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts))
+    //                 continue;
 
-                foreach($tracker->posts as $post){
-                    $views += $post->video_views;
-                }
-            }
-       }
+    //             foreach($tracker->posts as $post){
+    //                 $views += $post->video_views;
+    //             }
+    //         }
+    //    }
 
        return $views;
    }
@@ -98,24 +98,24 @@ class CampaignRepository extends BaseRepository
    {
        // Init
        $views = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $views;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $views;
 
-       // calculate total estimated views
-       foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts))
-                    continue;
+    //    // calculate total estimated views
+    //    foreach($campaigns as $campaign){
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts))
+    //                 continue;
 
-                foreach($tracker->posts as $post){
-                    if($post->is_ad)
-                        continue;
+    //             foreach($tracker->posts as $post){
+    //                 if($post->is_ad)
+    //                     continue;
 
-                    $views += $post->video_views;
-                }
-            }
-       }
+    //                 $views += $post->video_views;
+    //             }
+    //         }
+    //    }
 
        return $views;
    }
@@ -124,21 +124,21 @@ class CampaignRepository extends BaseRepository
    {
        // Init
        $impressions = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $impressions;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $impressions;
 
-       // calculate total estimated impressions
-       foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts))
-                    continue;
+    //    // calculate total estimated impressions
+    //    foreach($campaigns as $campaign){
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts))
+    //                 continue;
 
-                foreach($tracker->posts as $post){
-                    $impressions += ($post->likes + $post->video_views);
-                }
-            }
-       }
+    //             foreach($tracker->posts as $post){
+    //                 $impressions += ($post->likes + $post->video_views);
+    //             }
+    //         }
+    //    }
 
        return $impressions;
    }
@@ -146,23 +146,23 @@ class CampaignRepository extends BaseRepository
    public function getEstimatedOrganicImpressions() : int
    {
        // Init
-       $campaigns = $this->model->all();
+    //    $campaigns = $this->model->all();
        $impressions = 0;
 
        // calculate total estimated impressions
-       foreach($campaigns as $campaign){
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts))
-                    continue;
+    //    foreach($campaigns as $campaign){
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts))
+    //                 continue;
 
-                foreach($tracker->posts as $post){
-                    if($post->is_ad)
-                        continue;
+    //             foreach($tracker->posts as $post){
+    //                 if($post->is_ad)
+    //                     continue;
 
-                    $impressions += ($post->likes + $post->video_views);
-                }
-            }
-       }
+    //                 $impressions += ($post->likes + $post->video_views);
+    //             }
+    //         }
+    //    }
 
        return $impressions;
    }
@@ -171,62 +171,63 @@ class CampaignRepository extends BaseRepository
    {
        // Init
        $communities = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $communities;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $communities;
 
-       // calculate total estimated activated communities
-       foreach($campaigns as $campaign){
-            if($campaign->trackers->count() === 0)
-                continue;
+    //    // calculate total estimated activated communities
+    //    foreach($campaigns as $campaign){
+    //         if($campaign->trackers->count() === 0)
+    //             continue;
 
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
-                    continue;
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
+    //                 continue;
 
-                foreach($tracker->posts->load('influencer') as $post){
-                    $communities += $post->influencer->followers;
-                }
+    //             foreach($tracker->posts->load('influencer') as $post){
+    //                 $communities += $post->influencer->followers;
+    //             }
 
-                // switch($tracker->type){
-                //     case 'post':
-                //         $communities += $tracker->post->comments;
-                //     break;
-                //     case 'story':
-                //         $communities += $tracker->nbr_replies;
-                //     break;
-                // }
-            }
-        }
+    //             // switch($tracker->type){
+    //             //     case 'post':
+    //             //         $communities += $tracker->post->comments;
+    //             //     break;
+    //             //     case 'story':
+    //             //         $communities += $tracker->nbr_replies;
+    //             //     break;
+    //             // }
+    //         }
+    //     }
 
-       return $communities;
+    //    
+    return $communities;
    }
 
    public function getEstimatedOrganicCommunities() : int
    {
        // Init
        $communities = 0;
-       $campaigns = $this->selectedBrandCampaigns();
-        if(!$campaigns)
-            return $communities;
+    //    $campaigns = $this->selectedBrandCampaigns();
+    //     if(!$campaigns)
+    //         return $communities;
 
-       // calculate total estimated activated communities
-       foreach($campaigns as $campaign){
-            if($campaign->trackers->count() === 0)
-                continue;
+    //    // calculate total estimated activated communities
+    //    foreach($campaigns as $campaign){
+    //         if($campaign->trackers->count() === 0)
+    //             continue;
 
-            foreach($campaign->trackers->load('posts') as $tracker){
-                if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
-                    continue;
+    //         foreach($campaign->trackers->load('posts') as $tracker){
+    //             if(is_null($tracker->posts) || !in_array($tracker->type, ['post', 'story']))
+    //                 continue;
 
-                foreach($tracker->posts->load('influencer') as $post){
-                    if($post->is_ad)
-                        continue;
+    //             foreach($tracker->posts->load('influencer') as $post){
+    //                 if($post->is_ad)
+    //                     continue;
 
-                    $communities += $post->influencer->followers;
-                }
-            }
-        }
+    //                 $communities += $post->influencer->followers;
+    //             }
+    //         }
+    //     }
 
        return $communities;
    }
@@ -240,19 +241,19 @@ class CampaignRepository extends BaseRepository
     {
         // Init
         $comments = ['count' => 0, 'positive' => 0, 'neutral' => 0, 'negative' => 0];
-        if($campaign->trackers()->count() === 0)
-            return $comments;
+        // if($campaign->trackers()->count() === 0)
+        //     return $comments;
 
-        // Calculate comments count
-        foreach($campaign->trackers->load('post') as $tracker){
-            if(is_null($tracker->post))
-                continue;
+        // // Calculate comments count
+        // foreach($campaign->trackers->load('post') as $tracker){
+        //     if(is_null($tracker->post))
+        //         continue;
 
-            $comments['count'] += $tracker->post->comments;
-            $comments['positive'] += $tracker->post->comments_positive;
-            $comments['neutral'] += $tracker->post->comments_neutral;
-            $comments['negative'] += $tracker->post->comments_negative;
-        }
+        //     $comments['count'] += $tracker->post->comments;
+        //     $comments['positive'] += $tracker->post->comments_positive;
+        //     $comments['neutral'] += $tracker->post->comments_neutral;
+        //     $comments['negative'] += $tracker->post->comments_negative;
+        // }
 
         return $comments;
     }

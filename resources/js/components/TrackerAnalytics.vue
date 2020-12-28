@@ -3,7 +3,7 @@
     <ul v-show="typeof tracker.influencers !== 'undefined' && tracker.influencers.length > 0" class="influencers-avatars">
         <h4>influencers</h4>
         <li v-for="influencer in tracker.influencers" :key="influencer.id">
-            <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.username">
+            <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.name ?  influencer.name : influencer.username">
                 <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
@@ -31,16 +31,16 @@
             <canvas id="impressions-chart"></canvas>
             <span>Organic impressions {{ String(nbr().abbreviate(tracker.organic_impressions)).toUpperCase() }} ({{ tracker.impressions > 0 ? ((tracker.organic_impressions / tracker.impressions) * 100).toFixed(2) : 0  }}%)</span>
         </div>
-        <div class="card" v-if="tracker.views > 0">
+        <div class="card" v-if="tracker.video_views > 0">
             <div class="title">
                 <i class="far fa-eye green"></i>
                 <div class="numbers">
-                    <h4>{{ tracker.views | formatedNbr }}</h4>
+                    <h4>{{ tracker.video_views | formatedNbr }}</h4>
                     <span>Total videos views</span>
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_views)).toUpperCase() }} ({{ tracker.views > 0 ? ((tracker.organic_views / tracker.views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_views)).toUpperCase() }} ({{ tracker.video_views > 0 ? ((tracker.organic_views / tracker.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="tracker.engagements > 0">
             <div class="title">
@@ -72,42 +72,42 @@
             <canvas id="sentiments-chart"></canvas>
             <span>Based on {{ tracker.comments_count | formatedNbr }} comments</span>
         </div>
-        <div class="card emojis" v-if="tracker.top_three_emojis && tracker.top_three_emojis.top && Object.values(tracker.top_three_emojis.top).length > 0">
-            <h5>Top {{ tracker.top_three_emojis.top && Object.values(tracker.top_three_emojis.top).length > 1 ? Object.values(tracker.top_three_emojis.top).length + ' ' : '' }}emojis</h5>
+        <div class="card emojis" v-if="tracker.top_emojis && typeof tracker.top_emojis.top !== 'undefined' && Object.values(tracker.top_emojis.top).length > 0">
+            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }}emojis</h5>
             <ul>
-                <li v-for="(emoji, index) in tracker.top_three_emojis.top" :key="index">
+                <li v-for="(emoji, index) in tracker.top_emojis.top" :key="index">
                     {{ emoji }}
-                    <span>{{ ((index / (tracker.top_three_emojis.all ? tracker.top_three_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((index / (tracker.top_emojis.all ? tracker.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ tracker.top_three_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ tracker.top_emojis.all | formatedNbr }} emojis</span>
         </div>
     </div>
 
-    <div class="by-influencers" v-if="tracker.type === 'post' && tracker.influencers">
+    <div class="datatable-scroll" v-if="tracker.type === 'post' && tracker.influencers">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" />
+        <DataTable ref="byInfluencer" :columns="influencersColumns" :nativeData="tracker.influencers" cssClasses="table-card" />
     </div>
 
-    <div class="by-instagram-posts" v-if="tracker.platform === 'instagram'">
+    <div class="datatable-scroll" v-if="tracker.platform === 'instagram'">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="tracker.posts" />
+        <DataTable ref="byInstaPosts" :columns="instaMediaColumns" :nativeData="tracker.instagram_media" cssClasses="table-card" />
     </div>
 
     <div class="posts-section" v-if="tracker && tracker.posts_count > 0">
         <h4>Posts</h4>
         <p>There are {{ tracker && tracker.posts_count ? tracker.posts_count : 0 }} posts for this tracker.</p>
         <div class="campaign-posts">
-            <a @mouseover="attrActive=post.id" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="post in tracker.posts" :key="post.id" :href="post.link" target="_blank">
-                <img :src="post.thumbnail_url" loading="lazy" />
+            <a @mouseover="attrActive=media.uuid" @mouseleave="attrActive=null" class="campaign-posts-card" v-for="media in tracker.media" :key="media.uuid" :href="media.link" target="_blank">
+                <img :src="media.thumbnail_url" loading="lazy" />
                 <div class="campaign-posts-card-icons">
                     <i v-if="tracker.platform === 'instagram'" class="fab fa-instagram"></i>
-                    <i v-if="post.type === 'video' || post.type=== 'sidecar'" :class="'fas fa-' + (post.type === 'sidecar' ? 'images' : 'video')"></i>
+                    <i v-if="media.type === 'video' || media.type=== 'sidecar'" :class="'fas fa-' + (media.type === 'sidecar' ? 'images' : 'video')"></i>
                 </div>
-                <div :class="'campaign-posts-card-attr ' + (attrActive === post.id ? ' active' : '')">
-                    <span v-if="post.video_views"><i class="fas fa-eye"></i>{{ String(nbr().abbreviate(post.video_views)).toUpperCase() }}</span>
-                    <span v-if="post.likes"><i class="fas fa-heart"></i>{{ String(nbr().abbreviate(post.likes)).toUpperCase() }}</span>
-                    <span v-if="post.comments"><i class="fas fa-comment"></i>{{ String(nbr().abbreviate(post.comments)).toUpperCase() }}</span>
+                <div :class="'campaign-posts-card-attr ' + (attrActive === media.uuid ? ' active' : '')">
+                    <span v-if="media.video_views"><i class="fas fa-eye"></i>{{ String(nbr().abbreviate(media.video_views)).toUpperCase() }}</span>
+                    <span v-if="media.likes"><i class="fas fa-heart"></i>{{ String(nbr().abbreviate(media.likes)).toUpperCase() }}</span>
+                    <span v-if="media.comments"><i class="fas fa-comment"></i>{{ String(nbr().abbreviate(media.comments)).toUpperCase() }}</span>
                 </div>
             </a>
         </div>
@@ -188,10 +188,10 @@ export default {
             }
 
             // Videos views
-            if (this.tracker.views && this.tracker.views > 0) {
+            if (this.tracker.video_views && this.tracker.video_views > 0) {
                 this.createDoughtnutChart('views-chart', {
                     datasets: [{
-                        data: [this.tracker.views],
+                        data: [this.tracker.video_views],
                         backgroundColor: ['#d93176']
                     }],
                     labels: ['Instagram']
@@ -223,36 +223,60 @@ export default {
         }
     },
     data: () => ({
-        influencersColumns: [{
-            name: 'Influencer',
-            field: 'id',
-            callback: function (row) {
-                return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
-            }
-        }, {
-            name: 'Number of posts',
-            field: 'posts',
-            isNbr: true
-        }, {
-            name: 'Size of activated communities',
-            field: 'estimated_communities',
-            isNbr: true
-        }, {
-            name: 'Estimated impressions',
-            field: 'estimated_impressions',
-            isNbr: true
-        }, {
-            name: 'Earned Media Value',
-            field: 'earned_media_value',
-            currency: '€'
-        }],
-        instaPostsColumns: [{
-                name: 'Influencer',
-                field: 'influencer_id',
-                callback: function (row) {
-                    return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+        influencersColumns: [
+            {
+                field: 'pic_url',
+                isAvatar: true,
+                sortable: false,
+                callback: function(row){
+                    return row.pic_url;
                 }
-            }, {
+            },
+            {
+                name: 'Influencer',
+                field: 'uuid',
+                callback: function (row) {
+                    return row.name ? row.name : row.username;
+                }
+            }, 
+            {
+                name: 'Number of posts',
+                field: 'medias',
+                isNbr: true
+            },
+            {
+                name: 'Size of activated communities',
+                field: 'estimated_communities',
+                isNbr: true
+            }, 
+            {
+                name: 'Estimated impressions',
+                field: 'estimated_impressions',
+                isNbr: true
+            }, 
+            {
+                name: 'Earned Media Value',
+                field: 'earned_media_value',
+                currency: '€'
+            }
+        ],
+        instaMediaColumns: [
+            {
+                field: 'influencer_pic',
+                isAvatar: true,
+                sortable: false,
+                callback: function(row){
+                    return row.influencer.pic_url;
+                }
+            },
+            {
+                name: 'Influencer',
+                field: 'influencer',
+                callback: function (row) {
+                    return row.influencer.name ? row.influencer.name : row.influencer.username;
+                }
+            }, 
+            {
                 name: 'Post',
                 field: 'link',
                 callback: function (row) {
@@ -261,7 +285,8 @@ export default {
 
                     return '<a href="' + row.link + '" target="_blank">' + row.caption.substr(1, 100) + '...</a>';
                 }
-            }, {
+            }, 
+            {
                 name: 'Media type',
                 field: 'type',
                 capitalize: true
@@ -270,7 +295,8 @@ export default {
                 name: 'Size of activated communities',
                 field: 'activated_communities',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
                 isNbr: true
@@ -279,40 +305,46 @@ export default {
                 name: 'Engagements',
                 field: 'engagements',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Engagements rate (reach)',
                 field: 'engagement_rate',
                 callback: function (row) {
                     return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
                 }
-            }, {
+            }, 
+            {
                 name: 'Likes',
                 field: 'likes',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Views',
                 field: 'video_views',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Comments',
                 field: 'comments',
                 isNbr: true
-            }, {
+            }, 
+            {
                 name: 'Impressions (first sequence)'
             }, {
                 name: 'Story sequences'
             }, {
                 name: 'Sequence impressions'
-            }, {
+            }, 
+            {
                 name: 'Posted at',
-                field: 'published_at',
-                isDate: true,
-                format: 'DD/MM/YYYY'
-            }, {
+                field: 'published_at'
+            }, 
+            {
                 name: 'Earned Media Value',
                 field: 'earned_media_value',
                 currency: '€'

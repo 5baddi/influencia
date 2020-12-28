@@ -1,4 +1,7 @@
-import axios from 'axios'
+import axios from 'axios';
+import { router } from '../routes';
+import store from '../store';
+
 const api = axios.create({
     headers: {
         'Accept': 'application/json',
@@ -7,7 +10,26 @@ const api = axios.create({
     },
     baseURL: process.env.API_URL
 });
-// api.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-// api.defaults.withCredentials = true;
+
+api.interceptors.response.use(null, error => {
+    // Init
+    let path = "/login";
+
+    // Handle each response status
+    switch(error.response.status){
+        case 401:
+            store.dispatch("logout");
+        break;
+        case 404:
+            path = "/404";
+        break;
+        case 500:
+            path = "/error";
+        break;
+    }
+
+    router.push(path).catch(() => {});
+    return Promise.reject(error);
+});
 
 export { api };

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Brand;
+use App\Campaign;
 use App\Influencer;
 use App\InfluencerPost;
 use App\Jobs\ScrapInfluencerJob;
@@ -12,18 +14,43 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\CreateInfluencerRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\DataTable\InfluencerDTResource;
 
 class InfluencerController extends Controller
 {
     /**
      * Fetch all influencers
      *
+     * @param \App\Brand $brand
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function byBrand(Brand $brand)
     {
-        return response()->success("Influencers fetched successfully.", 
-            Influencer::withCount(['posts', 'trackers'])->get()
+        // Init
+        $influencersIds = [];
+
+        // Load campaigns by brand
+        $campaigns = Campaign::where('brand_id', $brand->id)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        // Get influencers ids by brand
+        $campaigns->map(function($campaign) use(&$influencersIds){
+            $campaign->influencers->each(function($influencer) use(&$influencersIds){
+                if(isset($influencer['uuid']) && !in_array($influencer['uuid'], $influencersIds))
+                    array_push($influencersIds, $influencer['uuid']);
+            });
+        });
+
+        // Load influencers
+        $influencers = Influencer::withCount(['posts', 'trackers'])
+                            ->whereIn('uuid', $influencersIds)
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+        return response()->success(
+            "Influencers fetched successfully.", 
+            InfluencerDTResource::collection($influencers)
         );
     }
 

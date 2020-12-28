@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,30 +14,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-//Auth::routes();
-
-//Route::get('/home', 'HomeController@index')->name('home');
-
-// Route::get('/login', function () {
-//     return view('login');
-// });
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// });
-
-// Route::get('/test', function () {
-//     $response = Http::withHeaders()->get('https://www.instagram.com/alexia_mori__/?__a=1');
-//     dd($response->json());
-// });
-
 Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|oauth|u|websockets/).*$');
 
 Route::post('/oauth', 'AuthenticationController@login')->name('login');
 
 // Short links
 Route::get('/u/{code}', 'ShortLinkController@shortenLink')->name('shorten.link');
+

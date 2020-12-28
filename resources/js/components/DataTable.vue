@@ -16,11 +16,11 @@
                 </th>
             </tr>
             <tr ref="headercolumns">
-                <th v-for="(column, index) in formatedColumns" :key="index">
+                <th v-for="(column, index) in formatedColumns" :key="index" :class="{'is-avatar': column.isAvatar}">
                     {{ (column.name ? column.name : " ") | headerColumn }}
                     <span v-if="column.sortable" @click="sort(column.field, index)">
-                        <svg v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
-                        <svg v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
+                        <svg :class="{'is-sorting-column': isAsc && sortingColumn == column.id}" v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
+                        <svg :class="{'is-sorting-column': !isAsc && sortingColumn == column.id}" v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
                     </span>
                 </th>
                 <slot name="header"></slot>
@@ -34,9 +34,10 @@
                 </td>
             </tr>
             <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
-                <td v-for="(col, idx) in formatedColumns" :key="idx">
-                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo" :class="col.class" v-html="obj[col.field]"></div>
-                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                <td v-for="(col, idx) in formatedColumns" :key="idx" :class="{'is-avatar': col.isAvatar}">
+                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage && !col.isAvatar && !col.isAvatarList" :class="col.class" v-html="obj[col.field]"></div>
+                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage && !col.isAvatar && !col.isAvatarList" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && (col.isImage || col.isAvatar)" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -184,7 +185,6 @@ table tfoot td>>>button:hover {
 table tbody>>>img {
     max-width: 36px;
     border-radius: 50%;
-    margin-right: 0.2rem;
 }
 
 table tbody>>>a {
@@ -195,6 +195,7 @@ table tbody>>>a {
     box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
     border: 1px solid rgba(0, 0, 0, 0.12);
     margin: 1rem 0;
+    overflow-x: auto;
 }
 
 .no-data {
@@ -204,6 +205,15 @@ table tbody>>>a {
 .no-data svg {
     margin-right: .2rem;
     color: rgba(0, 0, 0, 0.61);
+}
+
+.is-avatar{
+    width: 36px !important;
+    min-width: 36px !important;
+}
+
+.is-sorting-column{
+    color: rgba(0, 0, 0, 0.9);
 }
 </style>
 
@@ -225,14 +235,14 @@ export default {
             required: true,
             type: Array
         },
+        nativeData: {
+            type: Array
+        },
         fetchMethod: {
             type: String
         },
         responseField: {
             type: String
-        },
-        nativeData: {
-            type: Array
         },
         searchable: {
             type: Boolean,
@@ -247,6 +257,10 @@ export default {
         withPagination: {
             type: Boolean,
             default: true
+        },
+        defaultSorting: {
+            type: String,
+            default: "desc"
         },
         exportable: {
             type: Boolean,
@@ -275,7 +289,27 @@ export default {
         ...mapState("Loader", ["loading"]),
 
         formatedColumns(){
-            return this.columns;
+            let vm = this;
+            let columns = [];
+            vm.columns.map(function(value, key){
+                if(!vm.columns[key].field || typeof vm.columns[key].field === "undefined")
+                    return;
+                    
+                // Init sort
+                if (typeof vm.columns[key].sortable === "undefined")
+                    vm.columns[key].sortable = true;
+
+                // Handle custom css clasees
+                if(typeof vm.columns[key].class !== "string")
+                    vm.columns[key].class = '';
+
+                // Set ID
+                vm.columns[key].id = Math.random().toString(36).substr(2, 9);
+
+                columns.push(vm.columns[key]);
+            });
+
+            return columns;
         },
         formatedData() {
             if (this.data.length === 0)
@@ -291,36 +325,35 @@ export default {
                 };
 
                 vm.columns.map(function (item, key) {
-                    // Init sort
-                    if (typeof vm.columns[key].sortable === "undefined")
-                        vm.columns[key].sortable = true;
-
-                    // Handle custom css clasees
-                    if(typeof vm.columns[key].class !== "string")
-                        vm.columns[key].class = '';
-
                     // Parse data
                     let val = value[item.field];
+
+                    // Callback
+                    if (typeof item.callback === "function")
+                        val = item.callback.call(item, value);
+                        
                     if (typeof val !== "undefined" && val !== null) {
-                        // Callback
-                        if (typeof item.callback === "function")
-                            rowData[item.field] = item.callback.call(item, value);
                         // Currency symbol
-                        else if (typeof item.currency === "string" && item.currency !== '')
-                            rowData[item.field] = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;
+                        if (typeof item.currency === "string" && item.currency !== '')
+                            val = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency;
+                        
                         // Format number to K
-                        else if (typeof item.isNbr === "boolean" && item.isNbr)
-                            rowData[item.field] = String(abbreviate(val)).toUpperCase();
-                        else
-                            rowData[item.field] = val;
+                        if (typeof item.isNbr === "boolean" && item.isNbr)
+                            val = String(abbreviate(val)).toUpperCase();
+
+                        // Percentage
+                        if(typeof item.isPercentage === "boolean" && item.isPercentage)
+                            val = new Intl.NumberFormat('en-US').format((val * 100).toFixed(2)).replace(/,/g, ' ') + '%';
 
                         // Capitalize string
                         if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
-                            rowData[item.field] = val.charAt(0).toUpperCase() + val.slice(1);
+                            val = val.charAt(0).toUpperCase() + val.slice(1);
 
                         // Ignore zero or empty
-                        if ((val == null || val == 0) && typeof item.callback === "undefined")
-                            rowData[item.field] = '-';
+                        if (val == null || val == 0 || val == '')
+                            val = '-';
+
+                        rowData[item.field] = val;
                     }else{
                         rowData[item.field] = "---";
                     }
@@ -352,17 +385,12 @@ export default {
             if(typeof index === "undefined")
                 return;
 
-            // Get sort key
-            // let isAsc = this.columns[index].hasOwnProperty('isAsc') ? this.columns[index].isAsc : true;
-
             // Sort data
             this.data.sort(this.sortBy(col, this.isAsc));
 
             // Update column sort icon
-            // let _column = this.columns[index];
-            // _column.isAsc = !isAsc;
-            // this.columns.splice(index, 1, _column);
             this.isAsc = !this.isAsc
+            this.sortingColumn = col.id;
         },
         sortBy(field, isAsc) {
             return function(a, b){
@@ -443,24 +471,23 @@ export default {
             rowPerPage: [10, 25, 50, 100, 'All'],
             startIndex: 1,
             endIndex: this.perPage,
-            isAsc: false,
+            isAsc: String(this.defaultSorting).toLowerCase() === 'asc',
+            sortingColumn: null,
             searchQuery: null,
             isTyping: false,
             debounceSearchQuery: null
         }
+    },
+    mounted(){        
+        // Init Data
+        if(typeof this.nativeData === "undefined" || this.nativeData === null || Object.values(this.nativeData).length > 0)
+            this.loadData();
     },
     created() {
         // Init debounce instance
         this.debounceSearchQuery = _.debounce(function(){
             this.isTyping = false;
         }, 1000);
-
-        // Load data via native data
-        this.loadData();
-    },
-    destroyed() {
-        // if (this.es !== null)
-        //     this.es.close();
     }
 }
 </script>

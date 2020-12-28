@@ -55,7 +55,7 @@
             </DataTable>
         </div>
     </div>
-    <CreateTrackerModal :show="showAddTrackerModal" @create="create" @dismiss="dismissAddTrackerModal" />
+    <CreateTrackerModal :show="showAddTrackerModal" :campaigns="campaigns" @create="create" @dismiss="dismissAddTrackerModal" />
     <ConfirmationModal ref="confirmModal" v-on:custom="deleteAction" />
     <TrackerAnalytics v-if="tracker" :tracker="tracker" />
 </div>
@@ -71,90 +71,6 @@ export default {
     components: {
         CreateTrackerModal,
         TrackerAnalytics
-    },
-    watch: {
-        $route: "initData"
-    },
-    beforeRouteEnter(to, from, next) {
-        next(vm => vm.initData());
-    },
-    beforeRouteUpdate(to, from, next) {
-        next(vm => vm.fatchTracker())
-    },
-    data() {
-        return {
-            showAddTrackerModal: false,
-            selectedCampaign: null,
-            columns: [{
-                    name: "Name",
-                    field: "name"
-                },
-                {
-                    name: "Status",
-                    field: "status",
-                    sortable: false,
-                    callback: function (row) {
-                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
-                    }
-                },
-                {
-                    name: "Campaign",
-                    field: "campaign_id",
-                    callback: function (row) {
-                        return (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1));
-                    }
-                },
-                {
-                    name: "Influencers",
-                    field: "influencers",
-                    class: "avatars-list",
-                    sortable: false,
-                    callback: function (row) {
-                        if (row.influencers.length === 0)
-                            return '-';
-
-                        let html = '';
-                        row.influencers.map(function (item, index) {
-                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-                        });
-
-                        return html;
-                    }
-                },
-                {
-                    name: "Meduim",
-                    field: "platform",
-                    sortable: false,
-                    callback: function (row) {
-                        switch (row.platform) {
-                            case "youtube":
-                                return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
-                                break;
-                            case "instagram":
-                                return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
-                                break;
-                        }
-
-                        return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
-                    }
-                },
-                {
-                    name: "Activated communities",
-                    field: "communities",
-                    isNbr: true
-                },
-                {
-                    name: "Last update",
-                    field: "last_update",
-                }
-            ]
-        };
-    },
-    created() {
-        this.initData();
-    },
-    computed: {
-        ...mapGetters(["AuthenticatedUser", "campaigns", "trackers", "tracker"])
     },
     notifications: {
         createTrackerErrors: {
@@ -172,17 +88,29 @@ export default {
             type: "success",
         }
     },
+    computed: {
+        ...mapGetters(["AuthenticatedUser", "campaigns", "trackers", "tracker"])
+    },
+    watch: {
+        "$route.params.uuid": function(value){
+            // Load tracker analytics or unset tracker state
+            if(typeof value !== "undefined")
+                this.fetchTracker();
+            else
+                this.$store.commit("setTracker", {tracker: null});
+        }
+    },
     methods: {
-        initData() {
-            // Fetch brand compaigns
-            this.$store.dispatch("fetchCampaigns");
-            // Fetch brand trackers
-            this.$store.dispatch("fetchTrackers");
-            // Fetch tracker analytics
-            this.fetchTracker();
+        loadTrackers() {
+            // Fetch compaigns
+            if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0)
+                this.$store.dispatch("fetchCampaigns");
+            // Fetch trackers
+            if(typeof this.trackers === "undefined" || this.trackers === null || Object.values(this.trackers).length === 0)
+                this.$store.dispatch("fetchTrackers");
         },
         fetchTracker() {
-            // Load user by UUID
+            // Load tracker analytics by UUID
             if (typeof this.$route.params.uuid !== 'undefined')
                 this.$store.dispatch("fetchTrackerAnalytics", this.$route.params.uuid);
             else
@@ -191,19 +119,21 @@ export default {
                 });
         },
         loadByCampaign(){
-            if(typeof this.selectedCampaign.uuid !== "undefined")
+            if(this.selectedCampaign === null)
+                this.$refs.trackersDT.reloadData();
+            else if(typeof this.selectedCampaign.uuid !== "undefined")
                 this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
         },
         dismissAddTrackerModal() {
             this.showAddTrackerModal = false;
         },
         copyShortlink(tracker) {
-            if (typeof tracker.shortlink.fulllink === "undefined")
+            if (typeof tracker.fulllink === "undefined")
                 this.showError();
 
             let input = document.createElement("textarea");
             document.body.appendChild(input);
-            input.value = tracker.shortlink.fulllink;
+            input.value = tracker.fulllink;
             input.select();
             document.execCommand("copy");
             document.body.removeChild(input);
@@ -248,7 +178,7 @@ export default {
             let formData = new FormData();
 
             // Set base tracker info
-            formData.append("user_id", data.user_id);
+            formData.append("user_id", this.AuthenticatedUser.id);
             formData.append("campaign_id", data.campaign_id);
             formData.append("name", data.name);
             formData.append("type", data.type);
@@ -280,11 +210,91 @@ export default {
                         title: "Error",
                         message: `${error.message}`
                     });
-                    // error.errors.map((v, i) => {
-                    //    console.log(v);
-                    // });
                 });
         }
+    },
+    mounted(){
+        // Load tracker analytics
+        if(typeof this.$route.params.uuid !== "undefined"){
+            this.fetchTracker();
+        }else{
+            // Unset tracker state
+            this.$store.commit("setTracker", {tracker: null});
+
+            // Load trackers
+            this.loadTrackers();
+        }
+    },
+    data() {
+        return {
+            showAddTrackerModal: false,
+            selectedCampaign: null,
+            columns: [{
+                    name: "Name",
+                    field: "name"
+                },
+                {
+                    name: "Status",
+                    field: "status",
+                    sortable: false,
+                    callback: function (row) {
+                        return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
+                    }
+                },
+                {
+                    name: "Campaign",
+                    field: "campaign_name",
+                    callback: function (row) {
+                        return (row.campaign_name.charAt(0).toUpperCase() + row.campaign_name.slice(1));
+                    }
+                },
+                {
+                    name: "Influencers",
+                    field: "influencers",
+                    class: "avatars-list",
+                    sortable: false,
+                    callback: function (row) {
+                        if (row.influencers.length === 0)
+                            return '-';
+
+                        let html = '';
+                        row.influencers.map(function (item, index) {
+                            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
+                        });
+
+                        return html;
+                    }
+                },
+                {
+                    name: "Meduim",
+                    field: "platform",
+                    sortable: false,
+                    callback: function (row) {
+                        if(row.platform === null)
+                            return '<i class="fas fa-2 fa-globe web-icon datatable-icon" title="' + row.type + '"></i>';
+
+                        switch (row.platform) {
+                            case "youtube":
+                                return '<i class="fab fa-2 fa-youtube youtube-icon datatable-icon" title="' + row.platform + '"></i>';
+                            break;
+                            case "instagram":
+                                return '<i class="fab fa-2 fa-instagram instagram-icon datatable-icon" title="' + row.platform + '"></i>';
+                            break;
+                        }
+                    }
+                },
+                {
+                    name: "Activated communities",
+                    field: "communities",
+                    isNbr: true
+                },
+                {
+                    name: "Last update",
+                    field: "updated_at",
+                    isTimeAgo: true
+                }
+            ]
+        };
     }
 };
 </script>
