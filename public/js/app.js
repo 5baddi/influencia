@@ -7040,10 +7040,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     formatedData: function formatedData() {
       if (this.data.length === 0) return [];
-
-      var _data = this.data.slice(this.startIndex - 1, this.data.length < this.perPage ? this.data.length : this.perPage); // TODO: fix pagination...
-
-
       var vm = this;
       var _parsedData = [];
 
@@ -7119,10 +7115,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.perPage = event.target.value;
     },
     nextPage: function nextPage() {
-      this.startIndex = this.startIndex + this.perPage;
+      this.startIndex = this.startIndex + this.perPage; // Paginate data
+
+      this.paginateData();
     },
     previousPage: function previousPage() {
-      this.startIndex = this.startIndex - this.perPage;
+      this.startIndex = this.startIndex - this.perPage; // Paginate data
+
+      this.paginateData();
+    },
+    paginateData: function paginateData() {
+      this.data = this.nativeData.slice(this.startIndex - 1, this.data.length < this.perPage ? this.nativeData.length : this.perPage);
     },
     loadData: function loadData() {
       // Set native data

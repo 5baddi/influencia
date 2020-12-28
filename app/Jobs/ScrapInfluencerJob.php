@@ -77,11 +77,13 @@ class ScrapInfluencerJob implements ShouldQueue
             else
                 $account = $instagram->byUsername($this->username);
 
-            // Store influencer picture locally
-            $account['pic_url'] = Format::storePicture($account['pic_url']);
+            if(isset($account, $account['pic_url'])){
+                // Store influencer picture locally
+                $account['pic_url'] = Format::storePicture($account['pic_url']);
 
-            // Store account
-            $influencer = Influencer::create($account);
+                // Store account
+                $influencer = Influencer::create($account);
+            }
         }catch(\Exception $exception){
             Log::error("Failed to extract Influencer info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
         }

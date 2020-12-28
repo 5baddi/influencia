@@ -315,8 +315,6 @@ export default {
             if (this.data.length === 0)
                 return [];
 
-            let _data = this.data.slice(this.startIndex - 1, this.data.length < this.perPage ? this.data.length : this.perPage);
-            // TODO: fix pagination...
             let vm = this;
             let _parsedData = [];
             _data.map(function (value, key) {
@@ -419,9 +417,18 @@ export default {
         },
         nextPage() {
             this.startIndex = this.startIndex + this.perPage;
+
+            // Paginate data
+            this.paginateData();
         },
         previousPage() {
             this.startIndex = this.startIndex - this.perPage;
+
+            // Paginate data
+            this.paginateData();
+        },
+        paginateData(){
+            this.data = this.nativeData.slice(this.startIndex - 1, this.data.length < this.perPage ? this.nativeData.length : this.perPage);
         },
         loadData(){
             // Set native data
