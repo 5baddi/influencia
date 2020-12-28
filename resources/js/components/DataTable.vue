@@ -317,7 +317,7 @@ export default {
 
             let vm = this;
             let _parsedData = [];
-            vm.data.map(function (value, key) {
+            this.data.map(function (value, key) {
                 let rowData = {
                     original: value
                 };
@@ -428,7 +428,7 @@ export default {
             this.paginateData();
         },
         paginateData(){
-            this.data = this.nativeData.slice((this.startIndex - 1) * this.perPage, this.startIndex * this.perPage);
+            this.data = this.nativeData.slice(this.startIndex - 1, this.perPage);
         },
         loadData(){
             // Set native data
