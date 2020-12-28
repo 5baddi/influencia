@@ -80,7 +80,7 @@ export default {
     methods: {
         loadInfluencers() {
             // Fetch influencers
-            if(typeof this.influencers !== "undefined" && this.influencers !== null && Object.values(this.influencers).length === 0)
+            if(typeof this.influencers === "undefined" || this.influencers === null || Object.values(this.influencers).length === 0)
                 this.$store.dispatch("fetchInfluencers");
         },
         fetchInfluencer() {
@@ -153,10 +153,9 @@ export default {
         return {
             columns: [{
                     field: "pic_url",
-                    isImage: true,
                     isAvatar: true,
                     callback: function (row) {
-                        return '/cdn/' + row.pic_url;
+                        return row.pic_url;
                     },
                     sortable: false
                 },

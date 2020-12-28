@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Requests\UpdateCampaignRequest;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Resources\CampaignAnalyticsResource;
 use App\Http\Resources\DataTable\TrackerDTResource;
 use App\Http\Resources\DataTable\CampaignDTResource;
 
@@ -168,7 +169,7 @@ class CampaignController extends Controller
 
         return response()->success(
             "Campaign fetched successfully.",
-            $analytics->toArray()
+            new CampaignAnalyticsResource($analytics)
         );
     }
 

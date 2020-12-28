@@ -265,7 +265,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {
     // Load brands
-    if (Object.values(this.brands).length === 0) this.loadBrands();
+    if (typeof this.brands === "undefined" || this.brands === null || Object.values(this.brands).length === 0) this.loadBrands();
   },
   data: function data() {
     return {

@@ -103,10 +103,10 @@ export default {
     methods: {
         loadTrackers() {
             // Fetch compaigns
-            if(Object.values(this.campaigns).length === 0)
+            if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0)
                 this.$store.dispatch("fetchCampaigns");
             // Fetch trackers
-            if(Object.values(this.trackers).length === 0)
+            if(typeof this.trackers === "undefined" || this.trackers === null || Object.values(this.trackers).length === 0)
                 this.$store.dispatch("fetchTrackers");
         },
         fetchTracker() {

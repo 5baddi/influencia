@@ -146,7 +146,7 @@ export default {
     },
     mounted(){
         // Load brands
-        if(Object.values(this.brands).length === 0)
+        if(typeof this.brands === "undefined" || this.brands === null || Object.values(this.brands).length === 0)
             this.loadBrands();
    },
     data() {

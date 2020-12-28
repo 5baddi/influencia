@@ -299,8 +299,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_navigations_TopNavItem__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/navigations/TopNavItem */ "./resources/js/components/navigations/TopNavItem.vue");
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_partials_Loader__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/partials/Loader */ "./resources/js/components/partials/Loader.vue");
-/* harmony import */ var secure_ls__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! secure-ls */ "./node_modules/secure-ls/dist/secure-ls.js");
-/* harmony import */ var secure_ls__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(secure_ls__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _api_index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../api/index */ "./resources/js/api/index.js");
+/* harmony import */ var _services_ability__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../services/ability */ "./resources/js/services/ability.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -370,6 +370,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     MainNav: _components_navigations_MainNav__WEBPACK_IMPORTED_MODULE_0__["default"],
@@ -426,20 +427,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   beforeRouteEnter: function beforeRouteEnter(to, from, next) {
     next(function (vm) {
-      var ls = new secure_ls__WEBPACK_IMPORTED_MODULE_4___default.a();
-      var loggedIn = vm.$store.getters.isLogged && ls.get("user");
+      var loggedIn = vm.$store.getters.isLogged;
 
       if (!loggedIn) {
         next({
           name: 'login'
         });
-        return;
+      } else {
+        _api_index__WEBPACK_IMPORTED_MODULE_4__["api"].get("/api/abilities").then(function (response) {
+          if (typeof response.data.content !== 'undefined') {
+            _services_ability__WEBPACK_IMPORTED_MODULE_5__["default"].update(response.data.content);
+          }
+        })["catch"](function (error) {});
       }
     });
   },
   mounted: function mounted() {
     // Load brands
-    if (Object.values(this.brands).length === 0) this.loadBrands();
+    if (typeof this.brands === "undefined" || this.brands === null || Object.values(this.brands).length === 0) this.loadBrands();
   },
   data: function data() {
     return {

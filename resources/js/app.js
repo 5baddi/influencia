@@ -23,6 +23,7 @@ import jQuery from 'jquery';
 import VueTimeago from 'vue-timeago';
 import './services/filters';
 import VueAuthImage from 'vue-auth-image';
+import SecureLS from "secure-ls";
 
 
 Vue.prototype.$http = api;
@@ -47,23 +48,24 @@ Vue.component('ConfirmationModal', ConfirmationModal);
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
 
+// Routes auth validation
+router.beforeEach((to, from, next) => {
+    if(to.matched.some(route => route.meta.auth)){
+        let ls = new SecureLS();
+        let loggedIn = store.getters.isLogged && ls.get("user");
+        if(!loggedIn){
+            next({ name: 'login' });
+        }
+    }
+
+    next();
+});
+
 const app = new Vue({
     el: '#app',
     components: { App },
     store,
     router,
-    watch: {
-        // $route: {
-        //     handler(){
-        //         api.get("/api/abilities").then(response => {
-        //             if(typeof response.data.content !== 'undefined'){
-        //                 ability.update(response.data.content);
-        //             }
-        //         }).catch(error => {});
-        //     },
-        //     immediate: true
-        // }
-    },
     created() {
         setupInterceptors(store);
     }

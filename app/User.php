@@ -2,12 +2,13 @@
 
 namespace App;
 
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Notifications\Notifiable;
+use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Hash;
-use Laravel\Sanctum\HasApiTokens;
-use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class User extends Authenticatable
 {

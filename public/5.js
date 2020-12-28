@@ -228,11 +228,10 @@ __webpack_require__.r(__webpack_exports__);
     return {
       influencersColumns: [{
         field: 'pic_url',
-        isImage: true,
         isAvatar: true,
         sortable: false,
         callback: function callback(row) {
-          return '/cdn/' + row.pic_url;
+          return row.pic_url;
         }
       }, {
         name: 'Influencer',
@@ -259,11 +258,10 @@ __webpack_require__.r(__webpack_exports__);
       }],
       instaMediaColumns: [{
         field: 'influencer_pic',
-        isImage: true,
         isAvatar: true,
         sortable: false,
         callback: function callback(row) {
-          return '/cdn/' + row.influencer.pic_url;
+          return row.influencer.pic_url;
         }
       }, {
         name: 'Influencer',
@@ -775,9 +773,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: {
     loadTrackers: function loadTrackers() {
       // Fetch compaigns
-      if (Object.values(this.campaigns).length === 0) this.$store.dispatch("fetchCampaigns"); // Fetch trackers
+      if (typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0) this.$store.dispatch("fetchCampaigns"); // Fetch trackers
 
-      if (Object.values(this.trackers).length === 0) this.$store.dispatch("fetchTrackers");
+      if (typeof this.trackers === "undefined" || this.trackers === null || Object.values(this.trackers).length === 0) this.$store.dispatch("fetchTrackers");
     },
     fetchTracker: function fetchTracker() {
       // Load tracker analytics by UUID
@@ -1060,15 +1058,7 @@ var render = function() {
                     },
                     [
                       _c("img", {
-                        directives: [
-                          {
-                            name: "auth-image",
-                            rawName: "v-auth-image",
-                            value: "/cdn/" + influencer.pic_url,
-                            expression: "'/cdn/' + influencer.pic_url"
-                          }
-                        ],
-                        attrs: { loading: "lazy" }
+                        attrs: { src: influencer.pic_url, loading: "lazy" }
                       })
                     ]
                   )

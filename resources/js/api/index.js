@@ -28,7 +28,7 @@ api.interceptors.response.use(null, error => {
         break;
     }
 
-    router.push(path);
+    router.push(path).catch(() => {});
     return Promise.reject(error);
 });
 

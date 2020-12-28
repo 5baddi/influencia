@@ -3,7 +3,9 @@
 namespace App;
 
 use App\Tracker;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class Influencer extends Model
@@ -73,11 +75,24 @@ class Influencer extends Model
         'estimated_communities',
         'earned_media_value'
     ];
+
+    /**
+     * Get influencer picture as base64
+     * 
+     * @return string|null
+     */
+    public function getPicUrlAttribute() : ?string
+    {
+        if(isset($this->attributes['pic_url'], Auth::user()->access_token))
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
+
+        return null;
+    }
     
     /**
      * Get business email attribute
      * 
-     * @return string
+     * @return string|null
      */
     public function getBusinessEmailAttribute() : ?string
     {

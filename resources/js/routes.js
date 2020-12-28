@@ -16,6 +16,16 @@ const routes = [
         },
         children: [
             {
+                name: 'Not found',
+                path: '/404',
+                component: () => import("./components/partials/404"),
+            },
+            {
+                name: 'Internal server error',
+                path: '/error',
+                component: () => import("./components/partials/Error"),
+            },
+            {
                 name: 'search',
                 path: '/search',
                 component: () => import("./pages/SearchPage"),
@@ -103,16 +113,6 @@ const routes = [
         name: 'login',
         path: '/login',
         component: () => import("./pages/LoginPage"),
-    },
-    {
-        name: 'Not found',
-        path: '/404',
-        component: () => import("./components/partials/404"),
-    },
-    {
-        name: 'Internal server error',
-        path: '/error',
-        component: () => import("./components/partials/Error"),
     }
 ];
 

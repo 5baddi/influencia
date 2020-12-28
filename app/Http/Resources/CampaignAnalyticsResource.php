@@ -2,7 +2,9 @@
 
 namespace App\Http\Resources;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\DataTable\InstagramMediaDTResource;
 
 class CampaignAnalyticsResource extends JsonResource
 {
@@ -14,21 +16,50 @@ class CampaignAnalyticsResource extends JsonResource
      */
     public function toArray($request)
     {
+        // Init
+        $instagramMedia = collect();
+        $media = collect();
+        $trackers = collect();
+
+        $this->trackers->map(function($tracker) use(&$instagramMedia, &$trackers, &$media){
+            // Get media type post
+            $trackers->add($tracker->only(['uuid', 'type', 'platform', 'name', 'status', 'queued', 'created_at']));
+
+            // Get instagram media
+            if($tracker->platform === "instagram"){
+                // Load posts
+                $tracker->load('posts');
+                if($tracker->posts->count() > 0){
+                    $instagramMedia = $instagramMedia->merge($tracker->posts);
+
+                    $tracker->posts->map(function($post) use(&$media, $tracker){
+                        $_media = collect($post->only(['uuid', 'thumbnail_url', 'type', 'link', 'likes', 'video_views', 'comments']));
+                        $_media->put('platform', $tracker->platform);
+                        $media->add($_media);
+                    });
+                }
+            }
+        });
+
         return [
-            'communities'           =>  $this->communities,
-            'engagements'           =>  $this->engagements,
-            'engagement_rate'       =>  $this->engagement_rate,
-            'video_views'           =>  $this->video_views,
-            'impressions'           =>  $this->impressions,
-            'comments_count'        =>  $this->comments_count,
-            'top_emojis'            =>  $this->top_emojis,
-            'sentiments_positive'   =>  $this->sentiments_positive,
-            'sentiments_neutral'    =>  $this->sentiments_neutral,
-            'sentiments_negative'   =>  $this->sentiments_negative,
-            'posts_count'           =>  $this->posts_count,
-            'stories_count'         =>  $this->stories_count,
-            'links_count'           =>  $this->links_count,
-            'updated_at'            =>  $this->updated_at,
+            'communities'           =>  $this->analytics->communities ?? 0,
+            'engagements'           =>  $this->analytics->engagements ?? 0,
+            'engagement_rate'       =>  $this->analytics->engagement_rate ?? 1,
+            'video_views'           =>  $this->analytics->video_views ?? 0,
+            'impressions'           =>  $this->analytics->impressions ?? 0,
+            'comments_count'        =>  $this->analytics->comments_count ?? 0,
+            'top_emojis'            =>  $this->analytics->top_emojis ?? [],
+            'sentiments_positive'   =>  $this->analytics->sentiments_positive ?? 0.0,
+            'sentiments_neutral'    =>  $this->analytics->sentiments_neutral ?? 0.0,
+            'sentiments_negative'   =>  $this->analytics->sentiments_negative ?? 0.0,
+            'posts_count'           =>  $this->analytics->posts_count ?? 0.0,
+            'stories_count'         =>  $this->analytics->stories_count ?? 0.0,
+            'links_count'           =>  $this->analytics->links_count ?? 0.0 ,
+            'updated_at'            =>  isset($this->analytics, $this->analytics->updated_at) ? Carbon::parse($this->analytics->updated_at)->format("Y-m-d H:i") : Carbon::parse($this->updated_at)->format("Y-m-d H:i"),
+            'influencers'           =>  $this->influencers,
+            'instagram_media'       =>  InstagramMediaDTResource::collection($instagramMedia),
+            'trackers'              =>  $trackers,
+            'media'                 =>  $media,
         ];
     }
 }

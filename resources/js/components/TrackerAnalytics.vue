@@ -4,7 +4,7 @@
         <h4>influencers</h4>
         <li v-for="influencer in tracker.influencers" :key="influencer.id">
             <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.name ?  influencer.name : influencer.username">
-                <img v-auth-image="'/cdn/' + influencer.pic_url" loading="lazy" />
+                <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
     </ul>
@@ -226,11 +226,10 @@ export default {
         influencersColumns: [
             {
                 field: 'pic_url',
-                isImage: true,
                 isAvatar: true,
                 sortable: false,
                 callback: function(row){
-                    return '/cdn/' + row.pic_url;
+                    return row.pic_url;
                 }
             },
             {
@@ -264,11 +263,10 @@ export default {
         instaMediaColumns: [
             {
                 field: 'influencer_pic',
-                isImage: true,
                 isAvatar: true,
                 sortable: false,
                 callback: function(row){
-                    return '/cdn/' + row.influencer.pic_url;
+                    return row.influencer.pic_url;
                 }
             },
             {

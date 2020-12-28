@@ -7031,7 +7031,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         if (typeof vm.columns[key].sortable === "undefined") vm.columns[key].sortable = true; // Handle custom css clasees
 
-        if (typeof vm.columns[key]["class"] !== "string") vm.columns[key]["class"] = '';
+        if (typeof vm.columns[key]["class"] !== "string") vm.columns[key]["class"] = ''; // Set ID
+
+        vm.columns[key].id = Math.random().toString(36).substr(2, 9);
         columns.push(vm.columns[key]);
       });
       return columns;
@@ -7092,16 +7094,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     sort: function sort(col, index) {
       // Ignore when no index set
-      if (typeof index === "undefined") return; // Get sort key
-      // let isAsc = this.columns[index].hasOwnProperty('isAsc') ? this.columns[index].isAsc : true;
-      // Sort data
+      if (typeof index === "undefined") return; // Sort data
 
       this.data.sort(this.sortBy(col, this.isAsc)); // Update column sort icon
-      // let _column = this.columns[index];
-      // _column.isAsc = !isAsc;
-      // this.columns.splice(index, 1, _column);
 
       this.isAsc = !this.isAsc;
+      this.sortingColumn = col.id;
     },
     sortBy: function sortBy(field, isAsc) {
       return function (a, b) {
@@ -9279,7 +9277,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nul[data-v-4b997e69] {\r\n    padding: 0 1rem;\r\n    float: right;\n}\nul li[data-v-4b997e69] a {\r\n    color: white;\r\n    font-size: 10pt;\r\n    padding: .5rem 2rem;\r\n    border-radius: 2px;\n}\n.btn-excel[data-v-4b997e69] {\r\n    background-color: #1D6F42;\r\n    border: 1px solid #1D6F42;\n}\ntable[data-v-4b997e69] {\r\n    background: #fff;\r\n    border-radius: 4px;\r\n    width: 100%;\r\n    box-shadow: none;\r\n    border: none;\r\n    overflow-x: auto;\n}\ntable thead[data-v-4b997e69] .actions-header{\r\n    /* border-bottom: none; */\r\n    text-align: right;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']{\r\n    min-width: 300px;\r\n    min-height: 32px;\r\n    border: 1px solid #e0e0e0;\r\n    padding: 0 0.6rem;\r\n    border-radius: 4px;\r\n    outline: none;\r\n    transition: all 0.3s ease-in-out;\r\n    font-size: 0.9rem;\r\n    font-weight: 100;\r\n    color: #212121;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']::-moz-placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']:-ms-input-placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']::-ms-input-placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']::placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']:active{\r\n    border-color: #2d323e;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']:hover{\r\n    border-color: #a9b0c1;\n}\ntable thead th[data-v-4b997e69] {\r\n    color: rgba(0, 0, 0, 0.54);\r\n    font-weight: 100;\r\n    text-transform: uppercase;\r\n    font-size: 0.7rem;\r\n    padding: 0.8rem 0.6rem;\r\n    border-bottom: 1px solid rgba(0, 0, 0, 0.12);\r\n    text-align: left;\n}\ntable thead th svg[data-v-4b997e69] {\r\n    margin-left: .2rem;\r\n    cursor: pointer;\n}\ntable thead th svg[data-v-4b997e69]:hover {\r\n    color: rgba(0, 0, 0, 0.7);\n}\ntable tbody td[data-v-4b997e69] {\r\n    font-size: 0.8rem;\r\n    padding: 0.8rem 0.6rem;\r\n    color: rgba(0, 0, 0, 0.61);\r\n    min-width: 100px;\n}\ntable tfoot td[data-v-4b997e69] {\r\n    font-size: 0.8rem;\r\n    padding: 0.8rem 0.6rem;\r\n    color: rgba(0, 0, 0, 0.61);\r\n    text-align: right;\r\n    border-top: 1px solid rgba(0, 0, 0, 0.12);\n}\ntable tfoot td[data-v-4b997e69] select {\r\n    background-color: transparent;\r\n    width: auto;\r\n    padding: 0;\r\n    border: 0;\r\n    border-radius: 0;\r\n    height: auto;\r\n    margin-left: .2rem;\r\n    outline: 0;\n}\ntable tfoot td[data-v-4b997e69] span {\r\n    margin: 0 1rem;\n}\ntable tfoot td[data-v-4b997e69] button {\r\n    color: rgba(0, 0, 0, .54);\r\n    padding: 4px 8px;\r\n    cursor: pointer;\r\n    border: none;\n}\ntable tfoot td[data-v-4b997e69] button:focus {\r\n    color: rgba(0, 0, 0, .9) !important;\r\n    border: none;\r\n    outline: none;\n}\ntable tfoot td[data-v-4b997e69] button:hover {\r\n    color: rgba(0, 0, 0, .7) !important;\n}\ntable tbody[data-v-4b997e69] img {\r\n    max-width: 36px;\r\n    border-radius: 50%;\n}\ntable tbody[data-v-4b997e69] a {\r\n    color: #039be5;\n}\n.table-card[data-v-4b997e69] {\r\n    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);\r\n    border: 1px solid rgba(0, 0, 0, 0.12);\r\n    margin: 1rem 0;\r\n    overflow-x: auto;\n}\n.no-data[data-v-4b997e69] {\r\n    text-align: center;\n}\n.no-data svg[data-v-4b997e69] {\r\n    margin-right: .2rem;\r\n    color: rgba(0, 0, 0, 0.61);\n}\n.is-avatar[data-v-4b997e69]{\r\n    width: 36px !important;\r\n    min-width: 36px !important;\n}\n.is-sorting-column[data-v-4b997e69]{\r\n    color: rgba(0, 0, 0, 0.7);\n}\r\n", ""]);
+exports.push([module.i, "\nul[data-v-4b997e69] {\r\n    padding: 0 1rem;\r\n    float: right;\n}\nul li[data-v-4b997e69] a {\r\n    color: white;\r\n    font-size: 10pt;\r\n    padding: .5rem 2rem;\r\n    border-radius: 2px;\n}\n.btn-excel[data-v-4b997e69] {\r\n    background-color: #1D6F42;\r\n    border: 1px solid #1D6F42;\n}\ntable[data-v-4b997e69] {\r\n    background: #fff;\r\n    border-radius: 4px;\r\n    width: 100%;\r\n    box-shadow: none;\r\n    border: none;\r\n    overflow-x: auto;\n}\ntable thead[data-v-4b997e69] .actions-header{\r\n    /* border-bottom: none; */\r\n    text-align: right;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']{\r\n    min-width: 300px;\r\n    min-height: 32px;\r\n    border: 1px solid #e0e0e0;\r\n    padding: 0 0.6rem;\r\n    border-radius: 4px;\r\n    outline: none;\r\n    transition: all 0.3s ease-in-out;\r\n    font-size: 0.9rem;\r\n    font-weight: 100;\r\n    color: #212121;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']::-moz-placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']:-ms-input-placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']::-ms-input-placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']::placeholder{\r\n    color: #e0e0e0;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']:active{\r\n    border-color: #2d323e;\n}\ntable thead[data-v-4b997e69] .actions-header input[type='text']:hover{\r\n    border-color: #a9b0c1;\n}\ntable thead th[data-v-4b997e69] {\r\n    color: rgba(0, 0, 0, 0.54);\r\n    font-weight: 100;\r\n    text-transform: uppercase;\r\n    font-size: 0.7rem;\r\n    padding: 0.8rem 0.6rem;\r\n    border-bottom: 1px solid rgba(0, 0, 0, 0.12);\r\n    text-align: left;\n}\ntable thead th svg[data-v-4b997e69] {\r\n    margin-left: .2rem;\r\n    cursor: pointer;\n}\ntable thead th svg[data-v-4b997e69]:hover {\r\n    color: rgba(0, 0, 0, 0.7);\n}\ntable tbody td[data-v-4b997e69] {\r\n    font-size: 0.8rem;\r\n    padding: 0.8rem 0.6rem;\r\n    color: rgba(0, 0, 0, 0.61);\r\n    min-width: 100px;\n}\ntable tfoot td[data-v-4b997e69] {\r\n    font-size: 0.8rem;\r\n    padding: 0.8rem 0.6rem;\r\n    color: rgba(0, 0, 0, 0.61);\r\n    text-align: right;\r\n    border-top: 1px solid rgba(0, 0, 0, 0.12);\n}\ntable tfoot td[data-v-4b997e69] select {\r\n    background-color: transparent;\r\n    width: auto;\r\n    padding: 0;\r\n    border: 0;\r\n    border-radius: 0;\r\n    height: auto;\r\n    margin-left: .2rem;\r\n    outline: 0;\n}\ntable tfoot td[data-v-4b997e69] span {\r\n    margin: 0 1rem;\n}\ntable tfoot td[data-v-4b997e69] button {\r\n    color: rgba(0, 0, 0, .54);\r\n    padding: 4px 8px;\r\n    cursor: pointer;\r\n    border: none;\n}\ntable tfoot td[data-v-4b997e69] button:focus {\r\n    color: rgba(0, 0, 0, .9) !important;\r\n    border: none;\r\n    outline: none;\n}\ntable tfoot td[data-v-4b997e69] button:hover {\r\n    color: rgba(0, 0, 0, .7) !important;\n}\ntable tbody[data-v-4b997e69] img {\r\n    max-width: 36px;\r\n    border-radius: 50%;\n}\ntable tbody[data-v-4b997e69] a {\r\n    color: #039be5;\n}\n.table-card[data-v-4b997e69] {\r\n    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 3px 0 rgba(0, 0, 0, 0.12);\r\n    border: 1px solid rgba(0, 0, 0, 0.12);\r\n    margin: 1rem 0;\r\n    overflow-x: auto;\n}\n.no-data[data-v-4b997e69] {\r\n    text-align: center;\n}\n.no-data svg[data-v-4b997e69] {\r\n    margin-right: .2rem;\r\n    color: rgba(0, 0, 0, 0.61);\n}\n.is-avatar[data-v-4b997e69]{\r\n    width: 36px !important;\r\n    min-width: 36px !important;\n}\n.is-sorting-column[data-v-4b997e69]{\r\n    color: rgba(0, 0, 0, 0.9);\n}\r\n", ""]);
 
 // exports
 
@@ -45002,7 +45000,10 @@ var render = function() {
                                 }
                               ],
                               staticClass: "svg-inline--fa fa-sort-up fa-w-10",
-                              class: { "is-sorting-column": "test" },
+                              class: {
+                                "is-sorting-column":
+                                  _vm.isAsc && _vm.sortingColumn == column.id
+                              },
                               attrs: {
                                 "data-v-4b997e69": "",
                                 "aria-hidden": "true",
@@ -45039,7 +45040,10 @@ var render = function() {
                               ],
                               staticClass:
                                 "svg-inline--fa fa-sort-down fa-w-10",
-                              class: { "is-sorting-column": "test" },
+                              class: {
+                                "is-sorting-column":
+                                  !_vm.isAsc && _vm.sortingColumn == column.id
+                              },
                               attrs: {
                                 "data-v-4b997e69": "",
                                 "aria-hidden": "true",
@@ -45149,7 +45153,9 @@ var render = function() {
                     [
                       typeof obj[col.field] !== "undefined" &&
                       !col.isTimeAgo &&
-                      !col.isImage
+                      !col.isImage &&
+                      !col.isAvatar &&
+                      !col.isAvatarList
                         ? _c("div", {
                             class: col.class,
                             domProps: { innerHTML: _vm._s(obj[col.field]) }
@@ -45158,14 +45164,18 @@ var render = function() {
                       _vm._v(" "),
                       typeof obj[col.field] !== "undefined" &&
                       col.isTimeAgo &&
-                      !col.isImage
+                      !col.isImage &&
+                      !col.isAvatar &&
+                      !col.isAvatarList
                         ? _c("timeago", {
                             class: col.class,
                             attrs: { datetime: Date.parse(obj[col.field]) }
                           })
                         : _vm._e(),
                       _vm._v(" "),
-                      typeof obj[col.field] !== "undefined" && col.isImage
+                      typeof obj[col.field] !== "undefined" &&
+                      !col.isTimeAgo &&
+                      (col.isImage || col.isAvatar)
                         ? _c("img", {
                             directives: [
                               {
@@ -63491,7 +63501,7 @@ api.interceptors.response.use(null, function (error) {
       break;
   }
 
-  _routes__WEBPACK_IMPORTED_MODULE_1__["router"].push(path);
+  _routes__WEBPACK_IMPORTED_MODULE_1__["router"].push(path)["catch"](function () {});
   return Promise.reject(error);
 });
 
@@ -63526,10 +63536,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _services_filters__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./services/filters */ "./resources/js/services/filters.js");
 /* harmony import */ var vue_auth_image__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! vue-auth-image */ "./node_modules/vue-auth-image/vue-auth-image.js");
 /* harmony import */ var vue_auth_image__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(vue_auth_image__WEBPACK_IMPORTED_MODULE_14__);
-/* harmony import */ var _fortawesome_fontawesome_free_css_all_css__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @fortawesome/fontawesome-free/css/all.css */ "./node_modules/@fortawesome/fontawesome-free/css/all.css");
-/* harmony import */ var _fortawesome_fontawesome_free_css_all_css__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_fortawesome_fontawesome_free_css_all_css__WEBPACK_IMPORTED_MODULE_15__);
-/* harmony import */ var _fortawesome_fontawesome_free_js_all_js__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @fortawesome/fontawesome-free/js/all.js */ "./node_modules/@fortawesome/fontawesome-free/js/all.js");
-/* harmony import */ var _fortawesome_fontawesome_free_js_all_js__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_fortawesome_fontawesome_free_js_all_js__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var secure_ls__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! secure-ls */ "./node_modules/secure-ls/dist/secure-ls.js");
+/* harmony import */ var secure_ls__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(secure_ls__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _fortawesome_fontawesome_free_css_all_css__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @fortawesome/fontawesome-free/css/all.css */ "./node_modules/@fortawesome/fontawesome-free/css/all.css");
+/* harmony import */ var _fortawesome_fontawesome_free_css_all_css__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_fortawesome_fontawesome_free_css_all_css__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var _fortawesome_fontawesome_free_js_all_js__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @fortawesome/fontawesome-free/js/all.js */ "./node_modules/@fortawesome/fontawesome-free/js/all.js");
+/* harmony import */ var _fortawesome_fontawesome_free_js_all_js__WEBPACK_IMPORTED_MODULE_17___default = /*#__PURE__*/__webpack_require__.n(_fortawesome_fontawesome_free_js_all_js__WEBPACK_IMPORTED_MODULE_17__);
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -63538,6 +63550,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+
 
 
 
@@ -63570,7 +63583,24 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('DataTable', _components_Da
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('ConfirmationModal', _components_modals_ConfirmationModal__WEBPACK_IMPORTED_MODULE_10__["default"]); // Stylesheet
 
 
+ // Routes auth validation
 
+_routes__WEBPACK_IMPORTED_MODULE_1__["router"].beforeEach(function (to, from, next) {
+  if (to.matched.some(function (route) {
+    return route.meta.auth;
+  })) {
+    var ls = new secure_ls__WEBPACK_IMPORTED_MODULE_15___default.a();
+    var loggedIn = _store__WEBPACK_IMPORTED_MODULE_2__["default"].getters.isLogged && ls.get("user");
+
+    if (!loggedIn) {
+      next({
+        name: 'login'
+      });
+    }
+  }
+
+  next();
+});
 var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   el: '#app',
   components: {
@@ -63578,17 +63608,6 @@ var app = new vue__WEBPACK_IMPORTED_MODULE_0___default.a({
   },
   store: _store__WEBPACK_IMPORTED_MODULE_2__["default"],
   router: _routes__WEBPACK_IMPORTED_MODULE_1__["router"],
-  watch: {// $route: {
-    //     handler(){
-    //         api.get("/api/abilities").then(response => {
-    //             if(typeof response.data.content !== 'undefined'){
-    //                 ability.update(response.data.content);
-    //             }
-    //         }).catch(error => {});
-    //     },
-    //     immediate: true
-    // }
-  },
   created: function created() {
     Object(_api_httpInterceptors__WEBPACK_IMPORTED_MODULE_5__["setupInterceptors"])(_store__WEBPACK_IMPORTED_MODULE_2__["default"]);
   }
@@ -63989,6 +64008,18 @@ var routes = [{
     auth: true
   },
   children: [{
+    name: 'Not found',
+    path: '/404',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! ./components/partials/404 */ "./resources/js/components/partials/404.vue"));
+    }
+  }, {
+    name: 'Internal server error',
+    path: '/error',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! ./components/partials/Error */ "./resources/js/components/partials/Error.vue"));
+    }
+  }, {
     name: 'search',
     path: '/search',
     component: function component() {
@@ -64022,7 +64053,7 @@ var routes = [{
     name: 'dashboard',
     path: '/dashboard',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! ./pages/DashboardPage */ "./resources/js/pages/DashboardPage.vue"));
+      return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! ./pages/DashboardPage */ "./resources/js/pages/DashboardPage.vue"));
     },
     meta: {
       auth: true
@@ -64077,19 +64108,7 @@ var routes = [{
   name: 'login',
   path: '/login',
   component: function component() {
-    return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! ./pages/LoginPage */ "./resources/js/pages/LoginPage.vue"));
-  }
-}, {
-  name: 'Not found',
-  path: '/404',
-  component: function component() {
-    return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./components/partials/404 */ "./resources/js/components/partials/404.vue"));
-  }
-}, {
-  name: 'Internal server error',
-  path: '/error',
-  component: function component() {
-    return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! ./components/partials/Error */ "./resources/js/components/partials/Error.vue"));
+    return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./pages/LoginPage */ "./resources/js/pages/LoginPage.vue"));
   }
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({

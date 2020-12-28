@@ -19,8 +19,8 @@
                 <th v-for="(column, index) in formatedColumns" :key="index" :class="{'is-avatar': column.isAvatar}">
                     {{ (column.name ? column.name : " ") | headerColumn }}
                     <span v-if="column.sortable" @click="sort(column.field, index)">
-                        <svg :class="{'is-sorting-column': 'test'}" v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
-                        <svg :class="{'is-sorting-column': 'test'}" v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
+                        <svg :class="{'is-sorting-column': isAsc && sortingColumn == column.id}" v-show="isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-up fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-up" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M279 224H41c-21.4 0-32.1-25.9-17-41L143 64c9.4-9.4 24.6-9.4 33.9 0l119 119c15.2 15.1 4.5 41-16.9 41z"></path></svg>
+                        <svg :class="{'is-sorting-column': !isAsc && sortingColumn == column.id}" v-show="!isAsc" data-v-4b997e69="" class="svg-inline--fa fa-sort-down fa-w-10" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sort-down" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" data-fa-i2svg=""><path fill="currentColor" d="M41 288h238c21.4 0 32.1 25.9 17 41L177 448c-9.4 9.4-24.6 9.4-33.9 0L24 329c-15.1-15.1-4.4-41 17-41z"></path></svg>
                     </span>
                 </th>
                 <slot name="header"></slot>
@@ -35,9 +35,9 @@
             </tr>
             <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
                 <td v-for="(col, idx) in formatedColumns" :key="idx" :class="{'is-avatar': col.isAvatar}">
-                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage" :class="col.class" v-html="obj[col.field]"></div>
-                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
-                    <img v-if="typeof obj[col.field] !== 'undefined' && col.isImage" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
+                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage && !col.isAvatar && !col.isAvatarList" :class="col.class" v-html="obj[col.field]"></div>
+                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage && !col.isAvatar && !col.isAvatarList" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && (col.isImage || col.isAvatar)" :class="col.class" v-auth-image="obj[col.field]" loading="lazy"/>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -213,7 +213,7 @@ table tbody>>>a {
 }
 
 .is-sorting-column{
-    color: rgba(0, 0, 0, 0.7);
+    color: rgba(0, 0, 0, 0.9);
 }
 </style>
 
@@ -303,6 +303,9 @@ export default {
                 if(typeof vm.columns[key].class !== "string")
                     vm.columns[key].class = '';
 
+                // Set ID
+                vm.columns[key].id = Math.random().toString(36).substr(2, 9);
+
                 columns.push(vm.columns[key]);
             });
 
@@ -382,17 +385,12 @@ export default {
             if(typeof index === "undefined")
                 return;
 
-            // Get sort key
-            // let isAsc = this.columns[index].hasOwnProperty('isAsc') ? this.columns[index].isAsc : true;
-
             // Sort data
             this.data.sort(this.sortBy(col, this.isAsc));
 
             // Update column sort icon
-            // let _column = this.columns[index];
-            // _column.isAsc = !isAsc;
-            // this.columns.splice(index, 1, _column);
             this.isAsc = !this.isAsc
+            this.sortingColumn = col.id;
         },
         sortBy(field, isAsc) {
             return function(a, b){

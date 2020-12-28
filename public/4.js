@@ -360,7 +360,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: {
     loadInfluencers: function loadInfluencers() {
       // Fetch influencers
-      if (typeof this.influencers !== "undefined" && this.influencers !== null && Object.values(this.influencers).length === 0) this.$store.dispatch("fetchInfluencers");
+      if (typeof this.influencers === "undefined" || this.influencers === null || Object.values(this.influencers).length === 0) this.$store.dispatch("fetchInfluencers");
     },
     fetchInfluencer: function fetchInfluencer() {
       // Load influencer by UUID
@@ -433,10 +433,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return {
       columns: [{
         field: "pic_url",
-        isImage: true,
         isAvatar: true,
         callback: function callback(row) {
-          return '/cdn/' + row.pic_url;
+          return row.pic_url;
         },
         sortable: false
       }, {

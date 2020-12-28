@@ -171,7 +171,7 @@ export default {
     },
     mounted(){
         // Load users
-        if(Object.values(this.users).length === 0)
+        if(typeof this.users === "undefined" || this.users === null || Object.values(this.users).length === 0)
             this.loadUsers();
     },
     data() {

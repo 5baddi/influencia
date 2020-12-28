@@ -64,7 +64,9 @@ import {
     mapState
 } from "vuex";
 import Loader from '../components/partials/Loader';
-import SecureLS from "secure-ls";
+import { api } from '../api/index';
+import ability from '../services/ability';
+
 export default {
     components: {
         MainNav,
@@ -120,17 +122,22 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         next((vm) => {
-            let ls = new SecureLS();
-            let loggedIn = vm.$store.getters.isLogged && ls.get("user");
-            if (!loggedIn) {
+            let loggedIn = vm.$store.getters.isLogged;
+
+            if(!loggedIn){
                 next({ name: 'login' });
-                return;
+            }else{
+                api.get("/api/abilities").then(response => {
+                    if(typeof response.data.content !== 'undefined'){
+                        ability.update(response.data.content);
+                    }
+                }).catch((error) => {});
             }
         });
     },
     mounted(){
         // Load brands
-        if(Object.values(this.brands).length === 0)
+        if(typeof this.brands === "undefined" || this.brands === null || Object.values(this.brands).length === 0)
             this.loadBrands();
     },
     data() {

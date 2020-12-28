@@ -180,22 +180,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser"])),
   mounted: function mounted() {
     // Comments sentiments
-    if (typeof this.campaign.analytics.sentiments_positive === 'number' && typeof this.campaign.analytics.sentiments_neutral === 'number' && typeof this.campaign.analytics.sentiments_negative === 'number') {
-      this.createDoughtnutChart('sentiments-chart', {
-        datasets: [{
-          data: [this.campaign.analytics.sentiments_positive.toFixed(2), this.campaign.analytics.sentiments_neutral.toFixed(2), this.campaign.analytics.sentiments_negative.toFixed(2)],
-          backgroundColor: ["#AFD75C", "#999999", "#ED435A" //#d93176
-          ]
-        }],
-        labels: ['Positive ' + this.campaign.analytics.sentiments_positive.toFixed(2), 'Neutral ' + this.campaign.analytics.sentiments_neutral.toFixed(2), 'Negative ' + this.campaign.analytics.sentiments_negative.toFixed(2)]
-      });
-    } // Communities
-
-
-    if (this.campaign.analytics.communities && this.campaign.analytics.communities > 0) {
+    // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
+    //     this.createDoughtnutChart('sentiments-chart', {
+    //         datasets: [{
+    //             data: [
+    //                 this.campaign.sentiments_positive.toFixed(2),
+    //                 this.campaign.sentiments_neutral.toFixed(2),
+    //                 this.campaign.sentiments_negative.toFixed(2)
+    //             ],
+    //             backgroundColor: [
+    //                 "#AFD75C",
+    //                 "#999999",
+    //                 "#ED435A" //#d93176
+    //             ],
+    //         }],
+    //         labels: [
+    //             'Positive ' + this.campaign.sentiments_positive.toFixed(2),
+    //             'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
+    //             'Negative ' + this.campaign.sentiments_negative.toFixed(2),
+    //         ]
+    //     });
+    // }
+    // Communities
+    if (this.campaign.communities && this.campaign.communities > 0) {
       this.createDoughtnutChart('communities-chart', {
         datasets: [{
-          data: [this.campaign.analytics.communities.toFixed(2)],
+          data: [this.campaign.communities.toFixed(2)],
           backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -203,10 +213,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } // Impressions
 
 
-    if (this.campaign.analytics.impressions && this.campaign.analytics.impressions > 0) {
+    if (this.campaign.impressions && this.campaign.impressions > 0) {
       this.createDoughtnutChart('impressions-chart', {
         datasets: [{
-          data: [this.campaign.analytics.impressions.toFixed(2)],
+          data: [this.campaign.impressions.toFixed(2)],
           backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -214,10 +224,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } // Videos views
 
 
-    if (this.campaign.analytics.views && this.campaign.analytics.views > 0) {
+    if (this.campaign.video_views && this.campaign.video_views > 0) {
       this.createDoughtnutChart('views-chart', {
         datasets: [{
-          data: [this.campaign.analytics.views],
+          data: [this.campaign.video_views],
           backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -225,10 +235,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } // Engagements
 
 
-    if (this.campaign.analytics.engagements && this.campaign.analytics.engagements > 0) {
+    if (this.campaign.engagements && this.campaign.engagements > 0) {
       this.createDoughtnutChart('engagements-chart', {
         datasets: [{
-          data: [this.campaign.analytics.engagements.toFixed(2)],
+          data: [this.campaign.engagements.toFixed(2)],
           backgroundColor: ['#d93176']
         }],
         labels: ['Instagram']
@@ -236,11 +246,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     } // Posts
 
 
-    if (this.campaign.analytics.posts_count && this.campaign.analytics.posts_count > 0) {
-      var postsAndStoriesLabel = 'Instagram: ' + (this.campaign.analytics.posts_count ? this.campaign.analytics.posts_count : 0) + ' including ' + (this.campaign.analytics.stories_count ? this.campaign.analytics.stories_count : 0) + ' stories';
+    if (this.campaign.posts_count && this.campaign.posts_count > 0) {
+      var postsAndStoriesLabel = 'Instagram: ' + (this.campaign.posts_count ? this.campaign.posts_count : 0) + ' including ' + (this.campaign.stories_count ? this.campaign.stories_count : 0) + ' stories';
       this.createDoughtnutChart('posts-chart', {
         datasets: [{
-          data: [this.campaign.analytics.posts_count.toFixed(2)],
+          data: [this.campaign.posts_count.toFixed(2)],
           backgroundColor: ['#d93176']
         }],
         labels: [postsAndStoriesLabel]
@@ -253,12 +263,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: 'Influencer',
         field: 'id',
         callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
+          return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '" style="margin-right:0.2rem"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
         }
       }, {
         name: 'Number of posts',
-        field: 'posts',
+        field: 'medias',
         isNbr: true
+      }, {
+        name: 'Engagemnets rate',
+        field: 'engagement_rate',
+        isPercentage: true
       }, {
         name: 'Size of activated communities',
         field: 'estimated_communities',
@@ -274,9 +288,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }],
       instaPostsColumns: [{
         name: 'Influencer',
-        field: 'influencer_id',
+        field: 'influencer',
         callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+          return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
         }
       }, {
         name: 'Post',
@@ -636,7 +650,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         campaign: null
       }); // Load campaigns
 
-      if (Object.values(this.campaigns).length === 0) this.loadCampaigns();
+      if (typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0) this.loadCampaigns();
     }
   },
   data: function data() {
@@ -1049,7 +1063,7 @@ var render = function() {
         ),
         _vm._v(" "),
         _c("div", { staticClass: "cards statistics" }, [
-          _vm.campaign.analytics.communities > 0
+          _vm.campaign.communities > 0
             ? _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "title" }, [
                   _c("i", { staticClass: "fas fa-users egg-blue" }),
@@ -1057,11 +1071,7 @@ var render = function() {
                   _c("div", { staticClass: "numbers" }, [
                     _c("h4", [
                       _vm._v(
-                        _vm._s(
-                          _vm._f("formatedNbr")(
-                            _vm.campaign.analytics.communities
-                          )
-                        )
+                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.communities))
                       )
                     ]),
                     _vm._v(" "),
@@ -1081,10 +1091,10 @@ var render = function() {
                       ) +
                       " (" +
                       _vm._s(
-                        _vm.campaign.analytics.communities > 0
+                        _vm.campaign.communities > 0
                           ? (
                               (_vm.campaign.organic_communities /
-                                _vm.campaign.analytics.communities) *
+                                _vm.campaign.communities) *
                               100
                             ).toFixed(2)
                           : 0
@@ -1095,7 +1105,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.campaign.analytics.impressions > 0
+          _vm.campaign.impressions > 0
             ? _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "title" }, [
                   _c("i", { staticClass: "fas fa-bullhorn purple" }),
@@ -1103,11 +1113,7 @@ var render = function() {
                   _c("div", { staticClass: "numbers" }, [
                     _c("h4", [
                       _vm._v(
-                        _vm._s(
-                          _vm._f("formatedNbr")(
-                            _vm.campaign.analytics.impressions
-                          )
-                        )
+                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.impressions))
                       )
                     ]),
                     _vm._v(" "),
@@ -1127,10 +1133,10 @@ var render = function() {
                       ) +
                       " (" +
                       _vm._s(
-                        _vm.campaign.analytics.impressions > 0
+                        _vm.campaign.impressions > 0
                           ? (
                               (_vm.campaign.organic_impressions /
-                                _vm.campaign.analytics.impressions) *
+                                _vm.campaign.impressions) *
                               100
                             ).toFixed(2)
                           : 0
@@ -1141,7 +1147,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.campaign.analytics.views > 0
+          _vm.campaign.video_views > 0
             ? _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "title" }, [
                   _c("i", { staticClass: "far fa-eye green" }),
@@ -1149,9 +1155,7 @@ var render = function() {
                   _c("div", { staticClass: "numbers" }, [
                     _c("h4", [
                       _vm._v(
-                        _vm._s(
-                          _vm._f("formatedNbr")(_vm.campaign.analytics.views)
-                        )
+                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.video_views))
                       )
                     ]),
                     _vm._v(" "),
@@ -1171,10 +1175,10 @@ var render = function() {
                       ) +
                       " (" +
                       _vm._s(
-                        _vm.campaign.analytics.views > 0
+                        _vm.campaign.video_views > 0
                           ? (
                               (_vm.campaign.organic_views /
-                                _vm.campaign.analytics.views) *
+                                _vm.campaign.video_views) *
                               100
                             ).toFixed(2)
                           : 0
@@ -1185,7 +1189,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.campaign.analytics.engagements > 0
+          _vm.campaign.engagements > 0
             ? _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "title" }, [
                   _c("i", { staticClass: "fas fa-thumbs-up blue" }),
@@ -1193,11 +1197,7 @@ var render = function() {
                   _c("div", { staticClass: "numbers" }, [
                     _c("h4", [
                       _vm._v(
-                        _vm._s(
-                          _vm._f("formatedNbr")(
-                            _vm.campaign.analytics.engagements
-                          )
-                        )
+                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.engagements))
                       )
                     ]),
                     _vm._v(" "),
@@ -1217,10 +1217,10 @@ var render = function() {
                       ) +
                       " (" +
                       _vm._s(
-                        _vm.campaign.analytics.engagements > 0
+                        _vm.campaign.engagements > 0
                           ? (
                               (_vm.campaign.organic_engagements /
-                                _vm.campaign.analytics.engagements) *
+                                _vm.campaign.engagements) *
                               100
                             ).toFixed(2)
                           : 0
@@ -1231,7 +1231,7 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.campaign.analytics.posts_count > 0
+          _vm.campaign.posts_count > 0
             ? _c("div", { staticClass: "card" }, [
                 _c("div", { staticClass: "title" }, [
                   _c("i", { staticClass: "fas fa-hashtag yellow" }),
@@ -1239,11 +1239,7 @@ var render = function() {
                   _c("div", { staticClass: "numbers" }, [
                     _c("h4", [
                       _vm._v(
-                        _vm._s(
-                          _vm._f("formatedNbr")(
-                            _vm.campaign.analytics.posts_count
-                          )
-                        )
+                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.posts_count))
                       )
                     ]),
                     _vm._v(" "),
@@ -1263,10 +1259,10 @@ var render = function() {
                       ) +
                       " (" +
                       _vm._s(
-                        _vm.campaign.analytics.posts_count > 0
+                        _vm.campaign.posts_count > 0
                           ? (
                               (_vm.campaign.organic_posts /
-                                _vm.campaign.analytics.posts_count) *
+                                _vm.campaign.posts_count) *
                               100
                             ).toFixed(2)
                           : 0
@@ -1279,7 +1275,7 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "cards sentiments" }, [
-          _vm.campaign.analytics.comments_count > 0
+          _vm.campaign.comments_count > 0
             ? _c("div", { staticClass: "card" }, [
                 _c("h5", [_vm._v("Comments sentiment")]),
                 _vm._v(" "),
@@ -1289,9 +1285,7 @@ var render = function() {
                   _vm._v(
                     "Based on " +
                       _vm._s(
-                        _vm._f("formatedNbr")(
-                          _vm.campaign.analytics.comments_count
-                        )
+                        _vm._f("formatedNbr")(_vm.campaign.comments_count)
                       ) +
                       " comments"
                   )
@@ -1299,17 +1293,16 @@ var render = function() {
               ])
             : _vm._e(),
           _vm._v(" "),
-          _vm.campaign.analytics.top_emojis
+          _vm.campaign.top_emojis
             ? _c("div", { staticClass: "card emojis" }, [
                 _c("h5", [
                   _vm._v(
                     "Top " +
                       _vm._s(
-                        _vm.campaign.analytics.top_emojis.top &&
-                          Object.values(_vm.campaign.analytics.top_emojis.top)
-                            .length > 1
-                          ? Object.values(_vm.campaign.analytics.top_emojis.top)
-                              .length + " "
+                        _vm.campaign.top_emojis.top &&
+                          Object.values(_vm.campaign.top_emojis.top).length > 1
+                          ? Object.values(_vm.campaign.top_emojis.top).length +
+                              " "
                           : ""
                       ) +
                       "emojis"
@@ -1318,10 +1311,7 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "ul",
-                  _vm._l(_vm.campaign.analytics.top_emojis.top, function(
-                    emoji,
-                    index
-                  ) {
+                  _vm._l(_vm.campaign.top_emojis.top, function(emoji, index) {
                     return _c("li", { key: index }, [
                       _vm._v(
                         "\r\n                    " +
@@ -1333,8 +1323,8 @@ var render = function() {
                           _vm._s(
                             (
                               (index /
-                                (_vm.campaign.analytics.top_emojis.all
-                                  ? _vm.campaign.analytics.top_emojis.all
+                                (_vm.campaign.top_emojis.all
+                                  ? _vm.campaign.top_emojis.all
                                   : 1)) *
                               100
                             ).toFixed(2)
@@ -1350,9 +1340,7 @@ var render = function() {
                   _vm._v(
                     "Based on " +
                       _vm._s(
-                        _vm._f("formatedNbr")(
-                          _vm.campaign.analytics.top_emojis.all
-                        )
+                        _vm._f("formatedNbr")(_vm.campaign.top_emojis.all)
                       ) +
                       " emojis"
                   )
@@ -1363,13 +1351,14 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "by-influencers" },
+          { staticClass: "datatable-scroll" },
           [
             _c("h4", [_vm._v("Performance breakdown by Influencer")]),
             _vm._v(" "),
             _c("DataTable", {
               ref: "byInfluencer",
               attrs: {
+                cssClasses: "table-card",
                 columns: _vm.influencersColumns,
                 nativeData: _vm.campaign.influencers
               }
@@ -1380,15 +1369,16 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "by-instagram-posts" },
+          { staticClass: "datatable-scroll" },
           [
             _c("h4", [_vm._v("Performance breakdown by post on Instagram")]),
             _vm._v(" "),
             _c("DataTable", {
               ref: "byInstaPosts",
               attrs: {
+                cssClasses: "table-card",
                 columns: _vm.instaPostsColumns,
-                nativeData: _vm.campaign.instagram_posts
+                nativeData: _vm.campaign.instagram_media
               }
             })
           ],
@@ -1397,7 +1387,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "by-influencers" },
+          { staticClass: "datatable-scroll" },
           [
             _c("h4", [_vm._v("List of trackers")]),
             _vm._v(" "),
@@ -1406,6 +1396,7 @@ var render = function() {
               {
                 ref: "byTrackers",
                 attrs: {
+                  cssClasses: "table-card",
                   columns: _vm.trackersColumns,
                   nativeData: _vm.campaign.trackers
                 },
@@ -1424,6 +1415,17 @@ var render = function() {
                               ? _c(
                                   "router-link",
                                   {
+                                    directives: [
+                                      {
+                                        name: "show",
+                                        rawName: "v-show",
+                                        value:
+                                          row.data.original.queued ===
+                                          "finished",
+                                        expression:
+                                          "row.data.original.queued === 'finished'"
+                                      }
+                                    ],
                                     staticClass: "icon-link",
                                     attrs: {
                                       to: {
@@ -1444,7 +1446,7 @@ var render = function() {
                   ],
                   null,
                   false,
-                  2219187239
+                  3662718142
                 )
               },
               [
@@ -1457,7 +1459,7 @@ var render = function() {
           1
         ),
         _vm._v(" "),
-        _vm.campaign && _vm.campaign.analytics.posts_count > 0
+        _vm.campaign && _vm.campaign.posts_count > 0
           ? _c("div", { staticClass: "posts-section" }, [
               _c("h4", [_vm._v("Posts")]),
               _vm._v(" "),
@@ -1465,8 +1467,8 @@ var render = function() {
                 _vm._v(
                   "There are " +
                     _vm._s(
-                      _vm.campaign && _vm.campaign.analytics.posts_count
-                        ? _vm.campaign.analytics.posts_count
+                      _vm.campaign && _vm.campaign.posts_count
+                        ? _vm.campaign.posts_count
                         : 0
                     ) +
                     " posts for this campaign."
@@ -1476,16 +1478,16 @@ var render = function() {
               _c(
                 "div",
                 { staticClass: "campaign-posts" },
-                _vm._l(_vm.campaign.tracker_posts, function(post) {
+                _vm._l(_vm.campaign.media, function(media) {
                   return _c(
                     "a",
                     {
-                      key: post.id,
+                      key: media.uuid,
                       staticClass: "campaign-posts-card",
-                      attrs: { href: post.link, target: "_blank" },
+                      attrs: { href: media.link, target: "_blank" },
                       on: {
                         mouseover: function($event) {
-                          _vm.attrActive = post.id
+                          _vm.attrActive = media.uuid
                         },
                         mouseleave: function($event) {
                           _vm.attrActive = null
@@ -1494,17 +1496,19 @@ var render = function() {
                     },
                     [
                       _c("img", {
-                        attrs: { src: post.thumbnail_url, loading: "lazy" }
+                        attrs: { src: media.thumbnail_url, loading: "lazy" }
                       }),
                       _vm._v(" "),
                       _c("div", { staticClass: "campaign-posts-card-icons" }, [
-                        _c("i", { staticClass: "fab fa-instagram" }),
+                        media.platform === "instagram"
+                          ? _c("i", { staticClass: "fab fa-instagram" })
+                          : _vm._e(),
                         _vm._v(" "),
-                        post.type === "video" || post.type === "sidecar"
+                        media.type === "video" || media.type === "sidecar"
                           ? _c("i", {
                               class:
                                 "fas fa-" +
-                                (post.type === "sidecar" ? "images" : "video")
+                                (media.type === "sidecar" ? "images" : "video")
                             })
                           : _vm._e()
                       ]),
@@ -1514,42 +1518,42 @@ var render = function() {
                         {
                           class:
                             "campaign-posts-card-attr " +
-                            (_vm.attrActive === post.id ? " active" : "")
+                            (_vm.attrActive === media.uuid ? " active" : "")
                         },
                         [
-                          post.video_views
+                          media.video_views
                             ? _c("span", [
                                 _c("i", { staticClass: "fas fa-eye" }),
                                 _vm._v(
                                   _vm._s(
                                     String(
-                                      _vm.nbr().abbreviate(post.video_views)
+                                      _vm.nbr().abbreviate(media.video_views)
                                     ).toUpperCase()
                                   )
                                 )
                               ])
                             : _vm._e(),
                           _vm._v(" "),
-                          post.likes
+                          media.likes
                             ? _c("span", [
                                 _c("i", { staticClass: "fas fa-heart" }),
                                 _vm._v(
                                   _vm._s(
                                     String(
-                                      _vm.nbr().abbreviate(post.likes)
+                                      _vm.nbr().abbreviate(media.likes)
                                     ).toUpperCase()
                                   )
                                 )
                               ])
                             : _vm._e(),
                           _vm._v(" "),
-                          post.comments
+                          media.comments
                             ? _c("span", [
                                 _c("i", { staticClass: "fas fa-comment" }),
                                 _vm._v(
                                   _vm._s(
                                     String(
-                                      _vm.nbr().abbreviate(post.comments)
+                                      _vm.nbr().abbreviate(media.comments)
                                     ).toUpperCase()
                                   )
                                 )

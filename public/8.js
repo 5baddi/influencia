@@ -314,7 +314,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {
     // Load users
-    if (Object.values(this.users).length === 0) this.loadUsers();
+    if (typeof this.users === "undefined" || this.users === null || Object.values(this.users).length === 0) this.loadUsers();
   },
   data: function data() {
     return {

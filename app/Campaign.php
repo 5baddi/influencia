@@ -95,7 +95,7 @@ class Campaign extends Model
                 if($influencers->contains('uuid', $influencer->uuid))
                     continue;
 
-                $influencers->add($influencer->only(['uuid', 'name', 'username', 'pic_url']));
+                $influencers->add($influencer->only(['uuid', 'name', 'username', 'engagement_rate', 'pic_url', 'medias', 'estimated_communities', 'estimated_impressions', 'earned_media_value']));
             }
         }
 
