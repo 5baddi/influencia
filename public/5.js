@@ -897,7 +897,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Status",
         field: "status",
-        sortable: false,
         callback: function callback(row) {
           return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
         }

@@ -428,7 +428,7 @@ export default {
             this.paginateData();
         },
         paginateData(){
-            this.data = this.nativeData.slice(this.startIndex - 1, this.data.length < this.perPage ? this.nativeData.length : this.perPage);
+            this.data = this.nativeData.slice(this.startIndex - 1, this.nativeData.length < this.perPage ? this.nativeData.length : this.perPage);
         },
         loadData(){
             // Set native data
