@@ -11,7 +11,6 @@ use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
 use App\Helpers\EmojiParser;
-use App\InfluencerPostMedia;
 use InstagramScraper\Instagram;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
@@ -432,16 +431,6 @@ class InstagramScraper
 
                     // Store media
                     $post = InfluencerPost::create($_media);
-
-                    // Store media assets 
-                    array_walk($_media['files'], function($file) use ($post){
-                        if(empty($file) || is_null($file) || !is_array($file))
-                            return;
-            
-                        // Push added media record
-                        $file = array_merge($file, ['post_id' =>  $post->id]);
-                        InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-                    });
                 }
 
                 // Save next cursor
