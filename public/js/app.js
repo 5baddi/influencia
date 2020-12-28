@@ -7042,8 +7042,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (this.data.length === 0) return [];
       var vm = this;
       var _parsedData = [];
-
-      _data.map(function (value, key) {
+      vm.data.map(function (value, key) {
         var rowData = {
           original: value
         };
@@ -7072,7 +7071,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         _parsedData.push(rowData);
       }); // Update parsed data
-
 
       this.parsedData = _parsedData;
       return this.parsedData;

@@ -317,7 +317,7 @@ export default {
 
             let vm = this;
             let _parsedData = [];
-            _data.map(function (value, key) {
+            vm.data.map(function (value, key) {
                 let rowData = {
                     original: value
                 };
