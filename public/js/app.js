@@ -7123,7 +7123,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.paginateData();
     },
     paginateData: function paginateData() {
-      this.data = this.nativeData.slice(this.startIndex - 1, this.nativeData.length < this.perPage ? this.nativeData.length : this.perPage);
+      this.data = this.nativeData.slice((this.startIndex - 1) * this.perPage, this.startIndex * this.perPage);
     },
     loadData: function loadData() {
       // Set native data
