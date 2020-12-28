@@ -82,13 +82,14 @@ class Influencer extends Model
      */
     public function getPicUrlAttribute() : ?string
     {
-        // External link
-        if(filter_var($this->attributes['pic_url'], FILTER_VALIDATE_URL))
-            return $this->attributes['pic_url'];
+        if(isset($this->attributes['pic_url'])){
+            // External link
+            if(filter_var($this->attributes['pic_url'], FILTER_VALIDATE_URL))
+                return $this->attributes['pic_url'];
 
-        // Picture as base64
-        if(isset($this->attributes['pic_url']))
+            // Picture as base64
             return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
+        }
 
         return null;
     }
