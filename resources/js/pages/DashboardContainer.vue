@@ -1,7 +1,7 @@
 <template>
 <main id="main" class="dashboard">
     <MainNav :authenticatedUser="AuthenticatedUser" />
-    <div id="content" class="dashboard__content">
+    <div id="content" ref="content" class="dashboard__content">
         <div class="dashboard__navigation">
             <TopNavItem :brands="brands" :activeBrand="activeBrand" :isSwitch="true" class="nav-switch"></TopNavItem>
 

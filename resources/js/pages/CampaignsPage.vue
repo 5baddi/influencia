@@ -117,7 +117,7 @@ export default {
         },
         create(campaign) {
             // Set brand ID
-            campaign.brand_id = this.AuthenticatedUser.selected_brand;
+            campaign.brand_id = this.AuthenticatedUser.selected_brand_id;
 
             this.$store.dispatch("addNewCampaign", campaign)
                 .then(response => {
@@ -151,7 +151,7 @@ export default {
             return this.campaigns;
         },
         activeBrand(){
-            if(this.AuthenticatedUser.selected_brand)
+            if(this.AuthenticatedUser !== null && typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand)
                 return this.AuthenticatedUser.selected_brand;
 
             return null;
