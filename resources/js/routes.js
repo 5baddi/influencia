@@ -44,6 +44,14 @@ const routes = [
                 },
             },
             {
+                name: 'campaign_trackers',
+                path: '/trackers/campaign/:campaign_uuid',
+                component: () => import("./pages/TrackersPage"),
+                meta: {
+                    auth: true,
+                },
+            },
+            {
                 name: 'brands',
                 path: '/brands',
                 component: () => import("./pages/BrandsPage"),

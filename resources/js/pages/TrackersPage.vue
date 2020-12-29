@@ -98,13 +98,27 @@ export default {
                 this.fetchTracker();
             else
                 this.$store.commit("setTracker", {tracker: null});
+        },
+        "$route.params.campaign_uuid": function(value){
+            // Load trackers by campaign
+            if(typeof value !== "undefined"){
+                // Load campaigns
+                this.loadCampaigns();
+                // Set campaign as selected 
+                this.selectedCampaign = $route.params.campaign_uuid;
+                // Load trackers by campaign
+                this.loadByCampaign();
+            }
         }
     },
     methods: {
-        loadTrackers() {
-            // Fetch compaigns
+        loadCampaigns(){
             if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0)
                 this.$store.dispatch("fetchCampaigns");
+        },
+        loadTrackers() {
+            // Fetch compaigns
+            this.loadCampaigns();
             // Fetch trackers
             if(typeof this.trackers === "undefined" || this.trackers === null || Object.values(this.trackers).length === 0)
                 this.$store.dispatch("fetchTrackers");
@@ -221,8 +235,17 @@ export default {
             // Unset tracker state
             this.$store.commit("setTracker", {tracker: null});
 
-            // Load trackers
-            this.loadTrackers();
+            if(typeof this.$route.params.campaign_uuid !== "undefined"){
+                // Load campaigns
+                this.loadCampaigns();
+                // Set campaign as selected 
+                this.selectedCampaign = $route.params.campaign_uuid;
+                // Load trackers by campaign
+                this.loadByCampaign();
+            }else{
+                // Load trackers
+                this.loadTrackers();
+            }
         }
     },
     data() {
@@ -243,9 +266,9 @@ export default {
                 },
                 {
                     name: "Campaign",
-                    field: "campaign_name",
+                    field: "campaign",
                     callback: function (row) {
-                        return (row.campaign_name.charAt(0).toUpperCase() + row.campaign_name.slice(1));
+                        return '<a title="Show trackers" href="/trackers/campaign/' + row.campaign.uuid + '">' + (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1)) + '</a>';
                     }
                 },
                 {

@@ -428,6 +428,7 @@ export default {
             this.paginateData();
         },
         paginateData(){
+            // TODO: fix pagination
             this.data = _.slice(this.nativeData, this.startIndex - 1, this.perPage);
         },
         loadData(){
