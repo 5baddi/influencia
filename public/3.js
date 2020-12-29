@@ -775,7 +775,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // Load campaigns
         this.loadCampaigns(); // Set campaign as selected 
 
-        this.selectedCampaign = $route.params.campaign_uuid; // Load trackers by campaign
+        this.selectedCampaign = value; // Load trackers by campaign
 
         this.loadByCampaign();
       }
@@ -902,7 +902,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // Load campaigns
         this.loadCampaigns(); // Set campaign as selected 
 
-        this.selectedCampaign = $route.params.campaign_uuid; // Load trackers by campaign
+        this.selectedCampaign = this.$route.params.campaign_uuid; // Load trackers by campaign
 
         this.loadByCampaign();
       } else {
