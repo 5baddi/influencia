@@ -99,12 +99,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -530,14 +524,23 @@ var render = function() {
             { staticClass: "logo" },
             [
               _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
-                _c("img", {
-                  attrs: {
-                    src:
-                      "/images/log-inf" +
-                      (_vm.isNavOpen ? ".png" : "-mini.png"),
-                    alt: "logo"
-                  }
-                })
+                _vm.isNavOpen
+                  ? _c("img", {
+                      attrs: {
+                        src: __webpack_require__(/*! @assets/img/log-inf.png */ "./resources/assets/img/log-inf.png"),
+                        alt: "logo"
+                      }
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.isNavOpen
+                  ? _c("img", {
+                      attrs: {
+                        src: __webpack_require__(/*! @assets/img/log-inf-mini.png */ "./resources/assets/img/log-inf-mini.png"),
+                        alt: "logo"
+                      }
+                    })
+                  : _vm._e()
               ])
             ],
             1
@@ -1066,6 +1069,28 @@ var staticRenderFns = []
 render._withStripped = true
 
 
+
+/***/ }),
+
+/***/ "./resources/assets/img/log-inf-mini.png":
+/*!***********************************************!*\
+  !*** ./resources/assets/img/log-inf-mini.png ***!
+  \***********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/images/log-inf-mini.png?cb0e0db2e4056db3b4e2923ed7a1fd31";
+
+/***/ }),
+
+/***/ "./resources/assets/img/log-inf.png":
+/*!******************************************!*\
+  !*** ./resources/assets/img/log-inf.png ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/images/log-inf.png?736bb81d7e0cf6f7c8b429b67103b625";
 
 /***/ }),
 

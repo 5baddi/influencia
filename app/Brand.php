@@ -79,4 +79,14 @@ class Brand extends Model
     {
         return $this->hasMany(Campaign::class);
     }
+
+    /**
+     * Get influencers related to trackers
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function influencers()
+    {
+        return $this->belongsToMany(Influencer::class, 'brand_influencers')->withCount(['posts', 'trackers']);
+    }
 }

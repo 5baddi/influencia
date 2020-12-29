@@ -6,6 +6,7 @@ use App\Brand;
 use App\Campaign;
 use App\Influencer;
 use App\InfluencerPost;
+use App\BrandInfluencer;
 use App\Jobs\ScrapInfluencerJob;
 use App\Services\YoutubeScraper;
 use App\Services\InstagramScraper;
@@ -26,31 +27,15 @@ class InfluencerController extends Controller
      */
     public function byBrand(Brand $brand)
     {
-        // Init
-        $influencersIds = [];
-
-        // Load campaigns by brand
-        $campaigns = Campaign::where('brand_id', $brand->id)
-                        ->orderBy('created_at', 'desc')
-                        ->get();
-
-        // Get influencers ids by brand
-        $campaigns->map(function($campaign) use(&$influencersIds){
-            $campaign->influencers->each(function($influencer) use(&$influencersIds){
-                if(isset($influencer['uuid']) && !in_array($influencer['uuid'], $influencersIds))
-                    array_push($influencersIds, $influencer['uuid']);
-            });
-        });
-
-        // Load influencers
-        $influencers = Influencer::withCount(['posts', 'trackers'])
-                            ->whereIn('uuid', $influencersIds)
+        // Load brand influencers
+        $brand = Brand::with(['influencers'])
+                            ->where('id', $brand->id)
                             ->orderBy('created_at', 'desc')
-                            ->get();
+                            ->first();
 
         return response()->success(
             "Influencers fetched successfully.", 
-            InfluencerDTResource::collection($influencers)
+            InfluencerDTResource::collection($brand->influencers)
         );
     }
 
@@ -62,7 +47,7 @@ class InfluencerController extends Controller
         // Get validated data
         $data = $request->validated();
         
-        try{            
+        try{   
             // Add instagram influencer
             if($data['platform'] === 'instagram'){
                 // Verify if influencer already exists
@@ -70,8 +55,30 @@ class InfluencerController extends Controller
                     'platform' => 'instagram',
                     (filter_var($data['username'], FILTER_VALIDATE_INT) !== false && preg_match('/^[0-9]*$/', $data['username']) ? 'account_id' : 'username') => $data['username']
                 ])->first();
-                if(!is_null($exists))
-                    return response()->error("Influencer already exists!", [], 400);
+                
+                if(!is_null($exists)){
+                    $existsInBrand = BrandInfluencer::where([
+                        'brand_id'      =>  Auth::user()->selected_brand_id,
+                        'influencer_id' =>  $exists->id
+                    ])->first();
+
+                    // Check already exists in the same brand
+                    if(!is_null($existsInBrand)){
+                        return response()->error("Influencer already exists!", [], 400);
+                    }else{
+                        // Set influencer to current selected brand
+                        BrandInfluencer::create([
+                            'brand_id'      =>  Auth::user()->selected_brand_id,
+                            'influencer_id' =>  $exists->id
+                        ]);
+
+                        return response()->success(
+                            "Influencer added successfully.",
+                            $exists->loadCount(['posts', 'trackers']), 
+                            201
+                        ); 
+                    }
+                }
 
                 // Send create new influencer job
                 ScrapInfluencerJob::dispatch(Auth::user(), $data['username'])->onQueue('influencers');
@@ -91,8 +98,30 @@ class InfluencerController extends Controller
                     'platform'  => 'youtube',
                     'account_id' => $data['username']
                 ])->first();
-                if(!is_null($exists))
-                    return response()->error("Influencer already exists!", [], 400);
+                
+                if(!is_null($exists)){
+                    $existsInBrand = BrandInfluencer::where([
+                        'brand_id'      =>  Auth::user()->selected_brand_id,
+                        'influencer_id' =>  $exists->id
+                    ])->first();
+
+                    // Check already exists in the same brand
+                    if(!is_null($existsInBrand)){
+                        return response()->error("Influencer already exists!", [], 400);
+                    }else{
+                        // Set influencer to current selected brand
+                        BrandInfluencer::create([
+                            'brand_id'      =>  Auth::user()->selected_brand_id,
+                            'influencer_id' =>  $exists->id
+                        ]);
+
+                        return response()->success(
+                            "Influencer added successfully.",
+                            $exists->loadCount(['posts', 'trackers']), 
+                            201
+                        ); 
+                    }
+                }
 
                 // Get channel details
                 $details = $youtube->getChannelByID($data['username']);
@@ -102,6 +131,7 @@ class InfluencerController extends Controller
                 return response()->success("Influencer @{$influencer->name} created successfully.", $influencer, 201);
             }
         }catch(\Exception $ex){
+            dd($ex);
             Log::error($ex->getMessage());
             
             // Influencer does not exists

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTrackerInfluencers extends Migration
+class CreateBrandInfluencersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateTrackerInfluencers extends Migration
      */
     public function up()
     {
-        Schema::create('tracker_influencers', function (Blueprint $table) {
-            $table->unsignedBigInteger('tracker_id')->primary();
-            $table->unsignedBigInteger('influencer_id')->primary();
+        Schema::create('brand_influencers', function (Blueprint $table) {
+            $table->unsignedBigInteger('brand_id');
+            $table->unsignedBigInteger('influencer_id');
 
-            $table->foreign('tracker_id')->references('id')->on('trackers')->onDelete('cascade');
+            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
             $table->foreign('influencer_id')->references('id')->on('influencers')->onDelete('cascade');
         });
     }
@@ -29,6 +29,6 @@ class CreateTrackerInfluencers extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('tracker_influencers');
+        Schema::dropIfExists('brand_influencers');
     }
 }

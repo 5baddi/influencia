@@ -1842,7 +1842,7 @@ var render = function() {
                                         )
                                       : _vm._e(),
                                     _vm._v(" "),
-                                    _vm.$can("show", "tracker") ||
+                                    _vm.$can("list", "tracker") ||
                                     (_vm.AuthenticatedUser &&
                                       _vm.AuthenticatedUser.is_superadmin)
                                       ? _c(
@@ -1904,6 +1904,32 @@ var render = function() {
                                         )
                                       : _vm._e(),
                                     _vm._v(" "),
+                                    _vm.$can(
+                                      "start-stop-tracking",
+                                      "campaign"
+                                    ) ||
+                                    (_vm.AuthenticatedUser &&
+                                      _vm.AuthenticatedUser.is_superadmin)
+                                      ? _c(
+                                          "button",
+                                          {
+                                            staticClass: "btn icon-link",
+                                            attrs: { title: "Stop tracking" },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.disableCampaign(row)
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass:
+                                                "far fa-stop-circle datatable-icon"
+                                            })
+                                          ]
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(" "),
                                     _vm.$can("delete", "campaign") ||
                                     (_vm.AuthenticatedUser &&
                                       _vm.AuthenticatedUser.is_superadmin)
@@ -1936,7 +1962,7 @@ var render = function() {
                           ],
                           null,
                           false,
-                          396333134
+                          4113282741
                         )
                       },
                       [
