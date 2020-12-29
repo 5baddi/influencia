@@ -234,8 +234,12 @@ const actions = {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/influencers", data)
                 .then(response => {
-                    if(response.status === 200 && response.data.success){
-                        resolve(response.data)
+                    if(response.data.success){
+                        if(response.status === 201){
+                            commit('pushInfluencer', { influencer: response.data.content })
+                        }
+
+                        resolve(response.data);
                     }else{
                         throw new Error("Something going wrong!");
                     }
@@ -599,6 +603,9 @@ const mutations = {
     },
     setInfluencers: (state, { influencers }) => {
         state.influencers = influencers
+    },
+    pushInfluencer: (state, { influencer }) => {
+        state.influencers.push(influencer);
     },
     setInfluencer: (state, { influencer }) => {
         state.influencer = influencer

@@ -230,6 +230,7 @@ __webpack_require__.r(__webpack_exports__);
         field: 'pic_url',
         isAvatar: true,
         sortable: false,
+        isImage: true,
         callback: function callback(row) {
           return row.pic_url;
         }
@@ -259,6 +260,7 @@ __webpack_require__.r(__webpack_exports__);
       instaMediaColumns: [{
         field: 'influencer_pic',
         isAvatar: true,
+        isImage: true,
         sortable: false,
         callback: function callback(row) {
           return row.influencer.pic_url;

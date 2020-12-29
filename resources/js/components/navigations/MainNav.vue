@@ -4,7 +4,8 @@
         <div class="dashboard__sidebar--content">
             <div class="logo">
                 <router-link :to="{name : 'dashboard'}">
-                    <img :src="'/images/log-inf' + (isNavOpen ? '.png' : '-mini.png')" alt="logo" />
+                    <img v-if="isNavOpen" src="@assets/img/log-inf.png" alt="logo" />
+                    <img v-if="!isNavOpen" src="@assets/img/log-inf-mini.png" alt="logo" />
                 </router-link>
             </div>
         </div>
@@ -14,13 +15,6 @@
             <span></span>
         </button>
     </header>
-    <!--<div class="dashboard__sidebar__profile" v-if="authenticatedUser">
-        <h2>{{ authenticatedUser.name }}</h2>
-        <p>{{ authenticatedUser.email }}</p>
-        <div class="avatar">
-            <img v-bind:src="'https://ui-avatars.com/api/?color=039be5&name=' + authenticatedUser.name" alt="avatar" />
-        </div>
-    </div>-->
     <nav class="dashboard__sidebar__navigation">
         <ul>
             <li :class="{active : currentRouteName == 'dashboard'}">

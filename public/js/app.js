@@ -69407,7 +69407,13 @@ var actions = {
         state = _ref13.state;
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_2__["api"].post("/api/v1/influencers", data).then(function (response) {
-        if (response.status === 200 && response.data.success) {
+        if (response.data.success) {
+          if (response.status === 201) {
+            commit('pushInfluencer', {
+              influencer: response.data.content
+            });
+          }
+
           resolve(response.data);
         } else {
           throw new Error("Something going wrong!");
@@ -69814,12 +69820,16 @@ var mutations = (_mutations = {
     var influencers = _ref41.influencers;
     state.influencers = influencers;
   },
-  setInfluencer: function setInfluencer(state, _ref42) {
+  pushInfluencer: function pushInfluencer(state, _ref42) {
     var influencer = _ref42.influencer;
+    state.influencers.push(influencer);
+  },
+  setInfluencer: function setInfluencer(state, _ref43) {
+    var influencer = _ref43.influencer;
     state.influencer = influencer;
   },
-  setNewUser: function setNewUser(state, _ref43) {
-    var user = _ref43.user;
+  setNewUser: function setNewUser(state, _ref44) {
+    var user = _ref44.user;
 
     if (!state.users) {
       state.users = [];
@@ -69827,47 +69837,47 @@ var mutations = (_mutations = {
 
     state.users.push(user);
   }
-}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref44) {
-  var user = _ref44.user;
+}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref45) {
+  var user = _ref45.user;
 
   if (!state.users) {
     state.users = [];
   }
 
   state.users.push(user);
-}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref45) {
-  var campaign = _ref45.campaign;
+}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref46) {
+  var campaign = _ref46.campaign;
 
   if (!state.campaigns) {
     state.campaigns = [];
   }
 
   state.campaigns.push(campaign);
-}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref46) {
-  var tracker = _ref46.tracker;
+}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref47) {
+  var tracker = _ref47.tracker;
 
   if (!state.trackers) {
     state.trackers = [];
   }
 
   state.trackers.push(tracker);
-}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref47) {
-  var campaigns = _ref47.campaigns;
+}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref48) {
+  var campaigns = _ref48.campaigns;
   state.campaigns = campaigns;
-}), _defineProperty(_mutations, "setCampaign", function setCampaign(state, _ref48) {
-  var campaign = _ref48.campaign;
+}), _defineProperty(_mutations, "setCampaign", function setCampaign(state, _ref49) {
+  var campaign = _ref49.campaign;
   state.campaign = campaign;
-}), _defineProperty(_mutations, "setStatistics", function setStatistics(state, _ref49) {
-  var statistics = _ref49.statistics;
+}), _defineProperty(_mutations, "setStatistics", function setStatistics(state, _ref50) {
+  var statistics = _ref50.statistics;
   state.statistics = statistics;
-}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref50) {
-  var trackers = _ref50.trackers;
+}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref51) {
+  var trackers = _ref51.trackers;
   state.trackers = trackers;
-}), _defineProperty(_mutations, "setTracker", function setTracker(state, _ref51) {
-  var tracker = _ref51.tracker;
+}), _defineProperty(_mutations, "setTracker", function setTracker(state, _ref52) {
+  var tracker = _ref52.tracker;
   state.tracker = tracker;
-}), _defineProperty(_mutations, "setRoles", function setRoles(state, _ref52) {
-  var roles = _ref52.roles;
+}), _defineProperty(_mutations, "setRoles", function setRoles(state, _ref53) {
+  var roles = _ref53.roles;
   state.roles = roles;
 }), _mutations);
 

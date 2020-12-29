@@ -116,7 +116,7 @@ class Tracker extends Model
     }
 
     /**
-     * Get count of influencers related to trackers
+     * Get influencers related to trackers
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
