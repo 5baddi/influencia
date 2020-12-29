@@ -20,7 +20,7 @@ class TrackerAnalyticsResource extends JsonResource
             'name'          =>  $this->name,
             'status'        =>  $this->status,
             'queued'        =>  $this->queued,
-            'campaign_name' =>  $this->campaign->name,
+            'campaign'      =>  $this->campaign->only(['uuid', 'name']),
             'fulllink'      =>  isset($this->shortlink) ? $this->shortlink->fulllink : null,
             'influencers'   =>  $this->influencers->map(function($influencer){
                 return $influencer->only(['uuid', 'name', 'username', 'pic_url', 'medias', 'estimated_communities', 'estimated_impressions', 'earned_media_value']);

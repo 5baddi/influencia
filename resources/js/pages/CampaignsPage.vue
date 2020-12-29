@@ -30,6 +30,9 @@
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                         <i class="far fa-chart-bar datatable-icon"></i>
                     </router-link>
+                    <router-link v-if="$can('show', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaign_trackers', params: {campaign_uuid: row.data.original.uuid}}" class="icon-link" title="Show trackers">
+                        <i class="fas fa-list"></i>
+                    </router-link>
                     <button v-if="($can('edit', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit campaign" @click="editCampaign(row.data.original)">
                         <i class="fas fa-pen datatable-icon"></i>
                     </button>
