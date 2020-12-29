@@ -105,7 +105,7 @@ export default {
                 // Load campaigns
                 this.loadCampaigns();
                 // Set campaign as selected 
-                this.selectedCampaign = $route.params.campaign_uuid;
+                this.selectedCampaign = value;
                 // Load trackers by campaign
                 this.loadByCampaign();
             }
@@ -239,7 +239,7 @@ export default {
                 // Load campaigns
                 this.loadCampaigns();
                 // Set campaign as selected 
-                this.selectedCampaign = $route.params.campaign_uuid;
+                this.selectedCampaign = this.$route.params.campaign_uuid;
                 // Load trackers by campaign
                 this.loadByCampaign();
             }else{
