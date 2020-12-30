@@ -1,5 +1,5 @@
 <template>
-<div class="modal" :class="{'show-modal' : show}">
+<div class="modal" ref="modal" :class="{'show-modal' : show}">
     <div class="modal-content">
         <header>
             <h4 class="heading">{{ title }}</h4>
@@ -56,6 +56,15 @@ export default {
             this.brand.image = files[0];
         },
         open(brand) {
+            // $('html, body').animate({scrollTop:0}, '300');
+
+            // // Init main container
+            // let main = document.getElementById('content');
+
+            // if(main !== null && main.style !== "undefined")
+            //     main.style.overflowY = 'hidden';
+            // this.$refs.modal.style.height = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) + 'px';
+
             if (typeof brand !== "undefined")
                 this.brand = brand;
 
@@ -65,6 +74,12 @@ export default {
             this.show = true;
         },
         close() {
+            // Init main container
+            let main = document.getElementById('content');
+
+            if(main !== null && main.style !== "undefined")
+                main.style.overflowY = 'initial';
+
             this.show = false;
 
             this.brand = {

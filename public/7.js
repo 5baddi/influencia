@@ -615,7 +615,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this2 = this;
 
       // Set brand ID
-      campaign.brand_id = this.AuthenticatedUser.selected_brand;
+      campaign.brand_id = this.AuthenticatedUser.selected_brand_id;
       this.$store.dispatch("addNewCampaign", campaign).then(function (response) {
         _this2.$refs.campaignsDT.reloadData();
 
@@ -649,7 +649,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return this.campaigns;
     },
     activeBrand: function activeBrand() {
-      if (this.AuthenticatedUser.selected_brand) return this.AuthenticatedUser.selected_brand;
+      if (this.AuthenticatedUser !== null && typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand) return this.AuthenticatedUser.selected_brand;
       return null;
     }
   }),
@@ -1864,7 +1864,7 @@ var render = function() {
                                               to: {
                                                 name: "campaign_trackers",
                                                 params: {
-                                                  campaign_uuid:
+                                                  campaign:
                                                     row.data.original.uuid
                                                 }
                                               },
@@ -1962,7 +1962,7 @@ var render = function() {
                           ],
                           null,
                           false,
-                          4113282741
+                          1545961479
                         )
                       },
                       [

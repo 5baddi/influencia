@@ -899,7 +899,11 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "dashboard__content", attrs: { id: "content" } },
+        {
+          ref: "content",
+          staticClass: "dashboard__content",
+          attrs: { id: "content" }
+        },
         [
           _c(
             "div",

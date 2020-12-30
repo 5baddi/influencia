@@ -35,9 +35,12 @@
             </tr>
             <tr v-show="formatedData.length > 0 && !loading" v-for="(obj, index) in formatedData" :key="index">
                 <td v-for="(col, idx) in formatedColumns" :key="idx" :class="{'is-avatar': col.isAvatar}">
-                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage" :class="col.class" v-html="obj[col.field]"></div>
-                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
-                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && col.isImage" :class="col.class" :src="obj[col.field]" loading="lazy"/>
+                    <div v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage && !col.isLink" :class="col.class" v-html="obj[col.field]"></div>
+                    <timeago v-if="typeof obj[col.field] !== 'undefined' && col.isTimeAgo && !col.isImage && !col.isLink" :class="col.class" :datetime="Date.parse(obj[col.field])"></timeago>
+                    <img v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && col.isImage && !col.isLink" :class="col.class" :src="obj[col.field]" loading="lazy"/>
+                    <router-link v-if="typeof obj[col.field] !== 'undefined' && !col.isTimeAgo && !col.isImage && col.isLink && obj[col.field].condition && obj[col.field].content" :v-show="obj[col.field].showIf" :to="obj[col.field].route" class="icon-link" :title="obj[col.field].title">
+                        {{ obj[col.field].content }}
+                    </router-link>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
@@ -346,6 +349,17 @@ export default {
                         // Capitalize string
                         if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
                             val = val.charAt(0).toUpperCase() + val.slice(1);
+
+                        // Re-format link
+                        if(typeof item.isLink === "boolean" && item.isLink){
+                            val = {
+                                condition: typeof val.condition !== "undefined" ? val.condition : true,
+                                showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
+                                content: typeof val.content !== "undefined" ? val.content : null,
+                                route: typeof val.route !== "undefined" ? val.route : null,
+                                title: typeof val.title !== "undefined" ? val.title : null,
+                            };
+                        }
 
                         // Ignore zero or empty
                         if (val == null || val == 0 || val == '')

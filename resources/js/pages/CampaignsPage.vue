@@ -30,7 +30,7 @@
                     <router-link v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaigns', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
                         <i class="far fa-chart-bar datatable-icon"></i>
                     </router-link>
-                    <router-link v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaign_trackers', params: {campaign_uuid: row.data.original.uuid}}" class="icon-link" title="Show trackers">
+                    <router-link v-if="$can('list', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.trackers_count > 0" :to="{name : 'campaign_trackers', params: {campaign: row.data.original.uuid}}" class="icon-link" title="Show trackers">
                         <i class="fas fa-list"></i>
                     </router-link>
                     <button v-if="($can('edit', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))" class="btn icon-link" title="Edit campaign" @click="editCampaign(row.data.original)">
@@ -117,7 +117,7 @@ export default {
         },
         create(campaign) {
             // Set brand ID
-            campaign.brand_id = this.AuthenticatedUser.selected_brand;
+            campaign.brand_id = this.AuthenticatedUser.selected_brand_id;
 
             this.$store.dispatch("addNewCampaign", campaign)
                 .then(response => {
@@ -151,7 +151,7 @@ export default {
             return this.campaigns;
         },
         activeBrand(){
-            if(this.AuthenticatedUser.selected_brand)
+            if(this.AuthenticatedUser !== null && typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand)
                 return this.AuthenticatedUser.selected_brand;
 
             return null;

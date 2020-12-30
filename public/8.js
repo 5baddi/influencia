@@ -66,11 +66,20 @@ __webpack_require__.r(__webpack_exports__);
       this.brand.image = files[0];
     },
     open: function open(brand) {
+      // $('html, body').animate({scrollTop:0}, '300');
+      // // Init main container
+      // let main = document.getElementById('content');
+      // if(main !== null && main.style !== "undefined")
+      //     main.style.overflowY = 'hidden';
+      // this.$refs.modal.style.height = (window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight) + 'px';
       if (typeof brand !== "undefined") this.brand = brand;
       if (typeof brand !== "undefined" && typeof brand.uuid == "string" && brand.name !== null) this.title = "Update " + brand.name.slice();
       this.show = true;
     },
     close: function close() {
+      // Init main container
+      var main = document.getElementById('content');
+      if (main !== null && main.style !== "undefined") main.style.overflowY = 'initial';
       this.show = false;
       this.brand = {
         uuid: null,
@@ -379,7 +388,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "modal", class: { "show-modal": _vm.show } },
+    { ref: "modal", staticClass: "modal", class: { "show-modal": _vm.show } },
     [
       _c("div", { staticClass: "modal-content" }, [
         _c("header", [

@@ -771,21 +771,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         tracker: null
       });
     },
-    "$route.params.campaign_uuid": function $routeParamsCampaign_uuid(value) {
+    "$route.params.campaign": function $routeParamsCampaign(value) {
       // Load trackers by campaign
       if (typeof value !== "undefined") {
         // Load campaigns
-        this.loadCampaigns(); // Set campaign as selected 
-
-        this.selectedCampaign = value; // Load trackers by campaign
+        this.loadCampaigns(value); // Load trackers by campaign
 
         this.loadByCampaign();
       }
     }
   },
   methods: {
-    loadCampaigns: function loadCampaigns() {
-      if (typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0) this.$store.dispatch("fetchCampaigns");
+    loadCampaigns: function loadCampaigns(selectedCampaignUUID) {
+      var _this = this;
+
+      if (typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0) {
+        this.$store.dispatch("fetchCampaigns").then(function (response) {
+          if (response.success && selectedCampaignUUID !== null && typeof selectedCampaignUUID !== "undefined") {
+            _this.selectedCampaign = response.content.find(function (item) {
+              return item.uuid == selectedCampaignUUID;
+            });
+          }
+        });
+      } else {
+        if (selectedCampaignUUID !== null && typeof selectedCampaignUUID !== "undefined") {
+          this.selectedCampaign = this.campaigns.find(function (item) {
+            return item.uuid == selectedCampaignUUID;
+          });
+        }
+      }
     },
     loadTrackers: function loadTrackers() {
       // Fetch compaigns
@@ -800,7 +814,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     loadByCampaign: function loadByCampaign() {
-      if (this.selectedCampaign === null) this.$refs.trackersDT.reloadData();else if (typeof this.selectedCampaign.uuid !== "undefined") this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
+      if (this.selectedCampaign === null || typeof this.selectedCampaign === "undefined") {
+        this.$refs.trackersDT.reloadData();
+
+        if (this.$route.params.campaign !== null && typeof this.$route.params.campaign !== "undefined") {
+          this.$router.replace({
+            name: 'trackers',
+            force: true
+          });
+        }
+      }
+
+      if (this.selectedCampaign !== null && typeof this.selectedCampaign !== "undefined" && typeof this.selectedCampaign.uuid !== "undefined") this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
     },
     dismissAddTrackerModal: function dismissAddTrackerModal() {
       this.showAddTrackerModal = false;
@@ -818,16 +843,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     enableTracker: function enableTracker(tracker) {
-      var _this = this;
+      var _this2 = this;
 
       this.$store.dispatch("changeTrackerStatus", tracker.uuid).then(function (response) {
-        _this.$refs.trackersDT.reloadData();
+        _this2.$refs.trackersDT.reloadData();
 
-        _this.showSuccess({
+        _this2.showSuccess({
           message: response.message
         });
       })["catch"](function (error) {
-        _this.showError({
+        _this2.showError({
           message: error.message
         });
       });
@@ -836,23 +861,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$refs.confirmModal.open("Are sure to delete this tracker?", tracker);
     },
     deleteAction: function deleteAction(tracker) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (typeof tracker.uuid === "undefined") this.showError();
       this.$store.dispatch("deleteTracker", tracker.uuid).then(function (response) {
-        _this2.$refs.trackersDT.reloadData();
+        _this3.$refs.trackersDT.reloadData();
 
-        _this2.showSuccess({
+        _this3.showSuccess({
           message: "Successfully deleted tracker '" + tracker.name + "'"
         });
       })["catch"](function (error) {
-        _this2.showError({
+        _this3.showError({
           message: error.message
         });
       });
     },
     create: function create(payload) {
-      var _this3 = this;
+      var _this4 = this;
 
       var data = payload.data;
       var formData = new FormData(); // Set base tracker info
@@ -875,15 +900,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
       this.$store.dispatch("addNewTracker", formData).then(function (response) {
-        _this3.dismissAddTrackerModal();
+        _this4.dismissAddTrackerModal();
 
-        _this3.$refs.trackersDT.reloadData();
+        _this4.$refs.trackersDT.reloadData();
 
-        _this3.createTrackerSuccess({
+        _this4.createTrackerSuccess({
           message: "Tracker ".concat(response.content.name, " created successfuly!")
         });
       })["catch"](function (error) {
-        _this3.createTrackerErrors({
+        _this4.createTrackerErrors({
           title: "Error",
           message: "".concat(error.message)
         });
@@ -900,15 +925,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         tracker: null
       });
 
-      if (typeof this.$route.params.campaign_uuid !== "undefined") {
+      if (typeof this.$route.params.campaign !== "undefined") {
         // Load campaigns
-        this.loadCampaigns(); // Set campaign as selected 
-
-        this.selectedCampaign = this.$route.params.campaign_uuid; // Load trackers by campaign
+        this.loadCampaigns(this.$route.params.campaign); // Load trackers by campaign
 
         this.loadByCampaign();
       } else {
-        // Load trackers
+        this.selectedCampaign = null; // Load trackers
+
         this.loadTrackers();
       }
     }
@@ -930,8 +954,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Campaign",
         field: "campaign",
+        isLink: true,
         callback: function callback(row) {
-          return '<a title="Show trackers" href="/trackers/campaign/' + row.campaign.uuid + '">' + (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1)) + '</a>';
+          return {
+            content: row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1),
+            title: "Show trackers",
+            route: {
+              name: 'campaign_trackers',
+              params: {
+                campaign: row.campaign.uuid
+              },
+              force: true
+            }
+          };
         }
       }, {
         name: "Influencers",
