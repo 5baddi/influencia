@@ -816,6 +816,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     loadByCampaign: function loadByCampaign() {
       if (this.selectedCampaign === null || typeof this.selectedCampaign === "undefined") {
         this.$refs.trackersDT.reloadData();
+
+        if (this.$route.params.campaign !== null && typeof this.$route.params.campaign !== "undefined") {
+          this.$router.replace({
+            name: 'trackers',
+            force: true
+          });
+        }
       }
 
       if (this.selectedCampaign !== null && typeof this.selectedCampaign !== "undefined" && typeof this.selectedCampaign.uuid !== "undefined") this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
@@ -956,7 +963,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               name: 'campaign_trackers',
               params: {
                 campaign: row.campaign.uuid
-              }
+              },
+              force: true
             }
           };
         }
