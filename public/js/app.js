@@ -6959,6 +6959,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 
@@ -7060,7 +7063,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
             if (typeof item.isPercentage === "boolean" && item.isPercentage) val = new Intl.NumberFormat('en-US').format((val * 100).toFixed(2)).replace(/,/g, ' ') + '%'; // Capitalize string
 
-            if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize) val = val.charAt(0).toUpperCase() + val.slice(1); // Ignore zero or empty
+            if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize) val = val.charAt(0).toUpperCase() + val.slice(1); // Re-format link
+
+            if (typeof item.isLink === "boolean" && item.isLink) {
+              val = {
+                condition: typeof val.condition !== "undefined" ? val.condition : true,
+                showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
+                content: typeof val.content !== "undefined" ? val.content : null,
+                route: typeof val.route !== "undefined" ? val.route : null,
+                title: typeof val.title !== "undefined" ? val.title : null
+              };
+            } // Ignore zero or empty
+
 
             if (val == null || val == 0 || val == '') val = '-';
             rowData[item.field] = val;
@@ -50083,7 +50097,8 @@ var render = function() {
                     [
                       typeof obj[col.field] !== "undefined" &&
                       !col.isTimeAgo &&
-                      !col.isImage
+                      !col.isImage &&
+                      !col.isLink
                         ? _c("div", {
                             class: col.class,
                             domProps: { innerHTML: _vm._s(obj[col.field]) }
@@ -50092,7 +50107,8 @@ var render = function() {
                       _vm._v(" "),
                       typeof obj[col.field] !== "undefined" &&
                       col.isTimeAgo &&
-                      !col.isImage
+                      !col.isImage &&
+                      !col.isLink
                         ? _c("timeago", {
                             class: col.class,
                             attrs: { datetime: Date.parse(obj[col.field]) }
@@ -50101,11 +50117,38 @@ var render = function() {
                       _vm._v(" "),
                       typeof obj[col.field] !== "undefined" &&
                       !col.isTimeAgo &&
-                      col.isImage
+                      col.isImage &&
+                      !col.isLink
                         ? _c("img", {
                             class: col.class,
                             attrs: { src: obj[col.field], loading: "lazy" }
                           })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      typeof obj[col.field] !== "undefined" &&
+                      !col.isTimeAgo &&
+                      !col.isImage &&
+                      col.isLink &&
+                      obj[col.field].condition &&
+                      obj[col.field].content
+                        ? _c(
+                            "router-link",
+                            {
+                              staticClass: "icon-link",
+                              attrs: {
+                                "v-show": obj[col.field].showIf,
+                                to: obj[col.field].route,
+                                title: obj[col.field].title
+                              }
+                            },
+                            [
+                              _vm._v(
+                                "\r\n                        " +
+                                  _vm._s(obj[col.field].content) +
+                                  "\r\n                    "
+                              )
+                            ]
+                          )
                         : _vm._e()
                     ],
                     1
@@ -68955,7 +68998,7 @@ var routes = [{
     }
   }, {
     name: 'campaign_trackers',
-    path: '/trackers/campaign/:campaign_uuid',
+    path: '/trackers/campaign/:campaign',
     component: function component() {
       return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(2), __webpack_require__.e(4), __webpack_require__.e(1), __webpack_require__.e(3)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
     },

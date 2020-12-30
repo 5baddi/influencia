@@ -99,22 +99,30 @@ export default {
             else
                 this.$store.commit("setTracker", {tracker: null});
         },
-        "$route.params.campaign_uuid": function(value){
+        "$route.params.campaign": function(value){
             // Load trackers by campaign
             if(typeof value !== "undefined"){
                 // Load campaigns
-                this.loadCampaigns();
-                // Set campaign as selected 
-                this.selectedCampaign = value;
+                this.loadCampaigns(value);
                 // Load trackers by campaign
                 this.loadByCampaign();
             }
         }
     },
     methods: {
-        loadCampaigns(){
-            if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0)
-                this.$store.dispatch("fetchCampaigns");
+        loadCampaigns(selectedCampaignUUID){
+            if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0){
+                this.$store.dispatch("fetchCampaigns")
+                    .then(response => {
+                        if(response.success && selectedCampaignUUID !== null && typeof selectedCampaignUUID !== "undefined"){
+                            this.selectedCampaign = response.content.find(item => item.uuid == selectedCampaignUUID);
+                        }
+                    });
+            }else{
+                if(selectedCampaignUUID !== null && typeof selectedCampaignUUID !== "undefined"){
+                    this.selectedCampaign = this.campaigns.find(item => item.uuid == selectedCampaignUUID);
+                }
+            }
         },
         loadTrackers() {
             // Fetch compaigns
@@ -133,9 +141,10 @@ export default {
                 });
         },
         loadByCampaign(){
-            if(this.selectedCampaign === null)
+            if(this.selectedCampaign === null || typeof this.selectedCampaign === "undefined"){
                 this.$refs.trackersDT.reloadData();
-            else if(typeof this.selectedCampaign.uuid !== "undefined")
+            }
+            if(this.selectedCampaign !== null && typeof this.selectedCampaign !== "undefined" && typeof this.selectedCampaign.uuid !== "undefined")
                 this.$store.dispatch("fetchTrackersByCampaign", this.selectedCampaign.uuid);
         },
         dismissAddTrackerModal() {
@@ -235,14 +244,14 @@ export default {
             // Unset tracker state
             this.$store.commit("setTracker", {tracker: null});
 
-            if(typeof this.$route.params.campaign_uuid !== "undefined"){
+            if(typeof this.$route.params.campaign !== "undefined"){
                 // Load campaigns
-                this.loadCampaigns();
-                // Set campaign as selected 
-                this.selectedCampaign = this.$route.params.campaign_uuid;
+                this.loadCampaigns(this.$route.params.campaign);
                 // Load trackers by campaign
                 this.loadByCampaign();
             }else{
+                this.selectedCampaign = null;
+
                 // Load trackers
                 this.loadTrackers();
             }
@@ -267,8 +276,13 @@ export default {
                 {
                     name: "Campaign",
                     field: "campaign",
+                    isLink: true,
                     callback: function (row) {
-                        return '<a title="Show trackers" href="/trackers/campaign/' + row.campaign.uuid + '">' + (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1)) + '</a>';
+                        return {
+                            content: (row.campaign.name.charAt(0).toUpperCase() + row.campaign.name.slice(1)),
+                            title: "Show trackers",
+                            route: {name : 'campaign_trackers', params: {campaign: row.campaign.uuid}} 
+                        };
                     }
                 },
                 {
