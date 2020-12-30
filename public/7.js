@@ -1864,7 +1864,7 @@ var render = function() {
                                               to: {
                                                 name: "campaign_trackers",
                                                 params: {
-                                                  campaign_uuid:
+                                                  campaign:
                                                     row.data.original.uuid
                                                 }
                                               },
@@ -1962,7 +1962,7 @@ var render = function() {
                           ],
                           null,
                           false,
-                          4113282741
+                          1545961479
                         )
                       },
                       [
