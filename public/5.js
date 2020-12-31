@@ -129,14 +129,16 @@ __webpack_require__.r(__webpack_exports__);
   watch: {
     isNavOpen: {
       handler: function handler(newValue, oldValue) {
-        if (newValue === false) {
+        if (!newValue) {
           document.body.classList.add("nav-collapsed");
           document.getElementById("main-sidebar").addEventListener("mouseenter", this.removeClass);
           document.getElementById("main-sidebar").addEventListener("mouseleave", this.addClass);
-        } else if (newValue === true) {
+          this.isNavOpen = newValue;
+        } else {
           document.getElementById("main-sidebar").removeEventListener("mouseenter", this.removeClass);
           document.getElementById("main-sidebar").removeEventListener("mouseleave", this.addClass);
           document.body.classList.remove("nav-collapsed");
+          this.isNavOpen = newValue;
         }
       }
     }
