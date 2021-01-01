@@ -5,9 +5,11 @@ namespace App\Jobs;
 use Format;
 use App\User;
 use App\Influencer;
+use App\BrandInfluencer;
 use Illuminate\Bus\Queueable;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -83,6 +85,22 @@ class ScrapInfluencerJob implements ShouldQueue
 
                 // Store account
                 $influencer = Influencer::create($account);
+
+                // Set influencer to active brand
+                if(isset(Auth::user()->selected_brand_id)){
+                    $existsInBrand = BrandInfluencer::where([
+                        'brand_id'      =>  Auth::user()->selected_brand_id,
+                        'influencer_id' =>  $influencer->id
+                    ])->first();
+
+                    // Check already exists in the same brand
+                    if(is_null($existsInBrand)){
+                        BrandInfluencer::create([
+                            'brand_id'      =>  Auth::user()->selected_brand_id,
+                            'influencer_id' =>  $influencer->id
+                        ]);
+                    }
+                }
             }
         }catch(\Exception $exception){
             Log::error("Failed to extract Influencer info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);

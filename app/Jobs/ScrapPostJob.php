@@ -7,17 +7,18 @@ use App\Tracker;
 use Carbon\Carbon;
 use App\Influencer;
 use App\InfluencerPost;
+use App\BrandInfluencer;
 use App\TrackerInfluencer;
 use App\InfluencerPostMedia;
 use Illuminate\Bus\Queueable;
 use App\TrackerInfluencerMedia;
+use App\Services\YoutubeScraper;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Services\YoutubeScraper;
 
 class ScrapPostJob implements ShouldQueue
 {
@@ -155,6 +156,24 @@ class ScrapPostJob implements ShouldQueue
                 $influencer = Influencer::create($accountDetails);
             else
                 $influencer->update($accountDetails);
+
+            // Load tracker user
+            $this->tracker->load('user');
+            // Set influencer to active brand
+            if(isset($this->tracker->user->selected_brand_id)){
+                $existsInBrand = BrandInfluencer::where([
+                    'brand_id'      =>  $this->tracker->user->selected_brand_id,
+                    'influencer_id' =>  $influencer->id
+                ])->first();
+
+                // Check already exists in the same brand
+                if(is_null($existsInBrand)){
+                    BrandInfluencer::create([
+                        'brand_id'      =>  $this->tracker->user->selected_brand_id,
+                        'influencer_id' =>  $influencer->id
+                    ]);
+                }
+            }
 
             //  Analyze media
             $_media = $instagram->getMedia($media);
