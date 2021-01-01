@@ -69,10 +69,10 @@
                            <input type="radio" value="youtube" v-model="platform" :checked="platform === 'youtube'"/>
                            <span><i class="fab fa-youtube"></i>&nbsp;YouTube</span>
                         </label>
-                        <label for="snapchat" class="snapchat-radio">
+                        <!-- <label for="snapchat" class="snapchat-radio">
                            <input type="radio" value="snapchat" v-model="platform" :checked="platform === 'snapchat'" :disabled="true"/>
                            <span><i class="fab fa-snapchat-ghost"></i>&nbsp;Snapchat</span>
-                        </label>
+                        </label> -->
                      </div>
                   </div>
                   <div class="form-url" v-show="type === 'story'">

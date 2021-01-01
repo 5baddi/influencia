@@ -157,6 +157,10 @@ class ScrapPostJob implements ShouldQueue
             else
                 $influencer->update($accountDetails);
 
+            // Store influencer picture locally
+            if(isset($account, $account->pic_url))
+                    $account->pic_url = Format::storePicture($account->pic_url);
+
             // Load tracker user
             $this->tracker->load('user');
             // Set influencer to active brand
@@ -194,14 +198,14 @@ class ScrapPostJob implements ShouldQueue
                 $influencerMedia->update($_media);
 
             // Store media assets 
-            array_walk($_media['files'], function($file) use ($influencerMedia){
-                if(empty($file) || is_null($file) || !is_array($file))
-                    return;
+            // array_walk($_media['files'], function($file) use ($influencerMedia){
+            //     if(empty($file) || is_null($file) || !is_array($file))
+            //         return;
     
-                // Push added media record
-                $file = array_merge($file, ['post_id' =>  $influencerMedia->id]);
-                InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
-            });
+            //     // Push added media record
+            //     $file = array_merge($file, ['post_id' =>  $influencerMedia->id]);
+            //     InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file);
+            // });
 
             // Update tracker influencers list
             $influencerExists = TrackerInfluencer::where(['tracker_id' => $this->tracker->id, 'influencer_id' => $influencerMedia->influencer_id])->first();
@@ -223,6 +227,9 @@ class ScrapPostJob implements ShouldQueue
      */
     private function handleYoutube(YoutubeScraper $youtube) : void
     {
+        // Disable console debugging
+        YoutubeScraper::disableDebugging();
+
         // Parse URL's
         $_urls = $this->parseURLs();
 
@@ -248,6 +255,28 @@ class ScrapPostJob implements ShouldQueue
                 $influencer = Influencer::create($channel);
             else
                 $influencer->update($channel);
+
+            // Store influencer picture locally
+            if(isset($account, $account->pic_url))
+                $account->pic_url = Format::storePicture($account->pic_url);
+
+            // Load tracker user
+            $this->tracker->load('user');
+            // Set influencer to active brand
+            if(isset($this->tracker->user->selected_brand_id)){
+                $existsInBrand = BrandInfluencer::where([
+                    'brand_id'      =>  $this->tracker->user->selected_brand_id,
+                    'influencer_id' =>  $influencer->id
+                ])->first();
+
+                // Check already exists in the same brand
+                if(is_null($existsInBrand)){
+                    BrandInfluencer::create([
+                        'brand_id'      =>  $this->tracker->user->selected_brand_id,
+                        'influencer_id' =>  $influencer->id
+                    ]);
+                }
+            }
 
             // Update or create video
             $video['influencer_id'] = $influencer->id;

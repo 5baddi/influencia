@@ -190,10 +190,18 @@ export default {
 
             this.$store.dispatch("deleteTracker", tracker.uuid)
                 .then(response => {
-                    this.$refs.trackersDT.reloadData();
                     this.showSuccess({
                         message: "Successfully deleted tracker '" + tracker.name + "'"
                     });
+
+                    if(typeof this.$route.params.campaign !== "undefined"){
+                        // Load campaigns
+                        this.loadCampaigns(this.$route.params.campaign);
+                        // Load trackers by campaign
+                        this.loadByCampaign();
+                    }else{
+                        this.$refs.trackersDT.reloadData();
+                    }
                 }).catch(error => {
                     this.showError({
                         message: error.message
@@ -233,10 +241,18 @@ export default {
                     });
                 })
                 .catch(error => {
-                    this.createTrackerErrors({
-                        title: "Error",
-                        message: `${error.message}`
-                    });
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
                 });
         }
     },
