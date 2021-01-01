@@ -170,12 +170,12 @@ class TrackerController extends Controller
             ]);
 
             // Dispatch scraping job
-            ScrapURLContentJob::dispatch($ShortLink->load('tracker'))->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
+            ScrapURLContentJob::dispatch($ShortLink->load('tracker'))->onQueue('trackers');
         }
 
         // Dispatch scraping job
         if(in_array($tracker->platform, ['instagram', 'youtube']) && $tracker->type === 'post')
-            ScrapPostJob::dispatch($tracker)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
+            ScrapPostJob::dispatch($tracker)->onQueue('trackers');
 
         return response()->success(
             "Tracker created successfully.",

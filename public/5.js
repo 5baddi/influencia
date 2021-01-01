@@ -102,7 +102,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      isNavOpen: true
+      navCurrentState: true
     };
   },
   props: {
@@ -113,32 +113,30 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     currentRouteName: function currentRouteName() {
       return this.$route.name;
+    },
+    isNavOpen: function isNavOpen() {
+      return this.navCurrentState;
     }
   },
   methods: {
     toggle: function toggle() {
-      this.isNavOpen = !this.isNavOpen;
+      this.navCurrentState = !this.navCurrentState;
+
+      if (this.navCurrentState === false) {
+        document.body.classList.add("nav-collapsed");
+        document.getElementById("main-sidebar").addEventListener("mouseenter", this.removeClass);
+        document.getElementById("main-sidebar").addEventListener("mouseleave", this.addClass);
+      } else {
+        document.getElementById("main-sidebar").removeEventListener("mouseenter", this.removeClass);
+        document.getElementById("main-sidebar").removeEventListener("mouseleave", this.addClass);
+        document.body.classList.remove("nav-collapsed");
+      }
     },
     addClass: function addClass() {
       document.body.classList.add("nav-collapsed");
     },
     removeClass: function removeClass() {
       document.body.classList.remove("nav-collapsed");
-    }
-  },
-  watch: {
-    isNavOpen: {
-      handler: function handler(newValue, oldValue) {
-        if (newValue === false) {
-          document.body.classList.add("nav-collapsed");
-          document.getElementById("main-sidebar").addEventListener("mouseenter", this.removeClass);
-          document.getElementById("main-sidebar").addEventListener("mouseleave", this.addClass);
-        } else if (newValue === true) {
-          document.getElementById("main-sidebar").removeEventListener("mouseenter", this.removeClass);
-          document.getElementById("main-sidebar").removeEventListener("mouseleave", this.addClass);
-          document.body.classList.remove("nav-collapsed");
-        }
-      }
     }
   }
 });
@@ -524,23 +522,35 @@ var render = function() {
             { staticClass: "logo" },
             [
               _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
-                _vm.isNavOpen
-                  ? _c("img", {
-                      attrs: {
-                        src: __webpack_require__(/*! @assets/img/log-inf.png */ "./resources/assets/img/log-inf.png"),
-                        alt: "logo"
-                      }
-                    })
-                  : _vm._e(),
+                _c("img", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.isNavOpen,
+                      expression: "isNavOpen"
+                    }
+                  ],
+                  attrs: {
+                    src: __webpack_require__(/*! @assets/img/log-inf.png */ "./resources/assets/img/log-inf.png"),
+                    alt: "logo"
+                  }
+                }),
                 _vm._v(" "),
-                !_vm.isNavOpen
-                  ? _c("img", {
-                      attrs: {
-                        src: __webpack_require__(/*! @assets/img/log-inf-mini.png */ "./resources/assets/img/log-inf-mini.png"),
-                        alt: "logo"
-                      }
-                    })
-                  : _vm._e()
+                _c("img", {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: !_vm.isNavOpen,
+                      expression: "!isNavOpen"
+                    }
+                  ],
+                  attrs: {
+                    src: __webpack_require__(/*! @assets/img/log-inf-mini.png */ "./resources/assets/img/log-inf-mini.png"),
+                    alt: "logo"
+                  }
+                })
               ])
             ],
             1

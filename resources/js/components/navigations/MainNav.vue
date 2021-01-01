@@ -4,8 +4,8 @@
         <div class="dashboard__sidebar--content">
             <div class="logo">
                 <router-link :to="{name : 'dashboard'}">
-                    <img v-if="isNavOpen" src="@assets/img/log-inf.png" alt="logo" />
-                    <img v-if="!isNavOpen" src="@assets/img/log-inf-mini.png" alt="logo" />
+                    <img v-show="isNavOpen" src="@assets/img/log-inf.png" alt="logo" />
+                    <img v-show="!isNavOpen" src="@assets/img/log-inf-mini.png" alt="logo" />
                 </router-link>
             </div>
         </div>
@@ -92,7 +92,7 @@
 export default {
     data() {
         return {
-            isNavOpen: true
+            navCurrentState: true
         };
     },
     props:{
@@ -103,11 +103,24 @@ export default {
     computed: {
         currentRouteName() {
             return this.$route.name;
+        },
+        isNavOpen(){
+            return this.navCurrentState;
         }
     },
     methods: {
         toggle() {
-            this.isNavOpen = !this.isNavOpen;
+            this.navCurrentState = !this.navCurrentState;
+
+            if(this.navCurrentState === false){
+                document.body.classList.add("nav-collapsed");
+                document.getElementById("main-sidebar").addEventListener("mouseenter", this.removeClass);
+                document.getElementById("main-sidebar").addEventListener("mouseleave", this.addClass);   
+            }else{
+                document.getElementById("main-sidebar").removeEventListener("mouseenter", this.removeClass);
+                document.getElementById("main-sidebar").removeEventListener("mouseleave", this.addClass);
+                document.body.classList.remove("nav-collapsed");
+            }
         },
         addClass() {
             document.body.classList.add("nav-collapsed");
@@ -116,20 +129,5 @@ export default {
             document.body.classList.remove("nav-collapsed");
         }
     },
-    watch: {
-        isNavOpen: {
-            handler(newValue, oldValue) {
-                if (newValue === false) {
-                    document.body.classList.add("nav-collapsed");
-                    document.getElementById("main-sidebar").addEventListener("mouseenter", this.removeClass);
-                    document.getElementById("main-sidebar").addEventListener("mouseleave", this.addClass);
-                } else if (newValue === true) {
-                    document.getElementById("main-sidebar").removeEventListener("mouseenter", this.removeClass);
-                    document.getElementById("main-sidebar").removeEventListener("mouseleave", this.addClass);
-                    document.body.classList.remove("nav-collapsed");
-                }
-            }
-        }
-    }
 };
 </script>
