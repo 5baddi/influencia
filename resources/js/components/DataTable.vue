@@ -7,9 +7,9 @@
     </ul>-->
     <table>
         <thead>
-            <tr v-if="searchable">
+            <tr>
                 <th :colspan="getColumnsCount()" class="actions-header">
-                    <input style="margin-right:0.3rem" type="text" @input="isTyping = true" v-model="searchQuery" :placeholder="'Search ' + (searchCols.length > 0 ? 'by ' + Object.values(searchCols).join(' or ') : '')"/>
+                    <input v-if="searchable" style="margin-right:0.3rem" type="text" @input="isTyping = true" v-model="searchQuery" :placeholder="'Search ' + (searchCols.length > 0 ? 'by ' + Object.values(searchCols).join(' or ') : '')"/>
                     <button class="btn icon-link" title="Reload all data" @click="reloadData()">
                         <i class="fas fa-sync-alt"></i>
                     </button>

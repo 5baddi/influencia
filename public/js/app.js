@@ -49844,16 +49844,16 @@ var render = function() {
   return _c("div", { class: _vm.cssClasses }, [
     _c("table", [
       _c("thead", [
-        _vm.searchable
-          ? _c("tr", [
-              _c(
-                "th",
-                {
-                  staticClass: "actions-header",
-                  attrs: { colspan: _vm.getColumnsCount() }
-                },
-                [
-                  _c("input", {
+        _c("tr", [
+          _c(
+            "th",
+            {
+              staticClass: "actions-header",
+              attrs: { colspan: _vm.getColumnsCount() }
+            },
+            [
+              _vm.searchable
+                ? _c("input", {
                     directives: [
                       {
                         name: "model",
@@ -49885,25 +49885,25 @@ var render = function() {
                         }
                       ]
                     }
-                  }),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn icon-link",
-                      attrs: { title: "Reload all data" },
-                      on: {
-                        click: function($event) {
-                          return _vm.reloadData()
-                        }
-                      }
-                    },
-                    [_c("i", { staticClass: "fas fa-sync-alt" })]
-                  )
-                ]
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn icon-link",
+                  attrs: { title: "Reload all data" },
+                  on: {
+                    click: function($event) {
+                      return _vm.reloadData()
+                    }
+                  }
+                },
+                [_c("i", { staticClass: "fas fa-sync-alt" })]
               )
-            ])
-          : _vm._e(),
+            ]
+          )
+        ]),
         _vm._v(" "),
         _c(
           "tr",
