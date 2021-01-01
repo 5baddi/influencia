@@ -19,6 +19,8 @@ class CreateBrandInfluencersTable extends Migration
 
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
             $table->foreign('influencer_id')->references('id')->on('influencers')->onDelete('cascade');
+
+            $table->primary(['brand_id', 'influencer_id']);
         });
     }
 
