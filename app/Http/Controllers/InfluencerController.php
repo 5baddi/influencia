@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Brand;
-use App\Campaign;
 use App\Influencer;
 use App\InfluencerPost;
 use App\BrandInfluencer;
