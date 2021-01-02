@@ -28,7 +28,6 @@ class InfluencerPost extends Model
         'influencer_id',
         'post_id',
         'next_cursor',
-        'link',
         'short_code',
         'type',
         'likes',
@@ -75,6 +74,7 @@ class InfluencerPost extends Model
      * @var array
      */
     protected $appends = [
+        'link',
         'hashtags_count', 
         'sequences', 
         'image_sequences',

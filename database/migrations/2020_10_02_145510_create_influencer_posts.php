@@ -15,12 +15,11 @@ class CreateInfluencerPosts extends Migration
     {
         Schema::create('influencer_posts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('influencer_id')->index();
-            $table->string('uuid')->unique()->index()->nullable(false);
-            $table->unsignedBigInteger('post_id')->index()->nullable();
-            $table->text('next_cursor')->index()->nullable()->default(null);
-            $table->string('link')->nullable(false);
-            $table->string('short_code')->index()->nullable();
+            $table->unsignedBigInteger('influencer_id');
+            $table->string('uuid')->unique()->nullable(false);
+            $table->unsignedBigInteger('post_id')->nullable();
+            $table->text('next_cursor')->nullable()->default(null);
+            $table->string('short_code')->nullable();
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();

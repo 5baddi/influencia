@@ -15,7 +15,6 @@ class CreateScrapAccounts extends Migration
     {
         Schema::create('scrap_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique()->nullable(false);
             $table->enum('platform', ['instagram', 'snapchat', 'youtube'])->default('instagram');
             $table->string('username')->nullable(false);
             $table->string('password')->nullable(false);
