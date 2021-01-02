@@ -73,7 +73,6 @@ const actions = {
                     // Save user & token state
                     commit("setUser", { user: user});
                     commit("setToken", { token: user.token });
-                    commit("setToken", { token: user.token });
 
                     // Send token to authorization header
                     api.defaults.headers.common.Authorization = `Bearer ${user.token}`;

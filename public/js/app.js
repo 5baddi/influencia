@@ -69248,9 +69248,6 @@ var actions = {
           });
           commit("setToken", {
             token: user.token
-          });
-          commit("setToken", {
-            token: user.token
           }); // Send token to authorization header
 
           _api__WEBPACK_IMPORTED_MODULE_2__["api"].defaults.headers.common.Authorization = "Bearer ".concat(user.token); // Set brands
