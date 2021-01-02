@@ -15,14 +15,12 @@ class CreateInfluencerPosts extends Migration
     {
         Schema::create('influencer_posts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('influencer_id');
-            $table->string('uuid')->unique()->nullable(false);
-            $table->unsignedBigInteger('post_id')->nullable();
-            $table->text('next_cursor')->nullable()->default(null);
-            // $table->unsignedBigInteger('campaign_id')->nullable();
-            // $table->unsignedBigInteger('tracker_id')->nullable();
+            $table->unsignedBigInteger('influencer_id')->index();
+            $table->string('uuid')->unique()->index()->nullable(false);
+            $table->unsignedBigInteger('post_id')->index()->nullable();
+            $table->text('next_cursor')->index()->nullable()->default(null);
             $table->string('link')->nullable(false);
-            $table->string('short_code')->nullable();
+            $table->string('short_code')->index()->nullable();
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();
@@ -50,8 +48,8 @@ class CreateInfluencerPosts extends Migration
             $table->timestamps();
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
-            // $table->foreign('campaign_id')->references('id')->on('campaigns');
-            // $table->foreign('tracker_id')->references('id')->on('trackers')->onDelete('set null');
+
+            $table->unique(['post_id', 'short_code']);
         });
     }
 

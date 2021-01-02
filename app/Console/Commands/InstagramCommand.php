@@ -77,48 +77,41 @@ class InstagramCommand extends Command
      */
     private function scrapInfluencers() : void
     {
-        // Get influencers
-        $influencers = Influencer::with(['posts'])
-                            ->where('platform', 'instagram')
-                            ->orderBy('created_at', 'asc')
-                            ->get();
-        $this->info("Number of account to sync: " . $influencers->count());
+        // Handle by influencers
+        Influencer::withCount(['posts'])
+                    ->where('platform', 'instagram')
+                    ->orderBy('created_at', 'asc')
+                    ->chunk(50, function($influencers){
+                        $this->info("Account number to synchronize: {$influencers->count()}");
 
-        // Scrap each influencer details
-        foreach($influencers as $influencer){
-            try{
-                // Ignore last updated influencers
-                if($influencer->posts()->count() === $influencer->medias)
-                    continue;
+                        // Scrap each influencer details
+                        $influencers->each(function($influencer){
+                            // Ignore last updated influencers
+                            if($influencer->posts_count >= $influencer->medias)
+                                return;
 
-                // Update influencer posts
-                $this->info("Start scraping account @" . $influencer->username);
-                $this->info("Number of posts: " . $influencer->medias);
-                $this->info("Already scraped posts: " . $influencer->posts()->count());
-                $this->info("Please wait until scraping all medias ...");
+                            try{
+                                // Influencer details
+                                $this->info("Start scraping account @{$influencer->username}");
+                                $this->info("Number of posts: {$influencer->medias}");
+                                $this->info("Already scraped posts: {$influencer->posts_count}");
+                                $this->info("Please wait until scraping all medias ...");
 
-                // Get next cursor
-                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)
-                                ->whereNotNull('next_cursor')
-                                ->orWhere('next_cursor', '!=', '')
-                                ->orderBy('id', 'desc')
-                                ->latest()
-                                ->first();
-
-                // Scrap new medias
-                $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
-            }catch(\Exception $exception){
-                // Trace
-                Log::error($exception->getMessage(), [
-                    'context'   =>  "Instagram Updater with Code: {$exception->getCode()} Line: {$exception->getLine()}"
-                ]);
-                $this->error($exception->getMessage());
-
-                // Break process if necessary
-                if($exception->getCode() === 111)
-                    break;
-            }
-        }
+                                // Scrap new medias
+                                $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
+                            }catch(\Exception $exception){
+                                // Trace
+                                Log::error($exception->getMessage(), [
+                                    'context'   =>  "Instagram Updater with Code: {$exception->getCode()} Line: {$exception->getLine()}"
+                                ]);
+                                $this->error($exception->getMessage());
+                
+                                // Break process if necessary
+                                if($exception->getCode() === 111)
+                                    exit();
+                            }
+                        });
+                    });
     }
 
     /**
@@ -128,61 +121,71 @@ class InstagramCommand extends Command
      */
     private function updateInfluencers() : void
     {
-        try{
-            // Load all influencers
-            $influencers = Influencer::with(['posts'])
-                                ->where('platform', 'instagram')
-                                ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
-                                ->get();
-            $this->info("Influencers need update {$influencers->count()}");
+        // Handle by influencers
+        Influencer::withCount(['posts'])
+                    ->where('platform', 'instagram')
+                    ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
+                    ->chunk(50, function($influencers){
+                        $this->info("Influencers to update: {$influencers->count()}");
 
-            foreach($influencers as $influencer){
-                // Ignore still in scraping queue
-                if($influencer->posts->count() !== $influencer->medias)
-                    continue;
+                        // Ignore still in scraping queue
+                        if($influencer->posts_count < $influencer->medias)
+                            return;
 
-                // Scrap account details
-                $this->info("Start scraping account @" . $influencer->username);
-                $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+                        try{
+                            // Scrap account details
+                            $this->info("Start scraping account @{$influencer->username}");
+                            $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
-                // Store influencer picture locally
-                $accountDetails['pic_url'] = Format::storePicture($accountDetails['pic_url']);
+                            // Store influencer picture locally
+                            $accountDetails['pic_url'] = Format::storePicture($accountDetails['pic_url']);
 
-                // Update influencer
-                $influencer->update($accountDetails);
-                $this->info("Successfully updated influencer @" . $influencer->username);
-                
-                foreach($influencer->posts as $post){
-                    // Get online media
-                    $_media = $this->instagramScraper->byMedia($post->short_code);
-                    $media = $this->instagramScraper->getMedia($_media);
-                    $this->info("Post {$media['short_code']} successfully scraped!");
+                            // Update influencer
+                            $influencer->update($accountDetails);
+                            $this->info("Successfully updated influencer @{$influencer->username}");
 
-                    // TODO: remove deleted media
+                            // Load posts
+                            $influencer->load('posts');
+                            // Handle by posts
+                            $influencer->posts->chunk(50, function($posts){
+                                $posts->each(function($post){
+                                    // Get online media
+                                    $_media = $this->instagramScraper->byMedia($post->short_code);
+                                    $this->info("Media {$media['short_code']} successfully scraped!");
+                                    
+                                    // Format media
+                                    $media = $this->instagramScraper->getMedia($_media);
 
-                    // Update comments if post linked to a tracker
-                    $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $post->id)->count();
-                    if($mediaTrackersCount > 0){
-                        // Analyze media comments
-                        $sentiments = $this->instagramScraper->analyzeMedia($media);
-                        $media = array_merge($media, $sentiments);
+                                    // TODO: remove deleted media
 
-                        // Store media thumbnail locally
-                        $media['thumbnail_url'] = Format::storePicture($media['thumbnail_url'], "influencers/instagram/thumbnails/");
-                    }
+                                    // Update comments if post linked to a tracker
+                                    $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $post->id)->count();
+                                    if($mediaTrackersCount > 0){
+                                        // Analyze media comments
+                                        $sentiments = $this->instagramScraper->analyzeMedia($media);
+                                        $media = array_merge($media, $sentiments);
 
-                    // Update local media
-                    $post->update($media);
+                                        // Store media thumbnail locally
+                                        $media['thumbnail_url'] = Format::storePicture($media['thumbnail_url'], "influencers/instagram/thumbnails/");
+                                    }
 
-                    $this->info("Post {$post->short_code} successfully updated.");
-                }
-            }
-        }catch(\Exception $exception){
-            // Trace
-            Log::error($exception->getMessage(), [
-                'context'   =>  "Instagram Updater with Code: {$exception->getCode()} Line: {$exception->getLine()}"
-            ]);
-            $this->error($exception->getMessage());
-        }
+                                    // Update local media
+                                    $post->update($media);
+
+                                    $this->info("Media {$post->short_code} successfully updated.");
+                                });
+                            });
+                        }catch(\Exception $exception){
+                            // Trace
+                            Log::error($exception->getMessage(), [
+                                'context'   =>  "Instagram Updater with Code: {$exception->getCode()} Line: {$exception->getLine()}"
+                            ]);
+                            $this->error($exception->getMessage());
+
+                            // Break process if necessary
+                            if($exception->getCode() === 111)
+                                exit();
+                        }
+                    });
     }
 }
