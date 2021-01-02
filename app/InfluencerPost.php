@@ -96,25 +96,6 @@ class InfluencerPost extends Model
     {
         return null;
     }
-        
-    /**
-     * Get media thumbnail as base64
-     * 
-     * @return string|null
-     */
-    public function getThumbnailUrlAttribute() : ?string
-    {
-        if(isset($this->attributes['thumbnail_url'])){
-            // External link
-            if(filter_var($this->attributes['thumbnail_url'], FILTER_VALIDATE_URL))
-                return $this->attributes['thumbnail_url'];
-
-            // Picture as base64
-            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail_url']));
-        }
-
-        return null;
-    }
 
     /**
      * Get Emojis list
