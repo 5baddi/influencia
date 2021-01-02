@@ -36,6 +36,9 @@ class CreateInfluencerTable extends Migration
             $table->boolean('is_private')->nullable();
             $table->boolean('is_verified')->nullable();
             $table->boolean('banned')->default(false);
+            $table->integer('video_views')->nullable();
+            $table->string('country_code')->nullable();
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
     }

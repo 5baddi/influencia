@@ -44,6 +44,15 @@ class CreateInfluencerPosts extends Migration
             $table->boolean('comments_disabled')->default(false);
             $table->boolean('caption_edited')->default(false);
             $table->boolean('is_ad')->default(false);
+            $table->longText('description')->nullable();
+            $table->integer('dislikes')->nullable();
+            $table->integer('favorites')->nullable();
+            $table->integer('category_id')->nullable();
+            $table->string('category')->nullable();
+            $table->string('language')->nullable();
+            $table->string('audio_language')->nullable();
+            $table->json('tags')->nullable();
+            $table->boolean('is_livebroadcast')->nullable();
             $table->timestamps();
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
