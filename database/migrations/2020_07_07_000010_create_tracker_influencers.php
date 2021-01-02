@@ -14,11 +14,13 @@ class CreateTrackerInfluencers extends Migration
     public function up()
     {
         Schema::create('tracker_influencers', function (Blueprint $table) {
-            $table->unsignedBigInteger('tracker_id')->primary();
-            $table->unsignedBigInteger('influencer_id')->primary();
+            $table->unsignedBigInteger('tracker_id');
+            $table->unsignedBigInteger('influencer_id');
 
             $table->foreign('tracker_id')->references('id')->on('trackers')->onDelete('cascade');
             $table->foreign('influencer_id')->references('id')->on('influencers')->onDelete('cascade');
+
+            $table->unique(['tracker_id', 'influencer_id']);
         });
     }
 
