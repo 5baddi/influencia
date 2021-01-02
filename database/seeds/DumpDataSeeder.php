@@ -59,6 +59,7 @@ class DumpDataSeeder extends Seeder
             $ownerRole->permissions()->attach($permission->id);
         }
 
+        // Super admin
         $user = User::create([
             'name'              =>  'Super Admin',
             'email'             =>  'amine.karhat@gmail.com',
