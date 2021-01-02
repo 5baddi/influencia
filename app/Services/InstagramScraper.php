@@ -380,7 +380,7 @@ class InstagramScraper
 
                 // Check media if already exists
                 $post = InfluencerPost::where([
-                            'influencer_id' =>  $influencer->id,
+                            'influencer_id' => $influencer->id,
                             'post_id'       => $media->getId(), 
                             'short_code'    => $media->getShortCode()
                         ])
