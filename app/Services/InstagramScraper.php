@@ -262,25 +262,7 @@ class InstagramScraper
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::$isHTTPRequest ? 60 : self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? 120 : self::SLEEP_REQUEST['max']));
 
-            return [
-                'account_id'    =>  $account->getId(),
-                'username'      =>  $account->getUsername(),
-                'name'          =>  $account->getFullName(),
-                'pic_url'       =>  $account->getProfilePicUrl(),
-                'biography'     =>  $account->getBiography(),
-                'website'       =>  $account->getExternalUrl(),
-                'followers'     =>  $account->getFollowedByCount(),
-                'follows'       =>  $account->getFollowsCount(),
-                'medias'        =>  $account->getMediaCount(),
-                'is_business'   =>  $account->isBusinessAccount(),
-                'is_private'    =>  $account->isPrivate(),
-                'is_verified'   =>  $account->isVerified(),
-                'highlight_reel'    =>  $account->getHighlightReelCount(),
-                'business_category' =>  $account->getBusinessCategoryName(),
-                'business_email'    =>  $account->getBusinessEmail(),
-                'business_phone'    =>  $account->getBusinessPhoneNumber(),
-                'business_address'  =>  $account->getBusinessAddressJson(),
-            ];
+            retrun $this->parseAccount($account);
         }catch(\Exception $ex){
             $this->log("Can't find influencer by username @{$username}", $ex);
 
@@ -309,25 +291,7 @@ class InstagramScraper
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::$isHTTPRequest ? 60 : self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? 120 : self::SLEEP_REQUEST['max']));
 
-            return [
-                'account_id'    =>  $account->getId(),
-                'username'      =>  $account->getUsername(),
-                'name'          =>  $account->getFullName(),
-                'pic_url'       =>  $account->getProfilePicUrl(),
-                'biography'     =>  $account->getBiography(),
-                'website'       =>  $account->getExternalUrl(),
-                'followers'     =>  $account->getFollowedByCount(),
-                'follows'       =>  $account->getFollowsCount(),
-                'medias'        =>  $account->getMediaCount(),
-                'is_business'   =>  $account->isBusinessAccount(),
-                'is_private'    =>  $account->isPrivate(),
-                'is_verified'   =>  $account->isVerified(),
-                'highlight_reel'    =>  $account->getHighlightReelCount(),
-                'business_category' =>  $account->getBusinessCategoryName(),
-                'business_email'    =>  $account->getBusinessEmail(),
-                'business_phone'    =>  $account->getBusinessPhoneNumber(),
-                'business_address'  =>  $account->getBusinessAddressJson(),
-            ];
+            retrun $this->parseAccount($account);
         }catch(\Exception $ex){
             $this->log("Can't find influencer by ID {$id}", $ex);
 
@@ -753,5 +717,39 @@ class InstagramScraper
                 'context'   =>  "Instagram Scraper with Code: {$exception->getCode()} Line: {$exception->getLine()}"
             ]);
         }
+    }
+
+    /**
+     * Parse Instagram account
+     *
+     * @param Object $account
+     * @return array
+     */
+    private function parseAccount(Object $account) : array
+    {
+        // Store influencer picture locally
+        $pictureURL = null;
+        if(!is_null($account->getProfilePicUrl()))
+            $pictureURL = Format::storePicture($account->getProfilePicUrl());
+
+        return [
+            'account_id'    =>  $account->getId(),
+            'username'      =>  $account->getUsername(),
+            'name'          =>  $account->getFullName(),
+            'pic_url'       =>  $pictureURL,
+            'biography'     =>  $account->getBiography(),
+            'website'       =>  $account->getExternalUrl(),
+            'followers'     =>  $account->getFollowedByCount(),
+            'follows'       =>  $account->getFollowsCount(),
+            'medias'        =>  $account->getMediaCount(),
+            'is_business'   =>  $account->isBusinessAccount(),
+            'is_private'    =>  $account->isPrivate(),
+            'is_verified'   =>  $account->isVerified(),
+            'highlight_reel'    =>  $account->getHighlightReelCount(),
+            'business_category' =>  $account->getBusinessCategoryName(),
+            'business_email'    =>  $account->getBusinessEmail(),
+            'business_phone'    =>  $account->getBusinessPhoneNumber(),
+            'business_address'  =>  $account->getBusinessAddressJson(),
+        ];
     }
 }

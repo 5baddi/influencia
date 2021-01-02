@@ -135,10 +135,6 @@ class InstagramCommand extends Command
                             $this->info("Start scraping account @{$influencer->username}");
                             $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
-                            // Store influencer picture locally
-                            if(isset($accountDetails, $accountDetails['pic_url']))
-                                $accountDetails['pic_url'] = Format::storePicture($accountDetails['pic_url']);
-
                             // Update influencer
                             $influencer->update($accountDetails);
                             $this->info("Successfully updated influencer @{$influencer->username}");
