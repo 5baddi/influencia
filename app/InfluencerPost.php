@@ -88,6 +88,16 @@ class InfluencerPost extends Model
     ];
 
     /**
+     * Get media link
+     * 
+     * @return string|null
+     */
+    public function getLinkAttribute() : ?string
+    {
+        return null;
+    }
+        
+    /**
      * Get media thumbnail as base64
      * 
      * @return string|null
