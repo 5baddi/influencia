@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Influencer;
 use App\InfluencerPost;
-use App\InfluencerPostMedia;
 use App\Tracker;
 use Illuminate\Database\Eloquent\Model;
 use Format;
@@ -52,7 +51,7 @@ class InfluencerPostRepository extends BaseRepository
         if(isset($files) && !empty($files))
             $this->addMedias($post, $files);
 
-        return $post->load('files');
+        return $post;
     }
 
     public function update(Model $entity, array $scraperAttributes) : Model
@@ -68,7 +67,7 @@ class InfluencerPostRepository extends BaseRepository
         if(isset($files) && !empty($files))
             $this->addMedias($entity, $files);
 
-        return $entity->load('files')->refresh();
+        return $entity->refresh();
     }
 
     public function exists(Influencer $influencer, int $postID) : ?InfluencerPost
@@ -103,14 +102,14 @@ class InfluencerPostRepository extends BaseRepository
         // Init
         $files = [];
 
-        array_walk($mediaFiles, function($file) use ($post, &$files){
-            if(empty($file) || is_null($file) || !is_array($file))
-                return;
+        // array_walk($mediaFiles, function($file) use ($post, &$files){
+        //     if(empty($file) || is_null($file) || !is_array($file))
+        //         return;
 
-            // Push added media record
-            $file = array_merge($file, ['post_id' =>  $post->id]);
-            array_push($files, InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file));
-        });
+        //     // Push added media record
+        //     $file = array_merge($file, ['post_id' =>  $post->id]);
+        //     array_push($files, InfluencerPostMedia::updateOrCreate(['post_id' => $file['post_id'], 'file_id' => $file['file_id']], $file));
+        // });
 
         return $files;
     }

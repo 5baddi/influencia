@@ -28,7 +28,6 @@ class InfluencerPost extends Model
         'influencer_id',
         'post_id',
         'next_cursor',
-        'link',
         'short_code',
         'type',
         'likes',
@@ -75,6 +74,7 @@ class InfluencerPost extends Model
      * @var array
      */
     protected $appends = [
+        'link',
         'hashtags_count', 
         'sequences', 
         'image_sequences',
@@ -87,6 +87,16 @@ class InfluencerPost extends Model
         'earned_media_value'
     ];
 
+    /**
+     * Get media link
+     * 
+     * @return string|null
+     */
+    public function getLinkAttribute() : ?string
+    {
+        return null;
+    }
+        
     /**
      * Get media thumbnail as base64
      * 
@@ -219,7 +229,7 @@ class InfluencerPost extends Model
      */
     public function getSequencesAttribute() : int
     {
-        return $this->files()->count();
+        return 0;
     }
 
     /**
@@ -260,7 +270,7 @@ class InfluencerPost extends Model
      */
     public function getImageSequencesAttribute() : int
     {
-        return $this->files()->where('type', 'image')->count();
+        return 0;
     }
     
     /**
@@ -270,7 +280,7 @@ class InfluencerPost extends Model
      */
     public function getVideoSequencesAttribute() : int
     {
-        return $this->files()->where('type', 'video')->count();
+        return 0;
     }
 
     /**
@@ -311,16 +321,6 @@ class InfluencerPost extends Model
     public function getEngagementsAttribute() : int
     {
         return ($this->attributes['likes'] ?? 0) + ($this->attributes['comments'] ?? 0);
-    }
-
-    /**
-     * Get media sequences
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function files()
-    {
-        return $this->hasMany(InfluencerPostMedia::class, 'post_id');
     }
 
     /**

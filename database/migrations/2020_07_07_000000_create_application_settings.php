@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateScrapAccounts extends Migration
+class CreateApplicationSettings extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,18 @@ class CreateScrapAccounts extends Migration
      */
     public function up()
     {
+        // Application settings
+        Schema::create('application_settings', function (Blueprint $table) {
+            $table->id();
+            $table->string('key')->unique()->nullable(false);
+            $table->string('name')->unique()->nullable(false);
+            $table->text('value')->nullable();
+            $table->timestamps();
+        });
+
+        // Scrap accounts
         Schema::create('scrap_accounts', function (Blueprint $table) {
             $table->id();
-            $table->string('uuid')->unique()->nullable(false);
             $table->enum('platform', ['instagram', 'snapchat', 'youtube'])->default('instagram');
             $table->string('username')->nullable(false);
             $table->string('password')->nullable(false);
@@ -38,6 +47,7 @@ class CreateScrapAccounts extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('application_settings');
         Schema::dropIfExists('scrap_accounts');
     }
 }

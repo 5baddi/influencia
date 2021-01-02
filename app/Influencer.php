@@ -62,6 +62,7 @@ class Influencer extends Model
      * @var array
      */
     protected $appends = [
+        'link',
         'calculated_engagement_rate',
         'image_sequences',
         'video_sequences',
@@ -74,6 +75,30 @@ class Influencer extends Model
         'estimated_communities',
         'earned_media_value'
     ];
+
+    /**
+     * Get media link
+     * 
+     * @return string|null
+     */
+    public function getLinkAttribute() : ?string
+    {
+        // Init
+        $link = null;
+
+        if(isset($this->attributes['platform'])){
+            switch($this->attributes['platform']){
+                case "youtube":
+                    $link = "https://www.youtube.com/channel/" . $this->attributes['account_id'];
+                break;
+                case "instagram":
+                    $link = "https://www.instagram.com/" . $this->attributes['username'];
+                break;
+            }
+        }
+        
+        return $link;
+    }
 
     /**
      * Get influencer picture as base64

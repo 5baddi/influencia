@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Exception\RequestException;
 
 /**
@@ -63,7 +62,7 @@ class YoutubeScraper
      *
      * @var \GuzzleHttp\Client
      */
-    private $client;
+    private static $client;
 
     /**
      * Constructor
@@ -71,18 +70,7 @@ class YoutubeScraper
     public function __construct()
     {
         // Init HTTP client
-        $this->client = new Client([
-            'base_uri'          =>  "https://www.googleapis.com/youtube/v3/",
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            'config'            =>  [
-                'curl'          =>  [
-                    CURLOPT_SSL_VERIFYPEER  =>  0,
-                    CURLOPT_SSL_VERIFYHOST  =>  0,
-                ]
-            ]
-        ]);
+        self::initHTTPClient();
     }
 
     /**
@@ -93,6 +81,9 @@ class YoutubeScraper
     public static function disableDebugging() : void
     {
         self::$debug = false;
+
+        // Re-init HTTP client
+        self::initHTTPClient();
     }
 
     /**
@@ -124,7 +115,7 @@ class YoutubeScraper
             
         try{
             // Send get request to get video details
-            $response = $this->client->get("videos?part=snippet,statistics,contentDetails&id={$ID}&key=" . config('scraper.youtube.key'));
+            $response = self::$client->get("videos?part=snippet,statistics,contentDetails&id={$ID}&key=" . config('scraper.youtube.key'));
             $obj = json_decode($response->getBody()->getContents());
 
             return [
@@ -132,7 +123,7 @@ class YoutubeScraper
                 "channel_id"        =>  $obj->items[0]->snippet->channelId,
                 "title"             =>  $obj->items[0]->snippet->title,
                 "type"              =>  "video",
-                "link"              =>  "https://www.youtube.com/watch?v={$obj->items[0]->id}",
+                // "link"              =>  "https://www.youtube.com/watch?v={$obj->items[0]->id}",
                 "description"       =>  $obj->items[0]->snippet->description,
                 "tags"              =>  $obj->items[0]->snippet->tags,
                 "category_id"       =>  $obj->items[0]->snippet->categoryId,
@@ -175,7 +166,7 @@ class YoutubeScraper
     {
         try{
             // Send get request to get video details
-            $response = $this->client->get("channels?part=snippet,statistics&id={$channelID}&key=" . config('scraper.youtube.key'));
+            $response = self::$client->get("channels?part=snippet,statistics&id={$channelID}&key=" . config('scraper.youtube.key'));
             $obj = json_decode($response->getBody()->getContents());
 
             return [
@@ -213,5 +204,26 @@ class YoutubeScraper
         preg_match("'<meta itemprop=\"channelId\" content=\"(.*?)\"'si", $html, $match);
 
         return $match[1] ?? null;
+    }
+
+    /**
+     * Init HTTP Client
+     *
+     * @return void
+     */
+    private static function initHTTPClient() : void
+    {
+        self::$client = new Client([
+            'base_uri'          =>  "https://www.googleapis.com/youtube/v3/",
+            'verify'            =>  !config('app.debug'),
+            'debug'             =>  self::$debug,
+            'http_errors'       =>  false,
+            'config'            =>  [
+                'curl'          =>  [
+                    CURLOPT_SSL_VERIFYPEER  =>  0,
+                    CURLOPT_SSL_VERIFYHOST  =>  0,
+                ]
+            ]
+        ]);
     }
 }

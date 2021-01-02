@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Role;
 use App\Permission;
 use App\Http\Requests\RoleRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PermissionRequest;
 
 class OAuthController extends Controller
@@ -74,5 +75,69 @@ class OAuthController extends Controller
             "Roles fetched successfully.",
             Role::all()
         );
+    }
+
+    /**
+     * Sign in layout
+     * 
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function signInLayout()
+    {
+        return view("auth.signin");
+    }
+
+    /**
+     * Sign in with an user
+     *
+     * @return @return \Illuminate\Http\Response
+     */
+    public function signIn()
+    {
+        // Validate sign in data
+        $data = $request->validate([
+            'email'     => 'required|email',
+            'password'  => 'required'
+        ]);
+
+        // Load user
+        $user = User::where('email', $request->email)->first();
+
+        // Verify credentials
+        if(!$user || !Hash::check($request->password, $user->password))
+            return response()->error("These credentials do not match our records.", [], 404);
+
+        // Generate new token
+        $token = $user->createToken('influencia')->plainTextToken;
+
+        // Update last login
+        $user->update([
+            'last_login' => now()
+        ]);
+
+        return response()->success(
+            ucwords($user->name) . " sign in successfully.", 
+            [
+                'user'  => $user->load(['selectedBrand', 'brands']),
+                'token' => $token
+            ]
+        );
+    }
+
+    /**
+     * Sign out authenticated user
+     *
+     * @return @return \Illuminate\Http\Response
+     */
+    public function signOut()
+    {
+        // Get authenticated user
+        $user = Auth::user();
+
+        // Clear tokens 
+        if($user)
+            $user->tokens()->delete();
+
+        return response()->success(ucwords($user->name) . " signed out.");
     }
 }

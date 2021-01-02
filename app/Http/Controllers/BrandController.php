@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\User;
 use App\Brand;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
@@ -65,14 +64,15 @@ class BrandController extends Controller
         }
 
         // Get current user
-        $user = User::find(Auth::id());
+        $user = Auth::user();
 
         // Store the brand
         $brand = Brand::create($data);
         $brand->users()->attach($user);
-        // $user->update([
-        //     'selected_brand_id' => $brand->id
-        // ]);
+
+        // Set brand as selected if no already brand selected
+        if(is_null($user->selected_brand_id))
+            $user->update(['selected_brand_id' => $brand->id]);
 
         return response()->success("Brand created successfully.", Brand::with(['users', 'campaigns'])->find($brand->id), 201);
     }

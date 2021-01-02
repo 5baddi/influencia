@@ -670,6 +670,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/modals/CreateTrackerModal */ "./resources/js/components/modals/CreateTrackerModal.vue");
 /* harmony import */ var _components_TrackerAnalytics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/TrackerAnalytics */ "./resources/js/components/TrackerAnalytics.vue");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -865,11 +867,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (typeof tracker.uuid === "undefined") this.showError();
       this.$store.dispatch("deleteTracker", tracker.uuid).then(function (response) {
-        _this3.$refs.trackersDT.reloadData();
-
         _this3.showSuccess({
           message: "Successfully deleted tracker '" + tracker.name + "'"
         });
+
+        if (typeof _this3.$route.params.campaign !== "undefined") {
+          // Load campaigns
+          _this3.loadCampaigns(_this3.$route.params.campaign); // Load trackers by campaign
+
+
+          _this3.loadByCampaign();
+        } else {
+          _this3.$refs.trackersDT.reloadData();
+        }
       })["catch"](function (error) {
         _this3.showError({
           message: error.message
@@ -908,10 +918,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           message: "Tracker ".concat(response.content.name, " created successfuly!")
         });
       })["catch"](function (error) {
-        _this4.createTrackerErrors({
-          title: "Error",
-          message: "".concat(error.message)
-        });
+        var errors = Object.values(error.response.data.errors);
+
+        if (_typeof(errors) === "object" && errors.length > 0) {
+          errors.forEach(function (element) {
+            _this4.showError({
+              message: element
+            });
+          });
+        } else {
+          _this4.showError({
+            message: error.response.data.message
+          });
+        }
       });
     }
   },
@@ -2037,42 +2056,6 @@ var render = function() {
                           _vm._v(" "),
                           _vm._m(2)
                         ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "label",
-                        {
-                          staticClass: "snapchat-radio",
-                          attrs: { for: "snapchat" }
-                        },
-                        [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.platform,
-                                expression: "platform"
-                              }
-                            ],
-                            attrs: {
-                              type: "radio",
-                              value: "snapchat",
-                              disabled: true
-                            },
-                            domProps: {
-                              checked: _vm.platform === "snapchat",
-                              checked: _vm._q(_vm.platform, "snapchat")
-                            },
-                            on: {
-                              change: function($event) {
-                                _vm.platform = "snapchat"
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _vm._m(3)
-                        ]
                       )
                     ])
                   ]
@@ -2556,15 +2539,6 @@ var staticRenderFns = [
       _c("i", { staticClass: "fab fa-youtube" }),
       _vm._v(" YouTube")
     ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", [
-      _c("i", { staticClass: "fab fa-snapchat-ghost" }),
-      _vm._v(" Snapchat")
-    ])
   }
 ]
 render._withStripped = true
@@ -2613,6 +2587,12 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-success",
+                  attrs: {
+                    disabled:
+                      !_vm.campaigns ||
+                      typeof _vm.campaigns.length === "undefined" ||
+                      _vm.campaigns.length === 0
+                  },
                   on: {
                     click: function($event) {
                       _vm.showAddTrackerModal = !_vm.showAddTrackerModal
