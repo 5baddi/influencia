@@ -262,7 +262,7 @@ class InstagramScraper
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::$isHTTPRequest ? 60 : self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? 120 : self::SLEEP_REQUEST['max']));
 
-            retrun $this->parseAccount($account);
+            return $this->parseAccount($account);
         }catch(\Exception $ex){
             $this->log("Can't find influencer by username @{$username}", $ex);
 
@@ -291,7 +291,7 @@ class InstagramScraper
             $this->log("User @{$account->getUsername()} details scraped successfully.");
             sleep(rand(self::$isHTTPRequest ? 60 : self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? 120 : self::SLEEP_REQUEST['max']));
 
-            retrun $this->parseAccount($account);
+            return $this->parseAccount($account);
         }catch(\Exception $ex){
             $this->log("Can't find influencer by ID {$id}", $ex);
 
@@ -722,10 +722,10 @@ class InstagramScraper
     /**
      * Parse Instagram account
      *
-     * @param Object $account
+     * @param \InstagramScraper\Model\Account $account
      * @return array
      */
-    private function parseAccount(Object $account) : array
+    private function parseAccount(\InstagramScraper\Model\Account $account) : array
     {
         // Store influencer picture locally
         $pictureURL = null;
