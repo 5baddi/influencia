@@ -642,18 +642,8 @@ class InstagramScraper
             return [];
 
         // Parse emojis
-        $_emojis = $this->emojiParser->matchAll($comment);
-
-        // Ignore empty emojis list
-        if(empty($_emojis))
-            return [];
-
-        // Slice empty emoji
-        $emojis = [];
-        array_walk($_emojis, function($item, $key) use (&$emojis){
-            if(!is_null($item) && !empty($item) && $item !== '#' && $item !== '')
-                array_push($emojis, $item);
-        });
+        $emojiResult = \Emoji\detect_emoji($comment);
+        $emojis = collect($emojiResult)->pluck('emoji')->toArray();
 
         $this->log('Parsed Emojis: ' . sizeof($emojis));
 
