@@ -70,18 +70,7 @@ class YoutubeScraper
     public function __construct()
     {
         // Init HTTP client
-        $this->client = new Client([
-            'base_uri'          =>  "https://www.googleapis.com/youtube/v3/",
-            'verify'            =>  !config('app.debug'),
-            'debug'             =>  self::$debug,
-            'http_errors'       =>  false,
-            'config'            =>  [
-                'curl'          =>  [
-                    CURLOPT_SSL_VERIFYPEER  =>  0,
-                    CURLOPT_SSL_VERIFYHOST  =>  0,
-                ]
-            ]
-        ]);
+        $this->client = $this->initHTTPClient();
     }
 
     /**
@@ -92,6 +81,9 @@ class YoutubeScraper
     public static function disableDebugging() : void
     {
         self::$debug = false;
+
+        // Re-init HTTP client
+        $this->client = $this->initHTTPClient();
     }
 
     /**
@@ -212,5 +204,26 @@ class YoutubeScraper
         preg_match("'<meta itemprop=\"channelId\" content=\"(.*?)\"'si", $html, $match);
 
         return $match[1] ?? null;
+    }
+
+    /**
+     * Init HTTP Client
+     *
+     * @return \GuzzleHttp\Client
+     */
+    private function initHTTPClient()
+    {
+        return new Client([
+            'base_uri'          =>  "https://www.googleapis.com/youtube/v3/",
+            'verify'            =>  !config('app.debug'),
+            'debug'             =>  self::$debug,
+            'http_errors'       =>  false,
+            'config'            =>  [
+                'curl'          =>  [
+                    CURLOPT_SSL_VERIFYPEER  =>  0,
+                    CURLOPT_SSL_VERIFYHOST  =>  0,
+                ]
+            ]
+        ]);
     }
 }
