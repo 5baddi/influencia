@@ -69493,7 +69493,8 @@ var actions = {
   },
   addBrand: function addBrand(_ref16, data) {
     var commit = _ref16.commit,
-        state = _ref16.state;
+        state = _ref16.state,
+        dispatch = _ref16.dispatch;
     return new Promise(function (resolve, reject) {
       _api__WEBPACK_IMPORTED_MODULE_2__["api"].post("/api/v1/brands", data, {
         headers: {
@@ -69503,7 +69504,12 @@ var actions = {
         if (response.status === 201 && response.data.success) {
           commit('setBrand', {
             brand: response.data.content
-          });
+          }); // Set brand as selected one
+
+          if (response.data.content !== null && typeof response.data.content !== "undefined" && (state.user.selected_brand_id === null || typeof state.user.selected_brand_id === "undefined")) {
+            dispatch('setActiveBrand', response.data.content);
+          }
+
           resolve(response.data);
         } else {
           throw new Error("Something going wrong!");
@@ -69661,7 +69667,7 @@ var actions = {
     if (brand !== null && typeof brand.uuid !== "undefined") {
       return new Promise(function (resolve, reject) {
         _api__WEBPACK_IMPORTED_MODULE_2__["api"].get("/api/v1/users/active-brand/".concat(brand.uuid)).then(function (response) {
-          if (response.status === 200 && typeof response.data.content.selected_brand !== "undefined" && (typeof state.user.selected_brand.uuid.id === "undefined" || response.data.content.selected_brand.id !== state.user.selected_brand.uuid.id)) {
+          if (response.status === 200 && typeof response.data.content.selected_brand_id !== "undefined" && (typeof state.user.selected_brand_id === "undefined" || response.data.content.selected_brand_id !== state.user.selected_brand_id)) {
             var user = response.data.content;
             user.token = state.token;
             ls.set("user", JSON.stringify(user));

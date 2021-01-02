@@ -49,7 +49,7 @@ class CreateInfluencersTable extends Migration
             $table->unsignedBigInteger('influencer_id');
             $table->string('uuid')->unique()->nullable(false);
             $table->unsignedBigInteger('post_id')->nullable();
-            $table->text('next_cursor')->nullable()->default(null);
+            $table->string('next_cursor')->nullable()->default(null);
             $table->string('short_code')->nullable();
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');

@@ -270,25 +270,29 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
-    addBrand({ commit, state }, data) {
+    addBrand({ commit, state, dispatch }, data) {
         return new Promise((resolve, reject) => {
             api.post("/api/v1/brands", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data"
-                }
-            })
-                .then(response => {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(response => {
                     if(response.status === 201 && response.data.success){
-                        commit('setBrand', { brand: response.data.content })
-                        resolve(response.data)
+                        commit('setBrand', { brand: response.data.content });
+
+                        // Set brand as selected one
+                        if(response.data.content !== null && typeof response.data.content !== "undefined" && (state.user.selected_brand_id === null || typeof state.user.selected_brand_id === "undefined")){
+                            dispatch('setActiveBrand', response.data.content);
+                        }
+
+                        resolve(response.data);
                     }else{
                         throw new Error("Something going wrong!");
                     }
-                })
-                .catch(response => {
-                    reject(response)
-                })
-        })
+                }).catch(response => {
+                    reject(response);
+                });
+        });
     },
     updateBrand({ commit, state }, data) {
         let uuid = data.get('uuid');
@@ -435,7 +439,7 @@ const actions = {
             return new Promise((resolve, reject) => {
                 api.get(`/api/v1/users/active-brand/${brand.uuid}`)
                     .then((response) => {
-                        if(response.status === 200 && typeof response.data.content.selected_brand !== "undefined" && (typeof state.user.selected_brand.uuid.id === "undefined" || response.data.content.selected_brand.id !== state.user.selected_brand.uuid.id)){
+                        if(response.status === 200 && typeof response.data.content.selected_brand_id !== "undefined" && (typeof state.user.selected_brand_id === "undefined" || response.data.content.selected_brand_id !== state.user.selected_brand_id)){
                             let user = response.data.content;
                             user.token = state.token;
                             ls.set("user", JSON.stringify(user));
