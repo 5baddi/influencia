@@ -77,6 +77,16 @@ class Influencer extends Model
     ];
 
     /**
+     * Get media link
+     * 
+     * @return string|null
+     */
+    public function getLinkAttribute() : ?string
+    {
+        return null;
+    }
+
+    /**
      * Get influencer picture as base64
      * 
      * @return string|null
