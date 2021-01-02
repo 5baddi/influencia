@@ -159,10 +159,6 @@ class InstagramCommand extends Command
                                         // Analyze media comments
                                         $sentiments = $this->instagramScraper->analyzeMedia($media);
                                         $media = array_merge($media, $sentiments);
-
-                                        // Store media thumbnail locally
-                                        if(isset($media, $media['thumbnail_url']))
-                                            $media['thumbnail_url'] = Format::storePicture($media['thumbnail_url'], "influencers/instagram/thumbnails/");
                                     }
 
                                     // Update local media

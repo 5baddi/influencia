@@ -434,15 +434,20 @@ class InstagramScraper
             // Count hashtags on media caption
             $this->hashtags = array_merge($this->hashtags, Format::extractHashTags($media->getCaption()));
 
+            // Store media thumbnail locally
+            $thumbnailURL = null;
+            if(!is_null($media->getImageThumbnailUrl()))
+                $thumbnailURL = Format::storePicture($media->getImageThumbnailUrl(), "influencers/instagram/thumbnails/");
+
             // Add media and comments details
             $_media = [
                 'post_id'       =>  $media->getId(),
                 'next_cursor'   =>  null,
-                'link'          =>  $media->getLink(),
+                // 'link'          =>  $media->getLink(),
                 'short_code'    =>  $media->getShortCode(),
                 'type'          =>  $media->getType(),
                 'likes'         =>  $media->getLikesCount(),
-                'thumbnail_url' =>  $media->getImageThumbnailUrl(),
+                'thumbnail_url' =>  $thumbnailURL,
                 'comments'      =>  $media->getCommentsCount() ?? 0,
                 'published_at'  =>  Carbon::parse($media->getCreatedTime()),
                 'caption'       =>  $media->getCaption(),
