@@ -19,6 +19,17 @@ Route::get('/status', function(){
     return response()->success("Welcome to " . env('APP_NAME') . " API");
 });
 
+// V2 Routes
+Route::group(['prefix' => 'v2'], function(){
+    // OAuth routes
+    Route::group(['prefix' => 'oauth'], function(){
+        // sign in
+        Route::post('/signin', 'OAuthController@signIn');
+
+        // sign out
+        Route::post('/signout', 'OAuthController@signOut');
+    });
+});
 
 // Logout action
 Route::post('/logout', 'AuthenticationController@logout');
