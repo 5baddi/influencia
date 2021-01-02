@@ -5,8 +5,6 @@ namespace App\Console\Commands;
 use Format;
 use Carbon\Carbon;
 use App\Influencer;
-use App\InfluencerPost;
-use App\InfluencerPostMedia;
 use App\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;

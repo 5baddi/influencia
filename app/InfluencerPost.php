@@ -229,7 +229,7 @@ class InfluencerPost extends Model
      */
     public function getSequencesAttribute() : int
     {
-        return $this->files()->count();
+        return 0;
     }
 
     /**
@@ -270,7 +270,7 @@ class InfluencerPost extends Model
      */
     public function getImageSequencesAttribute() : int
     {
-        return $this->files()->where('type', 'image')->count();
+        return 0;
     }
     
     /**
@@ -280,7 +280,7 @@ class InfluencerPost extends Model
      */
     public function getVideoSequencesAttribute() : int
     {
-        return $this->files()->where('type', 'video')->count();
+        return 0;
     }
 
     /**
@@ -321,16 +321,6 @@ class InfluencerPost extends Model
     public function getEngagementsAttribute() : int
     {
         return ($this->attributes['likes'] ?? 0) + ($this->attributes['comments'] ?? 0);
-    }
-
-    /**
-     * Get media sequences
-     * 
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function files()
-    {
-        return $this->hasMany(InfluencerPostMedia::class, 'post_id');
     }
 
     /**

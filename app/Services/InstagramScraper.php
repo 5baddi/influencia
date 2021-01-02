@@ -493,7 +493,7 @@ class InstagramScraper
                 'caption_hashtags'  =>  $this->hashtags,
                 // 'comments_disabled' =>  $media->getCommentsDisabled(),
                 'caption_edited'    =>  $media->isCaptionEdited(),
-                'files'             =>  $this->getFiles($media)
+                // 'files'             =>  $this->getFiles($media)
             ];
 
             return $_media;

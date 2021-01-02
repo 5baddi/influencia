@@ -62,7 +62,7 @@ class YoutubeScraper
      *
      * @var \GuzzleHttp\Client
      */
-    private $client;
+    private static $client;
 
     /**
      * Constructor
@@ -70,7 +70,7 @@ class YoutubeScraper
     public function __construct()
     {
         // Init HTTP client
-        $this->client = $this->initHTTPClient();
+        self::initHTTPClient();
     }
 
     /**
@@ -83,7 +83,7 @@ class YoutubeScraper
         self::$debug = false;
 
         // Re-init HTTP client
-        $this->client = $this->initHTTPClient();
+        self::initHTTPClient();
     }
 
     /**
@@ -115,7 +115,7 @@ class YoutubeScraper
             
         try{
             // Send get request to get video details
-            $response = $this->client->get("videos?part=snippet,statistics,contentDetails&id={$ID}&key=" . config('scraper.youtube.key'));
+            $response = self::$client->get("videos?part=snippet,statistics,contentDetails&id={$ID}&key=" . config('scraper.youtube.key'));
             $obj = json_decode($response->getBody()->getContents());
 
             return [
@@ -166,7 +166,7 @@ class YoutubeScraper
     {
         try{
             // Send get request to get video details
-            $response = $this->client->get("channels?part=snippet,statistics&id={$channelID}&key=" . config('scraper.youtube.key'));
+            $response = self::$client->get("channels?part=snippet,statistics&id={$channelID}&key=" . config('scraper.youtube.key'));
             $obj = json_decode($response->getBody()->getContents());
 
             return [
@@ -209,11 +209,11 @@ class YoutubeScraper
     /**
      * Init HTTP Client
      *
-     * @return \GuzzleHttp\Client
+     * @return void
      */
-    private function initHTTPClient()
+    private static function initHTTPClient() : void
     {
-        return new Client([
+        self::$client = new Client([
             'base_uri'          =>  "https://www.googleapis.com/youtube/v3/",
             'verify'            =>  !config('app.debug'),
             'debug'             =>  self::$debug,

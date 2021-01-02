@@ -9,7 +9,6 @@ use App\Influencer;
 use App\InfluencerPost;
 use App\BrandInfluencer;
 use App\TrackerInfluencer;
-use App\InfluencerPostMedia;
 use Illuminate\Bus\Queueable;
 use App\TrackerInfluencerMedia;
 use App\Services\YoutubeScraper;
