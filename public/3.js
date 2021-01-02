@@ -2587,6 +2587,12 @@ var render = function() {
                 "button",
                 {
                   staticClass: "btn btn-success",
+                  attrs: {
+                    disabled:
+                      !_vm.campaigns ||
+                      typeof _vm.campaigns.length === "undefined" ||
+                      _vm.campaigns.length === 0
+                  },
                   on: {
                     click: function($event) {
                       _vm.showAddTrackerModal = !_vm.showAddTrackerModal
