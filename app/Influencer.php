@@ -83,7 +83,21 @@ class Influencer extends Model
      */
     public function getLinkAttribute() : ?string
     {
-        return null;
+        // Init
+        $link = null;
+
+        if(isset($this->attributes['platform'])){
+            switch($this->attributes['platform']){
+                case "youtube":
+                    $link = "https://www.youtube.com/channel/" . $this->attributes['account_id'];
+                break;
+                case "instagram":
+                    $link = "https://www.instagram.com/" . $this->attributes['username'];
+                break;
+            }
+        }
+        
+        return $link;
     }
 
     /**
