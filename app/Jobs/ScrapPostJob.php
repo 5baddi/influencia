@@ -159,7 +159,7 @@ class ScrapPostJob implements ShouldQueue
 
             // Store influencer picture locally
             if(isset($account, $account->pic_url))
-                    $account->pic_url = Format::storePicture($account->pic_url);
+                $account->pic_url = Format::storePicture($account->pic_url);
 
             // Load tracker user
             $this->tracker->load('user');

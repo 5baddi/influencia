@@ -457,8 +457,6 @@ const actions = {
                         resolve(response.data);
                     })
                     .catch((error) => {
-                        // commit("setActiveBrand", {brand: null});
-
                         reject(error);
                     });
             });

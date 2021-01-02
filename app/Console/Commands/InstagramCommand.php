@@ -138,7 +138,8 @@ class InstagramCommand extends Command
                             $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
                             // Store influencer picture locally
-                            $accountDetails['pic_url'] = Format::storePicture($accountDetails['pic_url']);
+                            if(isset($accountDetails, $accountDetails['pic_url']))
+                                $accountDetails['pic_url'] = Format::storePicture($accountDetails['pic_url']);
 
                             // Update influencer
                             $influencer->update($accountDetails);
@@ -166,7 +167,8 @@ class InstagramCommand extends Command
                                         $media = array_merge($media, $sentiments);
 
                                         // Store media thumbnail locally
-                                        $media['thumbnail_url'] = Format::storePicture($media['thumbnail_url'], "influencers/instagram/thumbnails/");
+                                        if(isset($media, $media['thumbnail_url']))
+                                            $media['thumbnail_url'] = Format::storePicture($media['thumbnail_url'], "influencers/instagram/thumbnails/");
                                     }
 
                                     // Update local media

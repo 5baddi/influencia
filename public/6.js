@@ -1000,39 +1000,6 @@ var render = function() {
                     _vm._v(" "),
                     _vm._m(2)
                   ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "label",
-                  { staticClass: "snapchat-radio", attrs: { for: "snapchat" } },
-                  [
-                    _c("input", {
-                      directives: [
-                        {
-                          name: "model",
-                          rawName: "v-model",
-                          value: _vm.platform,
-                          expression: "platform"
-                        }
-                      ],
-                      attrs: {
-                        type: "radio",
-                        value: "snapchat",
-                        disabled: true
-                      },
-                      domProps: {
-                        checked: _vm.platform === "snapchat",
-                        checked: _vm._q(_vm.platform, "snapchat")
-                      },
-                      on: {
-                        change: function($event) {
-                          _vm.platform = "snapchat"
-                        }
-                      }
-                    }),
-                    _vm._v(" "),
-                    _vm._m(3)
-                  ]
                 )
               ])
             ])
@@ -1098,15 +1065,6 @@ var staticRenderFns = [
     return _c("span", [
       _c("i", { staticClass: "fab fa-youtube" }),
       _vm._v(" YouTube")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", [
-      _c("i", { staticClass: "fab fa-snapchat-ghost" }),
-      _vm._v(" Snapchat")
     ])
   }
 ]

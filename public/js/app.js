@@ -69682,7 +69682,6 @@ var actions = {
 
           resolve(response.data);
         })["catch"](function (error) {
-          // commit("setActiveBrand", {brand: null});
           reject(error);
         });
       });

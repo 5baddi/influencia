@@ -62,6 +62,7 @@ class Influencer extends Model
      * @var array
      */
     protected $appends = [
+        'link',
         'calculated_engagement_rate',
         'image_sequences',
         'video_sequences',
