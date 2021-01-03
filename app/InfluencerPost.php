@@ -52,7 +52,8 @@ class InfluencerPost extends Model
         'comments_negative',
         'comments_emojis',
         'comments_hashtags',
-        'engagement_rate'
+        'engagement_rate',
+        'link'
     ];
 
     /**
@@ -74,7 +75,6 @@ class InfluencerPost extends Model
      * @var array
      */
     protected $appends = [
-        'link',
         'hashtags_count', 
         'sequences', 
         'image_sequences',
@@ -86,16 +86,6 @@ class InfluencerPost extends Model
         'calculated_engagement_rate',
         'earned_media_value'
     ];
-
-    /**
-     * Get media link
-     * 
-     * @return string|null
-     */
-    public function getLinkAttribute() : ?string
-    {
-        return null;
-    }
 
     /**
      * Get Emojis list

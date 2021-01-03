@@ -123,7 +123,7 @@ class YoutubeScraper
                 "channel_id"        =>  $obj->items[0]->snippet->channelId,
                 "title"             =>  $obj->items[0]->snippet->title,
                 "type"              =>  "video",
-                // "link"              =>  "https://www.youtube.com/watch?v={$obj->items[0]->id}",
+                "link"              =>  "https://www.youtube.com/watch?v={$obj->items[0]->id}",
                 "description"       =>  $obj->items[0]->snippet->description,
                 "tags"              =>  $obj->items[0]->snippet->tags,
                 "category_id"       =>  $obj->items[0]->snippet->categoryId,

@@ -51,6 +51,7 @@ class CreateInfluencersTable extends Migration
             $table->unsignedBigInteger('post_id')->nullable();
             $table->string('next_cursor')->nullable()->default(null);
             $table->string('short_code')->nullable();
+            $table->string('link')->nullable();
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();

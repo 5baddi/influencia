@@ -395,13 +395,13 @@ class InstagramScraper
 
                     // Store media
                     $post = InfluencerPost::create($_media);
+
+                    $this->log("New post: {$_media['short_code']} | {$_media['link']}");
                 }
 
                 // Save next cursor
                 if($key === array_key_last($fetchedMedias) && isset($result['maxId'], $result['hasNextPage']) && $result['hasNextPage'] === true)
                     $post->update(['next_cursor' => $result['maxId']]);
-
-                $this->log("New post: {$_media['short_code']} | {$_media['link']}");
             }
 
             // Save next cursor & scrap more media
@@ -443,7 +443,7 @@ class InstagramScraper
             $_media = [
                 'post_id'       =>  $media->getId(),
                 'next_cursor'   =>  null,
-                // 'link'          =>  $media->getLink(),
+                'link'          =>  $media->getLink(),
                 'short_code'    =>  $media->getShortCode(),
                 'type'          =>  $media->getType(),
                 'likes'         =>  $media->getLikesCount(),
