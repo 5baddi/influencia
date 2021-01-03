@@ -166,12 +166,16 @@ class UpdateAnalyticsCommand extends Command
                     $analytics = [
                         'tracker_id'            => $tracker->id,
                         'engagements'           => 0,
+                        'organic_engagements'   => 0,
                         'engagement_rate'       => 0,
                         'communities'           => 0,
                         'impressions'           => 0,
+                        'organic_impressions'   => 0,
                         'video_views'           => 0,
+                        'organic_video_views'   => 0,
                         'comments_count'        => 0,
                         'posts_count'           => 0,
+                        'organic_posts'         => 0,
                         'top_emojis'            => [],
                         'sentiments_positive'   => 0.0,
                         'sentiments_neutral'    => 0.0,
@@ -217,6 +221,7 @@ class UpdateAnalyticsCommand extends Command
 
                     // Get top emojis
                     $analytics['top_emojis'] = $this->getTopThreeEmojis($tracker->posts);
+                    dd($analytics);
 
                     // Save the analytics
                     TrackerAnalytics::create($analytics);
