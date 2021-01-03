@@ -436,8 +436,8 @@ class InstagramScraper
 
             // Store media thumbnail locally
             $thumbnailURL = null;
-            if(!is_null($media->getImageThumbnailUrl()))
-                $thumbnailURL = Format::storePicture($media->getImageThumbnailUrl(), "influencers/instagram/thumbnails/");
+            // if(!is_null($media->getImageThumbnailUrl()))
+            //     $thumbnailURL = Format::storePicture($media->getImageThumbnailUrl(), "influencers/instagram/thumbnails/");
 
             // Add media and comments details
             $_media = [
@@ -724,8 +724,8 @@ class InstagramScraper
     {
         // Store influencer picture locally
         $pictureURL = null;
-        if(!is_null($account->getProfilePicUrl()))
-            $pictureURL = Format::storePicture($account->getProfilePicUrl());
+        // if(!is_null($account->getProfilePicUrl()))
+        //     $pictureURL = Format::storePicture($account->getProfilePicUrl());
 
         return [
             'account_id'    =>  $account->getId(),
