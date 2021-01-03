@@ -65,4 +65,17 @@ class TrackerAnalytics extends Model
         'updated_at'            =>  'datetime:Y-m-d H:i',
         'created_at'            =>  'datetime:Y-m-d H:i',
     ];
+
+    /**
+     * Get top emojis array with keys
+     *
+     * @return array
+     */
+    public function getTopEmojisAttribute() : array
+    {
+        if(isset($this->attribute['top_emojis']))
+            return json_decode($this->attribute['top_emojis'], true);
+
+        return [];
+    }
 }
