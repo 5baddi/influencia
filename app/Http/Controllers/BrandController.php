@@ -57,7 +57,7 @@ class BrandController extends Controller
         // Generate file name
         if($request->file('logo')){
             $fileName = Str::slug($data['name']) . '_' . time() . '.' . $request->file('logo')->getClientOriginalExtension();
-            $path = $request->file('logo')->storeAs('uploads', $fileName, 'public');
+            $path = $request->file('logo')->storeAs('brands', $fileName, 'local');
 
             if($path)
                 $data['logo'] = $path;

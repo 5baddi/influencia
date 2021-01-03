@@ -279,10 +279,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   data: function data() {
     return {
       columns: [{
-        field: "public_logo",
-        callback: function callback(row) {
-          return '<img src="' + row.public_logo + '"/>';
-        },
+        field: "logo",
+        isImage: true,
+        isAvatar: true,
         sortable: false
       }, {
         name: "name",
@@ -430,8 +429,8 @@ var render = function() {
                     {
                       name: "show",
                       rawName: "v-show",
-                      value: _vm.brand.image === null && _vm.brand.public_logo,
-                      expression: "brand.image === null && brand.public_logo"
+                      value: _vm.brand.image === null && _vm.brand.logo,
+                      expression: "brand.image === null && brand.logo"
                     }
                   ],
                   staticStyle: { width: "100%", "text-align": "center" }
@@ -439,7 +438,7 @@ var render = function() {
                 [
                   _c("img", {
                     staticStyle: { width: "240px", height: "auto" },
-                    attrs: { src: _vm.brand.public_logo }
+                    attrs: { src: _vm.brand.logo }
                   })
                 ]
               ),

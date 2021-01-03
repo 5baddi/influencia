@@ -28,8 +28,7 @@ class Brand extends Model
      * @var array
      */
     protected $appends = [
-        'trackers_count',
-        'public_logo'
+        'trackers_count'
     ];
 
     /**
@@ -51,13 +50,16 @@ class Brand extends Model
     }
 
     /**
-     * Get public url to brand logo
-     *
+     * Get user avatar as base64
+     * 
      * @return string|null
      */
-    public function getPublicLogoAttribute() : ?string
+    public function getLogoAttribute() : ?string
     {
-        return Storage::url($this->attributes['logo']);
+        if(isset($this->attributes['logo']))
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['logo']));
+
+        return null;
     }
 
     /**

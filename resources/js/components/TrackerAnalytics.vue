@@ -228,10 +228,7 @@ export default {
                 field: 'pic_url',
                 isAvatar: true,
                 sortable: false,
-                isImage: true,
-                callback: function(row){
-                    return row.pic_url;
-                }
+                isImage: true
             },
             {
                 name: 'Influencer',

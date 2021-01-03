@@ -152,10 +152,9 @@ export default {
     data() {
         return {
             columns: [{
-                field: "public_logo",
-                callback: function (row) {
-                    return '<img src="' + row.public_logo + '"/>';
-                },
+                field: "logo",
+                isImage: true,
+                isAvatar: true,
                 sortable: false
             }, {
                 name: "name",

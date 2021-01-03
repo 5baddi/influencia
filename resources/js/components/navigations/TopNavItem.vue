@@ -11,7 +11,7 @@
     <template v-else>
         <button class="btn" @click="showDropdown = !showDropdown" v-if="selectedBrand && selectedBrand.name !== null">
             <div class="avatar">
-                <img :src="selectedBrand.public_logo" alt />
+                <img :src="selectedBrand.logo" alt />
             </div>
             <div class="text">
                 <p>{{ selectedBrand.name }}</p>
@@ -30,7 +30,7 @@
                 <li v-for="(brand, index) in brands" :key="brand.id">
                     <a @click.prevent="switchBrand(brand, index)">
                         <div class="icon">
-                            <img :src="brand.public_logo" />
+                            <img :src="brand.logo" />
                         </div>
                         <div class="text">{{ brand.name }}</div>
                     </a>
@@ -78,7 +78,7 @@ export default {
             if(!this.activeBrand || typeof this.activeBrand === "undefined" || typeof this.activeBrand.name === "undefined"){
                 return {
                     name: null,
-                    public_logo: null
+                    logo: null
                 };
             }else{
                 return this.activeBrand;

@@ -230,10 +230,7 @@ __webpack_require__.r(__webpack_exports__);
         field: 'pic_url',
         isAvatar: true,
         sortable: false,
-        isImage: true,
-        callback: function callback(row) {
-          return row.pic_url;
-        }
+        isImage: true
       }, {
         name: 'Influencer',
         field: 'uuid',

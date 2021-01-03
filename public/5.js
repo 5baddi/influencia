@@ -231,7 +231,7 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.activeBrand || typeof this.activeBrand === "undefined" || typeof this.activeBrand.name === "undefined") {
         return {
           name: null,
-          public_logo: null
+          logo: null
         };
       } else {
         return this.activeBrand;
@@ -763,7 +763,7 @@ var render = function() {
                   [
                     _c("div", { staticClass: "avatar" }, [
                       _c("img", {
-                        attrs: { src: _vm.selectedBrand.public_logo, alt: "" }
+                        attrs: { src: _vm.selectedBrand.logo, alt: "" }
                       })
                     ]),
                     _vm._v(" "),
@@ -829,9 +829,7 @@ var render = function() {
                               },
                               [
                                 _c("div", { staticClass: "icon" }, [
-                                  _c("img", {
-                                    attrs: { src: brand.public_logo }
-                                  })
+                                  _c("img", { attrs: { src: brand.logo } })
                                 ]),
                                 _vm._v(" "),
                                 _c("div", { staticClass: "text" }, [
