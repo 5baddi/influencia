@@ -148,7 +148,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 
 
@@ -1100,29 +1099,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c("canvas", { attrs: { id: "communities-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic communities " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_communities)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.communities > 0
-                          ? (
-                              (_vm.campaign.organic_communities /
-                                _vm.campaign.communities) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
+                _c("canvas", { attrs: { id: "communities-chart" } })
               ])
             : _vm._e(),
           _vm._v(" "),

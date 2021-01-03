@@ -76,12 +76,16 @@ class UpdateAnalyticsCommand extends Command
                     $analytics = [
                         'campaign_id'           => $campaign->id,
                         'engagements'           => 0,
+                        'organic_engagements'   => 0,
                         'engagement_rate'       => 0,
                         'communities'           => 0,
                         'impressions'           => 0,
+                        'organic_impressions'   => 0,
                         'video_views'           => 0,
+                        'organic_video_views'   => 0,
                         'comments_count'        => 0,
                         'posts_count'           => 0,
+                        'organic_posts'         => 0,
                         'stories_count'         => 0,
                         'links_count'           => 0,
                         'top_emojis'            => [
@@ -111,6 +115,16 @@ class UpdateAnalyticsCommand extends Command
                         // Engagement rate
                         if($analytics['impressions'] > 0)
                             $analytics['engagement_rate'] += $tracker->analytics->engagement_rate;
+
+                        // Organic
+                        if(!is_null($tracker->analytics->organic_engagements))
+                            $analytics['organic_engagements'] += $tracker->analytics->organic_engagements;
+                        if(!is_null($tracker->analytics->organic_video_views))
+                            $analytics['organic_video_views'] += $tracker->analytics->organic_video_views;
+                        if(!is_null($tracker->analytics->organic_video_views))
+                            $analytics['organic_impressions'] += $tracker->analytics->organic_impressions;
+                        if(!is_null($tracker->analytics->organic_video_views))
+                            $analytics['organic_posts'] += $tracker->analytics->organic_posts;
 
                         // Emojis
                         if(isset($tracker->analytics->top_emojis['top'], $tracker->analytics->top_emojis['all'])){

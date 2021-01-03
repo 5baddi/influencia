@@ -168,7 +168,14 @@ class TrackerController extends Controller
                 'link'          =>  $tracker->url,
                 'code'          =>  Str::random(config('scraper.shortlink.length'))
             ]);
+        
+            // Dispatch scraping job
+            ScrapURLContentJob::dispatch($ShortLink->load('tracker'))->onQueue('trackers');
         }
+
+        // Dispatch scraping job
+        if(in_array($tracker->platform, ['instagram', 'youtube']) && $tracker->type === 'post')
+            ScrapPostJob::dispatch($tracker)->onQueue('trackers');
 
         return response()->success(
             "Tracker created successfully.",

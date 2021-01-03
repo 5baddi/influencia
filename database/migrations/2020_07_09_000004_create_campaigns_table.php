@@ -33,11 +33,15 @@ class CreateCampaignsTable extends Migration
             $table->unsignedBigInteger('campaign_id');
             $table->bigInteger('communities')->nullable();
             $table->bigInteger('engagements')->nullable();
+            $table->bigInteger('organic_engagements')->nullable();
             $table->bigInteger('impressions')->nullable();
+            $table->bigInteger('organic_impressions')->nullable();
             $table->bigInteger('video_views')->nullable();
+            $table->bigInteger('organic_video_views')->nullable();
             $table->double('engagement_rate')->nullable();
             $table->integer('comments_count')->nullable();
             $table->integer('posts_count')->default(0);
+            $table->integer('organic_posts')->default(0);
             $table->integer('stories_count')->default(0);
             $table->integer('links_count')->default(0);
             $table->json('top_emojis')->nullable();

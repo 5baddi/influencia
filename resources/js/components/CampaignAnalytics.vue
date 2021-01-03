@@ -18,7 +18,6 @@
                 </div>
             </div>
             <canvas id="communities-chart"></canvas>
-            <span>Organic communities {{ String(nbr().abbreviate(campaign.organic_communities)).toUpperCase() }} ({{ campaign.communities > 0 ? ((campaign.organic_communities / campaign.communities) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="campaign.impressions > 0">
             <div class="title">
