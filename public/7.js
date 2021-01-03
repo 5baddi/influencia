@@ -339,7 +339,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           if (row.tags && row.tags.length > 0) {
             var html = "<ul>";
             row.tags.map(function (item, index) {
-              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>';
+              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
             });
             return html + "</ul>";
           }

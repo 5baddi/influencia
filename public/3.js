@@ -320,6 +320,20 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: 'Sequence impressions'
       }, {
+        name: 'Tags',
+        field: 'tags',
+        callback: function callback(row) {
+          if (row.tags && row.tags.length > 0) {
+            var html = "<ul>";
+            row.tags.map(function (item, index) {
+              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+            });
+            return html + "</ul>";
+          }
+
+          return '-';
+        }
+      }, {
         name: 'Posted at',
         field: 'published_at'
       }, {
