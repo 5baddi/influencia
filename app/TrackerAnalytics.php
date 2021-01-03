@@ -73,8 +73,8 @@ class TrackerAnalytics extends Model
      */
     public function getTopEmojisAttribute() : array
     {
-        if(isset($this->attribute['top_emojis']))
-            return json_decode($this->attribute['top_emojis'], true);
+        if(isset($this->attributes['top_emojis']))
+            return json_decode($this->attributes['top_emojis'], true);
 
         return [];
     }
