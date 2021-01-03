@@ -7066,7 +7066,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             if (typeof item.isNbr === "boolean" && item.isNbr) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase(); // Percentage
 
             if (typeof item.isPercentage === "boolean" && item.isPercentage) {
-              val = val * 100;
               val = val.toFixed(2);
               val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
             } // Capitalize string

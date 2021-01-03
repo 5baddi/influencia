@@ -346,7 +346,6 @@ export default {
 
                         // Percentage
                         if(typeof item.isPercentage === "boolean" && item.isPercentage){
-                            val = (val * 100);
                             val = val.toFixed(2);
                             val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
                         }
