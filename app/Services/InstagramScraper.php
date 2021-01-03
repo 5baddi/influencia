@@ -561,7 +561,7 @@ class InstagramScraper
     {
         try{
             // init
-            $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
+            $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => [], 'allCommentsText' =>  ''];
 
             // Ignore media without comments
             if($media['comments'] === 0)
@@ -578,12 +578,9 @@ class InstagramScraper
 
             // Handle method
             $handle = function($comment) use(&$data){
-                // Analyze sentiment
-                $analyzer = new Analyzer();
-                $sentiment = $analyzer->getSentiment($comment->getText());
-                $data['comments_positive'] += $sentiment['pos'];
-                $data['comments_neutral'] += $sentiment['neu'];
-                $data['comments_negative'] += $sentiment['neg'];
+                // Concat comments text
+                if(!is_null($comment->getText()))
+                    $data['allCommentsText'] .= " " . $comment->getText();
 
                 // Match all emojis
                 $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
@@ -608,12 +605,21 @@ class InstagramScraper
                     $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
             }
 
+            // Analyze sentiment
+            if(!empty($data['allCommentsText'])){
+                $analyzer = new Analyzer();
+                $sentiment = $analyzer->getSentiment($allCommentsText);
+                $data['comments_positive'] = $sentiment['pos'];
+                $data['comments_neutral'] = $sentiment['neu'];
+                $data['comments_negative'] = $sentiment['neg'];
+            }
+
             $this->log("Sentiments for media {$media['short_code']} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
 
             return [
-                'comments_positive'  => round($data['comments_positive'] ?? 0 / $media['comments'], 2),
-                'comments_neutral'   => round($data['comments_neutral'] ?? 0 / $media['comments'], 2),
-                'comments_negative'  => round($data['comments_negative'] ?? 0 / $media['comments'], 2),
+                'comments_positive'  => $data['comments_positive'],
+                'comments_neutral'   => $data['comments_neutral'],
+                'comments_negative'  => $data['comments_negative'],
                 'comments_emojis'    => $data['comments_emojis'],
                 'emojis'             => sizeof($data['comments_emojis']),
                 'comments_hashtags'  => $data['comments_hashtags']

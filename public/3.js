@@ -1376,8 +1376,8 @@ var render = function() {
                 _vm._v(" "),
                 _c(
                   "ul",
-                  _vm._l(_vm.tracker.top_emojis.top, function(emoji, index) {
-                    return _c("li", { key: index }, [
+                  _vm._l(_vm.tracker.top_emojis.top, function(count, emoji) {
+                    return _c("li", { key: count }, [
                       _vm._v(
                         "\r\n                    " +
                           _vm._s(emoji) +
@@ -1387,7 +1387,7 @@ var render = function() {
                         _vm._v(
                           _vm._s(
                             (
-                              (index /
+                              (count /
                                 (_vm.tracker.top_emojis.all
                                   ? _vm.tracker.top_emojis.all
                                   : 1)) *
