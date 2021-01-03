@@ -608,7 +608,7 @@ class InstagramScraper
             // Analyze sentiment
             if(!empty($data['allCommentsText'])){
                 $analyzer = new Analyzer();
-                $sentiment = $analyzer->getSentiment($allCommentsText);
+                $sentiment = $analyzer->getSentiment($data['allCommentsText']);
                 $data['comments_positive'] = $sentiment['pos'];
                 $data['comments_neutral'] = $sentiment['neu'];
                 $data['comments_negative'] = $sentiment['neg'];
