@@ -213,7 +213,7 @@ class Influencer extends Model
             return $this->attributes['engagement_rate'];
 
         // Calculate engagement rate
-        return $this->attributes['followers'] > 0 ? ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100) : 0.0;
+        return $this->attributes['followers'] > 0 ? (($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) : 0.0;
     }
 
      /**
