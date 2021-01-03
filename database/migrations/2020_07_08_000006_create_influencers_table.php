@@ -51,7 +51,7 @@ class CreateInfluencersTable extends Migration
             $table->unsignedBigInteger('post_id')->nullable();
             $table->string('next_cursor')->nullable()->default(null);
             $table->string('short_code')->nullable();
-            $table->string('link')->nullable();
+            $table->string('link')->unique()->nullable();
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();
@@ -88,8 +88,6 @@ class CreateInfluencersTable extends Migration
             $table->timestamps();
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
-
-            $table->unique(['post_id', 'short_code']);
         });
     }
 

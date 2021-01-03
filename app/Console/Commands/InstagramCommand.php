@@ -86,8 +86,8 @@ class InstagramCommand extends Command
                         // Scrap each influencer details
                         $influencers->each(function($influencer){
                             // Ignore last updated influencers
-                            if($influencer->posts_count >= $influencer->medias)
-                                return;
+                            if($influencer->posts_count === $influencer->medias)
+                                exit();
 
                             try{
                                 // Influencer details
@@ -137,7 +137,7 @@ class InstagramCommand extends Command
 
                         // Ignore still in scraping queue
                         if($influencer->posts_count < $influencer->medias)
-                            return;
+                            exit();
 
                         try{
                             // Scrap account details

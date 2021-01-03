@@ -7057,11 +7057,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           if (typeof val !== "undefined" && val !== null) {
             // Currency symbol
-            if (typeof item.currency === "string" && item.currency !== '') val = new Intl.NumberFormat('en-US').format(val.toFixed(2)).replace(/,/g, ' ') + ' ' + item.currency; // Format number to K
+            if (typeof item.currency === "string" && item.currency !== '') {
+              val = val.toFixed(2);
+              val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
+            } // Format number to K
+
 
             if (typeof item.isNbr === "boolean" && item.isNbr) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase(); // Percentage
 
-            if (typeof item.isPercentage === "boolean" && item.isPercentage) val = new Intl.NumberFormat('en-US').format((val * 100).toFixed(2)).replace(/,/g, ' ') + '%'; // Capitalize string
+            if (typeof item.isPercentage === "boolean" && item.isPercentage) {
+              val = val * 100;
+              val = val.toFixed(2);
+              val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
+            } // Capitalize string
+
 
             if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize) val = val.charAt(0).toUpperCase() + val.slice(1); // Re-format link
 
