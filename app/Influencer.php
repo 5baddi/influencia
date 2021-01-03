@@ -4,7 +4,6 @@ namespace App;
 
 use App\Tracker;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;
 
 class Influencer extends Model
@@ -63,7 +62,6 @@ class Influencer extends Model
      */
     protected $appends = [
         'link',
-        'calculated_engagement_rate',
         'image_sequences',
         'video_sequences',
         'carousel_sequences',
@@ -208,7 +206,7 @@ class Influencer extends Model
      *
      * @return float
      */
-    public function getCalculatedEngagementRateAttribute() : float
+    public function getEngagementRateAttribute() : float
     {
         // Get manually inserted value
         if(isset($this->attributes['engagement_rate']))
