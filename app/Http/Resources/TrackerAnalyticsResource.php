@@ -15,6 +15,7 @@ class TrackerAnalyticsResource extends JsonResource
      */
     public function toArray($request)
     {
+        dd($this->analytics->top_emojis);
         return [
             'uuid'          =>  $this->uuid,
             'name'          =>  $this->name,
