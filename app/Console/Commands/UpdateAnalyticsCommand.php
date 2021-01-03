@@ -186,14 +186,14 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['engagement_rate'] += (($post->likes + $post->comments) / $analytics['impressions']) / 100;
 
                         // Organic
-                        // if(!$post->is_ad){
-                        //     $analytics['organic_engagements'] += $post->likes + $post->comments;
-                        //     $analytics['organic_video_views'] += $post->video_views;
-                        //     $analytics['organic_impressions'] += $post->likes + $post->video_views;
+                        if(!$post->is_ad){
+                            $analytics['organic_engagements'] += $post->likes + $post->comments;
+                            $analytics['organic_video_views'] += $post->video_views;
+                            $analytics['organic_impressions'] += $post->likes + $post->video_views;
                             
-                        //     if($tracker->type === 'post')
-                        //         $analytics['organic_posts'] += 1;
-                        // }
+                            if($tracker->type === 'post')
+                                $analytics['organic_posts'] += 1;
+                        }
                     }
 
                     // Re-calculate sentiments

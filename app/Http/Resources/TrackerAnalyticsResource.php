@@ -29,7 +29,7 @@ class TrackerAnalyticsResource extends JsonResource
             'platform'      =>  $this->platform ?? null,
             'updated_at'    =>  isset($this->analytics) ? $this->analytics->updated_at : $this->updated_at,
             'communities'   =>  $this->analytics->communities ?? 0,
-            'organic_communities'   =>  $this->analytics->organic_communities ?? 0,
+            'organic_posts' =>  $this->analytics->organic_posts ?? 0,
             'impressions'   =>  $this->analytics->impressions ?? 0,
             'organic_impressions'   =>  $this->analytics->organic_impressions ?? 0,
             'video_views'   =>  $this->analytics->video_views ?? 0,

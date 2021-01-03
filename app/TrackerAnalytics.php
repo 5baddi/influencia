@@ -48,7 +48,7 @@ class TrackerAnalytics extends Model
     protected $casts = [
         'tracker_id'            =>  'unsignedInteger',
         'communities'           =>  'bigInteger',
-        'organic_communities'           =>  'bigInteger',
+        'organic_posts'         =>  'integer',
         'engagements'           =>  'bigInteger',
         'organic_engagements'           =>  'bigInteger',
         'video_views'           =>  'bigInteger',

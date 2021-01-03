@@ -18,7 +18,7 @@
                 </div>
             </div>
             <canvas id="communities-chart"></canvas>
-            <span>Organic communities {{ String(nbr().abbreviate(tracker.organic_communities)).toUpperCase() }} ({{ tracker.communities > 0 ? ((tracker.organic_communities / tracker.communities) * 100).toFixed(2) : 0  }}%)</span>
+            <!-- <span>Organic communities {{ String(nbr().abbreviate(tracker.organic_communities)).toUpperCase() }} ({{ tracker.communities > 0 ? ((tracker.organic_communities / tracker.communities) * 100).toFixed(2) : 0  }}%)</span> -->
         </div>
         <div class="card" v-if="tracker.impressions > 0">
             <div class="title">
