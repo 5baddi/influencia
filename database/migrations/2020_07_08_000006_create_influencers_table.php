@@ -56,7 +56,6 @@ class CreateInfluencersTable extends Migration
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();
             $table->json('caption_hashtags')->nullable();
-            $table->text('alttext')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('comments')->nullable();
             $table->float('engagement_rate')->default(1);

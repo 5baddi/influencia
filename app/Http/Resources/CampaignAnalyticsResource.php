@@ -20,8 +20,9 @@ class CampaignAnalyticsResource extends JsonResource
         $instagramMedia = collect();
         $media = collect();
         $trackers = collect();
+        $tags = [];
 
-        $this->trackers->map(function($tracker) use(&$instagramMedia, &$trackers, &$media){
+        $this->trackers->map(function($tracker) use(&$instagramMedia, &$trackers, &$media, &$tags){
             // Get media type post
             $trackers->add($tracker->only(['uuid', 'type', 'platform', 'name', 'status', 'queued', 'created_at']));
 
@@ -32,10 +33,13 @@ class CampaignAnalyticsResource extends JsonResource
                 if($tracker->posts->count() > 0){
                     $instagramMedia = $instagramMedia->merge($tracker->posts);
 
-                    $tracker->posts->map(function($post) use(&$media, $tracker){
+                    $tracker->posts->map(function($post) use(&$media, $tracker, &$tags){
                         $_media = collect($post->only(['uuid', 'thumbnail_url', 'type', 'link', 'likes', 'video_views', 'comments']));
                         $_media->put('platform', $tracker->platform);
                         $media->add($_media);
+
+                        // Tags
+                        $tags = array_merge($tags, $post->caption_hashtags);
                     });
                 }
             }
@@ -59,6 +63,7 @@ class CampaignAnalyticsResource extends JsonResource
             'organic_posts'         =>  $this->analytics->organic_posts ?? 0.0,
             'stories_count'         =>  $this->analytics->stories_count ?? 0.0,
             'links_count'           =>  $this->analytics->links_count ?? 0.0 ,
+            'tags'                  =>  collect($tags)->unique()->toArray(),
             'updated_at'            =>  isset($this->analytics, $this->analytics->updated_at) ? Carbon::parse($this->analytics->updated_at)->format("Y-m-d H:i") : Carbon::parse($this->updated_at)->format("Y-m-d H:i"),
             'influencers'           =>  $this->influencers,
             'instagram_media'       =>  InstagramMediaDTResource::collection($instagramMedia),
