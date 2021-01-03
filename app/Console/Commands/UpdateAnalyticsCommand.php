@@ -265,6 +265,7 @@ class UpdateAnalyticsCommand extends Command
         $topThreeEmojis = array_flip(array_count_values($topThreeEmojis));
         // Sort emojis desc
         krsort($topThreeEmojis);
+        $topThreeEmojis = array_flip($topThreeEmojis);
 
         // Slice top emojis
         return [

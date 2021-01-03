@@ -42,7 +42,7 @@ class TrackerAnalyticsResource extends JsonResource
             }),
             'comments_count'   =>  $this->analytics->comments_count ?? 0,
             'engagement_rate'  =>  $this->analytics->engagement_rate ?? 0,
-            'top_emojis'       =>  json_decode(json_encode($this->analytics->top_emojis), true) ?? [],
+            'top_emojis'       =>  $this->analytics->top_emojis ?? [],
             'sentiments_positive'   =>  $this->analytics->sentiments_positive ?? 0.0,
             'sentiments_neutral'    =>  $this->analytics->sentiments_neutral ?? 0.0,
             'sentiments_negative'   =>  $this->analytics->sentiments_negative ?? 0.0,
