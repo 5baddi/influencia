@@ -63,7 +63,7 @@ class CampaignAnalyticsResource extends JsonResource
             'organic_posts'         =>  $this->analytics->organic_posts ?? 0.0,
             'stories_count'         =>  $this->analytics->stories_count ?? 0.0,
             'links_count'           =>  $this->analytics->links_count ?? 0.0 ,
-            'tags'                  =>  collect($tags)->unique()->toArray(),
+            'tags'                  =>  collect($tags)->unique()->take(10)->toArray(),
             'updated_at'            =>  isset($this->analytics, $this->analytics->updated_at) ? Carbon::parse($this->analytics->updated_at)->format("Y-m-d H:i") : Carbon::parse($this->updated_at)->format("Y-m-d H:i"),
             'influencers'           =>  $this->influencers,
             'instagram_media'       =>  InstagramMediaDTResource::collection($instagramMedia),

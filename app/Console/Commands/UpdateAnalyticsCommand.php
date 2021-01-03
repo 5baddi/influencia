@@ -206,7 +206,6 @@ class UpdateAnalyticsCommand extends Command
                         $analytics['sentiments_positive'] += $post->comments_positive;
                         $analytics['sentiments_neutral'] += $post->comments_neutral;
                         $analytics['sentiments_negative'] += $post->comments_negative;
-                        $tags = array_merge($tags, $post->caption_hashtags);
 
                         if($analytics['impressions'] > 0)
                             $analytics['engagement_rate'] += (($post->likes + $post->comments) / $analytics['impressions']) / 100;
