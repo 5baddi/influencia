@@ -132,14 +132,16 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['top_emojis']['all'] += $tracker->analytics->top_emojis['all'];
                         }
                     }
-
-                    // Re-calculate sentiments
-                    $analytics['sentiments_positive'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_positive'] / $analytics['posts_count'] : 0.0;
-                    $analytics['sentiments_neutral'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_neutral'] / $analytics['posts_count'] : 0.0;
-                    $analytics['sentiments_negative'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_negative'] / $analytics['posts_count'] : 0.0;
-
+                    
                     // Get top emojis
-                    $analytics['top_emojis'] = isset($analytics['top_emojis']['top']) ? array_slice($analytics['top_emojis']['top'], 0, sizeof($analytics['top_emojis']['top']) < 3 ? sizeof($analytics['top_emojis']['top']) : 3, true) : [];
+                    if(isset($analytics['top_emojis']['top']) && sizeof($analytics['top_emojis']['top']) > 1){
+                        $analytics['top_emojis']['top'] =  array_slice($analytics['top_emojis']['top'], 0, sizeof($analytics['top_emojis']['top']) < 3 ? sizeof($analytics['top_emojis']['top']) : 3, true);
+                        $topThreeEmojis = array_flip($analytics['top_emojis']['top']);
+                        // Sort emojis desc
+                        krsort($topThreeEmojis);
+                        $topThreeEmojis = array_flip($topThreeEmojis);
+                        $analytics['top_emojis']['top'] = $topThreeEmojis;
+                    }
 
                     // Save the analytics
                     CampaignAnalytics::create($analytics);
@@ -210,7 +212,7 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['organic_impressions'] += $post->likes + $post->video_views;
                             
                             if($tracker->type === 'post')
-                                $analytics['organic_posts'] += 1;
+                                $analytics['organic_posts'] = $analytics['organic_posts'] + 1;
                         }
                     }
 

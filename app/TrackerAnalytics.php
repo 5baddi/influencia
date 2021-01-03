@@ -35,6 +35,7 @@ class TrackerAnalytics extends Model
         'comments_count',
         'organic_count',
         'posts_count',
+        'organic_posts',
         'top_emojis',
         'sentiments_positive',
         'sentiments_neutral',
