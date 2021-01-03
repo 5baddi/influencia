@@ -333,6 +333,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: 'Sequence impressions'
       }, {
+        name: 'Tags',
+        field: 'tags',
+        callback: function callback(row) {
+          if (row.tags && row.tags.length > 0) {
+            var html = "<ul>";
+            row.tags.map(function (item, index) {
+              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>';
+            });
+            return html + "</ul>";
+          }
+
+          return '-';
+        }
+      }, {
         name: 'Posted at',
         field: 'published_at',
         isDate: true,
@@ -1158,14 +1172,14 @@ var render = function() {
                     "Organic videos views " +
                       _vm._s(
                         String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_views)
+                          _vm.nbr().abbreviate(_vm.campaign.organic_video_views)
                         ).toUpperCase()
                       ) +
                       " (" +
                       _vm._s(
                         _vm.campaign.video_views > 0
                           ? (
-                              (_vm.campaign.organic_views /
+                              (_vm.campaign.organic_video_views /
                                 _vm.campaign.video_views) *
                               100
                             ).toFixed(2)

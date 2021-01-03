@@ -28,7 +28,8 @@ class InstagramMediaDTResource extends JsonResource
             'video_views'               =>  $this->video_views,
             'likes'                     =>  $this->likes, 
             'published_at'              =>  Carbon::parse($this->published_at)->format('Y-m-d H:i'), 
-            'earned_media_value'        =>  $this->earned_media_value
+            'earned_media_value'        =>  $this->earned_media_value,
+            'tags'                      =>  is_array($this->caption_hashtags) ? collect($this->caption_hashtags)->unique()->take(10)->toArray() : [],
         ];
     }
 }

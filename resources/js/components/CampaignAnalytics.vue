@@ -39,7 +39,7 @@
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_views)).toUpperCase() }} ({{ campaign.video_views > 0 ? ((campaign.organic_views / campaign.video_views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_video_views)).toUpperCase() }} ({{ campaign.video_views > 0 ? ((campaign.organic_video_views / campaign.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="campaign.engagements > 0">
             <div class="title">
@@ -333,7 +333,24 @@ export default {
                 name: 'Story sequences'
             }, {
                 name: 'Sequence impressions'
-            }, {
+            },
+            {
+                name: 'Tags',
+                field: 'tags',
+                callback: function(row){
+                    if(row.tags && row.tags.length > 0){
+                        let html = "<ul>";
+                        row.tags.map(function(item, index){
+                            html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>';
+                        });
+
+                        return html + "</ul>";
+                    }
+
+                    return '-';
+                }
+            } 
+            ,{
                 name: 'Posted at',
                 field: 'published_at',
                 isDate: true,

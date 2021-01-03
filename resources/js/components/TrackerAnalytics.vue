@@ -40,7 +40,7 @@
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_views)).toUpperCase() }} ({{ tracker.video_views > 0 ? ((tracker.organic_views / tracker.video_views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_video_views)).toUpperCase() }} ({{ tracker.video_views > 0 ? ((tracker.organic_video_views / tracker.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="tracker.engagements > 0">
             <div class="title">

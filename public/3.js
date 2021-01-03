@@ -1233,14 +1233,14 @@ var render = function() {
                     "Organic videos views " +
                       _vm._s(
                         String(
-                          _vm.nbr().abbreviate(_vm.tracker.organic_views)
+                          _vm.nbr().abbreviate(_vm.tracker.organic_video_views)
                         ).toUpperCase()
                       ) +
                       " (" +
                       _vm._s(
                         _vm.tracker.video_views > 0
                           ? (
-                              (_vm.tracker.organic_views /
+                              (_vm.tracker.organic_video_views /
                                 _vm.tracker.video_views) *
                               100
                             ).toFixed(2)

@@ -16,10 +16,10 @@ class TrackerAnalyticsResource extends JsonResource
     public function toArray($request)
     {
         // Load tags
-        $tags = [];
-        $this->posts->map(function($post) use(&$tags){
-            $tags = array_merge($tags, $post->caption_hashtags);
-        });
+        // $tags = [];
+        // $this->posts->map(function($post) use(&$tags){
+        //     $tags = array_merge($tags, $post->caption_hashtags);
+        // });
 
         return [
             'uuid'          =>  $this->uuid,
@@ -31,7 +31,7 @@ class TrackerAnalyticsResource extends JsonResource
             'type'          =>  $this->type,
             'platform'      =>  $this->platform ?? null,
             'updated_at'    =>  isset($this->analytics) ? $this->analytics->updated_at : $this->updated_at,
-            'tags'          =>  collect($tags)->unique()->take(10)->toArray(),
+            // 'tags'          =>  collect($tags)->unique()->take(10)->toArray(),
             'communities'   =>  $this->analytics->communities ?? 0,
             'organic_posts' =>  $this->analytics->organic_posts ?? 0,
             'impressions'   =>  $this->analytics->impressions ?? 0,
