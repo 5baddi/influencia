@@ -131,6 +131,11 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['top_emojis']['top'] = array_merge($analytics['top_emojis']['top'], $tracker->analytics->top_emojis['top']);
                             $analytics['top_emojis']['all'] += $tracker->analytics->top_emojis['all'];
                         }
+
+                        // Sentiments
+                        $analytics['sentiments_positive'] += $tracker->analytics->sentiments_positive;
+                        $analytics['sentiments_neutral'] += $tracker->analytics->sentiments_neutral;
+                        $analytics['sentiments_negative'] += $tracker->analytics->sentiments_negative;
                     }
 
                     // Re-calculate sentiments
@@ -147,7 +152,7 @@ class UpdateAnalyticsCommand extends Command
                         $topThreeEmojis = array_flip($topThreeEmojis);
                         $analytics['top_emojis']['top'] = $topThreeEmojis;
                     }
-
+                    
                     // Save the analytics
                     CampaignAnalytics::create($analytics);
                 }

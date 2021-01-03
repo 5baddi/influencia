@@ -147,9 +147,9 @@ export default {
                 this.createDoughtnutChart('sentiments-chart', {
                     datasets: [{
                         data: [
-                            (this.campaign.sentiments_positive * 100).toFixed(2),
-                            (this.campaign.sentiments_neutral * 100).toFixed(2),
-                            (this.campaign.sentiments_negative * 100).toFixed(2)
+                            (this.tracker.sentiments_positive * 100).toFixed(2),
+                            (this.tracker.sentiments_neutral * 100).toFixed(2),
+                            (this.tracker.sentiments_negative * 100).toFixed(2)
                         ],
                         backgroundColor: [
                             "#AFD75C",
@@ -158,9 +158,9 @@ export default {
                         ],
                     }],
                     labels: [
-                        'Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2),
-                        'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2),
-                        'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2),
+                        'Positive ' + (this.tracker.sentiments_positive * 100).toFixed(2),
+                        'Neutral ' + (this.tracker.sentiments_neutral * 100).toFixed(2),
+                        'Negative ' + (this.tracker.sentiments_negative * 100).toFixed(2),
                     ]
                 });
             }
