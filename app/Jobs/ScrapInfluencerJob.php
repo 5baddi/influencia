@@ -99,11 +99,11 @@ class ScrapInfluencerJob implements ShouldQueue
                     }
                 }
             }
+
+            // Notify user
+            $this->user->notify(new CreateInfluencerJobState($this->user, $this->username, $influencer ?? null));
         }catch(\Exception $exception){
             Log::error("Failed to extract Influencer info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
         }
-
-        // Notify user
-        $this->user->notify(new CreateInfluencerJobState($this->user, $this->username, $influencer ?? null));
     }
 }
