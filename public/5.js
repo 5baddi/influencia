@@ -749,7 +749,7 @@ var render = function() {
               : _vm._e()
           ]
         : [
-            _vm.selectedBrand
+            _vm.selectedBrand && _vm.selectedBrand.name !== null
               ? _c(
                   "button",
                   {

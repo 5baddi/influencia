@@ -9,7 +9,7 @@
         </div>
     </template>
     <template v-else>
-        <button class="btn" @click="showDropdown = !showDropdown" v-if="selectedBrand">
+        <button class="btn" @click="showDropdown = !showDropdown" v-if="selectedBrand && selectedBrand.name !== null">
             <div class="avatar">
                 <img :src="selectedBrand.public_logo" alt />
             </div>
