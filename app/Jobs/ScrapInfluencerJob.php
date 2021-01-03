@@ -79,10 +79,7 @@ class ScrapInfluencerJob implements ShouldQueue
             else
                 $account = $instagram->byUsername($this->username);
 
-            if(isset($account, $account['pic_url'])){
-                // Store influencer picture locally
-                $account['pic_url'] = Format::storePicture($account['pic_url']);
-
+            if(isset($account)){
                 // Store account
                 $influencer = Influencer::create($account);
 
