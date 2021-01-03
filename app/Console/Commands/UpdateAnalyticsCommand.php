@@ -221,7 +221,6 @@ class UpdateAnalyticsCommand extends Command
 
                     // Get top emojis
                     $analytics['top_emojis'] = $this->getTopThreeEmojis($tracker->posts);
-                    dd($analytics);
 
                     // Save the analytics
                     TrackerAnalytics::create($analytics);
