@@ -72,7 +72,7 @@
             <span>Based on {{ campaign.comments_count | formatedNbr }} comments</span>
         </div>
         <div class="card emojis" v-if="campaign.top_emojis">
-            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}emojis</h5>
+            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}used emojis</h5>
             <ul>
                 <li v-for="(count, emoji) in campaign.top_emojis.top" :key="count">
                     {{ emoji }}
@@ -166,27 +166,27 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
-        //     this.createDoughtnutChart('sentiments-chart', {
-        //         datasets: [{
-        //             data: [
-        //                 this.campaign.sentiments_positive.toFixed(2),
-        //                 this.campaign.sentiments_neutral.toFixed(2),
-        //                 this.campaign.sentiments_negative.toFixed(2)
-        //             ],
-        //             backgroundColor: [
-        //                 "#AFD75C",
-        //                 "#999999",
-        //                 "#ED435A" //#d93176
-        //             ],
-        //         }],
-        //         labels: [
-        //             'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-        //             'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-        //             'Negative ' + this.campaign.sentiments_negative.toFixed(2),
-        //         ]
-        //     });
-        // }
+        if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
+            this.createDoughtnutChart('sentiments-chart', {
+                datasets: [{
+                    data: [
+                        (this.campaign.sentiments_positive * 100).toFixed(2),
+                        (this.campaign.sentiments_neutral * 100).toFixed(2),
+                        (this.campaign.sentiments_negative * 100).toFixed(2)
+                    ],
+                    backgroundColor: [
+                        "#AFD75C",
+                        "#999999",
+                        "#ED435A" //#d93176
+                    ],
+                }],
+                labels: [
+                    'Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2),
+                    'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2),
+                    'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2),
+                ]
+            });
+        }
 
         // Communities
         if (this.campaign.communities && this.campaign.communities > 0) {

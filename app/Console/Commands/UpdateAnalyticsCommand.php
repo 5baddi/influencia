@@ -132,7 +132,12 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['top_emojis']['all'] += $tracker->analytics->top_emojis['all'];
                         }
                     }
-                    
+
+                    // Re-calculate sentiments
+                    $analytics['sentiments_positive'] = $analytics['sentiments_positive'] / $campaign->trackers->count();
+                    $analytics['sentiments_neutral'] = $analytics['sentiments_neutral'] / $campaign->trackers->count();
+                    $analytics['sentiments_negative'] = $analytics['sentiments_negative'] / $campaign->trackers->count();
+
                     // Get top emojis
                     if(isset($analytics['top_emojis']['top']) && sizeof($analytics['top_emojis']['top']) > 1){
                         $analytics['top_emojis']['top'] =  array_slice($analytics['top_emojis']['top'], 0, sizeof($analytics['top_emojis']['top']) < 3 ? sizeof($analytics['top_emojis']['top']) : 3, true);

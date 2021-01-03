@@ -73,7 +73,7 @@
             <span>Based on {{ tracker.comments_count | formatedNbr }} comments</span>
         </div>
         <div class="card emojis" v-if="tracker.top_emojis && typeof tracker.top_emojis.top !== 'undefined' && Object.values(tracker.top_emojis.top).length > 0">
-            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }}emojis</h5>
+            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }} used emojis</h5>
             <ul>
                 <li v-for="(count, emoji) in tracker.top_emojis.top" :key="count">
                     {{ emoji }}
@@ -147,9 +147,9 @@ export default {
                 this.createDoughtnutChart('sentiments-chart', {
                     datasets: [{
                         data: [
-                            this.tracker.sentiments_positive.toFixed(2),
-                            this.tracker.sentiments_neutral.toFixed(2),
-                            this.tracker.sentiments_negative.toFixed(2)
+                            (this.campaign.sentiments_positive * 100).toFixed(2),
+                            (this.campaign.sentiments_neutral * 100).toFixed(2),
+                            (this.campaign.sentiments_negative * 100).toFixed(2)
                         ],
                         backgroundColor: [
                             "#AFD75C",
@@ -158,9 +158,9 @@ export default {
                         ],
                     }],
                     labels: [
-                        'Positive ' + this.tracker.sentiments_positive.toFixed(2),
-                        'Neutral ' + this.tracker.sentiments_neutral.toFixed(2),
-                        'Negative ' + this.tracker.sentiments_negative.toFixed(2),
+                        'Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2),
+                        'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2),
+                        'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2),
                     ]
                 });
             }

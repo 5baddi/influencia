@@ -179,28 +179,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser"])),
   mounted: function mounted() {
     // Comments sentiments
-    // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
-    //     this.createDoughtnutChart('sentiments-chart', {
-    //         datasets: [{
-    //             data: [
-    //                 this.campaign.sentiments_positive.toFixed(2),
-    //                 this.campaign.sentiments_neutral.toFixed(2),
-    //                 this.campaign.sentiments_negative.toFixed(2)
-    //             ],
-    //             backgroundColor: [
-    //                 "#AFD75C",
-    //                 "#999999",
-    //                 "#ED435A" //#d93176
-    //             ],
-    //         }],
-    //         labels: [
-    //             'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-    //             'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-    //             'Negative ' + this.campaign.sentiments_negative.toFixed(2),
-    //         ]
-    //     });
-    // }
-    // Communities
+    if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
+      this.createDoughtnutChart('sentiments-chart', {
+        datasets: [{
+          data: [(this.campaign.sentiments_positive * 100).toFixed(2), (this.campaign.sentiments_neutral * 100).toFixed(2), (this.campaign.sentiments_negative * 100).toFixed(2)],
+          backgroundColor: ["#AFD75C", "#999999", "#ED435A" //#d93176
+          ]
+        }],
+        labels: ['Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2), 'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2), 'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2)]
+      });
+    } // Communities
+
+
     if (this.campaign.communities && this.campaign.communities > 0) {
       this.createDoughtnutChart('communities-chart', {
         datasets: [{
@@ -1303,7 +1293,7 @@ var render = function() {
                               " "
                           : ""
                       ) +
-                      "emojis"
+                      "used emojis"
                   )
                 ]),
                 _vm._v(" "),
