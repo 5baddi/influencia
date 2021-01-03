@@ -83,23 +83,15 @@ class ScrapInfluencerJob implements ShouldQueue
 
                 // Set influencer to active brand
                 if(isset($this->user->selected_brand_id)){
-                    $existsInBrand = BrandInfluencer::where([
+                    BrandInfluencer::firstOrCreate([
                         'brand_id'      =>  $this->user->selected_brand_id,
                         'influencer_id' =>  $influencer->id
-                    ])->first();
-
-                    // Check already exists in the same brand
-                    if(is_null($existsInBrand)){
-                        BrandInfluencer::create([
-                            'brand_id'      =>  $this->user->selected_brand_id,
-                            'influencer_id' =>  $influencer->id
-                        ]);
-                    }
+                    ]);
                 }
             }
 
-            // Notify user
-            $this->user->notify(new CreateInfluencerJobState($this->user, $this->username, $influencer ?? null));
+            // Notify user TODO: use websockets
+            // $this->user->notify(new CreateInfluencerJobState($this->user, $this->username, $influencer ?? null));
         }catch(\Exception $exception){
             Log::error("Failed to extract Influencer info" . !is_null($exception) ? ' | ' . $exception->getMessage() : null);
         }

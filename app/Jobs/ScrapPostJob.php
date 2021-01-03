@@ -164,18 +164,10 @@ class ScrapPostJob implements ShouldQueue
             $this->tracker->load('user');
             // Set influencer to active brand
             if(isset($this->tracker->user->selected_brand_id)){
-                $existsInBrand = BrandInfluencer::where([
+                BrandInfluencer::firstOrCreate([
                     'brand_id'      =>  $this->tracker->user->selected_brand_id,
                     'influencer_id' =>  $influencer->id
-                ])->first();
-
-                // Check already exists in the same brand
-                if(is_null($existsInBrand)){
-                    BrandInfluencer::create([
-                        'brand_id'      =>  $this->tracker->user->selected_brand_id,
-                        'influencer_id' =>  $influencer->id
-                    ]);
-                }
+                ]);
             }
 
             //  Analyze media
@@ -263,18 +255,10 @@ class ScrapPostJob implements ShouldQueue
             $this->tracker->load('user');
             // Set influencer to active brand
             if(isset($this->tracker->user->selected_brand_id)){
-                $existsInBrand = BrandInfluencer::where([
+                BrandInfluencer::firstOrCreate([
                     'brand_id'      =>  $this->tracker->user->selected_brand_id,
                     'influencer_id' =>  $influencer->id
-                ])->first();
-
-                // Check already exists in the same brand
-                if(is_null($existsInBrand)){
-                    BrandInfluencer::create([
-                        'brand_id'      =>  $this->tracker->user->selected_brand_id,
-                        'influencer_id' =>  $influencer->id
-                    ]);
-                }
+                ]);
             }
 
             // Update or create video
