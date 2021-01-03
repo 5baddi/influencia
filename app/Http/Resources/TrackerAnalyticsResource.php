@@ -29,9 +29,13 @@ class TrackerAnalyticsResource extends JsonResource
             'platform'      =>  $this->platform ?? null,
             'updated_at'    =>  isset($this->analytics) ? $this->analytics->updated_at : $this->updated_at,
             'communities'   =>  $this->analytics->communities ?? 0,
+            'organic_communities'   =>  $this->analytics->organic_communities ?? 0,
             'impressions'   =>  $this->analytics->impressions ?? 0,
+            'organic_impressions'   =>  $this->analytics->organic_impressions ?? 0,
             'video_views'   =>  $this->analytics->video_views ?? 0,
+            'organic_video_views'   =>  $this->analytics->organic_video_views ?? 0,
             'engagements'   =>  $this->analytics->engagements ?? 0,
+            'organic_engagements'   =>  $this->analytics->organic_engagements ?? 0,
             'posts_count'   =>  $this->analytics->posts_count ?? 0,
             'media'         =>  $this->posts->map(function($post){
                 return $post->only(['uuid', 'thumbnail_url', 'type', 'link', 'likes', 'video_views', 'comments']);
