@@ -69,6 +69,10 @@ class UpdateAnalyticsCommand extends Command
     {
         Campaign::with('trackers')->orderBy('created_at', 'desc')->chunk(50, function($campaigns){
             $campaigns->each(function($campaign){
+                // Ignore empty campaign
+                if($campaign->trackers->count() === 0)
+                    return true;
+                
                 // Get exists analytics for today
                 $existsAnalytics = CampaignAnalytics::where('campaign_id', $campaign->id)->whereDate('created_at', Carbon::today())->first();
                 if(is_null($existsAnalytics)){
@@ -226,13 +230,15 @@ class UpdateAnalyticsCommand extends Command
                         }
                     }
 
-                    // Re-calculate sentiments
-                    $analytics['sentiments_positive'] = $tracker->posts->count() > 0 ? $analytics['sentiments_positive'] / $tracker->posts->count() : 0.0;
-                    $analytics['sentiments_neutral'] = $tracker->posts->count() > 0 ? $analytics['sentiments_neutral'] / $tracker->posts->count() : 0.0;
-                    $analytics['sentiments_negative'] = $tracker->posts->count() > 0 ? $analytics['sentiments_negative'] / $tracker->posts->count() : 0.0;
+                    if($tracker->posts->count() > 0){
+                        // Re-calculate sentiments
+                        $analytics['sentiments_positive'] = $tracker->posts->count() > 0 ? $analytics['sentiments_positive'] / $tracker->posts->count() : 0.0;
+                        $analytics['sentiments_neutral'] = $tracker->posts->count() > 0 ? $analytics['sentiments_neutral'] / $tracker->posts->count() : 0.0;
+                        $analytics['sentiments_negative'] = $tracker->posts->count() > 0 ? $analytics['sentiments_negative'] / $tracker->posts->count() : 0.0;
 
-                    // Get top emojis
-                    $analytics['top_emojis'] = $this->getTopThreeEmojis($tracker->posts);
+                        // Get top emojis
+                        $analytics['top_emojis'] = $this->getTopThreeEmojis($tracker->posts);
+                    }
 
                     // Save the analytics
                     TrackerAnalytics::create($analytics);
