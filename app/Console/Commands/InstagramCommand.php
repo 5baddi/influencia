@@ -90,12 +90,12 @@ class InstagramCommand extends Command
                                 // Remove influnecer from process
                                 $influencer->update(['in_process' => false]);
                                 
-                                return false;
+                                return true;
                             }
 
                             // Ignore if alreay an influencer in process
                             if(Influencer::where(['platform' => 'instagram', 'in_process' => true])->where('id', '!=', $influencer->id)->exists()){
-                                return false;
+                                return true;
                             }else{
                                 // Set influnecer in process
                                 $influencer->update(['in_process' => true]);
@@ -154,7 +154,7 @@ class InstagramCommand extends Command
 
                         // Ignore still in scraping queue
                         if($influencer->posts_count < $influencer->medias)
-                            return false;
+                            return true;
 
                         try{
                             // Scrap account details
