@@ -379,10 +379,7 @@ class InstagramScraper
                 $this->log("Handle media {$media->getShortCode()}");
 
                 // Check media if already exists
-                $post = InfluencerPost::where('influencer_id', $influencer->id)
-                            ->where('post_id', $media->getId())
-                            ->where('short_code', $media->getShortCode())
-                            ->first();
+                $post = InfluencerPost::where('short_code', $media->getShortCode())->first();
 
                 if(is_null($post)){
                     // Scrap media
@@ -392,7 +389,7 @@ class InstagramScraper
                     $_media['influencer_id'] = $influencer->id;
 
                     // Store media
-                    $post = InfluencerPost::firstOrCreate($_media);
+                    $post = InfluencerPost::create($_media);
 
                     $this->log("New post: {$_media['short_code']} | {$_media['link']}");
                 }
