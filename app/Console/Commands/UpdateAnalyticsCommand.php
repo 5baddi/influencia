@@ -105,7 +105,7 @@ class UpdateAnalyticsCommand extends Command
                         $analytics['engagements'] += $tracker->analytics->engagements;
                         $analytics['communities'] += $tracker->analytics->communities;
                         $analytics['impressions'] += $tracker->analytics->impressions;
-                        $analytics['comments_count'] += $tracker->analytics->comments;
+                        $analytics['comments_count'] += $tracker->analytics->comments_count;
                         $analytics['video_views'] += $tracker->analytics->video_views;
                         $analytics['sentiments_positive'] += $tracker->analytics->comments_positive;
                         $analytics['sentiments_neutral'] += $tracker->analytics->comments_neutral;
