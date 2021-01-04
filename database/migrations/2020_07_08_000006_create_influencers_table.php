@@ -40,6 +40,7 @@ class CreateInfluencersTable extends Migration
             $table->integer('video_views')->nullable();
             $table->string('country_code')->nullable();
             $table->timestamp('published_at')->nullable();
+            $table->boolean('in_process')->default(false);
             $table->timestamps();
         });
 

@@ -39,7 +39,8 @@ class Influencer extends Model
         'business_category',
         'business_email',
         'business_phone',
-        'business_address'
+        'business_address',
+        'in_process'
     ];
 
      /**
@@ -50,6 +51,7 @@ class Influencer extends Model
     protected $casts = [
         'is_business'       =>  'boolean',
         'is_private'        =>  'boolean',
+        'in_process'        =>  'boolean',
         'banned'            =>  'boolean',
         'business_address'  =>  'json',
         'updated_at'        =>  'datetime:Y-m-d H:i',

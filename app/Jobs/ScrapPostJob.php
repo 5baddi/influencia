@@ -156,9 +156,10 @@ class ScrapPostJob implements ShouldQueue
             else
                 $influencer->update($accountDetails);
 
-            // Store influencer picture locally
-            if(isset($account, $account->pic_url))
-                $account->pic_url = Format::storePicture($account->pic_url);
+            // Set to job to in process
+            $influencerInProcess = Influencer::where('in_process', true)->first();
+            if(is_null($influencerInProcess))
+                $influencer->update(['in_process' => true]);
 
             // Load tracker user
             $this->tracker->load('user');
@@ -246,10 +247,6 @@ class ScrapPostJob implements ShouldQueue
                 $influencer = Influencer::create($channel);
             else
                 $influencer->update($channel);
-
-            // Store influencer picture locally
-            if(isset($account, $account->pic_url))
-                $account->pic_url = Format::storePicture($account->pic_url);
 
             // Load tracker user
             $this->tracker->load('user');

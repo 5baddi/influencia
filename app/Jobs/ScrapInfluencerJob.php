@@ -81,6 +81,11 @@ class ScrapInfluencerJob implements ShouldQueue
                 // Store account
                 $influencer = Influencer::create($account);
 
+                // Set to job to in process
+                $influencerInProcess = Influencer::where('in_process', true)->first();
+                if(is_null($influencerInProcess))
+                    $influencer->update(['in_process' => true]);
+
                 // Set influencer to active brand
                 if(isset($this->user->selected_brand_id)){
                     BrandInfluencer::firstOrCreate([

@@ -86,8 +86,20 @@ class InstagramCommand extends Command
                         // Scrap each influencer details
                         $influencers->each(function($influencer){
                             // Ignore last updated influencers
-                            if($influencer->posts_count === $influencer->medias)
+                            if($influencer->posts_count === $influencer->medias){
+                                // Remove influnecer from process
+                                $influencer->update(['in_process' => false]);
+                                
                                 return false;
+                            }
+
+                            // Ignore if alreay an influencer in process
+                            if(Influencer::where(['platform' => 'instagram', 'in_process' => true])->exists()){
+                                return false;
+                            }else{
+                                // Set influnecer in process
+                                $influencer->update(['in_process' => true]);
+                            }
 
                             try{
                                 // Influencer details
@@ -106,6 +118,9 @@ class InstagramCommand extends Command
 
                                 // Scrap new medias
                                 $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
+
+                                // Remove influnecer from process
+                                $influencer->update(['in_process' => false]);
                             }catch(\Exception $exception){
                                 // Trace
                                 Log::error($exception->getMessage(), [
