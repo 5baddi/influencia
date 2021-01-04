@@ -37,7 +37,9 @@ class Kernel extends ConsoleKernel
             
         // Analytics updater
         $schedule->command('analytics:update')
-            ->daily();
+            ->everyMinute()
+            ->runInBackground()
+            ->withoutOverlapping(10);
 
         // Retry failed scrap post jobs
         $schedule->command('scrap:retry')
@@ -48,11 +50,13 @@ class Kernel extends ConsoleKernel
         // Instagram scraper
         $schedule->command('scrap:instagram')
             ->everyMinute()
+            ->runInBackground()
             ->withoutOverlapping(60);
             
         // Influencers updater
         $schedule->command('scrap:instagram --update')
-            ->everyMinute()
+            ->dailyAt('00:00')
+            ->runInBackground()
             ->withoutOverlapping(60);
     }
 
