@@ -112,8 +112,6 @@ class InstagramScraper
             CURLOPT_SSL_VERIFYPEER  =>  0,
             CURLOPT_SSL_VERIFYHOST  =>  0,
         ]);
-
-        // TODO: get user stories > https://github.com/postaddictme/instagram-php-scraper/issues/786
     }
 
     /**
@@ -461,7 +459,6 @@ class InstagramScraper
                 'caption_hashtags'  =>  $this->hashtags,
                 // 'comments_disabled' =>  $media->getCommentsDisabled(),
                 'caption_edited'    =>  $media->isCaptionEdited(),
-                // 'files'             =>  $this->getFiles($media)
             ];
 
             return $_media;
@@ -473,55 +470,30 @@ class InstagramScraper
     }
 
     /**
-     * Get files for a media
+     * Get stories by account ID
      *
-     * @param \InstagramScraper\Model\Media $media
-     * @return null|array
+     * @param int $accountID
+     * @return array
      */
-    private function getFiles(\InstagramScraper\Model\Media $media) : ?array
+    public function getStories(int $accountID)
     {
-        // Get media files
-        $files = [];
-        if(in_array($media->getType(), ['sidecar', 'carousel'])){
-            $files = array_map(function($file){
-                return $this->getFile($file);
-            },  ($media->getType() === 'sidecar' ? $media->getSidecarMedias() : $media->getCarouselMedia()));
-        }else{
-            $files = $this->getFile($media);
+        try{
+            $this->log("Scrap stories for account ID: {$accountID}");
+
+            // Authenticate with scraping account
+            $this->authenticate();
+
+            // Get account stories
+            dd($this->instagram->getStories([$accountID]));
+        }catch(\Exception $ex){
+            $this->log("Can't get stories for account ID: {$accountID}", $ex);
+
+            // Use proxy
+            if($this->isTooManyRequests($ex))
+                return $this->getStories($accountID);
+
+            throw $ex;
         }
-
-        $this->log("Media {$media->getShortCode()} files: " . sizeof($files));
-
-        return $files;
-    }
-
-    /**
-     * Get file from media
-     *
-     * @param \InstagramScraper\Model\Media $media
-     * @return null|array
-     */
-    private function getFile(\InstagramScraper\Model\Media $media) : ?array
-    {
-        if(empty($media) || is_null($media))
-            return null;
-
-        // Init URL
-        $url = null;
-
-        if($media->getType() === 'image'){
-            $url = $media->getImageHighResolutionUrl() ?? $media->getImageStandardResolutionUrl();
-        }elseif($media->getType() === 'video'){
-            $url = $media->getVideoStandardResolutionUrl() ?? $media->getVideoLowResolutionUrl();
-        }
-
-        $this->log("Media {$media->getShortCode()} File: {$url}");
-
-        return [
-            'file_id'   =>  $media->getId(),
-            'type'      =>  $media->getType(),
-            'url'       =>  $url,
-        ];
     }
 
     /**

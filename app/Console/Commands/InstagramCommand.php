@@ -145,6 +145,8 @@ class InstagramCommand extends Command
      */
     private function updateInfluencers() : void
     {
+        $this->instagramScraper->getStories(1472691588);
+        die();
         // Handle by influencers
         Influencer::withCount(['posts'])
                     ->where('platform', 'instagram')
