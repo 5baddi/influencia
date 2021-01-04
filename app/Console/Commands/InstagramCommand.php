@@ -120,7 +120,9 @@ class InstagramCommand extends Command
                                 $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
 
                                 // Remove influnecer from process
-                                $influencer->update(['in_process' => false]);
+                                $influencer->refresh();
+                                if($influencer->posts_count >= $influencer->medias)
+                                    $influencer->update(['in_process' => false]);
                             }catch(\Exception $exception){
                                 // Trace
                                 Log::error($exception->getMessage(), [
