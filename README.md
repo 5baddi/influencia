@@ -1,6 +1,6 @@
 # INFLUENCIA
 
-![Influencia sentiments analytics](/docs/screenshots/influencia_sentiments.png)
+![Influencia sentiments analytics](/docs/screenshots/influencia_sentiments_and_emojis.png)
 
 ## Instagram Scraping Issue
 
