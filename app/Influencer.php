@@ -230,12 +230,15 @@ class Influencer extends Model
      */
     public function getEngagementRateAttribute() : float
     {
+        // TODO: calculate engagement rate
         // Get manually inserted value
-        if(isset($this->attributes['engagement_rate']))
-            return $this->attributes['engagement_rate'];
+        // if(isset($this->attributes['engagement_rate']))
+        //     return $this->attributes['engagement_rate'];
 
-        // Calculate engagement rate
-        return $this->attributes['followers'] > 0 ? ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100) : 0.0;
+        // // Calculate engagement rate
+        // return $this->attributes['followers'] > 0 ? ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100) : 0.0;
+
+        return 1;
     }
 
      /**
