@@ -73,14 +73,14 @@
             <span>Based on {{ tracker.comments_count | formatedNbr }} comments</span>
         </div>
         <div class="card emojis" v-if="tracker.top_emojis && typeof tracker.top_emojis.top !== 'undefined' && Object.values(tracker.top_emojis.top).length > 0">
-            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }} used emojis</h5>
+            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }} used emoji</h5>
             <ul>
                 <li v-for="(count, emoji) in tracker.top_emojis.top" :key="count">
                     {{ emoji }}
                     <span>{{ ((count / (tracker.top_emojis.all ? tracker.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ tracker.top_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ tracker.top_emojis.all | formatedNbr }} emoji</span>
         </div>
     </div>
 

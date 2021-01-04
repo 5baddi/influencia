@@ -72,14 +72,14 @@
             <span>Based on {{ campaign.comments_count | formatedNbr }} comments</span>
         </div>
         <div class="card emojis" v-if="campaign.top_emojis">
-            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}used emojis</h5>
+            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}used emoji</h5>
             <ul>
                 <li v-for="(count, emoji) in campaign.top_emojis.top" :key="count">
                     {{ emoji }}
                     <span>{{ ((count / (campaign.top_emojis.all ? campaign.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ campaign.top_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ campaign.top_emojis.all | formatedNbr }} emoji</span>
         </div>
     </div>
 

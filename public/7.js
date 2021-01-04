@@ -1308,7 +1308,7 @@ var render = function() {
                               " "
                           : ""
                       ) +
-                      "used emojis"
+                      "used emoji"
                   )
                 ]),
                 _vm._v(" "),
@@ -1345,7 +1345,7 @@ var render = function() {
                       _vm._s(
                         _vm._f("formatedNbr")(_vm.campaign.top_emojis.all)
                       ) +
-                      " emojis"
+                      " emoji"
                   )
                 ])
               ])
