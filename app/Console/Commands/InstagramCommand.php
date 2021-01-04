@@ -94,7 +94,7 @@ class InstagramCommand extends Command
                             }
 
                             // Ignore if alreay an influencer in process
-                            if(Influencer::where(['platform' => 'instagram', 'in_process' => true])->exists()){
+                            if(Influencer::where(['platform' => 'instagram', 'in_process' => true])->where('id', '!=', $influencer->id)->exists()){
                                 return false;
                             }else{
                                 // Set influnecer in process

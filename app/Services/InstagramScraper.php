@@ -382,7 +382,7 @@ class InstagramScraper
                 $post = InfluencerPost::where([
                             'influencer_id' => $influencer->id,
                             'post_id'       => $media->getId(),
-                            'short_code'    => $media->getShortCode()
+                            // 'short_code'    => $media->getShortCode()
                         ])
                         ->first();
 
@@ -394,7 +394,7 @@ class InstagramScraper
                     $_media['influencer_id'] = $influencer->id;
 
                     // Store media
-                    $post = InfluencerPost::create($_media);
+                    $post = InfluencerPost::firstOrCreate($_media);
 
                     $this->log("New post: {$_media['short_code']} | {$_media['link']}");
                 }
