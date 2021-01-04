@@ -156,26 +156,19 @@ class ScrapPostJob implements ShouldQueue
             else
                 $influencer->update($accountDetails);
 
-            // Store influencer picture locally
-            if(isset($account, $account->pic_url))
-                $account->pic_url = Format::storePicture($account->pic_url);
+            // Set to job to in process
+            $influencerInProcess = Influencer::where('in_process', true)->first();
+            if(is_null($influencerInProcess))
+                $influencer->update(['in_process' => true]);
 
             // Load tracker user
             $this->tracker->load('user');
             // Set influencer to active brand
             if(isset($this->tracker->user->selected_brand_id)){
-                $existsInBrand = BrandInfluencer::where([
+                BrandInfluencer::firstOrCreate([
                     'brand_id'      =>  $this->tracker->user->selected_brand_id,
                     'influencer_id' =>  $influencer->id
-                ])->first();
-
-                // Check already exists in the same brand
-                if(is_null($existsInBrand)){
-                    BrandInfluencer::create([
-                        'brand_id'      =>  $this->tracker->user->selected_brand_id,
-                        'influencer_id' =>  $influencer->id
-                    ]);
-                }
+                ]);
             }
 
             //  Analyze media
@@ -255,26 +248,14 @@ class ScrapPostJob implements ShouldQueue
             else
                 $influencer->update($channel);
 
-            // Store influencer picture locally
-            if(isset($account, $account->pic_url))
-                $account->pic_url = Format::storePicture($account->pic_url);
-
             // Load tracker user
             $this->tracker->load('user');
             // Set influencer to active brand
             if(isset($this->tracker->user->selected_brand_id)){
-                $existsInBrand = BrandInfluencer::where([
+                BrandInfluencer::firstOrCreate([
                     'brand_id'      =>  $this->tracker->user->selected_brand_id,
                     'influencer_id' =>  $influencer->id
-                ])->first();
-
-                // Check already exists in the same brand
-                if(is_null($existsInBrand)){
-                    BrandInfluencer::create([
-                        'brand_id'      =>  $this->tracker->user->selected_brand_id,
-                        'influencer_id' =>  $influencer->id
-                    ]);
-                }
+                ]);
             }
 
             // Update or create video

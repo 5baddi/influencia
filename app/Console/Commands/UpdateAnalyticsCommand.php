@@ -69,6 +69,10 @@ class UpdateAnalyticsCommand extends Command
     {
         Campaign::with('trackers')->orderBy('created_at', 'desc')->chunk(50, function($campaigns){
             $campaigns->each(function($campaign){
+                // Ignore empty campaign
+                if($campaign->trackers->count() === 0)
+                    return true;
+                
                 // Get exists analytics for today
                 $existsAnalytics = CampaignAnalytics::where('campaign_id', $campaign->id)->whereDate('created_at', Carbon::today())->first();
                 if(is_null($existsAnalytics)){
@@ -76,12 +80,16 @@ class UpdateAnalyticsCommand extends Command
                     $analytics = [
                         'campaign_id'           => $campaign->id,
                         'engagements'           => 0,
+                        'organic_engagements'   => 0,
                         'engagement_rate'       => 0,
                         'communities'           => 0,
                         'impressions'           => 0,
+                        'organic_impressions'   => 0,
                         'video_views'           => 0,
+                        'organic_video_views'   => 0,
                         'comments_count'        => 0,
                         'posts_count'           => 0,
+                        'organic_posts'         => 0,
                         'stories_count'         => 0,
                         'links_count'           => 0,
                         'top_emojis'            => [
@@ -101,7 +109,7 @@ class UpdateAnalyticsCommand extends Command
                         $analytics['engagements'] += $tracker->analytics->engagements;
                         $analytics['communities'] += $tracker->analytics->communities;
                         $analytics['impressions'] += $tracker->analytics->impressions;
-                        $analytics['comments_count'] += $tracker->analytics->comments;
+                        $analytics['comments_count'] += $tracker->analytics->comments_count;
                         $analytics['video_views'] += $tracker->analytics->video_views;
                         $analytics['sentiments_positive'] += $tracker->analytics->comments_positive;
                         $analytics['sentiments_neutral'] += $tracker->analytics->comments_neutral;
@@ -112,21 +120,43 @@ class UpdateAnalyticsCommand extends Command
                         if($analytics['impressions'] > 0)
                             $analytics['engagement_rate'] += $tracker->analytics->engagement_rate;
 
+                        // Organic
+                        if(!is_null($tracker->analytics->organic_engagements))
+                            $analytics['organic_engagements'] += $tracker->analytics->organic_engagements;
+                        if(!is_null($tracker->analytics->organic_video_views))
+                            $analytics['organic_video_views'] += $tracker->analytics->organic_video_views;
+                        if(!is_null($tracker->analytics->organic_video_views))
+                            $analytics['organic_impressions'] += $tracker->analytics->organic_impressions;
+                        if(!is_null($tracker->analytics->organic_video_views))
+                            $analytics['organic_posts'] += $tracker->analytics->organic_posts;
+
                         // Emojis
                         if(isset($tracker->analytics->top_emojis['top'], $tracker->analytics->top_emojis['all'])){
                             $analytics['top_emojis']['top'] = array_merge($analytics['top_emojis']['top'], $tracker->analytics->top_emojis['top']);
                             $analytics['top_emojis']['all'] += $tracker->analytics->top_emojis['all'];
                         }
+
+                        // Sentiments
+                        $analytics['sentiments_positive'] += $tracker->analytics->sentiments_positive;
+                        $analytics['sentiments_neutral'] += $tracker->analytics->sentiments_neutral;
+                        $analytics['sentiments_negative'] += $tracker->analytics->sentiments_negative;
                     }
 
                     // Re-calculate sentiments
-                    $analytics['sentiments_positive'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_positive'] / $analytics['posts_count'] : 0.0;
-                    $analytics['sentiments_neutral'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_neutral'] / $analytics['posts_count'] : 0.0;
-                    $analytics['sentiments_negative'] = $analytics['posts_count'] > 0 ? $analytics['sentiments_negative'] / $analytics['posts_count'] : 0.0;
+                    $analytics['sentiments_positive'] = $analytics['sentiments_positive'] / $campaign->trackers->count();
+                    $analytics['sentiments_neutral'] = $analytics['sentiments_neutral'] / $campaign->trackers->count();
+                    $analytics['sentiments_negative'] = $analytics['sentiments_negative'] / $campaign->trackers->count();
 
                     // Get top emojis
-                    $analytics['top_emojis'] = isset($analytics['top_emojis']['top']) ? array_slice($analytics['top_emojis']['top'], 0, sizeof($analytics['top_emojis']['top']) < 3 ? sizeof($analytics['top_emojis']['top']) : 3, true) : [];
-
+                    if(isset($analytics['top_emojis']['top']) && sizeof($analytics['top_emojis']['top']) > 1){
+                        $analytics['top_emojis']['top'] =  array_slice($analytics['top_emojis']['top'], 0, sizeof($analytics['top_emojis']['top']) < 3 ? sizeof($analytics['top_emojis']['top']) : 3, true);
+                        $topThreeEmojis = array_flip($analytics['top_emojis']['top']);
+                        // Sort emojis desc
+                        krsort($topThreeEmojis);
+                        $topThreeEmojis = array_flip($topThreeEmojis);
+                        $analytics['top_emojis']['top'] = $topThreeEmojis;
+                    }
+                    
                     // Save the analytics
                     CampaignAnalytics::create($analytics);
                 }
@@ -152,12 +182,16 @@ class UpdateAnalyticsCommand extends Command
                     $analytics = [
                         'tracker_id'            => $tracker->id,
                         'engagements'           => 0,
+                        'organic_engagements'   => 0,
                         'engagement_rate'       => 0,
                         'communities'           => 0,
                         'impressions'           => 0,
+                        'organic_impressions'   => 0,
                         'video_views'           => 0,
+                        'organic_video_views'   => 0,
                         'comments_count'        => 0,
                         'posts_count'           => 0,
+                        'organic_posts'         => 0,
                         'top_emojis'            => [],
                         'sentiments_positive'   => 0.0,
                         'sentiments_neutral'    => 0.0,
@@ -186,23 +220,25 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['engagement_rate'] += (($post->likes + $post->comments) / $analytics['impressions']) / 100;
 
                         // Organic
-                        // if(!$post->is_ad){
-                        //     $analytics['organic_engagements'] += $post->likes + $post->comments;
-                        //     $analytics['organic_video_views'] += $post->video_views;
-                        //     $analytics['organic_impressions'] += $post->likes + $post->video_views;
+                        if(!$post->is_ad){
+                            $analytics['organic_engagements'] += $post->likes + $post->comments;
+                            $analytics['organic_video_views'] += $post->video_views;
+                            $analytics['organic_impressions'] += $post->likes + $post->video_views;
                             
-                        //     if($tracker->type === 'post')
-                        //         $analytics['organic_posts'] += 1;
-                        // }
+                            if($tracker->type === 'post')
+                                $analytics['organic_posts'] = $analytics['organic_posts'] + 1;
+                        }
                     }
 
-                    // Re-calculate sentiments
-                    $analytics['sentiments_positive'] = $tracker->posts->count() > 0 ? $analytics['sentiments_positive'] / $tracker->posts->count() : 0.0;
-                    $analytics['sentiments_neutral'] = $tracker->posts->count() > 0 ? $analytics['sentiments_neutral'] / $tracker->posts->count() : 0.0;
-                    $analytics['sentiments_negative'] = $tracker->posts->count() > 0 ? $analytics['sentiments_negative'] / $tracker->posts->count() : 0.0;
+                    if($tracker->posts->count() > 0){
+                        // Re-calculate sentiments
+                        $analytics['sentiments_positive'] = $tracker->posts->count() > 0 ? $analytics['sentiments_positive'] / $tracker->posts->count() : 0.0;
+                        $analytics['sentiments_neutral'] = $tracker->posts->count() > 0 ? $analytics['sentiments_neutral'] / $tracker->posts->count() : 0.0;
+                        $analytics['sentiments_negative'] = $tracker->posts->count() > 0 ? $analytics['sentiments_negative'] / $tracker->posts->count() : 0.0;
 
-                    // Get top emojis
-                    $analytics['top_emojis'] = $this->getTopThreeEmojis($tracker->posts);
+                        // Get top emojis
+                        $analytics['top_emojis'] = $this->getTopThreeEmojis($tracker->posts);
+                    }
 
                     // Save the analytics
                     TrackerAnalytics::create($analytics);
@@ -247,6 +283,7 @@ class UpdateAnalyticsCommand extends Command
         $topThreeEmojis = array_flip(array_count_values($topThreeEmojis));
         // Sort emojis desc
         krsort($topThreeEmojis);
+        $topThreeEmojis = array_flip($topThreeEmojis);
 
         // Slice top emojis
         return [

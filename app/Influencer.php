@@ -39,7 +39,8 @@ class Influencer extends Model
         'business_category',
         'business_email',
         'business_phone',
-        'business_address'
+        'business_address',
+        'in_process'
     ];
 
      /**
@@ -50,6 +51,7 @@ class Influencer extends Model
     protected $casts = [
         'is_business'       =>  'boolean',
         'is_private'        =>  'boolean',
+        'in_process'        =>  'boolean',
         'banned'            =>  'boolean',
         'business_address'  =>  'json',
         'updated_at'        =>  'datetime:Y-m-d H:i',
@@ -63,7 +65,6 @@ class Influencer extends Model
      */
     protected $appends = [
         'link',
-        'calculated_engagement_rate',
         'image_sequences',
         'video_sequences',
         'carousel_sequences',
@@ -75,6 +76,25 @@ class Influencer extends Model
         'estimated_communities',
         'earned_media_value'
     ];
+
+    /**
+     * Get influencer picture as base64
+     * 
+     * @return string|null
+     */
+    public function getPicUrlAttribute() : ?string
+    {
+        if(isset($this->attributes['pic_url'])){
+            // External link
+            if(filter_var($this->attributes['pic_url'], FILTER_VALIDATE_URL))
+                return $this->attributes['pic_url'];
+
+            // Picture as base64
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
+        }
+
+        return null;
+    }
 
     /**
      * Get media link
@@ -208,14 +228,17 @@ class Influencer extends Model
      *
      * @return float
      */
-    public function getCalculatedEngagementRateAttribute() : float
+    public function getEngagementRateAttribute() : float
     {
+        // TODO: calculate engagement rate
         // Get manually inserted value
-        if(isset($this->attributes['engagement_rate']))
-            return $this->attributes['engagement_rate'];
+        // if(isset($this->attributes['engagement_rate']))
+        //     return $this->attributes['engagement_rate'];
 
-        // Calculate engagement rate
-        return $this->attributes['followers'] > 0 ? ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100) : 0.0;
+        // // Calculate engagement rate
+        // return $this->attributes['followers'] > 0 ? ((($this->getLikesAttribute() + $this->getCommentsAttribute()) / $this->attributes['followers']) * 100) : 0.0;
+
+        return 1;
     }
 
      /**

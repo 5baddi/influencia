@@ -380,8 +380,8 @@ class InstagramScraper
 
                 // Check media if already exists
                 $post = InfluencerPost::where([
-                            'influencer_id' => $influencer->id,
-                            'post_id'       => $media->getId(), 
+                            // 'influencer_id' => $influencer->id,
+                            'post_id'       => $media->getId(),
                             'short_code'    => $media->getShortCode()
                         ])
                         ->first();
@@ -395,13 +395,13 @@ class InstagramScraper
 
                     // Store media
                     $post = InfluencerPost::create($_media);
+
+                    $this->log("New post: {$_media['short_code']} | {$_media['link']}");
                 }
 
                 // Save next cursor
                 if($key === array_key_last($fetchedMedias) && isset($result['maxId'], $result['hasNextPage']) && $result['hasNextPage'] === true)
                     $post->update(['next_cursor' => $result['maxId']]);
-
-                $this->log("New post: {$_media['short_code']} | {$_media['link']}");
             }
 
             // Save next cursor & scrap more media
@@ -443,7 +443,7 @@ class InstagramScraper
             $_media = [
                 'post_id'       =>  $media->getId(),
                 'next_cursor'   =>  null,
-                // 'link'          =>  $media->getLink(),
+                'link'          =>  $media->getLink(),
                 'short_code'    =>  $media->getShortCode(),
                 'type'          =>  $media->getType(),
                 'likes'         =>  $media->getLikesCount(),
@@ -451,7 +451,6 @@ class InstagramScraper
                 'comments'      =>  $media->getCommentsCount() ?? 0,
                 'published_at'  =>  Carbon::parse($media->getCreatedTime()),
                 'caption'       =>  $media->getCaption(),
-                'alttext'       =>  $media->getAltText(),
                 'location'      =>  $media->getLocationName(),
                 'location_id'   =>  $media->getLocationId(),
                 'location_slug' =>  $media->getLocationSlug(),
@@ -561,7 +560,7 @@ class InstagramScraper
     {
         try{
             // init
-            $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => []];
+            $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => [], 'allCommentsText' =>  ''];
 
             // Ignore media without comments
             if($media['comments'] === 0)
@@ -578,12 +577,9 @@ class InstagramScraper
 
             // Handle method
             $handle = function($comment) use(&$data){
-                // Analyze sentiment
-                $analyzer = new Analyzer();
-                $sentiment = $analyzer->getSentiment($comment->getText());
-                $data['comments_positive'] += $sentiment['pos'];
-                $data['comments_neutral'] += $sentiment['neu'];
-                $data['comments_negative'] += $sentiment['neg'];
+                // Concat comments text
+                if(!is_null($comment->getText()))
+                    $data['allCommentsText'] .= " " . $comment->getText();
 
                 // Match all emojis
                 $data['comments_emojis'] = array_merge($data['comments_emojis'], $this->getCommentEmojis($comment->getText()));
@@ -608,12 +604,21 @@ class InstagramScraper
                     $this->getSentimentsAndEmojis($media, $data, $comment->getChildCommentsNextPage(), $max);
             }
 
+            // Analyze sentiment
+            if(!empty($data['allCommentsText'])){
+                $analyzer = new Analyzer();
+                $sentiment = $analyzer->getSentiment($data['allCommentsText']);
+                $data['comments_positive'] = $sentiment['pos'];
+                $data['comments_neutral'] = $sentiment['neu'];
+                $data['comments_negative'] = $sentiment['neg'];
+            }
+
             $this->log("Sentiments for media {$media['short_code']} is Positive {$data['comments_positive']} | Neutral {$data['comments_neutral']} | Negative {$data['comments_negative']}");
 
             return [
-                'comments_positive'  => round($data['comments_positive'] ?? 0 / $media['comments'], 2),
-                'comments_neutral'   => round($data['comments_neutral'] ?? 0 / $media['comments'], 2),
-                'comments_negative'  => round($data['comments_negative'] ?? 0 / $media['comments'], 2),
+                'comments_positive'  => $data['comments_positive'],
+                'comments_neutral'   => $data['comments_neutral'],
+                'comments_negative'  => $data['comments_negative'],
                 'comments_emojis'    => $data['comments_emojis'],
                 'emojis'             => sizeof($data['comments_emojis']),
                 'comments_hashtags'  => $data['comments_hashtags']

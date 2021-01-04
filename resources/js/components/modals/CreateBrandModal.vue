@@ -9,8 +9,8 @@
                 <input v-model="brand.name" type="text" placeholder="Brand name" />
             </div>
             <div class="control">
-                <div style="width:100%;text-align:center;" v-show="brand.image === null && brand.public_logo">
-                    <img :src="brand.public_logo" style="width:240px;height:auto;" />
+                <div style="width:100%;text-align:center;" v-show="brand.image === null && brand.logo">
+                    <img :src="brand.logo" style="width:240px;height:auto;" />
                 </div>
                 <FileInput v-on:custom=" handleImageUpload" v-bind:id="'image'" v-bind:label="'Upload brand image'" v-bind:accept="'image/*'" v-bind:isImage="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
             </div>

@@ -82,9 +82,13 @@ class CreateTrackersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('tracker_id');
             $table->bigInteger('communities')->nullable();
+            $table->integer('organic_posts')->nullable();
             $table->bigInteger('engagements')->nullable();
+            $table->bigInteger('organic_engagements')->nullable();
             $table->bigInteger('impressions')->nullable();
+            $table->bigInteger('organic_impressions')->nullable();
             $table->bigInteger('video_views')->nullable();
+            $table->bigInteger('organic_video_views')->nullable();
             $table->double('engagement_rate')->nullable();
             $table->integer('comments_count')->nullable();
             $table->integer('posts_count')->default(0);

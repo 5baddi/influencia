@@ -24,15 +24,19 @@ class CampaignAnalytics extends Model
         'campaign_id',
         'communities',
         'engagements',
+        'organic_engagements',
         'engagement_rate',
         'video_views',
+        'organic_video_views',
         'impressions',
+        'organic_impressions',
         'comments_count',
         'top_emojis',
         'sentiments_positive',
         'sentiments_neutral',
         'sentiments_negative',
         'posts_count',
+        'organic_posts',
         'stories_count',
         'links_count',
     ];
@@ -46,10 +50,14 @@ class CampaignAnalytics extends Model
         'campaign_id'           =>  'unsignedInteger',
         'communities'           =>  'bigInteger',
         'engagements'           =>  'bigInteger',
+        'organic_engagements'   =>  'bigInteger',
         'video_views'           =>  'bigInteger',
+        'organic_video_views'   =>  'bigInteger',
         'impressions'           =>  'bigInteger',
+        'organic_impressions'   =>  'bigInteger',
         'comments_count'        =>  'integer',
         'posts_count'           =>  'integer',
+        'organic_posts'         =>  'integer',
         'stories_count'         =>  'integer',
         'links_count'           =>  'integer',
         'top_emojis'            =>  'json',
@@ -60,4 +68,17 @@ class CampaignAnalytics extends Model
         'updated_at'            =>  'datetime:Y-m-d H:i',
         'created_at'            =>  'datetime:Y-m-d H:i',
     ];
+
+    /**
+     * Get top emojis array with keys
+     *
+     * @return array
+     */
+    public function getTopEmojisAttribute() : array
+    {
+        if(isset($this->attributes['top_emojis']))
+            return json_decode($this->attributes['top_emojis'], true);
+
+        return [];
+    }
 }

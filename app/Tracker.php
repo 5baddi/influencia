@@ -124,14 +124,4 @@ class Tracker extends Model
     {
         return $this->belongsToMany(Influencer::class, 'tracker_influencers');
     }
-
-    /**
-     * Get last update datetime as humains readable
-     *
-     * @return string
-     */
-    public function getLastUpdateAttribute() : string
-    {
-        return Carbon::createFromTimeStamp(strtotime($this->attributes['updated_at']))->diffForHumans();
-    }
 }

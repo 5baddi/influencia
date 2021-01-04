@@ -52,7 +52,8 @@ class InfluencerPost extends Model
         'comments_negative',
         'comments_emojis',
         'comments_hashtags',
-        'engagement_rate'
+        'engagement_rate',
+        'link'
     ];
 
     /**
@@ -74,7 +75,6 @@ class InfluencerPost extends Model
      * @var array
      */
     protected $appends = [
-        'link',
         'hashtags_count', 
         'sequences', 
         'image_sequences',
@@ -88,12 +88,21 @@ class InfluencerPost extends Model
     ];
 
     /**
-     * Get media link
+     * Get media thumbnail as base64
      * 
      * @return string|null
      */
-    public function getLinkAttribute() : ?string
+    public function getThumbnailUrlAttribute() : ?string
     {
+        if(isset($this->attributes['thumbnail_url'])){
+            // External link
+            if(filter_var($this->attributes['thumbnail_url'], FILTER_VALIDATE_URL))
+                return $this->attributes['thumbnail_url'];
+
+            // Picture as base64
+            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail_url']));
+        }
+
         return null;
     }
 

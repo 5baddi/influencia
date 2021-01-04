@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,7 +13,10 @@ use Illuminate\Support\Facades\Storage;
 |
 */
 
-Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|oauth|u|privacy.html|termsofservice.html|websockets/).*$');
+// Short links
+Route::get('/signin', 'OAuthController@signInLayout')->name('auth.signin');
+
+Route::any('/{any}', 'HomeController@index')->where('any', '^(?!api|signin|oauth|u|privacy.html|termsofservice.html|websockets/).*$');
 
 Route::post('/oauth', 'AuthenticationController@login')->name('login');
 

@@ -17,7 +17,7 @@ class BrandDTResource extends JsonResource
         return [
             'uuid'              =>  $this->uuid,
             'name'              =>  $this->name,
-            'public_logo'       =>  $this->public_logo,
+            'logo'              =>  $this->logo,
             'users'             =>  $this->users->map(function($user){
                 return $user->only(['uuid', 'name']);
             }),

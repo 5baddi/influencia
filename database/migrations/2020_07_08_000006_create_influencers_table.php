@@ -40,6 +40,7 @@ class CreateInfluencersTable extends Migration
             $table->integer('video_views')->nullable();
             $table->string('country_code')->nullable();
             $table->timestamp('published_at')->nullable();
+            $table->boolean('in_process')->default(false);
             $table->timestamps();
         });
 
@@ -51,11 +52,11 @@ class CreateInfluencersTable extends Migration
             $table->unsignedBigInteger('post_id')->nullable();
             $table->string('next_cursor')->nullable()->default(null);
             $table->string('short_code')->nullable();
+            $table->string('link')->unique()->nullable();
             $table->text('thumbnail_url')->nullable();
             $table->enum('type', ['image', 'video', 'sidecar', 'carousel'])->default('image');
             $table->text('caption')->nullable();
             $table->json('caption_hashtags')->nullable();
-            $table->text('alttext')->nullable();
             $table->integer('likes')->nullable();
             $table->integer('comments')->nullable();
             $table->float('engagement_rate')->default(1);

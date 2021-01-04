@@ -18,7 +18,7 @@
                 </div>
             </div>
             <canvas id="communities-chart"></canvas>
-            <span>Organic communities {{ String(nbr().abbreviate(tracker.organic_communities)).toUpperCase() }} ({{ tracker.communities > 0 ? ((tracker.organic_communities / tracker.communities) * 100).toFixed(2) : 0  }}%)</span>
+            <!-- <span>Organic communities {{ String(nbr().abbreviate(tracker.organic_communities)).toUpperCase() }} ({{ tracker.communities > 0 ? ((tracker.organic_communities / tracker.communities) * 100).toFixed(2) : 0  }}%)</span> -->
         </div>
         <div class="card" v-if="tracker.impressions > 0">
             <div class="title">
@@ -40,7 +40,7 @@
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_views)).toUpperCase() }} ({{ tracker.video_views > 0 ? ((tracker.organic_views / tracker.video_views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(tracker.organic_video_views)).toUpperCase() }} ({{ tracker.video_views > 0 ? ((tracker.organic_video_views / tracker.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="tracker.engagements > 0">
             <div class="title">
@@ -73,14 +73,14 @@
             <span>Based on {{ tracker.comments_count | formatedNbr }} comments</span>
         </div>
         <div class="card emojis" v-if="tracker.top_emojis && typeof tracker.top_emojis.top !== 'undefined' && Object.values(tracker.top_emojis.top).length > 0">
-            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }}emojis</h5>
+            <h5>Top {{ tracker.top_emojis.top && Object.values(tracker.top_emojis.top).length > 1 ? Object.values(tracker.top_emojis.top).length + ' ' : '' }} used emoji</h5>
             <ul>
-                <li v-for="(emoji, index) in tracker.top_emojis.top" :key="index">
+                <li v-for="(count, emoji) in tracker.top_emojis.top" :key="count">
                     {{ emoji }}
-                    <span>{{ ((index / (tracker.top_emojis.all ? tracker.top_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((count / (tracker.top_emojis.all ? tracker.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ tracker.top_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ tracker.top_emojis.all | formatedNbr }} emoji</span>
         </div>
     </div>
 
@@ -134,10 +134,15 @@ export default {
         },
         createDoughtnutChart(id, data) {
             const chartEl = document.getElementById(id);
-            const chart = new Chart(chartEl, {
-                type: 'doughnut',
-                data: data
-            });
+
+            try{
+                const chart = new Chart(chartEl, {
+                    type: 'doughnut',
+                    data: data
+                });
+            }catch(e){
+                chartEl.style.display = "none !important";
+            }
         }
     },
     mounted() {
@@ -147,9 +152,9 @@ export default {
                 this.createDoughtnutChart('sentiments-chart', {
                     datasets: [{
                         data: [
-                            this.tracker.sentiments_positive.toFixed(2),
-                            this.tracker.sentiments_neutral.toFixed(2),
-                            this.tracker.sentiments_negative.toFixed(2)
+                            (this.tracker.sentiments_positive * 100).toFixed(2),
+                            (this.tracker.sentiments_neutral * 100).toFixed(2),
+                            (this.tracker.sentiments_negative * 100).toFixed(2)
                         ],
                         backgroundColor: [
                             "#AFD75C",
@@ -158,9 +163,9 @@ export default {
                         ],
                     }],
                     labels: [
-                        'Positive ' + this.tracker.sentiments_positive.toFixed(2),
-                        'Neutral ' + this.tracker.sentiments_neutral.toFixed(2),
-                        'Negative ' + this.tracker.sentiments_negative.toFixed(2),
+                        'Positive ' + (this.tracker.sentiments_positive * 100).toFixed(2),
+                        'Neutral ' + (this.tracker.sentiments_neutral * 100).toFixed(2),
+                        'Negative ' + (this.tracker.sentiments_negative * 100).toFixed(2),
                     ]
                 });
             }
@@ -228,10 +233,7 @@ export default {
                 field: 'pic_url',
                 isAvatar: true,
                 sortable: false,
-                isImage: true,
-                callback: function(row){
-                    return row.pic_url;
-                }
+                isImage: true
             },
             {
                 name: 'Influencer',
@@ -342,6 +344,22 @@ export default {
             }, {
                 name: 'Sequence impressions'
             }, 
+            {
+                name: 'Tags',
+                field: 'tags',
+                callback: function(row){
+                    if(row.tags && row.tags.length > 0){
+                        let html = "<ul>";
+                        row.tags.map(function(item, index){
+                            html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+                        });
+
+                        return html + "</ul>";
+                    }
+
+                    return '-';
+                }
+            },
             {
                 name: 'Posted at',
                 field: 'published_at'

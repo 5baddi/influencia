@@ -45,7 +45,9 @@ class RetryScrapPostCommand extends Command
         $this->info("=== Start retry failed scrap post jobs ===");
 
         // Get failed trackers
-        $trackers = Tracker::where('queued', 'failed')->get();
+        $trackers = Tracker::where('queued', 'failed')
+                        ->whereDate('created_at', Carbon::today())
+                        ->get();
         $this->info("Failed jobs: {$trackers->count()}");
 
         foreach($trackers as $tracker){
@@ -54,7 +56,7 @@ class RetryScrapPostCommand extends Command
             $this->info("Re-send tracker ID: {$tracker->id}");
 
             // Put tracker in the queue
-            ScrapPostJob::dispatch($tracker)->onQueue('trackers')->delay(Carbon::now()->addSeconds(60));
+            ScrapPostJob::dispatch($tracker)->onQueue('trackers');
         }
 
         $this->info("=== Done ===");

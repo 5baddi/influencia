@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Format;
 use Carbon\Carbon;
 use App\Influencer;
+use App\InfluencerPost;
 use App\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
@@ -85,8 +86,20 @@ class InstagramCommand extends Command
                         // Scrap each influencer details
                         $influencers->each(function($influencer){
                             // Ignore last updated influencers
-                            if($influencer->posts_count >= $influencer->medias)
-                                return;
+                            if($influencer->posts_count >= $influencer->medias){
+                                // Remove influnecer from process
+                                $influencer->update(['in_process' => false]);
+                                
+                                return true;
+                            }
+
+                            // Ignore if alreay an influencer in process
+                            if(Influencer::where(['platform' => 'instagram', 'in_process' => true])->where('id', '!=', $influencer->id)->exists()){
+                                return true;
+                            }else{
+                                // Set influnecer in process
+                                $influencer->update(['in_process' => true]);
+                            }
 
                             try{
                                 // Influencer details
@@ -95,8 +108,21 @@ class InstagramCommand extends Command
                                 $this->info("Already scraped posts: {$influencer->posts_count}");
                                 $this->info("Please wait until scraping all medias ...");
 
+                                 // Get next cursor
+                                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)
+                                                ->whereNotNull('next_cursor')
+                                                ->orWhere('next_cursor', '!=', '')
+                                                ->orderBy('id', 'desc')
+                                                ->latest()
+                                                ->first();
+
                                 // Scrap new medias
                                 $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
+
+                                // Remove influnecer from process
+                                $influencer->refresh();
+                                if($influencer->posts_count >= $influencer->medias)
+                                    $influencer->update(['in_process' => false]);
                             }catch(\Exception $exception){
                                 // Trace
                                 Log::error($exception->getMessage(), [
@@ -106,7 +132,7 @@ class InstagramCommand extends Command
                 
                                 // Break process if necessary
                                 if($exception->getCode() === 111)
-                                    exit();
+                                    return false;
                             }
                         });
                     });
@@ -128,7 +154,7 @@ class InstagramCommand extends Command
 
                         // Ignore still in scraping queue
                         if($influencer->posts_count < $influencer->medias)
-                            return;
+                            return true;
 
                         try{
                             // Scrap account details
@@ -176,7 +202,7 @@ class InstagramCommand extends Command
 
                             // Break process if necessary
                             if($exception->getCode() === 111)
-                                exit();
+                                return false;
                         }
                     });
     }

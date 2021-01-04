@@ -56,27 +56,17 @@ class InfluencerController extends Controller
                 ])->first();
                 
                 if(!is_null($exists)){
-                    $existsInBrand = BrandInfluencer::where([
+                    // Set influencer to current selected brand
+                    BrandInfluencer::firstOrCreate([
                         'brand_id'      =>  Auth::user()->selected_brand_id,
                         'influencer_id' =>  $exists->id
-                    ])->first();
+                    ]);
 
-                    // Check already exists in the same brand
-                    if(!is_null($existsInBrand)){
-                        return response()->error("Influencer already exists!", [], 400);
-                    }else{
-                        // Set influencer to current selected brand
-                        BrandInfluencer::create([
-                            'brand_id'      =>  Auth::user()->selected_brand_id,
-                            'influencer_id' =>  $exists->id
-                        ]);
-
-                        return response()->success(
-                            "Influencer added successfully.",
-                            $exists->loadCount(['posts', 'trackers']), 
-                            201
-                        ); 
-                    }
+                    return response()->success(
+                        "Influencer added successfully.",
+                        $exists->loadCount(['posts', 'trackers']), 
+                        201
+                    ); 
                 }
 
                 // Send create new influencer job
@@ -99,27 +89,17 @@ class InfluencerController extends Controller
                 ])->first();
                 
                 if(!is_null($exists)){
-                    $existsInBrand = BrandInfluencer::where([
+                    // Set influencer to current selected brand
+                    BrandInfluencer::firstOrCreate([
                         'brand_id'      =>  Auth::user()->selected_brand_id,
                         'influencer_id' =>  $exists->id
-                    ])->first();
+                    ]);
 
-                    // Check already exists in the same brand
-                    if(!is_null($existsInBrand)){
-                        return response()->error("Influencer already exists!", [], 400);
-                    }else{
-                        // Set influencer to current selected brand
-                        BrandInfluencer::create([
-                            'brand_id'      =>  Auth::user()->selected_brand_id,
-                            'influencer_id' =>  $exists->id
-                        ]);
-
-                        return response()->success(
-                            "Influencer added successfully.",
-                            $exists->loadCount(['posts', 'trackers']), 
-                            201
-                        ); 
-                    }
+                    return response()->success(
+                        "Influencer added successfully.",
+                        $exists->loadCount(['posts', 'trackers']), 
+                        201
+                    ); 
                 }
 
                 // Get channel details
@@ -130,7 +110,6 @@ class InfluencerController extends Controller
                 return response()->success("Influencer @{$influencer->name} created successfully.", $influencer, 201);
             }
         }catch(\Exception $ex){
-            dd($ex);
             Log::error($ex->getMessage());
             
             // Influencer does not exists

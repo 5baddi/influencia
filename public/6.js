@@ -435,9 +435,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         field: "pic_url",
         isAvatar: true,
         isImage: true,
-        callback: function callback(row) {
-          return row.pic_url;
-        },
         sortable: false
       }, {
         name: "Full name",

@@ -84,7 +84,7 @@ class OAuthController extends Controller
      */
     public function signInLayout()
     {
-        return view("auth.signin");
+        return view("v2.signin");
     }
 
     /**

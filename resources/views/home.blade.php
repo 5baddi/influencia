@@ -6,7 +6,6 @@
         <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
         <title>Influencia</title>
         <link rel="shortcut icon" href="{{ asset('favicon.ico') }}" type="image/x-icon">
-        <link href="//fonts.googleapis.com/css?family=Roboto:400,500,700,400italic|Material+Icons" rel="stylesheet"/>
         <link href="{{ asset('css/app.css') }}?v={{ config('scraper.version') }}" rel="stylesheet"/>
     </head>
     <body>

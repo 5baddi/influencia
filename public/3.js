@@ -147,10 +147,15 @@ __webpack_require__.r(__webpack_exports__);
     },
     createDoughtnutChart: function createDoughtnutChart(id, data) {
       var chartEl = document.getElementById(id);
-      var chart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(chartEl, {
-        type: 'doughnut',
-        data: data
-      });
+
+      try {
+        var chart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(chartEl, {
+          type: 'doughnut',
+          data: data
+        });
+      } catch (e) {
+        chartEl.style.display = "none !important";
+      }
     }
   },
   mounted: function mounted() {
@@ -159,11 +164,11 @@ __webpack_require__.r(__webpack_exports__);
       if (typeof this.tracker.sentiments_positive === 'number' && typeof this.tracker.sentiments_neutral === 'number' && typeof this.tracker.sentiments_negative === 'number') {
         this.createDoughtnutChart('sentiments-chart', {
           datasets: [{
-            data: [this.tracker.sentiments_positive.toFixed(2), this.tracker.sentiments_neutral.toFixed(2), this.tracker.sentiments_negative.toFixed(2)],
+            data: [(this.tracker.sentiments_positive * 100).toFixed(2), (this.tracker.sentiments_neutral * 100).toFixed(2), (this.tracker.sentiments_negative * 100).toFixed(2)],
             backgroundColor: ["#AFD75C", "#999999", "#ED435A" //#d93176
             ]
           }],
-          labels: ['Positive ' + this.tracker.sentiments_positive.toFixed(2), 'Neutral ' + this.tracker.sentiments_neutral.toFixed(2), 'Negative ' + this.tracker.sentiments_negative.toFixed(2)]
+          labels: ['Positive ' + (this.tracker.sentiments_positive * 100).toFixed(2), 'Neutral ' + (this.tracker.sentiments_neutral * 100).toFixed(2), 'Negative ' + (this.tracker.sentiments_negative * 100).toFixed(2)]
         });
       } // Communities
 
@@ -230,10 +235,7 @@ __webpack_require__.r(__webpack_exports__);
         field: 'pic_url',
         isAvatar: true,
         sortable: false,
-        isImage: true,
-        callback: function callback(row) {
-          return row.pic_url;
-        }
+        isImage: true
       }, {
         name: 'Influencer',
         field: 'uuid',
@@ -322,6 +324,20 @@ __webpack_require__.r(__webpack_exports__);
         name: 'Story sequences'
       }, {
         name: 'Sequence impressions'
+      }, {
+        name: 'Tags',
+        field: 'tags',
+        callback: function callback(row) {
+          if (row.tags && row.tags.length > 0) {
+            var html = "<ul>";
+            row.tags.map(function (item, index) {
+              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+            });
+            return html + "</ul>";
+          }
+
+          return '-';
+        }
       }, {
         name: 'Posted at',
         field: 'published_at'
@@ -1167,29 +1183,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c("canvas", { attrs: { id: "communities-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic communities " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.tracker.organic_communities)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.tracker.communities > 0
-                          ? (
-                              (_vm.tracker.organic_communities /
-                                _vm.tracker.communities) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
+                _c("canvas", { attrs: { id: "communities-chart" } })
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -1258,14 +1252,14 @@ var render = function() {
                     "Organic videos views " +
                       _vm._s(
                         String(
-                          _vm.nbr().abbreviate(_vm.tracker.organic_views)
+                          _vm.nbr().abbreviate(_vm.tracker.organic_video_views)
                         ).toUpperCase()
                       ) +
                       " (" +
                       _vm._s(
                         _vm.tracker.video_views > 0
                           ? (
-                              (_vm.tracker.organic_views /
+                              (_vm.tracker.organic_video_views /
                                 _vm.tracker.video_views) *
                               100
                             ).toFixed(2)
@@ -1395,14 +1389,14 @@ var render = function() {
                               " "
                           : ""
                       ) +
-                      "emojis"
+                      " used emoji"
                   )
                 ]),
                 _vm._v(" "),
                 _c(
                   "ul",
-                  _vm._l(_vm.tracker.top_emojis.top, function(emoji, index) {
-                    return _c("li", { key: index }, [
+                  _vm._l(_vm.tracker.top_emojis.top, function(count, emoji) {
+                    return _c("li", { key: count }, [
                       _vm._v(
                         "\r\n                    " +
                           _vm._s(emoji) +
@@ -1412,7 +1406,7 @@ var render = function() {
                         _vm._v(
                           _vm._s(
                             (
-                              (index /
+                              (count /
                                 (_vm.tracker.top_emojis.all
                                   ? _vm.tracker.top_emojis.all
                                   : 1)) *
@@ -1432,7 +1426,7 @@ var render = function() {
                       _vm._s(
                         _vm._f("formatedNbr")(_vm.tracker.top_emojis.all)
                       ) +
-                      " emojis"
+                      " emoji"
                   )
                 ])
               ])

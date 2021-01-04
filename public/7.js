@@ -148,7 +148,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
 
 
 
@@ -162,46 +161,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   },
   methods: {
-    formatNbr: function formatNbr(value) {
-      if (value === 0 || value === null) return '---';
-      return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-    },
     nbr: function nbr() {
       return new number_abbreviate__WEBPACK_IMPORTED_MODULE_1___default.a();
     },
     createDoughtnutChart: function createDoughtnutChart(id, data) {
       var chartEl = document.getElementById(id);
-      var chart = new chart_js__WEBPACK_IMPORTED_MODULE_2___default.a(chartEl, {
-        type: 'doughnut',
-        data: data
-      });
+
+      try {
+        var chart = new chart_js__WEBPACK_IMPORTED_MODULE_2___default.a(chartEl, {
+          type: 'doughnut',
+          data: data
+        });
+      } catch (e) {
+        chartEl.style.display = "none !important";
+      }
     }
   },
   computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser"])),
   mounted: function mounted() {
     // Comments sentiments
-    // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
-    //     this.createDoughtnutChart('sentiments-chart', {
-    //         datasets: [{
-    //             data: [
-    //                 this.campaign.sentiments_positive.toFixed(2),
-    //                 this.campaign.sentiments_neutral.toFixed(2),
-    //                 this.campaign.sentiments_negative.toFixed(2)
-    //             ],
-    //             backgroundColor: [
-    //                 "#AFD75C",
-    //                 "#999999",
-    //                 "#ED435A" //#d93176
-    //             ],
-    //         }],
-    //         labels: [
-    //             'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-    //             'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-    //             'Negative ' + this.campaign.sentiments_negative.toFixed(2),
-    //         ]
-    //     });
-    // }
-    // Communities
+    if (this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative) {
+      this.createDoughtnutChart('sentiments-chart', {
+        datasets: [{
+          data: [(this.campaign.sentiments_positive * 100).toFixed(2), (this.campaign.sentiments_neutral * 100).toFixed(2), (this.campaign.sentiments_negative * 100).toFixed(2)],
+          backgroundColor: ["#AFD75C", "#999999", "#ED435A" //#d93176
+          ]
+        }],
+        labels: ['Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2), 'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2), 'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2)]
+      });
+    } // Communities
+
+
     if (this.campaign.communities && this.campaign.communities > 0) {
       this.createDoughtnutChart('communities-chart', {
         datasets: [{
@@ -343,6 +333,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: 'Story sequences'
       }, {
         name: 'Sequence impressions'
+      }, {
+        name: 'Tags',
+        field: 'tags',
+        callback: function callback(row) {
+          if (row.tags && row.tags.length > 0) {
+            var html = "<ul>";
+            row.tags.map(function (item, index) {
+              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+            });
+            return html + "</ul>";
+          }
+
+          return '-';
+        }
       }, {
         name: 'Posted at',
         field: 'published_at',
@@ -1100,29 +1104,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c("canvas", { attrs: { id: "communities-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic communities " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_communities)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.communities > 0
-                          ? (
-                              (_vm.campaign.organic_communities /
-                                _vm.campaign.communities) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
+                _c("canvas", { attrs: { id: "communities-chart" } })
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -1191,14 +1173,14 @@ var render = function() {
                     "Organic videos views " +
                       _vm._s(
                         String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_views)
+                          _vm.nbr().abbreviate(_vm.campaign.organic_video_views)
                         ).toUpperCase()
                       ) +
                       " (" +
                       _vm._s(
                         _vm.campaign.video_views > 0
                           ? (
-                              (_vm.campaign.organic_views /
+                              (_vm.campaign.organic_video_views /
                                 _vm.campaign.video_views) *
                               100
                             ).toFixed(2)
@@ -1326,14 +1308,14 @@ var render = function() {
                               " "
                           : ""
                       ) +
-                      "emojis"
+                      "used emoji"
                   )
                 ]),
                 _vm._v(" "),
                 _c(
                   "ul",
-                  _vm._l(_vm.campaign.top_emojis.top, function(emoji, index) {
-                    return _c("li", { key: index }, [
+                  _vm._l(_vm.campaign.top_emojis.top, function(count, emoji) {
+                    return _c("li", { key: count }, [
                       _vm._v(
                         "\r\n                    " +
                           _vm._s(emoji) +
@@ -1343,7 +1325,7 @@ var render = function() {
                         _vm._v(
                           _vm._s(
                             (
-                              (index /
+                              (count /
                                 (_vm.campaign.top_emojis.all
                                   ? _vm.campaign.top_emojis.all
                                   : 1)) *
@@ -1363,7 +1345,7 @@ var render = function() {
                       _vm._s(
                         _vm._f("formatedNbr")(_vm.campaign.top_emojis.all)
                       ) +
-                      " emojis"
+                      " emoji"
                   )
                 ])
               ])

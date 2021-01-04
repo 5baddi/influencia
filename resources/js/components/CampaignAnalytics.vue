@@ -18,7 +18,6 @@
                 </div>
             </div>
             <canvas id="communities-chart"></canvas>
-            <span>Organic communities {{ String(nbr().abbreviate(campaign.organic_communities)).toUpperCase() }} ({{ campaign.communities > 0 ? ((campaign.organic_communities / campaign.communities) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="campaign.impressions > 0">
             <div class="title">
@@ -40,7 +39,7 @@
                 </div>
             </div>
             <canvas id="views-chart"></canvas>
-            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_views)).toUpperCase() }} ({{ campaign.video_views > 0 ? ((campaign.organic_views / campaign.video_views) * 100).toFixed(2) : 0  }}%)</span>
+            <span>Organic videos views {{ String(nbr().abbreviate(campaign.organic_video_views)).toUpperCase() }} ({{ campaign.video_views > 0 ? ((campaign.organic_video_views / campaign.video_views) * 100).toFixed(2) : 0  }}%)</span>
         </div>
         <div class="card" v-if="campaign.engagements > 0">
             <div class="title">
@@ -73,14 +72,14 @@
             <span>Based on {{ campaign.comments_count | formatedNbr }} comments</span>
         </div>
         <div class="card emojis" v-if="campaign.top_emojis">
-            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}emojis</h5>
+            <h5>Top {{ campaign.top_emojis.top && Object.values(campaign.top_emojis.top).length > 1 ? Object.values(campaign.top_emojis.top).length + ' ' : '' }}used emoji</h5>
             <ul>
-                <li v-for="(emoji, index) in campaign.top_emojis.top" :key="index">
+                <li v-for="(count, emoji) in campaign.top_emojis.top" :key="count">
                     {{ emoji }}
-                    <span>{{ ((index / (campaign.top_emojis.all ? campaign.top_emojis.all : 1))*100).toFixed(2) }}%</span>
+                    <span>{{ ((count / (campaign.top_emojis.all ? campaign.top_emojis.all : 1))*100).toFixed(2) }}%</span>
                 </li>
             </ul>
-            <span>Based on {{ campaign.top_emojis.all | formatedNbr }} emojis</span>
+            <span>Based on {{ campaign.top_emojis.all | formatedNbr }} emoji</span>
         </div>
     </div>
 
@@ -144,22 +143,20 @@ export default {
         }
     },
     methods: {
-        formatNbr(value)
-        {
-            if(value === 0 || value === null)
-                return '---';
-
-            return new Intl.NumberFormat('en-US').format(value.toFixed(2)).replace(/,/g, ' ');
-        },
         nbr() {
             return new abbreviate();
         },
         createDoughtnutChart(id, data) {
             const chartEl = document.getElementById(id);
-            const chart = new Chart(chartEl, {
-                type: 'doughnut',
-                data: data
-            });
+
+            try{
+                const chart = new Chart(chartEl, {
+                    type: 'doughnut',
+                    data: data
+                });
+            }catch(e){
+                chartEl.style.display = "none !important";
+            }
         }
     },
     computed: {
@@ -167,27 +164,27 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
-        //     this.createDoughtnutChart('sentiments-chart', {
-        //         datasets: [{
-        //             data: [
-        //                 this.campaign.sentiments_positive.toFixed(2),
-        //                 this.campaign.sentiments_neutral.toFixed(2),
-        //                 this.campaign.sentiments_negative.toFixed(2)
-        //             ],
-        //             backgroundColor: [
-        //                 "#AFD75C",
-        //                 "#999999",
-        //                 "#ED435A" //#d93176
-        //             ],
-        //         }],
-        //         labels: [
-        //             'Positive ' + this.campaign.sentiments_positive.toFixed(2),
-        //             'Neutral ' + this.campaign.sentiments_neutral.toFixed(2),
-        //             'Negative ' + this.campaign.sentiments_negative.toFixed(2),
-        //         ]
-        //     });
-        // }
+        if(this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative){
+            this.createDoughtnutChart('sentiments-chart', {
+                datasets: [{
+                    data: [
+                        (this.campaign.sentiments_positive * 100).toFixed(2),
+                        (this.campaign.sentiments_neutral * 100).toFixed(2),
+                        (this.campaign.sentiments_negative * 100).toFixed(2)
+                    ],
+                    backgroundColor: [
+                        "#AFD75C",
+                        "#999999",
+                        "#ED435A" //#d93176
+                    ],
+                }],
+                labels: [
+                    'Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2),
+                    'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2),
+                    'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2),
+                ]
+            });
+        }
 
         // Communities
         if (this.campaign.communities && this.campaign.communities > 0) {
@@ -334,7 +331,24 @@ export default {
                 name: 'Story sequences'
             }, {
                 name: 'Sequence impressions'
-            }, {
+            },
+            {
+                name: 'Tags',
+                field: 'tags',
+                callback: function(row){
+                    if(row.tags && row.tags.length > 0){
+                        let html = "<ul>";
+                        row.tags.map(function(item, index){
+                            html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+                        });
+
+                        return html + "</ul>";
+                    }
+
+                    return '-';
+                }
+            } 
+            ,{
                 name: 'Posted at',
                 field: 'published_at',
                 isDate: true,

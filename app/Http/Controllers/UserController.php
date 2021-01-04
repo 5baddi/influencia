@@ -43,8 +43,10 @@ class UserController extends Controller
         // Attach brand
         if($request->get('brand_id') && !$user->is_superadmin){
             $brand = Brand::find($request->get('brand_id'));
-            $user->brands()->attach($brand);
-            $user->update(['selected_brand_id' => $brand->id]);
+            if(!is_null($brand)){
+                $user->brands()->attach($brand);
+                $user->update(['selected_brand_id' => $brand->id]);
+            }
         }
 
         // Attach all brands to Admin
