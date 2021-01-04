@@ -134,10 +134,15 @@ export default {
         },
         createDoughtnutChart(id, data) {
             const chartEl = document.getElementById(id);
-            const chart = new Chart(chartEl, {
-                type: 'doughnut',
-                data: data
-            });
+
+            try{
+                const chart = new Chart(chartEl, {
+                    type: 'doughnut',
+                    data: data
+                });
+            }catch(e){
+                chartEl.style.display = "none !important";
+            }
         }
     },
     mounted() {

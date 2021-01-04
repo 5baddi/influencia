@@ -148,10 +148,15 @@ export default {
         },
         createDoughtnutChart(id, data) {
             const chartEl = document.getElementById(id);
-            const chart = new Chart(chartEl, {
-                type: 'doughnut',
-                data: data
-            });
+
+            try{
+                const chart = new Chart(chartEl, {
+                    type: 'doughnut',
+                    data: data
+                });
+            }catch(e){
+                chartEl.style.display = "none !important";
+            }
         }
     },
     computed: {
@@ -159,27 +164,27 @@ export default {
     },
     mounted() {
         // Comments sentiments
-        // if (typeof this.campaign.sentiments_positive === 'number' && typeof this.campaign.sentiments_neutral === 'number' && typeof this.campaign.sentiments_negative === 'number') {
-        //     this.createDoughtnutChart('sentiments-chart', {
-        //         datasets: [{
-        //             data: [
-        //                 (this.campaign.sentiments_positive * 100).toFixed(2),
-        //                 (this.campaign.sentiments_neutral * 100).toFixed(2),
-        //                 (this.campaign.sentiments_negative * 100).toFixed(2)
-        //             ],
-        //             backgroundColor: [
-        //                 "#AFD75C",
-        //                 "#999999",
-        //                 "#ED435A" //#d93176
-        //             ],
-        //         }],
-        //         labels: [
-        //             'Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2),
-        //             'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2),
-        //             'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2),
-        //         ]
-        //     });
-        // }
+        if(this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative){
+            this.createDoughtnutChart('sentiments-chart', {
+                datasets: [{
+                    data: [
+                        (this.campaign.sentiments_positive * 100).toFixed(2),
+                        (this.campaign.sentiments_neutral * 100).toFixed(2),
+                        (this.campaign.sentiments_negative * 100).toFixed(2)
+                    ],
+                    backgroundColor: [
+                        "#AFD75C",
+                        "#999999",
+                        "#ED435A" //#d93176
+                    ],
+                }],
+                labels: [
+                    'Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2),
+                    'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2),
+                    'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2),
+                ]
+            });
+        }
 
         // Communities
         if (this.campaign.communities && this.campaign.communities > 0) {

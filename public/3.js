@@ -147,10 +147,15 @@ __webpack_require__.r(__webpack_exports__);
     },
     createDoughtnutChart: function createDoughtnutChart(id, data) {
       var chartEl = document.getElementById(id);
-      var chart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(chartEl, {
-        type: 'doughnut',
-        data: data
-      });
+
+      try {
+        var chart = new chart_js__WEBPACK_IMPORTED_MODULE_1___default.a(chartEl, {
+          type: 'doughnut',
+          data: data
+        });
+      } catch (e) {
+        chartEl.style.display = "none !important";
+      }
     }
   },
   mounted: function mounted() {

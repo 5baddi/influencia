@@ -88,6 +88,8 @@ class CreateInfluencersTable extends Migration
             $table->timestamps();
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
+
+            $table->unique(['post_id', 'short_code']);
         });
     }
 
