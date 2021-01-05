@@ -505,7 +505,7 @@ class InstagramScraper
 
                     // Store video Get video duration 
                     if($story->getType() === "video"){
-                        $videoLink = (!is_null($story->getVideoStandardResolutionUrl()) && !empty($story->getVideoStandardResolutionUrl())) ? $story->getVideoStandardResolutionUrl() : $story->videoLowResolutionUrl();
+                        $videoLink = (!is_null($story->getVideoStandardResolutionUrl()) && !empty($story->getVideoStandardResolutionUrl())) ? $story->getVideoStandardResolutionUrl() : $story->getVideoLowResolutionUrl();
 
                         if(!is_null($videoLink)){
                             $storyVideo = Format::storePicture($videoLink, "influencers/instagram/{$accountID}/stories/videos/");
@@ -548,7 +548,7 @@ class InstagramScraper
     {
         try{
             if($media->getType() === 'video'){
-                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents((!is_null($media->getVideoStandardResolutionUrl()) && !empty($media->getVideoStandardResolutionUrl())) ? $media->getVideoStandardResolutionUrl() : $media->videoLowResolutionUrl()));
+                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents((!is_null($media->getVideoStandardResolutionUrl()) && !empty($media->getVideoStandardResolutionUrl())) ? $media->getVideoStandardResolutionUrl() : $media->getVideoLowResolutionUrl()));
                 $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
                 $duration = $video->getPlaytimeSeconds();
                 Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
