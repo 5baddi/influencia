@@ -498,13 +498,14 @@ class InstagramScraper
                     $storyThumbnail = null;
                     $storyVideo = null;
                     $videoDuration = null;
+                    $storyType = $story->getType();
 
                     // Store story assets locally
                     if(!is_null($story->getImageThumbnailUrl()))
                         $storyThumbnail = Format::storePicture($story->getImageThumbnailUrl(), "influencers/instagram/{$accountID}/stories/thumbnails/");
 
                     // Store video Get video duration 
-                    if($story->getType() === "video"){
+                    if($storyType === "video"){
                         $videoLink = (!is_null($story->getVideoStandardResolutionUrl()) && !empty($story->getVideoStandardResolutionUrl())) ? $story->getVideoStandardResolutionUrl() : $story->getVideoLowResolutionUrl();
 
                         if(!is_null($videoLink)){
@@ -515,13 +516,13 @@ class InstagramScraper
 
                     // Push story
                     array_push($stories, [
-                        'id'                =>  $story->getId(),
+                        'story_id'          =>  $story->getId(),
                         'influencer_id'     =>  $influencer->id,
-                        'type'              =>  $story->getType(),
+                        'type'              =>  !empty($storyType) ? $storyType : 'image',
                         'thumbnail'         =>  $storyThumbnail,
                         'video'             =>  $storyVideo,
                         'video_duration'    =>  $videoDuration,
-                        'created_at'        =>  Carbon::createFromTimestamp($story->getCreatedTime())->toDateTime()
+                        'published_at'      =>  Carbon::createFromTimestamp($story->getCreatedTime())->toDateTime()
                     ]);
                 }
             }
