@@ -31,23 +31,24 @@ class CreateCampaignsTable extends Migration
         Schema::create('campaign_analytics', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('campaign_id');
-            $table->integer('communities')->nullable();
-            $table->integer('engagements')->nullable();
-            $table->integer('organic_engagements')->nullable();
-            $table->integer('impressions')->nullable();
-            $table->integer('organic_impressions')->nullable();
-            $table->integer('video_views')->nullable();
-            $table->integer('organic_video_views')->nullable();
-            $table->double('engagement_rate')->nullable();
-            $table->integer('comments_count')->nullable();
+            $table->integer('communities')->default(0);
+            $table->integer('engagements')->default(0);
+            $table->integer('organic_engagements')->default(0);
+            $table->integer('impressions')->default(0);
+            $table->integer('organic_impressions')->default(0);
+            $table->integer('video_views')->default(0);
+            $table->integer('organic_video_views')->default(0);
+            $table->double('engagement_rate')->default(0);
+            $table->integer('comments_count')->default(0);
             $table->integer('posts_count')->default(0);
             $table->integer('organic_posts')->default(0);
             $table->integer('stories_count')->default(0);
             $table->integer('links_count')->default(0);
+            // TODO: separte total emoji and top emoji
             $table->json('top_emojis')->nullable();
-            $table->double('sentiments_positive')->nullable();
-            $table->double('sentiments_neutral')->nullable();
-            $table->double('sentiments_negative')->nullable();
+            $table->double('sentiments_positive')->default(0);
+            $table->double('sentiments_neutral')->default(0);
+            $table->double('sentiments_negative')->default(0);
             $table->timestamps();
 
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
