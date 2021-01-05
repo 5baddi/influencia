@@ -19,9 +19,10 @@ class CreateInfluencerStoriesTable extends Migration
             $table->string('uuid')->unique()->nullable(false);
             $table->unsignedBigInteger('story_id')->unique()->nullable();
             $table->enum('type', ['image', 'video'])->default('image');
-            $table->text('thumbnail')->nullable();
-            $table->text('video')->nullable();
+            $table->string('thumbnail')->nullable();
+            $table->string('video')->nullable();
             $table->double('video_duration')->nullable();
+            $table->string('link')->nullable();
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
 

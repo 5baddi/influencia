@@ -106,7 +106,7 @@ class InstagramScraper
             // Set initial Expiration date
             $config = new Config();
             $config->setDefaultTtl(86400);
-            
+
             self::$cacheManager = new Psr16Adapter('Files', $config);
         }
 
@@ -369,10 +369,16 @@ class InstagramScraper
                                 ->where('next_cursor', $nextCursor)
                                 ->first();
             }
-                
+
+            // Set the next cursor
             $maxID = isset($lastPost) ? $lastPost->next_cursor : '';
             if($maxID !== '')
                 $this->log("Start scraping from " . $maxID);
+
+            // Calculate the max media by query
+            $influencer->loadCount('posts');
+            if($influencer->posts_count < $max)
+                $max = $influencer->posts_count;
 
             // Scrap medias
             $result = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
@@ -528,6 +534,7 @@ class InstagramScraper
                         'thumbnail'         =>  $storyThumbnail,
                         'video'             =>  $storyVideo,
                         'video_duration'    =>  $videoDuration,
+                        'link'              =>  $story->getLink(),
                         'published_at'      =>  Carbon::createFromTimestamp($story->getCreatedTime())->toDateTime()
                     ]);
                 }
