@@ -154,7 +154,7 @@ class InstagramCommand extends Command
                             dd($this->instagramScraper->getStories($influencer));
                             return false;
                         }else{
-                            return true;
+                            return false;
                         }
                         $this->info("Influencers to update: {$influencers->count()}");
 
