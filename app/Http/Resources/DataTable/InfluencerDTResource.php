@@ -16,7 +16,7 @@ class InfluencerDTResource extends JsonResource
     {
         return [
             'uuid'          =>  $this->uuid,
-            'name'          =>  preg_replace('/[[:^print:]]/', '', $this->name),
+            'name'          =>  preg_replace('/[[:^print:]]/', '', $this->name), // TODO: Improve parsing name
             'username'      =>  $this->username,
             'platform'      =>  $this->platform,
             'pic_url'       =>  $this->pic_url,
