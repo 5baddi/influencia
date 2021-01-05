@@ -581,7 +581,7 @@ class InstagramScraper
             Storage::disk('local')->put($path, file_get_contents($link));
             $video = new GetId3(new UploadedFile(Storage::disk('local')->path($path), $id));
             $duration = $video->getPlaytimeSeconds();
-            Storage::disk('local')->delete();
+            Storage::disk('local')->delete($path);
 
             $this->log("Video duration: {$video->getPlaytimeSeconds()}s");
 
