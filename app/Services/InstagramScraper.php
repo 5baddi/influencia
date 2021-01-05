@@ -531,17 +531,23 @@ class InstagramScraper
                         }
                     }
 
-                    // Push story
-                    array_push($stories, [
+                    // Validate data
+                    $storyRow = [
                         'story_id'          =>  $story->getId(),
                         'influencer_id'     =>  $influencer->id,
                         'type'              =>  !empty($storyType) ? $storyType : 'image',
                         'thumbnail'         =>  $storyThumbnail,
                         'video'             =>  $storyVideo,
                         'video_duration'    =>  $videoDuration,
-                        'link'              =>  $story->getLink(),
                         'published_at'      =>  Carbon::createFromTimestamp($story->getCreatedTime())->toDateTime()
-                    ]);
+                    ];
+
+                    // Add link
+                    if(!empty($story->getLink()))
+                        $storyRow['link'] = $story->getLink();
+
+                    // Push story
+                    array_push($stories, $storyRow);
                 }
             }
 

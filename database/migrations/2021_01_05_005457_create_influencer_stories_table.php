@@ -13,6 +13,7 @@ class CreateInfluencerStoriesTable extends Migration
      */
     public function up()
     {
+        // Influencer stories
         Schema::create('influencer_stories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('influencer_id');
