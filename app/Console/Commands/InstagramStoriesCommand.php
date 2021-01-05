@@ -101,6 +101,7 @@ class InstagramStoriesCommand extends Command
      */
     private function removeStories()
     {
-        // TODO: remove unused stories on campaigns
+        // Handle by each story
+        dd(InfluencerStory::withCount('analytics')->first()->analytics_count);
     }
 }

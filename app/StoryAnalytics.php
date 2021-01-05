@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class StoryAnalytics extends Model
 {
-    use HasUuidRouteKey;
-
     protected $guarded = [];
 
      /**

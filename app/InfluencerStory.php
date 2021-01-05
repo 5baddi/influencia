@@ -26,7 +26,7 @@ class InfluencerStory extends Model
      */
     public function analytics()
     {
-        return $this->hasOne(StoryAnalytics::class)->latest();
+        return $this->hasOne(StoryAnalytics::class, 'story_id', 'story_id')->latest();
     }
 
     /**
