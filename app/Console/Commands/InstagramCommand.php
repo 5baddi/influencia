@@ -148,62 +148,61 @@ class InstagramCommand extends Command
         // Handle by influencers
         Influencer::withCount(['posts'])
                     ->where('platform', 'instagram')
-                    ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
+                    // ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
                     ->chunk(50, function($influencers){
                         $this->info("Influencers to update: {$influencers->count()}");
 
-                        // Ignore still in scraping queue
-                        if($influencer->posts_count < $influencer->medias)
-                            return true;
+                        // Update each influencer details
+                        $influencers->each(function($influencer){
+                            try{
+                                // Scrap account details
+                                $this->info("Start scraping account @{$influencer->username}");
+                                $accountDetails = $this->instagramScraper->byUsername($influencer->username);
 
-                        try{
-                            // Scrap account details
-                            $this->info("Start scraping account @{$influencer->username}");
-                            $accountDetails = $this->instagramScraper->byUsername($influencer->username);
+                                // Update influencer
+                                $influencer->update($accountDetails);
+                                $this->info("Successfully updated influencer @{$influencer->username}");
 
-                            // Update influencer
-                            $influencer->update($accountDetails);
-                            $this->info("Successfully updated influencer @{$influencer->username}");
+                                // Load posts
+                                $influencer->load('posts');
+                                // Handle by posts
+                                $influencer->posts->chunk(50, function($posts){
+                                    $posts->each(function($post){
+                                        // Get online media
+                                        $_media = $this->instagramScraper->byMedia($post->short_code);
+                                        $this->info("Media {$media['short_code']} successfully scraped!");
+                                        
+                                        // Format media
+                                        $media = $this->instagramScraper->getMedia($_media);
 
-                            // Load posts
-                            $influencer->load('posts');
-                            // Handle by posts
-                            $influencer->posts->chunk(50, function($posts){
-                                $posts->each(function($post){
-                                    // Get online media
-                                    $_media = $this->instagramScraper->byMedia($post->short_code);
-                                    $this->info("Media {$media['short_code']} successfully scraped!");
-                                    
-                                    // Format media
-                                    $media = $this->instagramScraper->getMedia($_media);
+                                        // TODO: remove deleted media
 
-                                    // TODO: remove deleted media
+                                        // Update comments if post linked to a tracker
+                                        $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $post->id)->count();
+                                        if($mediaTrackersCount > 0){
+                                            // Analyze media comments
+                                            $sentiments = $this->instagramScraper->analyzeMedia($media);
+                                            $media = array_merge($media, $sentiments);
+                                        }
 
-                                    // Update comments if post linked to a tracker
-                                    $mediaTrackersCount = TrackerInfluencerMedia::where('influencer_post_id', $post->id)->count();
-                                    if($mediaTrackersCount > 0){
-                                        // Analyze media comments
-                                        $sentiments = $this->instagramScraper->analyzeMedia($media);
-                                        $media = array_merge($media, $sentiments);
-                                    }
+                                        // Update local media
+                                        $post->update($media);
 
-                                    // Update local media
-                                    $post->update($media);
-
-                                    $this->info("Media {$post->short_code} successfully updated.");
+                                        $this->info("Media {$post->short_code} successfully updated.");
+                                    });
                                 });
-                            });
-                        }catch(\Exception $exception){
-                            // Trace
-                            Log::error($exception->getMessage(), [
-                                'context'   =>  "Instagram Updater with Code: {$exception->getCode()} Line: {$exception->getLine()}"
-                            ]);
-                            $this->error($exception->getMessage());
+                            }catch(\Exception $exception){
+                                // Trace
+                                Log::error($exception->getMessage(), [
+                                    'context'   =>  "Instagram Updater with Code: {$exception->getCode()} Line: {$exception->getLine()}"
+                                ]);
+                                $this->error($exception->getMessage());
 
-                            // Break process if necessary
-                            if($exception->getCode() === 111)
-                                return false;
-                        }
+                                // Break process if necessary
+                                if($exception->getCode() === 111)
+                                    return false;
+                            }
+                        });
                     });
     }
 }
