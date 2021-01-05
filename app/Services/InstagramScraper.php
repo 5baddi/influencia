@@ -10,6 +10,7 @@ use App\ScrapAccount;
 use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
+use App\InfluencerStory;
 use App\Helpers\EmojiParser;
 use InstagramScraper\Instagram;
 use Phpfastcache\Config\Config;
@@ -482,7 +483,7 @@ class InstagramScraper
     }
 
     /**
-     * Get stories by account ID
+     * Get stories by influencer
      *
      * @param \App\Influencer $influencer
      * @return array
@@ -506,6 +507,10 @@ class InstagramScraper
                 
                 // Handle each story
                 foreach($result[0]->getStories() as $story){
+                    // Ignore exists story
+                    if(InfluencerStory::where('story_id', $story->getId())->exists())
+                        continue;
+
                     // Init
                     $storyThumbnail = null;
                     $storyVideo = null;
