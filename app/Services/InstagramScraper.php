@@ -12,6 +12,7 @@ use App\InfluencerPost;
 use Sentiment\Analyzer;
 use App\Helpers\EmojiParser;
 use InstagramScraper\Instagram;
+use Phpfastcache\Config\Config;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
@@ -101,8 +102,13 @@ class InstagramScraper
     public function __construct(EmojiParser $emojiParser)
     {
         // Init Cache manager
-        if(is_null(self::$cacheManager))
-            self::$cacheManager = new Psr16Adapter('Files');
+        if(is_null(self::$cacheManager)){
+            // Set initial Expiration date
+            $config = new Config();
+            $config->setDefaultTtl(86400);
+            
+            self::$cacheManager = new Psr16Adapter('Files', $config);
+        }
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
