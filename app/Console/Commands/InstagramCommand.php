@@ -145,13 +145,17 @@ class InstagramCommand extends Command
      */
     private function updateInfluencers() : void
     {
-        $this->instagramScraper->getStories(1472691588);
-        die();
         // Handle by influencers
         Influencer::withCount(['posts'])
                     ->where('platform', 'instagram')
                     ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
                     ->chunk(50, function($influencers){
+                        if($influencer->account_id === 1472691588){
+                            $this->instagramScraper->getStories();
+                            return false;
+                        }else{
+                            return true;
+                        }
                         $this->info("Influencers to update: {$influencers->count()}");
 
                         // Ignore still in scraping queue

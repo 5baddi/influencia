@@ -435,7 +435,7 @@ class InstagramScraper
             // Store media thumbnail locally
             $thumbnailURL = null;
             if(!is_null($media->getImageThumbnailUrl()))
-                $thumbnailURL = Format::storePicture($media->getImageThumbnailUrl(), "influencers/instagram/thumbnails/");
+                $thumbnailURL = Format::storePicture($media->getImageThumbnailUrl(), "influencers/instagram/{$media->getOwner()->getId()}/thumbnails/");
 
             // Add media and comments details
             $_media = [
@@ -472,19 +472,61 @@ class InstagramScraper
     /**
      * Get stories by account ID
      *
-     * @param int $accountID
+     * @param \App\Influencer $influencer
      * @return array
      */
-    public function getStories(int $accountID)
+    public function getStories(Influencer $influencer) : array
     {
         try{
+            // Init
+            $stories = [];
+            $accountID = $influencer->account_id;
+
             $this->log("Scrap stories for account ID: {$accountID}");
 
             // Authenticate with scraping account
             $this->authenticate();
 
             // Get account stories
-            dd($this->instagram->getStories([$accountID]));
+            $result = $this->instagram->getStories([$accountID]);
+            if(isset($result[0]) && count($result[0]->getStories()) > 0){
+                $this->log("Live stories for last 24h is " . count($result[0]->getStories()));
+                
+                // Handle each story
+                foreach($result[0]->getStories() as $story){
+                    // Init
+                    $storyThumbnail = null;
+                    $storyVideo = null;
+                    $videoDuration = null;
+
+                    // Store story assets locally
+                    if(!is_null($story->getImageThumbnailUrl()))
+                        $storyThumbnail = Format::storePicture($story->getImageThumbnailUrl(), "influencers/instagram/{$accountID}/stories/thumbnails/");
+
+                    // Store video Get video duration 
+                    if($story->getType() === "video"){
+                        $videoLink = !is_null($story->getVideoStandardResolutionUrl()) ? $story->getVideoStandardResolutionUrl() : $story->videoLowResolutionUrl();
+
+                        if(!is_null($videoLink)){
+                            $storyVideo = Format::storePicture($videoLink, "influencers/instagram/{$accountID}/stories/videos/");
+                            $videoDuration = $this->getVideoDurationByLink($videoLink);
+                        }
+                    }
+
+                    // Push story
+                    array_push($stories, [
+                        'id'                =>  $story->getId(),
+                        'influencer_id'     =>  $influencer->id,
+                        'type'              =>  $story->getType(),
+                        'thumbnail'         =>  $storyThumbnail,
+                        'video'             =>  $storyVideo,
+                        'video_duration'    =>  $videoDuration,
+                        'created_at'        =>  Carbon::createFromTimestamp($story->getCreatedTime())->toDateTime()
+                    ]);
+                }
+            }
+
+            return $stories;
         }catch(\Exception $ex){
             $this->log("Can't get stories for account ID: {$accountID}", $ex);
 
@@ -506,7 +548,7 @@ class InstagramScraper
     {
         try{
             if($media->getType() === 'video'){
-                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents($media->getVideoStandardResolutionUrl() ?? $media->getVideoStandardResolutionUrl()));
+                Storage::disk('local')->put('/tmp/' . $media->getShortCode(), file_get_contents(!is_null($media->getVideoStandardResolutionUrl()) ? $media->getVideoStandardResolutionUrl() : $media->videoLowResolutionUrl()));
                 $video = new GetId3(new UploadedFile(Storage::disk('local')->path('/tmp/' . $media->getShortCode()), $media->getShortCode()));
                 $duration = $video->getPlaytimeSeconds();
                 Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
@@ -517,6 +559,35 @@ class InstagramScraper
             }
         }catch(\Exception $ex){
             $this->log("Get video details for media {$media->getShortCode()}", $ex);
+        }
+
+        return null;
+    }
+
+    /**
+     * Get video duration by link
+     *
+     * @param string $link
+     * @return null|int
+     */
+    private function getVideoDurationByLink(string $link) : ? int
+    {
+        try{
+            // Init
+            $id = uniqid();
+            $path = '/tmp/' . $id;
+
+            // Get video duration
+            Storage::disk('local')->put($path, file_get_contents($link));
+            $video = new GetId3(new UploadedFile(Storage::disk('local')->path($path), $id));
+            $duration = $video->getPlaytimeSeconds();
+            Storage::disk('local')->delete();
+
+            $this->log("Video duration: {$video->getPlaytimeSeconds()}s");
+
+            return $duration;
+        }catch(\Exception $ex){
+            $this->log("Get video details for link {$link}", $ex);
         }
 
         return null;
@@ -702,7 +773,7 @@ class InstagramScraper
         // Store influencer picture locally
         $pictureURL = null;
         if(!is_null($account->getProfilePicUrl()))
-            $pictureURL = Format::storePicture($account->getProfilePicUrl());
+            $pictureURL = Format::storePicture($account->getProfilePicUrl(), "influencers/instagram/{$account->getId()}/");
 
         return [
             'account_id'    =>  $account->getId(),
