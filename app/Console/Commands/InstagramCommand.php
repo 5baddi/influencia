@@ -148,10 +148,9 @@ class InstagramCommand extends Command
         // Handle by influencers
         Influencer::withCount(['posts'])
                     ->where('platform', 'instagram')
-                    ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
+                    // ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
                     ->chunk(50, function($influencers){
                         if($influencer->account_id == 1472691588){
-                            dd($influencer);
                             dd($this->instagramScraper->getStories($influencer));
                             return false;
                         }else{
