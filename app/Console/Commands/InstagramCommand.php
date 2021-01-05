@@ -154,11 +154,6 @@ class InstagramCommand extends Command
 
                         // Update each influencer details
                         $influencers->each(function($influencer){
-                            if($influencer->id === 14){
-                                dd($this->instagramScraper->getStories($influencer));
-                                return false;
-                            }
-                            return true;
                             try{
                                 // Scrap account details
                                 $this->info("Start scraping account @{$influencer->username}");
