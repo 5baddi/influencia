@@ -10,8 +10,10 @@ use App\ScrapAccount;
 use GuzzleHttp\Client;
 use App\InfluencerPost;
 use Sentiment\Analyzer;
+use App\InfluencerStory;
 use App\Helpers\EmojiParser;
 use InstagramScraper\Instagram;
+use Phpfastcache\Config\Config;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
@@ -101,8 +103,13 @@ class InstagramScraper
     public function __construct(EmojiParser $emojiParser)
     {
         // Init Cache manager
-        if(is_null(self::$cacheManager))
-            self::$cacheManager = new Psr16Adapter('Files');
+        if(is_null(self::$cacheManager)){
+            // Set initial Expiration date
+            $config = new Config();
+            $config->setDefaultTtl(86400);
+
+            self::$cacheManager = new Psr16Adapter('Files', $config);
+        }
 
         // Init emoji parser
         $this->emojiParser = $emojiParser;
@@ -363,10 +370,16 @@ class InstagramScraper
                                 ->where('next_cursor', $nextCursor)
                                 ->first();
             }
-                
+
+            // Set the next cursor
             $maxID = isset($lastPost) ? $lastPost->next_cursor : '';
             if($maxID !== '')
                 $this->log("Start scraping from " . $maxID);
+
+            // Calculate the max media by query
+            $influencer->loadCount('posts');
+            if($influencer->posts_count < $max)
+                $max = $influencer->posts_count;
 
             // Scrap medias
             $result = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
@@ -470,7 +483,7 @@ class InstagramScraper
     }
 
     /**
-     * Get stories by account ID
+     * Get stories by influencer
      *
      * @param \App\Influencer $influencer
      * @return array
@@ -494,6 +507,10 @@ class InstagramScraper
                 
                 // Handle each story
                 foreach($result[0]->getStories() as $story){
+                    // Ignore exists story
+                    if(InfluencerStory::where('story_id', $story->getId())->exists())
+                        continue;
+
                     // Init
                     $storyThumbnail = null;
                     $storyVideo = null;
@@ -514,8 +531,8 @@ class InstagramScraper
                         }
                     }
 
-                    // Push story
-                    array_push($stories, [
+                    // Validate data
+                    $storyRow = [
                         'story_id'          =>  $story->getId(),
                         'influencer_id'     =>  $influencer->id,
                         'type'              =>  !empty($storyType) ? $storyType : 'image',
@@ -523,7 +540,14 @@ class InstagramScraper
                         'video'             =>  $storyVideo,
                         'video_duration'    =>  $videoDuration,
                         'published_at'      =>  Carbon::createFromTimestamp($story->getCreatedTime())->toDateTime()
-                    ]);
+                    ];
+
+                    // Add link
+                    if(!empty($story->getLink()))
+                        $storyRow['link'] = $story->getLink();
+
+                    // Push story
+                    array_push($stories, $storyRow);
                 }
             }
 

@@ -86,7 +86,7 @@ class InstagramCommand extends Command
                         // Scrap each influencer details
                         $influencers->each(function($influencer){
                             // Ignore last updated influencers
-                            if($influencer->posts_count >= $influencer->medias){
+                            if($influencer->posts_count === $influencer->medias){
                                 // Remove influnecer from process
                                 $influencer->update(['in_process' => false]);
                                 
@@ -120,9 +120,7 @@ class InstagramCommand extends Command
                                 $this->instagramScraper->getMedias($influencer, $lastPost->next_cursor ?? null);
 
                                 // Remove influnecer from process
-                                $influencer->refresh();
-                                if($influencer->posts_count >= $influencer->medias)
-                                    $influencer->update(['in_process' => false]);
+                                $influencer->update(['in_process' => false]);
                             }catch(\Exception $exception){
                                 // Trace
                                 Log::error($exception->getMessage(), [
@@ -148,7 +146,7 @@ class InstagramCommand extends Command
         // Handle by influencers
         Influencer::withCount(['posts'])
                     ->where('platform', 'instagram')
-                    // ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
+                    ->where('updated_at', '<=', Carbon::now()->subDays(7)->toDateTimeString())
                     ->chunk(50, function($influencers){
                         $this->info("Influencers to update: {$influencers->count()}");
 
@@ -187,7 +185,6 @@ class InstagramCommand extends Command
 
                                         // Update local media
                                         $post->update($media);
-
                                         $this->info("Media {$post->short_code} successfully updated.");
                                     });
                                 });

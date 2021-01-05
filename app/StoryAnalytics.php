@@ -4,14 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class TrackerArchive extends Model
+class StoryAnalytics extends Model
 {
     protected $guarded = [];
 
-    /**
+     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'trackers_archive';
+    protected $table = 'story_analytics';
 }

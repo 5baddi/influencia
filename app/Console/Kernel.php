@@ -8,6 +8,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use App\Console\Commands\RetryScrapPostCommand;
 use App\Console\Commands\UpdateAnalyticsCommand;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\InstagramStoriesCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,6 +22,7 @@ class Kernel extends ConsoleKernel
         InstagramCommand::class,
         RetryScrapPostCommand::class,
         UpdateAnalyticsCommand::class,
+        InstagramStoriesCommand::class,
     ];
 
     /**
@@ -49,15 +51,25 @@ class Kernel extends ConsoleKernel
 
         // Instagram scraper
         $schedule->command('scrap:instagram')
-            ->everyMinute()
+            ->everyTenMinutes()
             ->runInBackground()
             ->withoutOverlapping(60);
             
         // Influencers updater
         $schedule->command('scrap:instagram --update')
-            ->dailyAt('00:00')
+            ->hourly()
             ->runInBackground()
             ->withoutOverlapping(60);
+            
+        // Scrap stories of Instagram influencers
+        $schedule->command('stories:instagram')
+            ->hourly()
+            ->runInBackground()
+            ->withoutOverlapping(60);
+
+        // Remove unused instagram stories
+        $schedule->command('stories:instagram --remove')
+            ->monthly();
     }
 
     /**

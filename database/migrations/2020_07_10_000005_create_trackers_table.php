@@ -21,40 +21,14 @@ class CreateTrackersTable extends Migration
             $table->string('uuid')->unique()->nullable(false);
             $table->enum('type', ['url', 'post', 'story'])->default('url');
             $table->string('name')->unique()->nullable(false);
-            // $table->enum('platform', ['instagram', 'youtube', 'snapchat', null])->nullable();
-            $table->enum('platform', ['instagram', 'youtube', null])->nullable();
+            $table->enum('platform', ['instagram', 'youtube', 'snapchat', null])->nullable();
             $table->longText('url')->nullable();
-            $table->integer('nbr_squences')->nullable();
-            $table->integer('nbr_squences_impressions')->nullable();
-            $table->integer('nbr_impressions_first_sequence')->nullable();
-            $table->integer('nbr_replies')->nullable();
-            $table->integer('nbr_taps_forward')->nullable();
-            $table->integer('nbr_taps_backward')->nullable();
-            $table->integer('reach_first_sequence')->nullable();
-            $table->integer('sticker_taps_mentions')->nullable();
-            $table->string('sticker_taps_hashtags')->nullable();
-            $table->integer('link_clicks')->nullable();
-            $table->date('posted_date')->nullable();
-            $table->time('posted_hour')->nullable();
             $table->boolean('status')->default(true);
             $table->enum('queued', ['pending', 'progress', 'finished', 'failed'])->default('pending');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->cascadeOnDelete();
-        });
-
-        // Tracker medias
-        Schema::create('tracker_medias', function(Blueprint $table){
-            $table->id();
-            $table->unsignedBigInteger('tracker_id')->nullable(false);
-            $table->string('uuid')->unique()->nullable(false);
-            $table->string('name')->unique()->nullable(false);
-            $table->string('media_path')->nullable(false);
-            $table->enum('type', ['media', 'proof'])->default('media');
-            $table->timestamps();
-
-            $table->foreign('tracker_id')->references('id')->on('trackers')->cascadeOnDelete();
         });
 
         // Tracker influencers
@@ -81,14 +55,14 @@ class CreateTrackersTable extends Migration
         Schema::create('tracker_analytics', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('tracker_id');
-            $table->bigInteger('communities')->nullable();
+            $table->integer('communities')->nullable();
             $table->integer('organic_posts')->nullable();
-            $table->bigInteger('engagements')->nullable();
-            $table->bigInteger('organic_engagements')->nullable();
-            $table->bigInteger('impressions')->nullable();
-            $table->bigInteger('organic_impressions')->nullable();
-            $table->bigInteger('video_views')->nullable();
-            $table->bigInteger('organic_video_views')->nullable();
+            $table->integer('engagements')->nullable();
+            $table->integer('organic_engagements')->nullable();
+            $table->integer('impressions')->nullable();
+            $table->integer('organic_impressions')->nullable();
+            $table->integer('video_views')->nullable();
+            $table->integer('organic_video_views')->nullable();
             $table->double('engagement_rate')->nullable();
             $table->integer('comments_count')->nullable();
             $table->integer('posts_count')->default(0);
