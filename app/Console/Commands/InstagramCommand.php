@@ -151,15 +151,14 @@ class InstagramCommand extends Command
                     // ->where('updated_at', '<=', Carbon::now()->subDays(1)->toDateTimeString())
                     ->chunk(50, function($influencers){
                         $this->info("Influencers to update: {$influencers->count()}");
-                        
+
                         // Update each influencer details
                         $influencers->each(function($influencer){
-                            if($influencer->account_id == 1472691588){
-                            dd($this->instagramScraper->getStories($influencer));
-                            return false;
-                        }else{
-                            return false;
-                        }
+                            if($influencer->id === 14){
+                                dd($this->instagramScraper->getStories($influencer));
+                                return false;
+                            }
+                            return true;
                             try{
                                 // Scrap account details
                                 $this->info("Start scraping account @{$influencer->username}");
