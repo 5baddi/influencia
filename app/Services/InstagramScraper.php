@@ -542,9 +542,9 @@ class InstagramScraper
      * Get video duration
      *
      * @param \InstagramScraper\Model\Media $media
-     * @return null|int
+     * @return null|float
      */
-    private function getVideoDuration(\InstagramScraper\Model\Media $media) : ?int
+    private function getVideoDuration(\InstagramScraper\Model\Media $media) : ?float
     {
         try{
             if($media->getType() === 'video'){
@@ -568,9 +568,9 @@ class InstagramScraper
      * Get video duration by link
      *
      * @param string $link
-     * @return null|int
+     * @return null|float
      */
-    private function getVideoDurationByLink(string $link) : ? int
+    private function getVideoDurationByLink(string $link) : ?float
     {
         try{
             // Init
