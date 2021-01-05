@@ -8,7 +8,6 @@ use App\Campaign;
 use App\ShortLink;
 use Carbon\Carbon;
 use App\Influencer;
-use App\TrackerMedia;
 use App\Jobs\ScrapPostJob;
 use Illuminate\Support\Str;
 use App\Jobs\ScrapURLContentJob;
@@ -202,12 +201,13 @@ class TrackerController extends Controller
             foreach($request->file('story') as $file){
                 $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $file->getClientOriginalExtension();
                 $storyFilePath = $file->storeAs('uploads', $storyFileName, 'public');
-                $medias[] = TrackerMedia::create([
-                    'tracker_id'    =>  $tracker->id,
-                    'name'          =>  $storyFileName,
-                    'type'          =>  'media',
-                    'media_path'    =>  '/storage/' . $storyFilePath
-                ]);
+                // TODO: use story table insted of tracker media
+                // $medias[] = TrackerMedia::create([
+                //     'tracker_id'    =>  $tracker->id,
+                //     'name'          =>  $storyFileName,
+                //     'type'          =>  'media',
+                //     'media_path'    =>  '/storage/' . $storyFilePath
+                // ]);
             }
         }
 

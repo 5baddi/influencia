@@ -17,6 +17,7 @@ class CreateInfluencerStoriesTable extends Migration
         Schema::create('influencer_stories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('influencer_id');
+            $table->unsignedBigInteger('tracker_id')->nullable();
             $table->string('uuid')->unique()->nullable(false);
             $table->unsignedBigInteger('story_id')->unique()->nullable();
             $table->enum('type', ['image', 'video'])->default('image');
@@ -28,6 +29,7 @@ class CreateInfluencerStoriesTable extends Migration
             $table->timestamps();
 
             $table->foreign('influencer_id')->references('id')->on('influencers')->cascadeOnDelete();
+            $table->foreign('tracker_id')->references('id')->on('trackers')->onDelete('SET NULL');
         });
     }
 

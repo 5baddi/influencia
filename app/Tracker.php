@@ -24,35 +24,8 @@ class Tracker extends Model
         'name',
         'type',
         'url',
-        'nbr_squences',
-        'nbr_squences_impressions',
-        'nbr_impressions_first_sequence',
-        'reach_first_sequence',
-        'sticker_taps_mentions',
-        'sticker_taps_hashtags',
-        'link_clicks',
-        'nbr_replies',
-        'nbr_taps_forward',
-        'nbr_taps_backward',
-        'posted_date',
-        'posted_hour',
         'status',
         'queued'
-    ];
-
-     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'user_id'       =>  'unsignedInteger',
-        'campaign_id'   =>  'unsignedInteger',
-        'posted_date'   =>  'date',
-        'posted_time'   =>  'time',
-        'status'        =>  'boolean',
-        'updated_at'    =>  'datetime:Y-m-d H:i',
-        'created_at'    =>  'datetime:Y-m-d H:i',
     ];
 
     /**
@@ -83,16 +56,6 @@ class Tracker extends Model
     public function analytics()
     {
         return $this->hasOne(TrackerAnalytics::class)->latest();
-    }
-
-    /**
-     * Get tracker media files
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function medias()
-    {
-        return $this->hasMany(TrackerMedia::class);
     }
 
     /**

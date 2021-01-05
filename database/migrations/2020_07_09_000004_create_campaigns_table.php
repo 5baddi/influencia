@@ -31,13 +31,13 @@ class CreateCampaignsTable extends Migration
         Schema::create('campaign_analytics', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('campaign_id');
-            $table->bigInteger('communities')->nullable();
-            $table->bigInteger('engagements')->nullable();
-            $table->bigInteger('organic_engagements')->nullable();
-            $table->bigInteger('impressions')->nullable();
-            $table->bigInteger('organic_impressions')->nullable();
-            $table->bigInteger('video_views')->nullable();
-            $table->bigInteger('organic_video_views')->nullable();
+            $table->integer('communities')->nullable();
+            $table->integer('engagements')->nullable();
+            $table->integer('organic_engagements')->nullable();
+            $table->integer('impressions')->nullable();
+            $table->integer('organic_impressions')->nullable();
+            $table->integer('video_views')->nullable();
+            $table->integer('organic_video_views')->nullable();
             $table->double('engagement_rate')->nullable();
             $table->integer('comments_count')->nullable();
             $table->integer('posts_count')->default(0);
