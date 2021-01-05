@@ -102,6 +102,8 @@ class InstagramStoriesCommand extends Command
     private function removeStories()
     {
         // Handle by each story
-        dd(InfluencerStory::withCount('analytics')->first()->analytics_count);
+        InfluencerStory::doesntHave('analytics')
+                    ->where('published_at', '<=', Carbon::now()->subDays(30)->toDateTimeString())
+                    ->delete();
     }
 }

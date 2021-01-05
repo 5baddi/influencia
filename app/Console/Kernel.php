@@ -66,6 +66,10 @@ class Kernel extends ConsoleKernel
             ->hourly()
             ->runInBackground()
             ->withoutOverlapping(60);
+
+        // Remove unused instagram stories
+        $schedule->command('stories:instagram --remove')
+            ->monthly();
     }
 
     /**

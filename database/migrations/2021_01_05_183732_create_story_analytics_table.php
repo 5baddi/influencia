@@ -32,7 +32,7 @@ class CreateStoryAnalyticsTable extends Migration
             $table->integer('next_story')->default(0);
             $table->integer('exited')->default(0);
             $table->integer('sticker_taps')->default(0);
-            $table->json('sticker_taps_details')->default(null);
+            $table->json('sticker_taps_details')->nullable();
             $table->timestamps();
 
             $table->foreign('story_id')->references('id')->on('influencer_stories')->cascadeOnDelete();
