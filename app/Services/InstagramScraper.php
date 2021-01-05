@@ -553,7 +553,7 @@ class InstagramScraper
                 $duration = $video->getPlaytimeSeconds();
                 Storage::disk('local')->delete('/tmp/' . $media->getShortCode());
 
-                $this->log("Video duration for media {$media->getShortCode()} is {$video->getPlaytimeSeconds()}s");
+                $this->log("Video duration for media {$media->getShortCode()} is {$duration}s");
     
                 return $duration;
             }
@@ -583,11 +583,11 @@ class InstagramScraper
             $duration = $video->getPlaytimeSeconds();
             Storage::disk('local')->delete($path);
 
-            $this->log("Video duration: {$video->getPlaytimeSeconds()}s");
+            $this->log("Video duration: {$duration}s");
 
             return $duration;
         }catch(\Exception $ex){
-            $this->log("Get video details for link {$link}", $ex);
+            $this->log("Can't get video details for link {$link}", $ex);
         }
 
         return null;
