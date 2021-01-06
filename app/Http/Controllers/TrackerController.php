@@ -117,7 +117,7 @@ class TrackerController extends Controller
     public function analytics(Tracker $tracker)
     {
         // Load tracker analytics
-        $analytics = Tracker::with(['posts', 'medias', 'campaign', 'shortlink', 'influencers'])->findOrFail($tracker->id);
+        $analytics = Tracker::with(['posts', 'campaign', 'shortlink', 'influencers'])->findOrFail($tracker->id);
         
         return response()->success(
             "Tracker fetched successfully.",
@@ -141,7 +141,7 @@ class TrackerController extends Controller
         ]);
 
         if($updated)
-            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])->find($tracker->id));
+            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'shortlink', 'influencers'])->find($tracker->id));
 
 
         return response()->error("Something going wrong! Please try again or contact the support..");
@@ -178,7 +178,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'shortlink', 'influencers'])->find($tracker->id)
         );
     }
 
@@ -218,7 +218,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Story tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'infleuncers'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'shortlink', 'infleuncers'])->find($tracker->id)
         );
     }
 
@@ -234,7 +234,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'infleuncers'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'shortlink', 'infleuncers'])->find($tracker->id)
         );
     }
 
