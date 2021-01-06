@@ -15,7 +15,7 @@ class AddScrapStatusFieldInfluencer extends Migration
     {
         // Influencer
         Schema::table('influencers', function (Blueprint $table) {
-            $table->boolean('scraped')->default(false)->after('is_livebroadcast');
+            $table->boolean('scraped')->default(false)->after('in_progress');
         });
     }
 
