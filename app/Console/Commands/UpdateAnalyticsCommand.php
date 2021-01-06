@@ -140,6 +140,8 @@ class UpdateAnalyticsCommand extends Command
                         $analytics['sentiments_positive'] += $tracker->analytics->sentiments_positive;
                         $analytics['sentiments_neutral'] += $tracker->analytics->sentiments_neutral;
                         $analytics['sentiments_negative'] += $tracker->analytics->sentiments_negative;
+
+                        // TODO: store new values about comment owner gender
                     }
 
                     // Re-calculate sentiments
@@ -228,6 +230,8 @@ class UpdateAnalyticsCommand extends Command
                             if($tracker->type === 'post')
                                 $analytics['organic_posts'] = $analytics['organic_posts'] + 1;
                         }
+
+                        // TODO: store new values about comment owner gender
                     }
 
                     if($tracker->posts->count() > 0){

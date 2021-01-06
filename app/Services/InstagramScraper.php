@@ -16,6 +16,8 @@ use InstagramScraper\Instagram;
 use Phpfastcache\Config\Config;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;
+use GenderDetector\GenderDetector;
+use App\Services\EmailVerification;
 use Illuminate\Support\Facades\Log;
 use Phpfastcache\Helper\Psr16Adapter;
 use Illuminate\Support\Facades\Storage;
@@ -627,24 +629,28 @@ class InstagramScraper
     private function getSentimentsAndEmojis(array $media, array &$data = [], string $nextComment = null, $max = self::MAX_COMMENTS) : ?array
     {
         try{
-            // init
-            $data = ['comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => [], 'allCommentsText' =>  ''];
-
             // Ignore media without comments
             if($media['comments'] === 0)
                 return $data;
+
+            // Init 
+            $genderDetector = new GenderDetector();
+            $data = ['male' => 0, 'female' => 0, 'comments_positive' => 0, 'comments_neutral' => 0, 'comments_negative' => 0, 'comments_emojis' => [], 'comments_hashtags' => [], 'allCommentsText' =>  ''];
 
 
             // Load comments
             $comments = $this->instagram->getMediaCommentsById($media['post_id'], $media['comments'] < $max ? $media['comments'] : $max, $nextComment);
             $this->log("Media {$media['short_code']} comments: " . sizeof($comments));
-            // sleep(rand(self::SLEEP_REQUEST['min'], self::SLEEP_REQUEST['max']));
 
+            // Return data if no more
             if(sizeof($comments) === 0)
                 return $data;
+            else
+                sleep(rand(self::$isHTTPRequest ? 60 : self::SLEEP_REQUEST['min'], self::$isHTTPRequest ? 120 : self::SLEEP_REQUEST['max']));
+
 
             // Handle method
-            $handle = function($comment) use(&$data){
+            $handle = function($comment) use(&$data, $genderDetector){
                 // Concat comments text
                 if(!is_null($comment->getText()))
                     $data['allCommentsText'] .= " " . $comment->getText();
@@ -654,6 +660,15 @@ class InstagramScraper
 
                 // Extract comment hashtags
                 $data['comments_hashtags'] = array_merge($data['comments_hashtags'], Format::extractHashTags($comment->getText()));
+
+                // Detect gender of comment owner
+                if(!is_null($comment->getOwner()) && !is_null($comment->getOwner()->getFullName())){
+                    $gender = $genderDetector->detect($comment->getOwner()->getFullName());
+                    if(strpos($gender, 'male') !== false)
+                        $date['male'] += 1;
+                    elseif(strpos($gender, 'female') !== false)
+                        $date['female'] += 1;
+                }
             };
             
             // Parse ana analyze comments
