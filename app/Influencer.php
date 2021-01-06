@@ -14,51 +14,6 @@ class Influencer extends Model
     protected $guarded = [];
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'account_id',
-        'platform',
-        'username',
-        'biography',
-        'website',
-        'name',
-        'is_business',
-        'is_private',
-        'is_verified',
-        'medias',
-        'follows',
-        'followers',
-        'pic_url',
-        'banned',
-        'engagement_rate',
-        'queued',
-        'highlight_reel',
-        'business_category',
-        'business_email',
-        'business_phone',
-        'business_address',
-        'in_process'
-    ];
-
-     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_business'       =>  'boolean',
-        'is_private'        =>  'boolean',
-        'in_process'        =>  'boolean',
-        'banned'            =>  'boolean',
-        'business_address'  =>  'json',
-        'updated_at'        =>  'datetime:Y-m-d H:i',
-        'created_at'        =>  'datetime:Y-m-d H:i',
-    ];
-
-    /**
      * The accessors to append to the model's array form.
      *
      * @var array
