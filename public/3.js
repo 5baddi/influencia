@@ -244,7 +244,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       }, {
         name: 'Number of posts',
-        field: 'medias',
+        field: 'campaign_media',
         isNbr: true
       }, {
         name: 'Size of activated communities',
