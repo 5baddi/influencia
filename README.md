@@ -19,6 +19,8 @@ Instagram only allows residential ip addresses so your best bet is to use:
 2) clean residential proxies
 3) use this [paid package](https://github.com/restyler/instagram-php-scraper)
 
+To prevent many requests response use random delay between requests also delay by minutes very recommended.
+
 
 ## Documentation
 * [Setup & database migration](/docs/setup.md)
