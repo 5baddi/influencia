@@ -36,7 +36,8 @@
         "raiym/instagram-php-scraper": "0.9.10",
         "ryancco/laravel-uuid-models": "^1.0",
         "spekulatius/phpscraper": "^0.4.1",
-        "ssilence/php-imap-client": "dev-master"
+        "ssilence/php-imap-client": "dev-master",
+        "tuqqu/gender-detector": "^0.3.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
