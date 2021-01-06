@@ -228,7 +228,7 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['organic_impressions'] += $post->likes + $post->video_views;
                             
                             if($tracker->type === 'post')
-                                $analytics['organic_posts'] = $analytics['organic_posts'] + 1;
+                                $analytics['organic_posts'] += 1;
                         }
 
                         // TODO: store new values about comment owner gender

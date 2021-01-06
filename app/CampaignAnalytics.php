@@ -16,6 +16,15 @@ class CampaignAnalytics extends Model
     protected $table = 'campaign_analytics';
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'top_emojis'  =>  'json',
+    ];
+
+    /**
      * Get top emojis array with keys
      *
      * @return array
