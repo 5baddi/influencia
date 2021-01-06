@@ -12,6 +12,14 @@ I guess the easiest way will be just use residential ip with enough high delay b
 
 You can ignore pretty much any free IP proxy list available on google, 99% of those ips on it are banned, almost same with ips from Digitalocean, OVH etc, many of them are blocked as well.
 
+302 redirect (to login page) typically happens if you try to connect to Instagram via datacenter ip range.
+Instagram only allows residential ip addresses so your best bet is to use: 
+
+1) your home network
+2) clean residential proxies
+3) use this [paid package](https://github.com/restyler/instagram-php-scraper)
+
+
 ## Documentation
 * [Setup & database migration](/docs/setup.md)
 * [Users hierarchy](/docs/users_hierarchy.md)
