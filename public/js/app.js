@@ -70032,8 +70032,8 @@ var Loader = {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\NANOTECH\OneDrive\Documents\influencia\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\NANOTECH\OneDrive\Documents\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\NANOTECH\OneDrive\Documents\influencia-v1\influencia\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\NANOTECH\OneDrive\Documents\influencia-v1\influencia\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

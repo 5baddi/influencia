@@ -251,7 +251,7 @@ export default {
             }
         }, {
             name: 'Number of posts',
-            field: 'medias',
+            field: 'campaign_media',
             isNbr: true
         }, {
             name: 'Engagemnets rate',

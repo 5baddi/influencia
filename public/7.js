@@ -257,7 +257,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }, {
         name: 'Number of posts',
-        field: 'medias',
+        field: 'campaign_media',
         isNbr: true
       }, {
         name: 'Engagemnets rate',
