@@ -101,7 +101,8 @@ class InfluencerPost extends Model
                 return $this->attributes['thumbnail_url'];
 
             // Picture as base64
-            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail_url']));
+            if(Storage::disk('local')->exists($this->attributes['thumbnail_url']))
+                return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail_url']));
         }
 
         return null;

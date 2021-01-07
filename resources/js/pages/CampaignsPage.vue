@@ -1,8 +1,8 @@
 <template>
 <div class="campaigns">
-    <div class="hero">
+    <div class="hero" v-if="!campaign">
         <div class="hero__intro">
-            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'campaigns' }}</h1>
+            <h1>Campaigns</h1>
             <ul class="breadcrumbs">
                 <li>
                     <a href="#">Dashboard</a>
@@ -12,9 +12,12 @@
                 </li>
             </ul>
         </div>
-        <div class="hero__actions" v-if="($can('create', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && !campaign">
+        <div class="hero__actions" v-if="($can('create', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))">
             <button :disabled="!activeBrand" class="btn btn-success" @click="addCampaign()">Add new campaign</button>
         </div>
+    </div>
+    <div class="campaign-header" v-else>
+        <span>Campaign <strong>{{ campaign.name }}</strong></span>
     </div>
     <div class="p-1" v-if="!campaign">
         <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">

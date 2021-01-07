@@ -319,6 +319,13 @@ span.status{
     }
 }
 
+.campaigns{
+    .campaign-header{
+        padding: 2rem 1rem;
+        font-size: 24pt;
+    }
+}
+
 .campaign{
     padding: 0rem 1rem 1rem 1rem;
 
@@ -340,9 +347,11 @@ span.status{
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                border: 1px solid;
-                border-color: rgba(0, 0, 0, 0.12);
+                border: 2px solid;
+                border-color: white;
                 box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+                margin-right: -16px;
+                background: white;
             }
         }
     }

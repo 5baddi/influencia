@@ -45,7 +45,8 @@ class Influencer extends Model
                 return $this->attributes['pic_url'];
 
             // Picture as base64
-            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
+            if(Storage::disk('local')->exists($this->attributes['pic_url']))
+                return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
         }
 
         return null;

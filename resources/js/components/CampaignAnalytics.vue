@@ -1,11 +1,21 @@
 <template>
 <div class="campaign" v-if="campaign">
-    <ul v-show="typeof campaign.influencers !== 'undefined' && campaign.influencers.length > 0" class="influencers-avatars">
+    <ul v-show="fiveInfluencers.length > 0" class="influencers-avatars">
         <h4>influencers</h4>
-        <li v-for="influencer in campaign.influencers" :key="influencer.id">
+        <li v-for="influencer in fiveInfluencers" :key="influencer.id">
             <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.username">
                 <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
+        </li>
+        <li v-if="campaign.influencers.length > 1">
+            <a href="#" class="icon-link">
+                <img src="@assets/img/more.png"/>
+            </a>
+        </li>
+        <li>
+            <span class="campaign-more-influencers">
+                {{ campaign.influencers.length }} Influencers linked&nbsp;<router-link to="#byinfuencers" v-if="campaign.influencers.length > 1">See all</router-link>
+            </span>
         </li>
     </ul>
     <div class="cards statistics">
@@ -28,7 +38,7 @@
                 </div>
             </div>
             <canvas id="impressions-chart"></canvas>
-            <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
+            <!-- <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span> -->
         </div>
         <div class="card" v-if="campaign.video_views > 0">
             <div class="title">
@@ -61,7 +71,7 @@
                 </div>
             </div>
             <canvas id="posts-chart"></canvas>
-            <span>Organic posts {{ String(nbr().abbreviate(campaign.organic_posts)).toUpperCase() }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span>
+            <!-- <span>Organic posts {{ String(nbr().abbreviate(campaign.organic_posts)).toUpperCase() }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span> -->
         </div>
     </div>
 
@@ -88,7 +98,7 @@
         <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" />
     </div>
 
-    <div class="datatable-scroll">
+    <div class="datatable-scroll" id="byinfluencers">
         <h4>Performance breakdown by post on Instagram</h4>
         <DataTable cssClasses="table-card" ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_media" />
     </div>
@@ -160,9 +170,17 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser"])
+        ...mapGetters(["AuthenticatedUser"]),
+        fiveInfluencers(){
+            // Get five influencers
+            if(this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0){
+                return this.campaign.influencers.slice(0, 5);
+            }
+
+            return [];
+        }
     },
-    mounted() {
+    mounted(){
         // Comments sentiments
         if(this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative){
             this.createDoughtnutChart('sentiments-chart', {

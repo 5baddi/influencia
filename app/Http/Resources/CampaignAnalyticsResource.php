@@ -61,6 +61,8 @@ class CampaignAnalyticsResource extends JsonResource
         });
 
         return [
+            'uuid'                  =>  $this->uuid,
+            'name'                  =>  $this->name,
             'communities'           =>  $this->analytics->communities ?? 0,
             'engagements'           =>  $this->analytics->engagements ?? 0,
             'organic_engagements'   =>  $this->analytics->organic_engagements ?? 0,
