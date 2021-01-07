@@ -187,6 +187,7 @@ table tfoot td>>>button:hover {
 
 table tbody>>>img {
     max-width: 36px;
+    max-height: 36px;
     border-radius: 50%;
 }
 
