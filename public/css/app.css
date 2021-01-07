@@ -8013,6 +8013,24 @@ span.status-danger::before {
   width: 36px;
 }
 
+.influencers-avatars-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.influencers-avatars-list a {
+  margin: 0.2rem;
+  box-sizing: border-box;
+  width: 36px;
+  margin-right: -16px;
+}
+
+.influencers-avatars-list a img {
+  border-radius: 50%;
+  border: 2px solid white;
+  background: white;
+}
+
 .text-white {
   color: white !important;
 }

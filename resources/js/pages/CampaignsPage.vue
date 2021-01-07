@@ -210,16 +210,22 @@ export default {
                 {
                     name: "Influencers",
                     field: "influencers",
-                    class: "avatars-list",
+                    class: "influencers-avatars-list",
                     sortable: false,
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
+                        let influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
+
                         let html = '';
-                        row.influencers.map(function (item, index) {
+                        influencers.map(function (item, index) {
                             html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
                         });
+
+                        // Add more avatar
+                        if(row.influencers.length > 3)
+                            html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
 
                         return html;
                     }

@@ -723,14 +723,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Influencers",
         field: "influencers",
-        "class": "avatars-list",
+        "class": "influencers-avatars-list",
         sortable: false,
         callback: function callback(row) {
           if (row.influencers.length === 0) return '-';
+          var influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
           var html = '';
-          row.influencers.map(function (item, index) {
+          influencers.map(function (item, index) {
             html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-          });
+          }); // Add more avatar
+
+          if (row.influencers.length > 3) html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
           return html;
         }
       }, {

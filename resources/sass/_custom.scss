@@ -666,6 +666,23 @@ span.status{
         width: 36px;
     }
 }
+.influencers-avatars-list{
+    display: flex;
+    flex-wrap: wrap;
+
+    a{
+        margin: .2rem;
+        box-sizing: border-box;
+        width: 36px;
+        margin-right: -16px;
+
+        img{
+            border-radius: 50%;
+            border: 2px solid white;
+            background: white;
+        }
+    }
+}
 
 .text-white{
     color: white !important;
