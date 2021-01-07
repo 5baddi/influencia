@@ -7689,8 +7689,15 @@ span.status-danger::before {
   border: 2px solid;
   border-color: white;
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
-  margin-right: -16px;
   background: white;
+}
+
+.campaign .influencers-avatars li .icon-link {
+  margin-right: -24px !important;
+}
+
+.campaign .influencers-avatars li .campaign-more-influencers {
+  margin-left: 1rem;
 }
 
 .campaign .cards.statistics {
