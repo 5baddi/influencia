@@ -7,14 +7,14 @@
                 <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
-        <li v-if="campaign.influencers.length > 1">
+        <li v-if="campaign.influencers.length > 5">
             <a href="#" class="icon-link">
                 <img src="@assets/img/more.png"/>
             </a>
         </li>
         <li>
             <span class="campaign-more-influencers">
-                {{ campaign.influencers.length }} Influencers linked&nbsp;<router-link to="#byinfuencers" v-if="campaign.influencers.length > 1">See all</router-link>
+                {{ campaign.influencers.length }} Influencers linked&nbsp;<router-link to="#byinfuencers" v-if="campaign.influencers.length > 5">See all</router-link>
             </span>
         </li>
     </ul>

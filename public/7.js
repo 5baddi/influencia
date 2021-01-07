@@ -1106,7 +1106,7 @@ var render = function() {
               )
             }),
             _vm._v(" "),
-            _vm.campaign.influencers.length > 1
+            _vm.campaign.influencers.length > 5
               ? _c("li", [_vm._m(0)])
               : _vm._e(),
             _vm._v(" "),
@@ -1120,7 +1120,7 @@ var render = function() {
                       _vm._s(_vm.campaign.influencers.length) +
                       " Influencers linked "
                   ),
-                  _vm.campaign.influencers.length > 1
+                  _vm.campaign.influencers.length > 5
                     ? _c("router-link", { attrs: { to: "#byinfuencers" } }, [
                         _vm._v("See all")
                       ])
