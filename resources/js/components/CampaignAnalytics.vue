@@ -278,11 +278,11 @@ export default {
         },{
             name: 'Size of activated communities',
             field: 'estimated_communities',
-            isNbr: true
+            isNativeNbr: true
         }, {
             name: 'Estimated impressions',
             field: 'estimated_impressions',
-            isNbr: true
+            isNativeNbr: true
         }, {
             name: 'Earned Media Value',
             field: 'earned_media_value',

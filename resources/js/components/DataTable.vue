@@ -319,6 +319,10 @@ export default {
             if (this.data.length === 0)
                 return [];
 
+            // Paginate data
+            if(this.withPagination)
+                this.paginateData();
+
             let vm = this;
             let _parsedData = [];
             this.data.map(function (value, key) {
@@ -342,8 +346,10 @@ export default {
                         }
                         
                         // Format number to K
-                        if (typeof item.isNbr === "boolean" && item.isNbr)
+                        if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr!== "undefined" || !item.isNativeNbr))
                             val = String(abbreviate(val)).toUpperCase();
+                        if(typeof item.isNativeNbr === "boolean" && !item.isNativeNbr)
+                            val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ');
 
                         // Percentage
                         if(typeof item.isPercentage === "boolean" && item.isPercentage){

@@ -462,7 +462,7 @@ class InstagramScraper
                 'likes'         =>  $media->getLikesCount(),
                 'thumbnail_url' =>  $thumbnailURL,
                 'comments'      =>  $media->getCommentsCount() ?? 0,
-                'published_at'  =>  Carbon::parse($media->getCreatedTime()),
+                'published_at'  =>  Carbon::parse($media->getCreatedTime())->format("Y-m-d H:i:s"),
                 'caption'       =>  $media->getCaption(),
                 'location'      =>  $media->getLocationName(),
                 'location_id'   =>  $media->getLocationId(),

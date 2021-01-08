@@ -7043,7 +7043,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return columns;
     },
     formatedData: function formatedData() {
-      if (this.data.length === 0) return [];
+      if (this.data.length === 0) return []; // Paginate data
+
+      if (this.withPagination) this.paginateData();
       var vm = this;
       var _parsedData = [];
       this.data.map(function (value, key) {
@@ -7064,7 +7066,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             } // Format number to K
 
 
-            if (typeof item.isNbr === "boolean" && item.isNbr) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase(); // Percentage
+            if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr !== "undefined" || !item.isNativeNbr)) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase();
+            if (typeof item.isNativeNbr === "boolean" && !item.isNativeNbr) val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' '); // Percentage
 
             if (typeof item.isPercentage === "boolean" && item.isPercentage) {
               val *= 100;

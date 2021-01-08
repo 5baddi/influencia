@@ -47,6 +47,9 @@ class CampaignAnalyticsResource extends JsonResource
                         $_influencer = $post->influencer;
                         $influencers = $influencers->map(function($item, $key) use($_influencer){
                             if($item['uuid'] == $_influencer->uuid){
+                                // Parse name
+                                $item['name'] = preg_replace('/[[:^print:]]/', '', $_influencer->name); // TODO: Improve parsing name
+
                                 if(isset($item['campaign_media']))
                                     $item['campaign_media'] += 1;
                                 else
