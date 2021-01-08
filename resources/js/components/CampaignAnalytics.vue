@@ -95,7 +95,7 @@
 
     <div class="datatable-scroll">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" />
+        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" :withPagination="false" :withTotalTab="true" />
     </div>
 
     <div class="datatable-scroll" id="byinfluencers">
@@ -267,23 +267,24 @@ export default {
             callback: function (row) {
                 return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '" style="margin-right:0.2rem"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
             }
-        }, {
+        },
+        {
             name: 'Number of posts',
             field: 'campaign_media',
-            isNbr: true
-        }, {
-            name: 'Engagemnets rate',
-            field: 'engagement_rate',
-            isPercentage: true
-        },{
+            isNbr: true,
+            hasTotal: true
+        },
+        {
             name: 'Size of activated communities',
             field: 'estimated_communities',
             isNativeNbr: true
-        }, {
+        }, 
+        {
             name: 'Estimated impressions',
-            field: 'estimated_impressions',
+            field: 'campaign_impressions',
             isNativeNbr: true
-        }, {
+        }, 
+        {
             name: 'Earned Media Value',
             field: 'earned_media_value',
             currency: '€'
@@ -292,7 +293,7 @@ export default {
                 name: 'Influencer',
                 field: 'influencer',
                 callback: function (row) {
-                    return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+                    return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username) + '</p>';
                 }
             }, {
                 name: 'Post',
@@ -311,38 +312,40 @@ export default {
             {
                 name: 'Size of activated communities',
                 field: 'activated_communities',
-                isNbr: true
+                isNativeNbr: true
             }, {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
-                isNbr: true
+                isNbisNativeNbrr: true
             },
             {
                 name: 'Engagements',
                 field: 'engagements',
-                isNbr: true
+                isNativeNbr: true
             }, {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
-                isNbr: true
-            }, {
-                name: 'Engagements rate (reach)',
-                field: 'engagement_rate',
-                callback: function (row) {
-                    return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-                }
-            }, {
+                isNativeNbr: true
+            },
+            //  {
+            //     name: 'Engagements rate (reach)',
+            //     field: 'engagement_rate',
+            //     callback: function (row) {
+            //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
+            //     }
+            // },
+             {
                 name: 'Likes',
                 field: 'likes',
-                isNbr: true
+                isNativeNbr: true
             }, {
                 name: 'Views',
                 field: 'video_views',
-                isNbr: true
+                isNativeNbr: true
             }, {
                 name: 'Comments',
                 field: 'comments',
-                isNbr: true
+                isNativeNbr: true
             }, {
                 name: 'Impressions (first sequence)'
             }, {
@@ -368,9 +371,7 @@ export default {
             } 
             ,{
                 name: 'Posted at',
-                field: 'published_at',
-                isDate: true,
-                format: 'DD/MM/YYYY'
+                field: 'published_at'
             }, {
                 name: 'Earned Media Value',
                 field: 'earned_media_value',

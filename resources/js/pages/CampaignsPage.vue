@@ -200,7 +200,7 @@ export default {
                 {
                     name: "Activated communities",
                     field: "communities",
-                    isNbr: true
+                    isNativeNbr: true
                 },
                 {
                     name: "Number of trackers",

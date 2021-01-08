@@ -45,15 +45,22 @@ class CampaignAnalyticsResource extends JsonResource
 
                         // Set media count by campaign
                         $_influencer = $post->influencer;
-                        $influencers = $influencers->map(function($item, $key) use($_influencer){
+                        $influencers = $influencers->map(function($item, $key) use($post, $_influencer){
                             if($item['uuid'] == $_influencer->uuid){
                                 // Parse name
                                 $item['name'] = preg_replace('/[[:^print:]]/', '', $_influencer->name); // TODO: Improve parsing name
 
+                                // Set number of campaign media
                                 if(isset($item['campaign_media']))
                                     $item['campaign_media'] += 1;
                                 else
                                     $item['campaign_media'] = 1;
+
+                                // Calculate estimated impressions for all media
+                                if(isset($item['campaign_impressions']))
+                                    $item['campaign_impressions'] += $post->estimated_impressions;
+                                else
+                                    $item['campaign_impressions'] = $post->estimated_impressions;
                             }
 
                             return $item;

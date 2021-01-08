@@ -477,8 +477,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: "Analyzed",
         field: "posts_count",
         callback: function callback(row) {
-          return row.posts_count + ' of ' + row.medias;
-        }
+          return row.posts_count / row.medias * 100;
+        },
+        isPercentage: true
       }, {
         name: "Last update",
         field: "updated_at",

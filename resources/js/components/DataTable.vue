@@ -44,6 +44,11 @@
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
+            <!-- <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof col.hasTotal === 'boolean' && col.hasTotal">{{ calculateColumnSum(col.field) }}</div>
+                </td>
+            </tr> -->
         </tbody>
         <tfoot v-if="data.length > 0 && !loading">
             <tr>
@@ -262,6 +267,10 @@ export default {
             type: Boolean,
             default: true
         },
+        withTotalTab: {
+            type: Boolean,
+            default: false
+        },
         defaultSorting: {
             type: String,
             default: "desc"
@@ -346,9 +355,9 @@ export default {
                         }
                         
                         // Format number to K
-                        if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr!== "undefined" || !item.isNativeNbr))
+                        if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr))
                             val = String(abbreviate(val)).toUpperCase();
-                        if(typeof item.isNativeNbr === "boolean" && !item.isNativeNbr)
+                        if(typeof item.isNativeNbr === "boolean" && item.isNativeNbr)
                             val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ');
 
                         // Percentage
@@ -393,6 +402,15 @@ export default {
         },
     },
     methods: {
+        calculateColumnSum(field){
+            let total = 0;
+            this.parsedData.map(function(value, index){
+                if(typeof value[field] !== "undefined")
+                    total += new Number(value[field]) || 0;
+            });
+
+            return total;
+        },
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },

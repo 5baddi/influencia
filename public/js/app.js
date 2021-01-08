@@ -6963,6 +6963,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -6999,6 +7004,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     withPagination: {
       type: Boolean,
       "default": true
+    },
+    withTotalTab: {
+      type: Boolean,
+      "default": false
     },
     defaultSorting: {
       type: String,
@@ -7066,8 +7075,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             } // Format number to K
 
 
-            if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr !== "undefined" || !item.isNativeNbr)) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase();
-            if (typeof item.isNativeNbr === "boolean" && !item.isNativeNbr) val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' '); // Percentage
+            if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr)) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase();
+            if (typeof item.isNativeNbr === "boolean" && item.isNativeNbr) val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' '); // Percentage
 
             if (typeof item.isPercentage === "boolean" && item.isPercentage) {
               val *= 100;
@@ -7104,6 +7113,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
+    calculateColumnSum: function calculateColumnSum(field) {
+      var total = 0;
+      this.parsedData.map(function (value, index) {
+        if (typeof value[field] !== "undefined") total += new Number(value[field]) || 0;
+      });
+      return total;
+    },
     getColumnsCount: function getColumnsCount() {
       return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
     },

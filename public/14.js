@@ -73,19 +73,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Activated Communities",
         field: "communities",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "ESTIMATED IMPRESSIONS",
         field: "impressions",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "ENGAGEMENTS",
         field: "engagements",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "Videos views",
         field: "video_views",
-        isNbr: true
+        isNativeNbr: true
       }],
       latestTrackersColumns: [{
         name: "Name",
@@ -93,19 +93,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Activated Communities",
         field: "communities",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "ESTIMATED IMPRESSIONS",
         field: "impressions",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "ENGAGEMENTS",
         field: "engagements",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "Videos views",
         field: "video_views",
-        isNbr: true
+        isNativeNbr: true
       }]
     };
   }

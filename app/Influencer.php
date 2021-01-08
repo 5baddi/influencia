@@ -29,8 +29,22 @@ class Influencer extends Model
         'active_posts_count',
         'estimated_impressions',
         'estimated_communities',
-        'earned_media_value'
+        'earned_media_value',
+        'parsed_name'
     ];
+
+    /**
+     * Get parsed name without emoji
+     *
+     * @return string|null
+     */
+    public function getParsedNameAttribue() : ?string
+    {
+        if(isset($this->attributes['name']))
+            return preg_replace('/[[:^print:]]/', '', $this->attributes['name']); // TODO: Improve parsing name
+
+        return null;
+    }
 
     /**
      * Get influencer picture as base64

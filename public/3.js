@@ -249,11 +249,11 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: 'Size of activated communities',
         field: 'estimated_communities',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Estimated impressions',
         field: 'estimated_impressions',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Earned Media Value',
         field: 'earned_media_value',
@@ -271,7 +271,7 @@ __webpack_require__.r(__webpack_exports__);
         name: 'Influencer',
         field: 'influencer',
         callback: function callback(row) {
-          return row.influencer.name ? row.influencer.name : row.influencer.username;
+          return row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username;
         }
       }, {
         name: 'Post',
@@ -287,37 +287,39 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         name: 'Size of activated communities',
         field: 'activated_communities',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Estimated impressions',
         field: 'estimated_impressions',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Engagements',
         field: 'engagements',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Organic impressions (declarative)',
         field: 'organic_impressions',
-        isNbr: true
-      }, {
-        name: 'Engagements rate (reach)',
-        field: 'engagement_rate',
-        callback: function callback(row) {
-          return row.influencer.engagement_rate && row.influencer.engagement_rate > 0 ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-        }
-      }, {
+        isNativeNbr: true
+      }, // {
+      //     name: 'Engagements rate (reach)',
+      //     field: 'engagement_rate',
+      //     callback: function (row) {
+      //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
+      //     },
+      //     isNativeNbr: true
+      // }, 
+      {
         name: 'Likes',
         field: 'likes',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Views',
         field: 'video_views',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Comments',
         field: 'comments',
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: 'Impressions (first sequence)'
       }, {
@@ -1006,14 +1008,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Influencers",
         field: "influencers",
-        "class": "avatars-list",
+        "class": "influencers-avatars-list",
         sortable: false,
         callback: function callback(row) {
           if (row.influencers.length === 0) return '-';
+          var influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
           var html = '';
-          row.influencers.map(function (item, index) {
+          influencers.map(function (item, index) {
             html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-          });
+          }); // Add more avatar
+
+          if (row.influencers.length > 3) html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
           return html;
         }
       }, {
@@ -1036,7 +1041,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Activated communities",
         field: "communities",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "Last update",
         field: "updated_at",
