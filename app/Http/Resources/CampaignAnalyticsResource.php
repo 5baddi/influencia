@@ -61,6 +61,12 @@ class CampaignAnalyticsResource extends JsonResource
                                     $item['campaign_impressions'] += $post->estimated_impressions;
                                 else
                                     $item['campaign_impressions'] = $post->estimated_impressions;
+                                    
+                                // Calculate earned media value for all media
+                                if(isset($item['earned_media_value']))
+                                    $item['earned_media_value'] += $post->earned_media_value;
+                                else
+                                    $item['earned_media_value'] = $post->earned_media_value;
                             }
 
                             return $item;

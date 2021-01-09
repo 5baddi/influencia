@@ -322,7 +322,8 @@ export default {
                 name: 'Engagements',
                 field: 'engagements',
                 isNativeNbr: true
-            }, {
+            }, 
+            {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
                 isNativeNbr: true
