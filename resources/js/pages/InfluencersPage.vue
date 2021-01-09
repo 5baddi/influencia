@@ -208,9 +208,8 @@ export default {
                     name: "Analyzed",
                     field: "posts_count",
                     callback: function (row) {
-                        return (row.posts_count / row.medias) * 100;
-                    },
-                    isPercentage: true
+                        return ((row.posts_count / row.medias) * 100) + '%';
+                    }
                 },
                 {
                     name: "Last update",
