@@ -368,12 +368,15 @@ class InstagramScraper
 
             // Start from last inserted media
             if(!is_null($nextCursor) && $nextCursor !== ''){
-                $lastPost = InfluencerPost::where('next_cursor', $nextCursor)->first();
+                $lastPost = InfluencerPost::where([
+                    'influencer_id' => $influencer->id,
+                    'next_cursor'   => $nextCursor
+                ])->first();
             }
 
             // Set the next cursor
-            $maxID = isset($lastPost) ? $lastPost->next_cursor : '';
-            if($maxID !== '')
+            $maxID = isset($lastPost, $lastPost->next_cursor) ? $lastPost->next_cursor : '';
+            if($maxID !== '' && !is_null($maxID))
                 $this->log("Start scraping from " . $maxID);
 
             // Calculate the max media by query

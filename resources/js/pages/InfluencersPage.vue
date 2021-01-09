@@ -208,7 +208,7 @@ export default {
                     name: "Analyzed",
                     field: "posts_count",
                     callback: function (row) {
-                        return ((row.posts_count / row.medias) * 100) + '%';
+                        return ((row.posts_count / row.medias) * 100).toFixed(2) + '%';
                     }
                 },
                 {
