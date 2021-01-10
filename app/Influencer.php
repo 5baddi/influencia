@@ -38,7 +38,7 @@ class Influencer extends Model
      *
      * @return string|null
      */
-    public function getParsedNameAttribue() : ?string
+    public function getParsedNameAttribute() : ?string
     {
         if(isset($this->attributes['name']))
             return preg_replace('/[[:^print:]]/', '', $this->attributes['name']); // TODO: Improve parsing name
