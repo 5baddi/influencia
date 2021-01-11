@@ -81,6 +81,7 @@ class InstagramStoriesCommand extends Command
 
                         // Scrap stories for each influencer
                         $influencers->each(function($influencer){
+                            dd($influencer);
                             // Scrap stories
                             $stories = collect($this->instagramScraper->getStories($influencer));
 
