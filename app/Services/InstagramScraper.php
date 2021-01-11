@@ -496,9 +496,9 @@ class InstagramScraper
         try{
             // Init
             $stories = [];
-            if(!isset($influencer) || !is_null($influencer->account_id))
+            if(!isset($influencer) || is_null($influencer->account_id))
                 return $stories;
-                
+
             $accountID = $influencer->account_id;
 
             $this->log("Scrap stories for account ID: {$accountID}");
