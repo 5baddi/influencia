@@ -322,7 +322,7 @@ export default {
 
                 // Total cols span
                 if(typeof value.hasTotal !== "boolean" || !value.hasTotal)
-                    this.colsSpan['total'] += 1;
+                    vm.colsSpan['total'] += 1;
 
                 columns.push(vm.columns[key]);
             });
@@ -353,43 +353,7 @@ export default {
                         val = item.callback.call(item, value);
                         
                     if (typeof val !== "undefined" && val !== null) {
-                        // Currency symbol
-                        if (typeof item.currency === "string" && item.currency !== ''){
-                            val = val.toFixed(2);
-                            val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
-                        }
-                        
-                        // Format number to K
-                        if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr))
-                            val = String(abbreviate(val)).toUpperCase();
-                        if(typeof item.isNativeNbr === "boolean" && item.isNativeNbr)
-                            val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ');
-
-                        // Percentage
-                        if(typeof item.isPercentage === "boolean" && item.isPercentage){
-                            val *= 100;
-                            val = val.toFixed(2);
-                            val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
-                        }
-
-                        // Capitalize string
-                        if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
-                            val = val.charAt(0).toUpperCase() + val.slice(1);
-
-                        // Re-format link
-                        if(typeof item.isLink === "boolean" && item.isLink){
-                            val = {
-                                condition: typeof val.condition !== "undefined" ? val.condition : true,
-                                showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
-                                content: typeof val.content !== "undefined" ? val.content : null,
-                                route: typeof val.route !== "undefined" ? val.route : null,
-                                title: typeof val.title !== "undefined" ? val.title : null,
-                            };
-                        }
-
-                        // Ignore zero or empty
-                        if (val == null || val == 0 || val == '')
-                            val = '-';
+                        val = vm.formatData(item, val);
 
                         rowData[item.field] = val;
                     }else{
@@ -407,6 +371,47 @@ export default {
         },
     },
     methods: {
+        formatData(item, val){
+            // Currency symbol
+            if (typeof item.currency === "string" && item.currency !== ''){
+                val = val.toFixed(2);
+                val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
+            }
+            
+            // Format number to K
+            if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr))
+                val = String(abbreviate(val)).toUpperCase();
+            if(typeof item.isNativeNbr === "boolean" && item.isNativeNbr)
+                val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ');
+
+            // Percentage
+            if(typeof item.isPercentage === "boolean" && item.isPercentage){
+                val *= 100;
+                val = val.toFixed(2);
+                val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
+            }
+
+            // Capitalize string
+            if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
+                val = val.charAt(0).toUpperCase() + val.slice(1);
+
+            // Re-format link
+            if(typeof item.isLink === "boolean" && item.isLink){
+                val = {
+                    condition: typeof val.condition !== "undefined" ? val.condition : true,
+                    showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
+                    content: typeof val.content !== "undefined" ? val.content : null,
+                    route: typeof val.route !== "undefined" ? val.route : null,
+                    title: typeof val.title !== "undefined" ? val.title : null,
+                };
+            }
+
+            // Ignore zero or empty
+            if (val == null || val == 0 || val == '')
+                val = '-';
+
+            return val;
+        },
         calculateColumnSum(field){
             let total = 0;
             this.parsedData.map(function(value, index){

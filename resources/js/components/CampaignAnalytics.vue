@@ -277,17 +277,20 @@ export default {
         {
             name: 'Size of activated communities',
             field: 'estimated_communities',
-            isNativeNbr: true
+            isNativeNbr: true,
+            hasTotal: true
         }, 
         {
             name: 'Estimated impressions',
             field: 'campaign_impressions',
-            isNativeNbr: true
+            isNativeNbr: true,
+            hasTotal: true
         }, 
         {
             name: 'Earned Media Value',
             field: 'earned_media_value',
-            currency: '€'
+            currency: '€',
+            hasTotal: true
         }],
         instaPostsColumns: [{
                 name: 'Influencer',

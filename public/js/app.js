@@ -6968,6 +6968,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 
@@ -7046,7 +7047,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         if (typeof vm.columns[key]["class"] !== "string") vm.columns[key]["class"] = ''; // Set ID
 
-        vm.columns[key].id = Math.random().toString(36).substr(2, 9);
+        vm.columns[key].id = Math.random().toString(36).substr(2, 9); // Total cols span
+
+        if (typeof value.hasTotal !== "boolean" || !value.hasTotal) vm.colsSpan['total'] += 1;
         columns.push(vm.columns[key]);
       });
       return columns;
@@ -7068,37 +7071,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           if (typeof item.callback === "function") val = item.callback.call(item, value);
 
           if (typeof val !== "undefined" && val !== null) {
-            // Currency symbol
-            if (typeof item.currency === "string" && item.currency !== '') {
-              val = val.toFixed(2);
-              val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
-            } // Format number to K
-
-
-            if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr)) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase();
-            if (typeof item.isNativeNbr === "boolean" && item.isNativeNbr) val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' '); // Percentage
-
-            if (typeof item.isPercentage === "boolean" && item.isPercentage) {
-              val *= 100;
-              val = val.toFixed(2);
-              val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
-            } // Capitalize string
-
-
-            if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize) val = val.charAt(0).toUpperCase() + val.slice(1); // Re-format link
-
-            if (typeof item.isLink === "boolean" && item.isLink) {
-              val = {
-                condition: typeof val.condition !== "undefined" ? val.condition : true,
-                showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
-                content: typeof val.content !== "undefined" ? val.content : null,
-                route: typeof val.route !== "undefined" ? val.route : null,
-                title: typeof val.title !== "undefined" ? val.title : null
-              };
-            } // Ignore zero or empty
-
-
-            if (val == null || val == 0 || val == '') val = '-';
+            val = vm.formatData(item, val);
             rowData[item.field] = val;
           } else {
             rowData[item.field] = "---";
@@ -7113,6 +7086,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
+    formatData: function formatData(item, val) {
+      // Currency symbol
+      if (typeof item.currency === "string" && item.currency !== '') {
+        val = val.toFixed(2);
+        val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
+      } // Format number to K
+
+
+      if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr)) val = String(number_abbreviate__WEBPACK_IMPORTED_MODULE_2___default()(val)).toUpperCase();
+      if (typeof item.isNativeNbr === "boolean" && item.isNativeNbr) val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' '); // Percentage
+
+      if (typeof item.isPercentage === "boolean" && item.isPercentage) {
+        val *= 100;
+        val = val.toFixed(2);
+        val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
+      } // Capitalize string
+
+
+      if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize) val = val.charAt(0).toUpperCase() + val.slice(1); // Re-format link
+
+      if (typeof item.isLink === "boolean" && item.isLink) {
+        val = {
+          condition: typeof val.condition !== "undefined" ? val.condition : true,
+          showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
+          content: typeof val.content !== "undefined" ? val.content : null,
+          route: typeof val.route !== "undefined" ? val.route : null,
+          title: typeof val.title !== "undefined" ? val.title : null
+        };
+      } // Ignore zero or empty
+
+
+      if (val == null || val == 0 || val == '') val = '-';
+      return val;
+    },
     calculateColumnSum: function calculateColumnSum(field) {
       var total = 0;
       this.parsedData.map(function (value, index) {
@@ -7214,7 +7221,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       sortingColumn: null,
       searchQuery: null,
       isTyping: false,
-      debounceSearchQuery: null
+      debounceSearchQuery: null,
+      colsSpan: {
+        'total': 0,
+        'median': 0,
+        'avarage': 0
+      }
     };
   },
   mounted: function mounted() {
@@ -50188,7 +50200,32 @@ var render = function() {
               ],
               2
             )
-          })
+          }),
+          _vm._v(" "),
+          _vm.withTotalTab && _vm.formatedData.length > 0 && !_vm.loading
+            ? _c(
+                "tr",
+                _vm._l(_vm.formatedColumns, function(col, idx) {
+                  return _c("td", { key: idx }, [
+                    typeof col.hasTotal === "boolean" && col.hasTotal
+                      ? _c("div", [
+                          _vm._v(_vm._s(_vm.calculateColumnSum(col.field)))
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    idx === 0 &&
+                    (typeof col.hasTotal !== "boolean" || !col.hasTotal)
+                      ? _c(
+                          "div",
+                          { attrs: { colspan: _vm.colsSpan.total || 1 } },
+                          [_vm._v("Total: ")]
+                        )
+                      : _vm._e()
+                  ])
+                }),
+                0
+              )
+            : _vm._e()
         ],
         2
       ),
