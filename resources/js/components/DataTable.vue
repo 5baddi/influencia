@@ -44,11 +44,12 @@
                 </td>
                 <slot name="body-row" :data="obj"></slot>
             </tr>
-            <!-- <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+            <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
                 <td v-for="(col, idx) in formatedColumns" :key="idx">
                     <div v-if="typeof col.hasTotal === 'boolean' && col.hasTotal">{{ calculateColumnSum(col.field) }}</div>
+                    <div v-if="idx === 0 && (typeof col.hasTotal !== 'boolean' || !col.hasTotal)" :colspan="colsSpan.total || 1">Total: </div>
                 </td>
-            </tr> -->
+            </tr>
         </tbody>
         <tfoot v-if="data.length > 0 && !loading">
             <tr>
@@ -319,6 +320,10 @@ export default {
                 // Set ID
                 vm.columns[key].id = Math.random().toString(36).substr(2, 9);
 
+                // Total cols span
+                if(typeof value.hasTotal !== "boolean" || !value.hasTotal)
+                    this.colsSpan['total'] += 1;
+
                 columns.push(vm.columns[key]);
             });
 
@@ -527,7 +532,12 @@ export default {
             sortingColumn: null,
             searchQuery: null,
             isTyping: false,
-            debounceSearchQuery: null
+            debounceSearchQuery: null,
+            colsSpan: {
+                'total': 0,
+                'median': 0,
+                'avarage': 0
+            }
         }
     },
     mounted(){        
