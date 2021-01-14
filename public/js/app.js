@@ -7133,7 +7133,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } // Rounded number 
 
 
-      if (typeof item.isRounded === "boolean" && item.isRounded) val = Math.round(val); // Ignore zero or empty
+      if (typeof item.isRounded === "boolean" && item.isRounded && typeof val === "number") val = Math.round(val); // Ignore zero or empty
 
       if (val == null || val == 0 || val == '') val = '-';
       return val;

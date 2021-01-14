@@ -427,7 +427,7 @@ export default {
             }
 
             // Rounded number 
-            if(typeof item.isRounded === "boolean" && item.isRounded)
+            if(typeof item.isRounded === "boolean" && item.isRounded && typeof val === "number")
                 val = Math.round(val);
 
             // Ignore zero or empty
