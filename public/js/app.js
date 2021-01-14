@@ -50213,9 +50213,16 @@ var render = function() {
                 _vm._l(_vm.formatedColumns, function(col, idx) {
                   return _c("td", { key: idx }, [
                     typeof col.hasTotal === "boolean" && col.hasTotal
-                      ? _c("div", [
-                          _vm._v(_vm._s(_vm.calculateColumnSum(col.field)))
-                        ])
+                      ? _c("div", {
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.formatData(
+                                col,
+                                _vm.calculateColumnSum(col.field)
+                              )
+                            )
+                          }
+                        })
                       : _vm._e(),
                     _vm._v(" "),
                     idx === 0 &&
