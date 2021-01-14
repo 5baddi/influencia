@@ -6969,6 +6969,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -7049,7 +7061,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         vm.columns[key].id = Math.random().toString(36).substr(2, 9); // Total cols span
 
-        if (typeof value.hasTotal !== "boolean" || !value.hasTotal) vm.colsSpan['total'] += 1;
+        if (typeof value.hasTotal !== "boolean" || !value.hasTotal) vm.colsSpan['total'] += 1; // Average cols span
+
+        if (typeof value.hasAverage !== "boolean" || !value.hasAverage) vm.colsSpan['average'] += 1; // Median cols span
+
+        if (typeof value.hasMedian !== "boolean" || !value.hasMedian) vm.colsSpan['median'] += 1;
         columns.push(vm.columns[key]);
       });
       return columns;
@@ -7126,11 +7142,43 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       try {
         this.parsedData.map(function (value, index) {
           var formatedValue = value[field].replace(/[^\d\.]*/g, '');
-          if (typeof value[field] !== "undefined") total += new Number(formatedValue) || 0;
+          total += Number(formatedValue) || 0;
         });
       } catch (e) {}
 
       return total;
+    },
+    calculateColumnAverage: function calculateColumnAverage(field) {
+      var values = [];
+
+      try {
+        this.parsedData.map(function (value, index) {
+          var formatedValue = value[field].replace(/[^\d\.]*/g, '');
+          values.push(Number(formatedValue) || 0);
+        });
+      } catch (e) {}
+
+      return values.reduce(function (a, b) {
+        return a + b;
+      }, 0) / values.length || 1;
+    },
+    calculateColumnMedian: function calculateColumnMedian(field) {
+      var values = [];
+
+      try {
+        this.parsedData.map(function (value, index) {
+          var formatedValue = value[field].replace(/[^\d\.]*/g, '');
+          values.push(Number(formatedValue) || 0);
+        });
+      } catch (e) {}
+
+      if (values.length === 0) return 0;
+      values.sort(function (a, b) {
+        return a - b;
+      });
+      var half = Math.floor(values.length / 2);
+      if (values.length % 2) return values[half];
+      return (values[half - 1] + values[half]) / 2.0;
     },
     getColumnsCount: function getColumnsCount() {
       return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
@@ -50236,6 +50284,80 @@ var render = function() {
                             }
                           },
                           [_vm._v("Total: ")]
+                        )
+                      : _vm._e()
+                  ])
+                }),
+                0
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.withTotalTab && _vm.formatedData.length > 0 && !_vm.loading
+            ? _c(
+                "tr",
+                _vm._l(_vm.formatedColumns, function(col, idx) {
+                  return _c("td", { key: idx }, [
+                    typeof col.hasMedian === "boolean" && col.hasMedian
+                      ? _c("div", {
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.formatData(
+                                col,
+                                _vm.calculateColumnMedian(col.field)
+                              )
+                            )
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    idx === 0 &&
+                    (typeof col.hasMedian !== "boolean" || !col.hasMedian)
+                      ? _c(
+                          "div",
+                          {
+                            attrs: {
+                              align: "right",
+                              colspan: _vm.colsSpan.median || 1
+                            }
+                          },
+                          [_vm._v("Median: ")]
+                        )
+                      : _vm._e()
+                  ])
+                }),
+                0
+              )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.withTotalTab && _vm.formatedData.length > 0 && !_vm.loading
+            ? _c(
+                "tr",
+                _vm._l(_vm.formatedColumns, function(col, idx) {
+                  return _c("td", { key: idx }, [
+                    typeof col.hasAverage === "boolean" && col.hasAverage
+                      ? _c("div", {
+                          domProps: {
+                            innerHTML: _vm._s(
+                              _vm.formatData(
+                                col,
+                                _vm.calculateColumnAverage(col.field)
+                              )
+                            )
+                          }
+                        })
+                      : _vm._e(),
+                    _vm._v(" "),
+                    idx === 0 &&
+                    (typeof col.hasAverage !== "boolean" || !col.hasAverage)
+                      ? _c(
+                          "div",
+                          {
+                            attrs: {
+                              align: "right",
+                              colspan: _vm.colsSpan.average || 1
+                            }
+                          },
+                          [_vm._v("Average: ")]
                         )
                       : _vm._e()
                   ])

@@ -50,6 +50,18 @@
                     <div v-if="idx === 0 && (typeof col.hasTotal !== 'boolean' || !col.hasTotal)" align="right" :colspan="colsSpan.total || 1">Total: </div>
                 </td>
             </tr>
+            <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof col.hasMedian === 'boolean' && col.hasMedian" v-html="formatData(col, calculateColumnMedian(col.field))"></div>
+                    <div v-if="idx === 0 && (typeof col.hasMedian !== 'boolean' || !col.hasMedian)" align="right" :colspan="colsSpan.median || 1">Median: </div>
+                </td>
+            </tr>
+            <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof col.hasAverage === 'boolean' && col.hasAverage" v-html="formatData(col, calculateColumnAverage(col.field))"></div>
+                    <div v-if="idx === 0 && (typeof col.hasAverage !== 'boolean' || !col.hasAverage)" align="right" :colspan="colsSpan.average || 1">Average: </div>
+                </td>
+            </tr>
         </tbody>
         <tfoot v-if="data.length > 0 && !loading">
             <tr>
@@ -323,6 +335,14 @@ export default {
                 // Total cols span
                 if(typeof value.hasTotal !== "boolean" || !value.hasTotal)
                     vm.colsSpan['total'] += 1;
+                    
+                // Average cols span
+                if(typeof value.hasAverage !== "boolean" || !value.hasAverage)
+                    vm.colsSpan['average'] += 1;
+                    
+                // Median cols span
+                if(typeof value.hasMedian !== "boolean" || !value.hasMedian)
+                    vm.colsSpan['median'] += 1;
 
                 columns.push(vm.columns[key]);
             });
@@ -417,13 +437,46 @@ export default {
             try{
                 this.parsedData.map(function(value, index){
                     let formatedValue = value[field].replace( /[^\d\.]*/g, '');
-                    
-                    if(typeof value[field] !== "undefined")
-                        total += new Number(formatedValue) || 0;
+                    total += Number(formatedValue) || 0;
                 });
             }catch(e){}
 
             return total;
+        },
+        calculateColumnAverage(field){
+            let values = [];
+            
+            try{
+                this.parsedData.map(function(value, index){
+                    let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                    values.push(Number(formatedValue) || 0);
+                });
+            }catch(e){}
+
+            return values.reduce((a, b) => a + b, 0) / values.length || 1;
+        },
+        calculateColumnMedian(field){
+            let values = [];
+            
+            try{
+                this.parsedData.map(function(value, index){
+                    let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                    values.push(Number(formatedValue) || 0);
+                });
+            }catch(e){}
+
+            if(values.length ===0) return 0;
+
+            values.sort(function(a,b){
+                return a - b;
+            });
+
+            var half = Math.floor(values.length / 2);
+
+            if (values.length % 2)
+                return values[half];
+
+            return (values[half - 1] + values[half]) / 2.0;
         },
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
