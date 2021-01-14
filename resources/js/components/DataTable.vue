@@ -392,6 +392,10 @@ export default {
     },
     methods: {
         formatData(item, val){
+            // Rounded number 
+            if(typeof item.isRounded === "boolean" && item.isRounded)
+                val = Math.round(val);
+                
             // Currency symbol
             if (typeof item.currency === "string" && item.currency !== ''){
                 val = val.toFixed(2);
@@ -425,10 +429,6 @@ export default {
                     title: typeof val.title !== "undefined" ? val.title : null,
                 };
             }
-
-            // Rounded number 
-            if(typeof item.isRounded === "boolean" && item.isRounded && typeof val === "number")
-                val = Math.round(val);
 
             // Ignore zero or empty
             if (val == null || val == 0 || val == '')

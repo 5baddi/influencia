@@ -7103,7 +7103,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }),
   methods: {
     formatData: function formatData(item, val) {
-      // Currency symbol
+      // Rounded number 
+      if (typeof item.isRounded === "boolean" && item.isRounded) val = Math.round(val); // Currency symbol
+
       if (typeof item.currency === "string" && item.currency !== '') {
         val = val.toFixed(2);
         val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
@@ -7130,10 +7132,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           route: typeof val.route !== "undefined" ? val.route : null,
           title: typeof val.title !== "undefined" ? val.title : null
         };
-      } // Rounded number 
+      } // Ignore zero or empty
 
-
-      if (typeof item.isRounded === "boolean" && item.isRounded && typeof val === "number") val = Math.round(val); // Ignore zero or empty
 
       if (val == null || val == 0 || val == '') val = '-';
       return val;
