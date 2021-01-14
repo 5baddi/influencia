@@ -414,10 +414,14 @@ export default {
         },
         calculateColumnSum(field){
             let total = 0;
-            this.parsedData.map(function(value, index){
-                if(typeof value[field] !== "undefined")
-                    total += new Number(value[field]) || 0;
-            });
+            try{
+                this.parsedData.map(function(value, index){
+                    let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                    
+                    if(typeof value[field] !== "undefined")
+                        total += new Number(formatedValue) || 0;
+                });
+            }catch(e){}
 
             return total;
         },

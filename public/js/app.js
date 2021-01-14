@@ -7122,9 +7122,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     calculateColumnSum: function calculateColumnSum(field) {
       var total = 0;
-      this.parsedData.map(function (value, index) {
-        if (typeof value[field] !== "undefined") total += new Number(value[field]) || 0;
-      });
+
+      try {
+        this.parsedData.map(function (value, index) {
+          var formatedValue = value[field].replace(/[^\d\.]*/g, '');
+          if (typeof value[field] !== "undefined") total += new Number(formatedValue) || 0;
+        });
+      } catch (e) {}
+
       return total;
     },
     getColumnsCount: function getColumnsCount() {
