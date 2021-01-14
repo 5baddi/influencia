@@ -426,6 +426,10 @@ export default {
                 };
             }
 
+            // Rounded number 
+            if(typeof item.isRounded === "boolean" && item.isRounded)
+                val = Math.round(val);
+
             // Ignore zero or empty
             if (val == null || val == 0 || val == '')
                 val = '-';

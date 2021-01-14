@@ -278,6 +278,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: 'Number of posts',
         field: 'campaign_media',
         isNbr: true,
+        isRounded: true,
         hasTotal: true,
         hasAverage: true,
         hasMedian: true
@@ -285,6 +286,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: 'Size of activated communities',
         field: 'estimated_communities',
         isNativeNbr: true,
+        isRounded: true,
         hasTotal: true,
         hasAverage: true,
         hasMedian: true
@@ -292,6 +294,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         name: 'Estimated impressions',
         field: 'campaign_impressions',
         isNativeNbr: true,
+        isRounded: true,
         hasTotal: true,
         hasAverage: true,
         hasMedian: true

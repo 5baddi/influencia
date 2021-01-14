@@ -272,6 +272,7 @@ export default {
             name: 'Number of posts',
             field: 'campaign_media',
             isNbr: true,
+            isRounded: true,
             hasTotal: true,
             hasAverage: true,
             hasMedian: true
@@ -280,6 +281,7 @@ export default {
             name: 'Size of activated communities',
             field: 'estimated_communities',
             isNativeNbr: true,
+            isRounded: true,
             hasTotal: true,
             hasAverage: true,
             hasMedian: true
@@ -288,6 +290,7 @@ export default {
             name: 'Estimated impressions',
             field: 'campaign_impressions',
             isNativeNbr: true,
+            isRounded: true,
             hasTotal: true,
             hasAverage: true,
             hasMedian: true

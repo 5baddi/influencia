@@ -7130,8 +7130,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           route: typeof val.route !== "undefined" ? val.route : null,
           title: typeof val.title !== "undefined" ? val.title : null
         };
-      } // Ignore zero or empty
+      } // Rounded number 
 
+
+      if (typeof item.isRounded === "boolean" && item.isRounded) val = Math.round(val); // Ignore zero or empty
 
       if (val == null || val == 0 || val == '') val = '-';
       return val;
