@@ -47,7 +47,7 @@
             <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
                 <td v-for="(col, idx) in formatedColumns" :key="idx">
                     <div v-if="typeof col.hasTotal === 'boolean' && col.hasTotal">{{ calculateColumnSum(col.field) }}</div>
-                    <div v-if="idx === 0 && (typeof col.hasTotal !== 'boolean' || !col.hasTotal)" :colspan="colsSpan.total || 1">Total: </div>
+                    <div v-if="idx === 0 && (typeof col.hasTotal !== 'boolean' || !col.hasTotal)" align="right" :colspan="colsSpan.total || 1">Total: </div>
                 </td>
             </tr>
         </tbody>

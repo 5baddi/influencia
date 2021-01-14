@@ -50217,7 +50217,12 @@ var render = function() {
                     (typeof col.hasTotal !== "boolean" || !col.hasTotal)
                       ? _c(
                           "div",
-                          { attrs: { colspan: _vm.colsSpan.total || 1 } },
+                          {
+                            attrs: {
+                              align: "right",
+                              colspan: _vm.colsSpan.total || 1
+                            }
+                          },
                           [_vm._v("Total: ")]
                         )
                       : _vm._e()
