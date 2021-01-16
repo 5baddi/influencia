@@ -24,7 +24,7 @@
                   </div>
                   <div class="radio-group__item" :class="{active: type === 'story'}">
                      <label for="story">
-                        <input type="radio" id="story" value="story" v-model="type" :disabled="true" />
+                        <input type="radio" id="story" value="story" v-model="type"/>
                         <span>Interactions for an Instagram or Snapchat story</span>
                         <p>Specify the metrics for a story and its content in order to include it in the aggregated statistics.</p>
                      </label>

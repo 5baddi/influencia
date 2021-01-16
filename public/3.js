@@ -1735,12 +1735,7 @@ var render = function() {
                             expression: "type"
                           }
                         ],
-                        attrs: {
-                          type: "radio",
-                          id: "story",
-                          value: "story",
-                          disabled: true
-                        },
+                        attrs: { type: "radio", id: "story", value: "story" },
                         domProps: { checked: _vm._q(_vm.type, "story") },
                         on: {
                           change: function($event) {
