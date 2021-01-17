@@ -326,19 +326,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: 'Size of activated communities',
         field: 'activated_communities',
-        isNativeNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Estimated impressions',
         field: 'estimated_impressions',
-        isNbisNativeNbrr: true
+        isNbisNativeNbrr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Engagements',
         field: 'engagements',
-        isNativeNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Organic impressions (declarative)',
         field: 'organic_impressions',
-        isNativeNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, //  {
       //     name: 'Engagements rate (reach)',
       //     field: 'engagement_rate',
@@ -349,21 +365,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       {
         name: 'Likes',
         field: 'likes',
-        isNativeNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Views',
         field: 'video_views',
-        isNativeNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Comments',
         field: 'comments',
-        isNativeNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Impressions (first sequence)'
       }, {
         name: 'Story sequences'
       }, {
         name: 'Sequence impressions'
+      }, {
+        name: 'Earned Media Value',
+        field: 'earned_media_value',
+        currency: '€',
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Tags',
         field: 'tags',
@@ -381,10 +416,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: 'Posted at',
         field: 'published_at'
-      }, {
-        name: 'Earned Media Value',
-        field: 'earned_media_value',
-        currency: '€'
       }],
       trackersColumns: [{
         name: "name",
@@ -1395,7 +1426,9 @@ var render = function() {
               attrs: {
                 cssClasses: "table-card",
                 columns: _vm.instaPostsColumns,
-                nativeData: _vm.campaign.instagram_media
+                nativeData: _vm.campaign.instagram_media,
+                withPagination: false,
+                withTotalTab: true
               }
             })
           ],

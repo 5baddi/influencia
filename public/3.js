@@ -507,27 +507,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -559,18 +538,13 @@ __webpack_require__.r(__webpack_exports__);
       story: null,
       url: '',
       urls: [],
-      n_squences: null,
-      n_squences_impressions: null,
-      n_impressions_first_sequence: null,
-      reach_first_sequence: null,
-      sticker_taps_mentions: null,
-      sticker_taps_hashtags: null,
-      link_clicks: null,
-      n_replies: null,
-      n_taps_forward: null,
-      n_taps_backward: null,
-      time_story: null,
-      date_story: null
+      reach: null,
+      impressions: null,
+      interactions: null,
+      back: null,
+      forward: null,
+      next_story: null,
+      exited: null
     };
   },
   created: function created() {
@@ -593,18 +567,13 @@ __webpack_require__.r(__webpack_exports__);
       this.story = null;
       this.url = '';
       this.urls = [];
-      this.n_squences = null;
-      this.n_squences_impressions = null;
-      this.n_impressions_first_sequence = null;
-      this.reach_first_sequence = null;
-      this.sticker_taps_mentions = null;
-      this.sticker_taps_hashtags = null;
-      this.link_clicks = null;
-      this.n_replies = null;
-      this.n_taps_forward = null;
-      this.n_taps_backward = null;
-      this.time_story = null;
-      this.date_story = null;
+      this.reach = null;
+      this.impressions = null;
+      this.interactions = null;
+      this.back = null;
+      this.forward = null;
+      this.next_story = null;
+      this.exited = null;
     },
     dismiss: function dismiss() {
       this.$emit("dismiss");
@@ -652,18 +621,13 @@ __webpack_require__.r(__webpack_exports__);
         // STORY data
         _data.username = this.username;
         _data.story = this.story;
-        _data.n_squences = this.n_squences;
-        _data.n_squences_impressions = this.n_squences_impressions;
-        _data.n_impressions_first_sequence = this.n_impressions_first_sequence;
-        _data.reach_first_sequence = this.reach_first_sequence;
-        _data.sticker_taps_mentions = this.sticker_taps_mentions;
-        _data.sticker_taps_hashtags = this.sticker_taps_hashtags;
-        _data.link_clicks = this.link_clicks;
-        _data.n_replies = this.n_replies;
-        _data.n_taps_forward = this.n_taps_forward;
-        _data.n_taps_backward = this.n_taps_backward;
-        _data.time_story = this.time_story;
-        _data.date_story = this.date_story;
+        _data.reach = this.reach;
+        _data.impressions = this.impressions;
+        _data.interactions = this.interactions;
+        _data.back = this.back;
+        _data.forward = this.forward;
+        _data.next_story = this.next_story;
+        _data.exited = this.exited;
       }
 
       this.$emit("create", {
@@ -1644,43 +1608,6 @@ var render = function() {
                   "div",
                   {
                     staticClass: "radio-group__item",
-                    class: { active: _vm.type === "url" }
-                  },
-                  [
-                    _c("label", { attrs: { for: "url" } }, [
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.type,
-                            expression: "type"
-                          }
-                        ],
-                        attrs: { type: "radio", id: "url", value: "url" },
-                        domProps: { checked: _vm._q(_vm.type, "url") },
-                        on: {
-                          change: function($event) {
-                            _vm.type = "url"
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("span", [_vm._v("Visits to a URL")]),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "Track the number of visits and the location of the users that clicked on a link. There is absolutely no code to add to the destination URL to allow tracking, so you can track any URL, even if it's not your site."
-                        )
-                      ])
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  {
-                    staticClass: "radio-group__item",
                     class: { active: _vm.type === "post" }
                   },
                   [
@@ -2018,38 +1945,6 @@ var render = function() {
                           _vm._v(" "),
                           _vm._m(1)
                         ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "label",
-                        {
-                          staticClass: "youtube-radio",
-                          attrs: { for: "youtube" }
-                        },
-                        [
-                          _c("input", {
-                            directives: [
-                              {
-                                name: "model",
-                                rawName: "v-model",
-                                value: _vm.platform,
-                                expression: "platform"
-                              }
-                            ],
-                            attrs: { type: "radio", value: "youtube" },
-                            domProps: {
-                              checked: _vm.platform === "youtube",
-                              checked: _vm._q(_vm.platform, "youtube")
-                            },
-                            on: {
-                              change: function($event) {
-                                _vm.platform = "youtube"
-                              }
-                            }
-                          }),
-                          _vm._v(" "),
-                          _vm._m(2)
-                        ]
                       )
                     ])
                   ]
@@ -2073,7 +1968,7 @@ var render = function() {
                       "div",
                       { staticClass: "control" },
                       [
-                        _c("label", [_vm._v("Story sequences")]),
+                        _c("label", [_vm._v("Story sequence")]),
                         _vm._v(" "),
                         _c("FileInput", {
                           attrs: {
@@ -2083,7 +1978,7 @@ var render = function() {
                               "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
                             isList: true,
                             icon: "fas fa-plus",
-                            multiple: true
+                            multiple: false
                           },
                           on: { custom: _vm.handleStoryUpload }
                         }),
@@ -2133,347 +2028,207 @@ var render = function() {
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Number of sequences")]),
+                      _c("label", [_vm._v("Reach")]),
                       _vm._v(" "),
                       _c("input", {
                         directives: [
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.n_squences,
-                            expression: "n_squences"
+                            value: _vm.reach,
+                            expression: "reach"
                           }
                         ],
-                        attrs: { type: "text", placeholder: "https://" },
-                        domProps: { value: _vm.n_squences },
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.reach },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.n_squences = $event.target.value
+                            _vm.reach = $event.target.value
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Accounts reached with this story.")])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "control" }, [
+                      _c("label", [_vm._v("Impressions")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.impressions,
+                            expression: "impressions"
+                          }
+                        ],
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.impressions },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.impressions = $event.target.value
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Number of impressions.")])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "control" }, [
+                      _c("label", [_vm._v("Interactions")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.interactions,
+                            expression: "interactions"
+                          }
+                        ],
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.interactions },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.interactions = $event.target.value
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Actions taken from this story.")])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "control" }, [
+                      _c("label", [_vm._v("Back")]),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.back,
+                            expression: "back"
+                          }
+                        ],
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.back },
+                        on: {
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.back = $event.target.value
                           }
                         }
                       }),
                       _vm._v(" "),
                       _c("p", [
                         _vm._v(
-                          "If you leave this field empty, we'll display the number of files uploaded above as the number of sequences."
+                          "Number of taps users made to see the previous photo or video in this story."
                         )
                       ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "control" }, [
-                      _c("label", [
-                        _vm._v("Total number of sequence impressions")
-                      ]),
+                      _c("label", [_vm._v("Forward")]),
                       _vm._v(" "),
                       _c("input", {
                         directives: [
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.n_squences_impressions,
-                            expression: "n_squences_impressions"
+                            value: _vm.forward,
+                            expression: "forward"
                           }
                         ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.n_squences_impressions },
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.forward },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.n_squences_impressions = $event.target.value
+                            _vm.forward = $event.target.value
                           }
                         }
                       }),
                       _vm._v(" "),
                       _c("p", [
                         _vm._v(
-                          "Sum of impressions for all sequences. This metric will be called Sequence impressions on campaign dashboards."
+                          "Number of taps users made to see the next photo or video in this story."
                         )
                       ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "control" }, [
-                      _c("label", [
-                        _vm._v("Number of impressions of the first sequence")
-                      ]),
+                      _c("label", [_vm._v("Next story")]),
                       _vm._v(" "),
                       _c("input", {
                         directives: [
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.n_impressions_first_sequence,
-                            expression: "n_impressions_first_sequence"
+                            value: _vm.next_story,
+                            expression: "next_story"
                           }
                         ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.n_impressions_first_sequence },
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.next_story },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.n_impressions_first_sequence =
-                              $event.target.value
+                            _vm.next_story = $event.target.value
                           }
                         }
                       }),
                       _vm._v(" "),
                       _c("p", [
                         _vm._v(
-                          "Sum of impressions for all sequences. This metric will be called Sequence impressions on campaign dashboards."
+                          "Number of taps users made to see the next account's story."
                         )
                       ])
                     ]),
                     _vm._v(" "),
                     _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Reach of the first sequence")]),
+                      _c("label", [_vm._v("Exited")]),
                       _vm._v(" "),
                       _c("input", {
                         directives: [
                           {
                             name: "model",
                             rawName: "v-model",
-                            value: _vm.reach_first_sequence,
-                            expression: "reach_first_sequence"
+                            value: _vm.exited,
+                            expression: "exited"
                           }
                         ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.reach_first_sequence },
+                        attrs: { type: "number" },
+                        domProps: { value: _vm.exited },
                         on: {
                           input: function($event) {
                             if ($event.target.composing) {
                               return
                             }
-                            _vm.reach_first_sequence = $event.target.value
+                            _vm.exited = $event.target.value
                           }
                         }
                       }),
                       _vm._v(" "),
                       _c("p", [
                         _vm._v(
-                          "This metric is needed to calculate the Completion rate. This metric will be called Reach (last sequence) on campaign dashboards."
+                          "Number of times a user swiped away from this story."
                         )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Sticker taps (mentions)")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.sticker_taps_mentions,
-                            expression: "sticker_taps_mentions"
-                          }
-                        ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.sticker_taps_mentions },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.sticker_taps_mentions = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v("This metric will be included in Engagements")
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Sticker taps (hashtags)")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.sticker_taps_hashtags,
-                            expression: "sticker_taps_hashtags"
-                          }
-                        ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.sticker_taps_hashtags },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.sticker_taps_hashtags = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v("This metric will be included in Engagements")
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Link clicks")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.link_clicks,
-                            expression: "link_clicks"
-                          }
-                        ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.link_clicks },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.link_clicks = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "Do not complete this field if clicks come from a visit tracker (p.dm). This metric will be included in Engagements"
-                        )
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Number of replies")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.n_replies,
-                            expression: "n_replies"
-                          }
-                        ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.n_replies },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.n_replies = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Number of taps forward")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.n_taps_forward,
-                            expression: "n_taps_forward"
-                          }
-                        ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.n_taps_forward },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.n_taps_forward = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Number of taps back")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
-                            value: _vm.n_taps_backward,
-                            expression: "n_taps_backward"
-                          }
-                        ],
-                        attrs: { type: "text" },
-                        domProps: { value: _vm.n_taps_backward },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.n_taps_backward = $event.target.value
-                          }
-                        }
-                      })
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Date story posted:")]),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "group" }, [
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.date_story,
-                              expression: "date_story"
-                            }
-                          ],
-                          attrs: { type: "text", placeholder: "dd/mm/yyyy" },
-                          domProps: { value: _vm.date_story },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.date_story = $event.target.value
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("span", [_vm._v("at")]),
-                        _vm._v(" "),
-                        _c("input", {
-                          directives: [
-                            {
-                              name: "model",
-                              rawName: "v-model",
-                              value: _vm.time_story,
-                              expression: "time_story"
-                            }
-                          ],
-                          attrs: { type: "text", placeholder: "17" },
-                          domProps: { value: _vm.time_story },
-                          on: {
-                            input: function($event) {
-                              if ($event.target.composing) {
-                                return
-                              }
-                              _vm.time_story = $event.target.value
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _c("span", [_vm._v("hrs")])
                       ])
                     ])
                   ]
@@ -2523,15 +2278,6 @@ var staticRenderFns = [
     return _c("span", [
       _c("i", { staticClass: "fab fa-instagram" }),
       _vm._v(" Instagram")
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", [
-      _c("i", { staticClass: "fab fa-youtube" }),
-      _vm._v(" YouTube")
     ])
   }
 ]

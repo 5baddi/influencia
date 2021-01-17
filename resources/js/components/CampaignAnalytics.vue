@@ -100,7 +100,7 @@
 
     <div class="datatable-scroll" id="byinfluencers">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable cssClasses="table-card" ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_media" />
+        <DataTable cssClasses="table-card" ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_media" :withPagination="false" :withTotalTab="true"/>
     </div>
 
     <div class="datatable-scroll">
@@ -326,21 +326,37 @@ export default {
             {
                 name: 'Size of activated communities',
                 field: 'activated_communities',
-                isNativeNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
-                isNbisNativeNbrr: true
+                isNbisNativeNbrr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             },
             {
                 name: 'Engagements',
                 field: 'engagements',
-                isNativeNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, 
             {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
-                isNativeNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             },
             //  {
             //     name: 'Engagements rate (reach)',
@@ -352,21 +368,41 @@ export default {
              {
                 name: 'Likes',
                 field: 'likes',
-                isNativeNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Views',
                 field: 'video_views',
-                isNativeNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Comments',
                 field: 'comments',
-                isNativeNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Impressions (first sequence)'
             }, {
                 name: 'Story sequences'
             }, {
                 name: 'Sequence impressions'
+            },
+            {
+                name: 'Earned Media Value',
+                field: 'earned_media_value',
+                currency: '€',
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             },
             {
                 name: 'Tags',
@@ -387,10 +423,6 @@ export default {
             ,{
                 name: 'Posted at',
                 field: 'published_at'
-            }, {
-                name: 'Earned Media Value',
-                field: 'earned_media_value',
-                currency: '€'
             }
         ],
         trackersColumns: [
