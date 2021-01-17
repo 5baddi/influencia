@@ -23,6 +23,7 @@ import VueTimeago from 'vue-timeago';
 import './services/filters';
 import SecureLS from "secure-ls";
 import VueNumeric from 'vue-numeric';
+import { Datetime } from 'vue-datetime';
 
 Vue.prototype.$http = api;
 
@@ -37,6 +38,7 @@ Vue.use(VueTimeago, {
 Vue.component('DataTable', DataTable);
 Vue.component('ConfirmationModal', ConfirmationModal);
 Vue.component('VueNumeric', VueNumeric);
+Vue.component('datetime', Datetime);
 
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css';

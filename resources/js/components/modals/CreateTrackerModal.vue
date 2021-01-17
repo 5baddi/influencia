@@ -78,7 +78,7 @@
                   <div class="form-url" v-show="type === 'story'">
                      <div class="control">
                         <label>Story sequence</label>
-                        <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Add new Trackers'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                        <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Upload story sequence'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
                         <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
                      </div>
                      <div class="control">

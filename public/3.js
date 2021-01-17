@@ -1973,7 +1973,7 @@ var render = function() {
                         _c("FileInput", {
                           attrs: {
                             id: "storyfile",
-                            label: "Add new Trackers",
+                            label: "Upload story sequence",
                             accept:
                               "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
                             isList: true,
