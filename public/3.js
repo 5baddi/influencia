@@ -507,6 +507,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -544,7 +549,8 @@ __webpack_require__.r(__webpack_exports__);
       back: null,
       forward: null,
       next_story: null,
-      exited: null
+      exited: null,
+      published_at: null
     };
   },
   created: function created() {
@@ -574,6 +580,7 @@ __webpack_require__.r(__webpack_exports__);
       this.forward = null;
       this.next_story = null;
       this.exited = null;
+      this.published_at = null;
     },
     dismiss: function dismiss() {
       this.$emit("dismiss");
@@ -628,6 +635,7 @@ __webpack_require__.r(__webpack_exports__);
         _data.forward = this.forward;
         _data.next_story = this.next_story;
         _data.exited = this.exited;
+        _data.published_at = this.published_at;
       }
 
       this.$emit("create", {
@@ -2186,6 +2194,31 @@ var render = function() {
                             "Number of times a user swiped away from this story."
                           )
                         ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Published at")]),
+                        _vm._v(" "),
+                        _c("datetime", {
+                          attrs: {
+                            type: "datetime",
+                            title: "Story publiction datetime"
+                          },
+                          model: {
+                            value: _vm.published_at,
+                            callback: function($$v) {
+                              _vm.published_at = $$v
+                            },
+                            expression: "published_at"
+                          }
+                        }),
+                        _vm._v(" "),
+                        _c("p", [_vm._v("Story publiction datetime.")])
                       ],
                       1
                     )

@@ -121,6 +121,11 @@
                         <vue-numeric v-model="exited"></vue-numeric>
                         <p>Number of times a user swiped away from this story.</p>
                      </div>
+                     <div class="control">
+                        <label>Published at</label>
+                        <datetime v-model="published_at" type="datetime" title="Story publiction datetime"></datetime>
+                        <p>Story publiction datetime.</p>
+                     </div>
                   </div>
                </div>
 
@@ -173,6 +178,7 @@ export default {
             forward: null,
             next_story: null,
             exited: null,
+            published_at: null,
          };
    },
    created() {
@@ -200,6 +206,7 @@ export default {
          this.forward = null;
          this.next_story = null;
          this.exited = null;
+         this.published_at = null;
       },
       dismiss() {
          this.$emit("dismiss");
@@ -268,6 +275,7 @@ export default {
             _data.forward = this.forward;
             _data.next_story = this.next_story;
             _data.exited = this.exited;
+            _data.published_at = this.published_at;
          }
 
          this.$emit("create", {
