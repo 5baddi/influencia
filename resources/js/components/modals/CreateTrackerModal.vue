@@ -88,37 +88,37 @@
                      </div>
                      <div class="control">
                         <label>Reach</label>
-                        <input v-model="reach" type="number" />
+                        <vue-numeric v-model="reach"></vue-numeric>
                         <p>Accounts reached with this story.</p>
                      </div>
                      <div class="control">
                         <label>Impressions</label>
-                        <input v-model="impressions" type="number" />
+                        <vue-numeric v-model="impressions"></vue-numeric>
                         <p>Number of impressions.</p>
                      </div>
                      <div class="control">
                         <label>Interactions</label>
-                        <input v-model="interactions" type="number" />
+                        <vue-numeric v-model="interactions"></vue-numeric>
                         <p>Actions taken from this story.</p>
                      </div>
                      <div class="control">
                         <label>Back</label>
-                        <input v-model="back" type="number" />
+                        <vue-numeric v-model="back"></vue-numeric>
                         <p>Number of taps users made to see the previous photo or video in this story.</p>
                      </div>
                      <div class="control">
                         <label>Forward</label>
-                        <input v-model="forward" type="number" />
+                        <vue-numeric v-model="forward"></vue-numeric>
                         <p>Number of taps users made to see the next photo or video in this story.</p>
                      </div>
                      <div class="control">
                         <label>Next story</label>
-                        <input v-model="next_story" type="number" />
+                        <vue-numeric v-model="next_story"></vue-numeric>
                         <p>Number of taps users made to see the next account's story.</p>
                      </div>
                      <div class="control">
                         <label>Exited</label>
-                        <input v-model="exited" type="number" />
+                        <vue-numeric v-model="exited"></vue-numeric>
                         <p>Number of times a user swiped away from this story.</p>
                      </div>
                   </div>

@@ -2027,210 +2027,168 @@ var render = function() {
                       _c("p", [_vm._v("Influencer username")])
                     ]),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Reach")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Reach")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.reach,
+                            callback: function($$v) {
+                              _vm.reach = $$v
+                            },
                             expression: "reach"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.reach },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.reach = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [_vm._v("Accounts reached with this story.")])
-                    ]),
+                        }),
+                        _vm._v(" "),
+                        _c("p", [_vm._v("Accounts reached with this story.")])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Impressions")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Impressions")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.impressions,
+                            callback: function($$v) {
+                              _vm.impressions = $$v
+                            },
                             expression: "impressions"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.impressions },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.impressions = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [_vm._v("Number of impressions.")])
-                    ]),
+                        }),
+                        _vm._v(" "),
+                        _c("p", [_vm._v("Number of impressions.")])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Interactions")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Interactions")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.interactions,
+                            callback: function($$v) {
+                              _vm.interactions = $$v
+                            },
                             expression: "interactions"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.interactions },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.interactions = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [_vm._v("Actions taken from this story.")])
-                    ]),
+                        }),
+                        _vm._v(" "),
+                        _c("p", [_vm._v("Actions taken from this story.")])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Back")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Back")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.back,
+                            callback: function($$v) {
+                              _vm.back = $$v
+                            },
                             expression: "back"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.back },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.back = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "Number of taps users made to see the previous photo or video in this story."
-                        )
-                      ])
-                    ]),
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "Number of taps users made to see the previous photo or video in this story."
+                          )
+                        ])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Forward")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Forward")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.forward,
+                            callback: function($$v) {
+                              _vm.forward = $$v
+                            },
                             expression: "forward"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.forward },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.forward = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "Number of taps users made to see the next photo or video in this story."
-                        )
-                      ])
-                    ]),
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "Number of taps users made to see the next photo or video in this story."
+                          )
+                        ])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Next story")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Next story")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.next_story,
+                            callback: function($$v) {
+                              _vm.next_story = $$v
+                            },
                             expression: "next_story"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.next_story },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.next_story = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "Number of taps users made to see the next account's story."
-                        )
-                      ])
-                    ]),
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "Number of taps users made to see the next account's story."
+                          )
+                        ])
+                      ],
+                      1
+                    ),
                     _vm._v(" "),
-                    _c("div", { staticClass: "control" }, [
-                      _c("label", [_vm._v("Exited")]),
-                      _vm._v(" "),
-                      _c("input", {
-                        directives: [
-                          {
-                            name: "model",
-                            rawName: "v-model",
+                    _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Exited")]),
+                        _vm._v(" "),
+                        _c("vue-numeric", {
+                          model: {
                             value: _vm.exited,
+                            callback: function($$v) {
+                              _vm.exited = $$v
+                            },
                             expression: "exited"
                           }
-                        ],
-                        attrs: { type: "number" },
-                        domProps: { value: _vm.exited },
-                        on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
-                            _vm.exited = $event.target.value
-                          }
-                        }
-                      }),
-                      _vm._v(" "),
-                      _c("p", [
-                        _vm._v(
-                          "Number of times a user swiped away from this story."
-                        )
-                      ])
-                    ])
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v(
+                            "Number of times a user swiped away from this story."
+                          )
+                        ])
+                      ],
+                      1
+                    )
                   ]
                 )
               ]),
@@ -2824,8 +2782,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateTrackerModal.vue?vue&type=style&index=0&id=079a9bc2&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateTrackerModal.vue?vue&type=style&index=0&id=079a9bc2&scoped=true&lang=css&");
 /* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateTrackerModal_vue_vue_type_style_index_0_id_079a9bc2_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 

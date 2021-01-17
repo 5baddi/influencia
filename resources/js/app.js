@@ -22,6 +22,7 @@ import ConfirmationModal from "./components/modals/ConfirmationModal";
 import VueTimeago from 'vue-timeago';
 import './services/filters';
 import SecureLS from "secure-ls";
+import VueNumeric from 'vue-numeric';
 
 Vue.prototype.$http = api;
 
@@ -35,6 +36,7 @@ Vue.use(VueTimeago, {
 // Register global component
 Vue.component('DataTable', DataTable);
 Vue.component('ConfirmationModal', ConfirmationModal);
+Vue.component('VueNumeric', VueNumeric);
 
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css';
