@@ -538,7 +538,7 @@ __webpack_require__.r(__webpack_exports__);
       campaign_id: null,
       platform: "instagram",
       name: null,
-      type: "url",
+      type: "post",
       username: null,
       story: null,
       url: '',
@@ -2207,7 +2207,8 @@ var render = function() {
                         _c("datetime", {
                           attrs: {
                             type: "datetime",
-                            title: "Story publiction datetime"
+                            title: "Story publiction datetime",
+                            "use12-hour": false
                           },
                           model: {
                             value: _vm.published_at,

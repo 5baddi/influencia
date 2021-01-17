@@ -123,7 +123,7 @@
                      </div>
                      <div class="control">
                         <label>Published at</label>
-                        <datetime v-model="published_at" type="datetime" title="Story publiction datetime"></datetime>
+                        <datetime v-model="published_at" type="datetime" title="Story publiction datetime" :use12-hour="false"></datetime>
                         <p>Story publiction datetime.</p>
                      </div>
                   </div>
@@ -166,7 +166,7 @@ export default {
             campaign_id: null,
             platform: "instagram",
             name: null,
-            type: "url",
+            type: "post",
             username: null,
             story: null,
             url: '',
