@@ -43,6 +43,7 @@ Vue.component('datetime', Datetime);
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
+import 'vue-datetime/dist/vue-datetime.css';
 
 // Routes auth validation
 router.beforeEach((to, from, next) => {
