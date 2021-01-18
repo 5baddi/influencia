@@ -79450,6 +79450,15 @@ var routes = [{
       auth: true
     }
   }, {
+    name: 'new_tracker',
+    path: '/trackers/new',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 17).then(__webpack_require__.bind(null, /*! ./pages/trackers/New.vue */ "./resources/js/pages/trackers/New.vue"));
+    },
+    meta: {
+      auth: true
+    }
+  }, {
     name: 'brands',
     path: '/brands',
     component: function component() {

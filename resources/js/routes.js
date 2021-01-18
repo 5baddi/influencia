@@ -52,6 +52,14 @@ const routes = [
                 },
             },
             {
+                name: 'new_tracker',
+                path: '/trackers/new',
+                component: () => import("./pages/trackers/New.vue"),
+                meta: {
+                    auth: true,
+                },
+            },
+            {
                 name: 'brands',
                 path: '/brands',
                 component: () => import("./pages/BrandsPage"),

@@ -13,7 +13,9 @@
             </ul>
         </div>
         <div class="hero__actions" v-if="!tracker">
-            <button class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" @click="showAddTrackerModal = !showAddTrackerModal">Add new tracker</button>
+            <router-link class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" :to="{name: 'new_tracker'}">
+                <i class="fas fa-plus"></i>&nbsp;Add new tracker    
+            </router-link>
         </div>
     </div>
     <div class="p-1" v-if="!tracker">
