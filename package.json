@@ -44,7 +44,6 @@
         "secure-ls": "^1.2.6",
         "vue-datetime": "^1.0.0-beta.14",
         "vue-good-table": "^2.21.3",
-        "vue-js-excel": "^1.0.3",
         "vue-loading-overlay": "^3.4.2",
         "vue-materialize-datatable": "^1.0.4",
         "vue-notifications": "^1.0.2",
