@@ -15,14 +15,14 @@ class AddMoreFieldsAnalytics extends Migration
     {
         // Campaign analytics
         Schema::table('campaign_analytics', function (Blueprint $table) {
-            $table->integer('videos_count')->default(0);
-            $table->integer('images_count')->default(0);
+            $table->integer('videos_count')->default(0)->after('posts_count');
+            $table->integer('images_count')->default(0)->after('images_count');
         });
         
         // Tracker analytics
         Schema::table('tracker_analytics', function (Blueprint $table) {
-            $table->integer('videos_count')->default(0);
-            $table->integer('images_count')->default(0);
+            $table->integer('videos_count')->default(0)->after('posts_count');
+            $table->integer('images_count')->default(0)->after('images_count');
         });
     }
 
