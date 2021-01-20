@@ -1,1 +1,80 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{"43G3":function(t,e,s){"use strict";s.r(e);var a=s("L2JU");function i(t,e){var s=Object.keys(t);if(Object.getOwnPropertySymbols){var a=Object.getOwnPropertySymbols(t);e&&(a=a.filter((function(e){return Object.getOwnPropertyDescriptor(t,e).enumerable}))),s.push.apply(s,a)}return s}function r(t,e,s){return e in t?Object.defineProperty(t,e,{value:s,enumerable:!0,configurable:!0,writable:!0}):t[e]=s,t}var n={computed:function(t){for(var e=1;e<arguments.length;e++){var s=null!=arguments[e]?arguments[e]:{};e%2?i(Object(s),!0).forEach((function(e){r(t,e,s[e])})):Object.getOwnPropertyDescriptors?Object.defineProperties(t,Object.getOwnPropertyDescriptors(s)):i(Object(s)).forEach((function(e){Object.defineProperty(t,e,Object.getOwnPropertyDescriptor(s,e))}))}return t}({},Object(a.b)(["AuthenticatedUser","statistics"])),methods:{loadStatistics:function(){return this.$store.dispatch("fetchStatistics")}},mounted:function(){void 0!==this.statistics&&null!==this.statistics&&0!==Object.values(this.statistics).length||this.loadStatistics()},data:function(){return{latestCampaignsColumns:[{name:"Name",field:"name"},{name:"Activated Communities",field:"communities",isNativeNbr:!0},{name:"ESTIMATED IMPRESSIONS",field:"impressions",isNativeNbr:!0},{name:"ENGAGEMENTS",field:"engagements",isNativeNbr:!0},{name:"Videos views",field:"video_views",isNativeNbr:!0}],latestTrackersColumns:[{name:"Name",field:"name"},{name:"Activated Communities",field:"communities",isNativeNbr:!0},{name:"ESTIMATED IMPRESSIONS",field:"impressions",isNativeNbr:!0},{name:"ENGAGEMENTS",field:"engagements",isNativeNbr:!0},{name:"Videos views",field:"video_views",isNativeNbr:!0}]}}},c=s("KHd+"),l=Object(c.a)(n,(function(){var t=this,e=t.$createElement,s=t._self._c||e;return s("div",{staticClass:"campaigns"},[t._m(0),t._v(" "),s("div",{staticClass:"p-1"},[t.$can("analytics","campaign")||t.AuthenticatedUser&&t.AuthenticatedUser.is_superadmin?s("div",{staticClass:"cards"},[s("div",{staticClass:"card purple-card"},[s("div",{staticClass:"number text-white"},[t._v(t._s(t._f("formatedNbr")(t.statistics.impressions)))]),t._v(" "),s("p",{staticClass:"description text-white"},[t._v("TOTAL ESTIMATED IMPRESSIONS")])]),t._v(" "),s("div",{staticClass:"card orange-card"},[s("div",{staticClass:"number text-white"},[t._v(t._s(t._f("formatedNbr")(t.statistics.communities)))]),t._v(" "),s("p",{staticClass:"description text-white"},[t._v("TOTAL SIZE OF ACTIVATED COMMUNITIES")])]),t._v(" "),s("div",{staticClass:"card green-card"},[s("div",{staticClass:"number text-white"},[t._v(t._s(t._f("formatedNbr")(t.statistics.campaigns_count)))]),t._v(" "),s("p",{staticClass:"description text-white"},[t._v("NUMBER OF CAMPAIGNS")])]),t._v(" "),s("div",{staticClass:"card cyan-card"},[s("div",{staticClass:"number text-white"},[t._v(t._s(t._f("formatedNbr")(t.statistics.trackers_count)))]),t._v(" "),s("p",{staticClass:"description text-white"},[t._v("NUMBER OF TRACKERS")])])]):t._e(),t._v(" "),s("div",{staticClass:"datatable-scroll"},[s("h4",[t._v("Latest added campaigns")]),t._v(" "),s("DataTable",{ref:"latestCampaigns",attrs:{cssClasses:"table-card",columns:t.latestCampaignsColumns,nativeData:t.statistics.campaigns,withPagination:!1}})],1),t._v(" "),s("div",{staticClass:"datatable-scroll"},[s("h4",[t._v("Latest added trackers")]),t._v(" "),s("DataTable",{ref:"latestTrackers",attrs:{cssClasses:"table-card",columns:t.latestTrackersColumns,nativeData:t.statistics.trackers,withPagination:!1}})],1)])])}),[function(){var t=this.$createElement,e=this._self._c||t;return e("header",{staticClass:"hero"},[e("div",{staticClass:"hero__intro"},[e("h1",[this._v("Dashboard")])])])}],!1,null,null,null);e.default=l.exports}}]);
+(window["webpackJsonp"] = window["webpackJsonp"] || []).push([[15],{
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/RolesPage.vue?vue&type=template&id=781bc1b3&":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/RolesPage.vue?vue&type=template&id=781bc1b3& ***!
+  \*******************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div")
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./resources/js/pages/RolesPage.vue":
+/*!******************************************!*\
+  !*** ./resources/js/pages/RolesPage.vue ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RolesPage_vue_vue_type_template_id_781bc1b3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RolesPage.vue?vue&type=template&id=781bc1b3& */ "./resources/js/pages/RolesPage.vue?vue&type=template&id=781bc1b3&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+var script = {}
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_1__["default"])(
+  script,
+  _RolesPage_vue_vue_type_template_id_781bc1b3___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RolesPage_vue_vue_type_template_id_781bc1b3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/pages/RolesPage.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/pages/RolesPage.vue?vue&type=template&id=781bc1b3&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/pages/RolesPage.vue?vue&type=template&id=781bc1b3& ***!
+  \*************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RolesPage_vue_vue_type_template_id_781bc1b3___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./RolesPage.vue?vue&type=template&id=781bc1b3& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/RolesPage.vue?vue&type=template&id=781bc1b3&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RolesPage_vue_vue_type_template_id_781bc1b3___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RolesPage_vue_vue_type_template_id_781bc1b3___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ })
+
+}]);
