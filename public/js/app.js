@@ -7654,7 +7654,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       return values.reduce(function (a, b) {
         return a + b;
-      }, 0) / values.length || 1;
+      }, 0) / values.length;
     },
     calculateColumnMedian: function calculateColumnMedian(field) {
       var values = [];

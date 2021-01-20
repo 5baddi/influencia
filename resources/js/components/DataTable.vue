@@ -461,7 +461,7 @@ export default {
                 });
             }catch(e){}
 
-            return values.reduce((a, b) => a + b, 0) / values.length || 1;
+            return values.reduce((a, b) => a + b, 0) / values.length;
         },
         calculateColumnMedian(field){
             let values = [];

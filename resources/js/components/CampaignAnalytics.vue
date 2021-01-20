@@ -410,23 +410,23 @@ export default {
                 hasAverage: true,
                 hasMedian: true
             },
+            // {
+            //     name: 'Tags',
+            //     field: 'tags',
+            //     callback: function(row){
+            //         if(row.tags && row.tags.length > 0){
+            //             let html = "<ul>";
+            //             row.tags.map(function(item, index){
+            //                 html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+            //             });
+
+            //             return html + "</ul>";
+            //         }
+
+            //         return '-';
+            //     }
+            // },
             {
-                name: 'Tags',
-                field: 'tags',
-                callback: function(row){
-                    if(row.tags && row.tags.length > 0){
-                        let html = "<ul>";
-                        row.tags.map(function(item, index){
-                            html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
-                        });
-
-                        return html + "</ul>";
-                    }
-
-                    return '-';
-                }
-            } 
-            ,{
                 name: 'Posted at',
                 field: 'published_at'
             }
