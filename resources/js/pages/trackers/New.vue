@@ -43,7 +43,7 @@
                             <div class="control">
                                 <label>Assign to campaign</label>
                                 <select v-model="campaign_id">
-                                <option :value="null" selected>Select a campaign</option>
+                                <option :value="-1" selected>Select a campaign</option>
                                 <option v-for="camp in campaigns" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
                                 </select>
                                 <p>Assign tracker to a exists campaign</p>
@@ -215,7 +215,7 @@ export default {
          this.story = files;
       },
       disableAction(){
-         if(!this.campaign_id || !this.name)
+         if(!this.campaign_id || this.campaign_id === -1 || !this.name)
             return true;
 
          let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
@@ -278,8 +278,7 @@ export default {
         // Create new tracker
         this.create(_data);
       },
-      create(payload) {
-            let data = payload.data;
+      create(data) {
             let formData = new FormData();
 
             // Set base tracker info

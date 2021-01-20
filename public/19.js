@@ -391,7 +391,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.story = files;
     },
     disableAction: function disableAction() {
-      if (!this.campaign_id || !this.name) return true;
+      if (!this.campaign_id || this.campaign_id === -1 || !this.name) return true;
       var urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocol
       '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
       '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
@@ -442,10 +442,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.create(_data);
     },
-    create: function create(payload) {
+    create: function create(data) {
       var _this = this;
 
-      var data = payload.data;
       var formData = new FormData(); // Set base tracker info
 
       formData.append("user_id", this.AuthenticatedUser.id);
@@ -849,7 +848,7 @@ var render = function() {
                     [
                       _c(
                         "option",
-                        { attrs: { selected: "" }, domProps: { value: null } },
+                        { attrs: { selected: "" }, domProps: { value: -1 } },
                         [_vm._v("Select a campaign")]
                       ),
                       _vm._v(" "),
