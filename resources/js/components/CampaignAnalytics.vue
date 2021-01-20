@@ -334,7 +334,7 @@ export default {
             }, {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
-                isNbisNativeNbrr: true,
+                isNativeNbr: true,
                 isRounded: true,
                 hasTotal: true,
                 hasAverage: true,

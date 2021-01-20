@@ -334,7 +334,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: 'Estimated impressions',
         field: 'estimated_impressions',
-        isNbisNativeNbrr: true,
+        isNativeNbr: true,
         isRounded: true,
         hasTotal: true,
         hasAverage: true,
