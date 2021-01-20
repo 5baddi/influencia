@@ -196,7 +196,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser"])), {}, {
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "campaigns"])), {}, {
     fiveInfluencers: function fiveInfluencers() {
       // Get five influencers
       if (this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0) {
@@ -1453,7 +1453,8 @@ var render = function() {
                 columns: _vm.influencersColumns,
                 nativeData: _vm.campaign.influencers,
                 withPagination: false,
-                withTotalTab: true
+                withTotalTab: true,
+                exportable: true
               }
             })
           ],

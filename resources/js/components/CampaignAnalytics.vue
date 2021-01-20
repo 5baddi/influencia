@@ -101,7 +101,7 @@
 
     <div class="datatable-scroll">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" :withPagination="false" :withTotalTab="true" />
+        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" :withPagination="false" :withTotalTab="true" :exportable="true" />
     </div>
 
     <div class="datatable-scroll" id="byinfluencers">
@@ -179,7 +179,7 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser"]),
+        ...mapGetters(["AuthenticatedUser", "campaigns"]),
         fiveInfluencers(){
             // Get five influencers
             if(this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0){

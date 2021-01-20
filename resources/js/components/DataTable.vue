@@ -1,10 +1,5 @@
 <template>
 <div :class="cssClasses">
-    <!--<ul v-show="exportable">
-        <li>
-            <a :href="excelLink" class="btn btn-excel" target="_blank"><i class="fas fa-file-excel"></i></a>
-        </li>
-    </ul>-->
     <table>
         <thead>
             <tr>
@@ -12,6 +7,9 @@
                     <input v-if="searchable" style="margin-right:0.3rem" type="text" @input="isTyping = true" v-model="searchQuery" :placeholder="'Search ' + (searchCols.length > 0 ? 'by ' + Object.values(searchCols).join(' or ') : '')"/>
                     <button class="btn icon-link" title="Reload all data" @click="reloadData()">
                         <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <button v-show="exportable" class="btn icon-link excel-btn" @click="exportToExcel()">
+                        <i class="fas fa-file-excel"></i>&nbsp;Export to Excel
                     </button>
                     <slot name="custom-buttons"></slot>
                 </th>
@@ -120,6 +118,7 @@ table thead>>>.actions-header .btn{
     display: initial;
     padding: .5rem;
     margin: unset;
+    font-size: 8pt !important;
 }
 table thead>>>.actions-header input[type='text']{
     min-width: 300px;
@@ -242,6 +241,10 @@ table tbody>>>a {
 
 .is-sorting-column{
     color: rgba(0, 0, 0, 0.9);
+}
+.excel-btn{
+    background-color: #1D6F42 !important;
+    color: white !important;
 }
 </style>
 
@@ -596,6 +599,9 @@ export default {
                 console.log(error);
                 this.data = [];
             });
+        },
+        exportToExcel(){
+            
         }
     },
     data() {
