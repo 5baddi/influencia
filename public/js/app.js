@@ -7631,8 +7631,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       try {
         this.parsedData.map(function (value, index) {
-          var formatedValue = value[field].replace(/[^\d\.]*/g, '');
-          total += Number(formatedValue) || 0;
+          if (value !== '' && value !== '-' && value !== '---') {
+            var formatedValue = value[field].replace(/[^\d\.]*/g, '');
+            total += Number(formatedValue) || 0;
+          }
         });
       } catch (e) {}
 
@@ -7643,8 +7645,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       try {
         this.parsedData.map(function (value, index) {
-          var formatedValue = value[field].replace(/[^\d\.]*/g, '');
-          values.push(Number(formatedValue) || 0);
+          if (value !== '' && value !== '-' && value !== '---') {
+            var formatedValue = value[field].replace(/[^\d\.]*/g, '');
+            values.push(Number(formatedValue) || 0);
+          }
         });
       } catch (e) {}
 
@@ -7657,8 +7661,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       try {
         this.parsedData.map(function (value, index) {
-          var formatedValue = value[field].replace(/[^\d\.]*/g, '');
-          values.push(Number(formatedValue) || 0);
+          if (value !== '' && value !== '-' && value !== '---') {
+            var formatedValue = value[field].replace(/[^\d\.]*/g, '');
+            values.push(Number(formatedValue) || 0);
+          }
         });
       } catch (e) {}
 

@@ -440,8 +440,10 @@ export default {
             let total = 0;
             try{
                 this.parsedData.map(function(value, index){
-                    let formatedValue = value[field].replace( /[^\d\.]*/g, '');
-                    total += Number(formatedValue) || 0;
+                    if(value !== '' && value !== '-' && value !== '---'){
+                        let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                        total += Number(formatedValue) || 0;
+                    }
                 });
             }catch(e){}
 
@@ -452,8 +454,10 @@ export default {
             
             try{
                 this.parsedData.map(function(value, index){
-                    let formatedValue = value[field].replace( /[^\d\.]*/g, '');
-                    values.push(Number(formatedValue) || 0);
+                    if(value !== '' && value !== '-' && value !== '---'){
+                        let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                        values.push(Number(formatedValue) || 0);
+                    }
                 });
             }catch(e){}
 
@@ -464,8 +468,10 @@ export default {
             
             try{
                 this.parsedData.map(function(value, index){
-                    let formatedValue = value[field].replace( /[^\d\.]*/g, '');
-                    values.push(Number(formatedValue) || 0);
+                    if(value !== '' && value !== '-' && value !== '---'){
+                        let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                        values.push(Number(formatedValue) || 0);
+                    }
                 });
             }catch(e){}
 
