@@ -20,7 +20,7 @@
         <div class="count-details">
             <span v-if="campaign.stories_count && campaign.stories_count > 0"><i class="far fa-clock"></i>&nbsp;{{ campaign.stories_count }}&nbsp;stories</span>
             <span v-if="campaign.videos_count && campaign.videos_count > 0"><i class="far fa-play-circle"></i>&nbsp;{{ campaign.videos_count }}&nbsp;videos</span>
-            <span v-if="campaign.posts_count && campaign.posts_count > 0"><i class="far fa-images"></i>&nbsp;{{ campaign.posts_count }}&nbsp;posts</span>
+            <span v-if="campaign.images_count && campaign.images_count > 0"><i class="far fa-images"></i>&nbsp;{{ campaign.images_count }}&nbsp;posts</span>
             <span v-if="campaign.links_count && campaign.links_count > 0"><i class="fas fa-link"></i>&nbsp;{{ campaign.links_count }}&nbsp;links</span>
         </div>
     </ul>

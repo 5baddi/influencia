@@ -1198,10 +1198,10 @@ var render = function() {
                   ])
                 : _vm._e(),
               _vm._v(" "),
-              _vm.campaign.posts_count && _vm.campaign.posts_count > 0
+              _vm.campaign.images_count && _vm.campaign.images_count > 0
                 ? _c("span", [
                     _c("i", { staticClass: "far fa-images" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.posts_count) + " posts")
+                    _vm._v(" " + _vm._s(_vm.campaign.images_count) + " posts")
                   ])
                 : _vm._e(),
               _vm._v(" "),
