@@ -89,6 +89,8 @@ class UpdateAnalyticsCommand extends Command
                         'organic_video_views'   => 0,
                         'comments_count'        => 0,
                         'posts_count'           => 0,
+                        'images_count'          => 0,
+                        'videos_count'          => 0,
                         'organic_posts'         => 0,
                         'stories_count'         => 0,
                         'links_count'           => 0,
@@ -129,6 +131,12 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['organic_impressions'] += $tracker->analytics->organic_impressions;
                         if(!is_null($tracker->analytics->organic_video_views))
                             $analytics['organic_posts'] += $tracker->analytics->organic_posts;
+
+                        // Count posts for each type
+                        if(!is_null($tracker->analytics->videos_count))
+                            $analytics['videos_count'] += $tracker->analytics->videos_count;
+                        if(!is_null($tracker->analytics->images_count))
+                            $analytics['images_count'] += $tracker->analytics->images_count;
 
                         // Emojis
                         if(isset($tracker->analytics->top_emojis['top'], $tracker->analytics->top_emojis['all'])){
@@ -193,6 +201,8 @@ class UpdateAnalyticsCommand extends Command
                         'organic_video_views'   => 0,
                         'comments_count'        => 0,
                         'posts_count'           => 0,
+                        'images_count'          => 0,
+                        'videos_count'          => 0,
                         'organic_posts'         => 0,
                         'top_emojis'            => [],
                         'sentiments_positive'   => 0.0,
@@ -229,6 +239,16 @@ class UpdateAnalyticsCommand extends Command
                             
                             if($tracker->type === 'post')
                                 $analytics['organic_posts'] += 1;
+                        }
+
+                        // Count posts for each type
+                        switch($post->type){
+                            case "video":
+                                $analytics['videos_count'] += 1;
+                            break;
+                            default:
+                                $analytics['images_count'] += 1;
+                            break;
                         }
 
                         // TODO: store new values about comment owner gender
