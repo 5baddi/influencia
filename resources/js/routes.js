@@ -60,6 +60,14 @@ const routes = [
                 },
             },
             {
+                name: 'stories',
+                path: '/stories/:uuid?',
+                component: () => import("./pages/stories/all.vue"),
+                meta: {
+                    auth: true,
+                },
+            },
+            {
                 name: 'brands',
                 path: '/brands',
                 component: () => import("./pages/BrandsPage"),

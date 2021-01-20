@@ -1,19 +1,179 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[7],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/FileInput.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    id: {
+      type: String,
+      "default": "Upload-file"
+    },
+    label: {
+      type: String,
+      "default": "Upload file"
+    },
+    accept: {
+      type: String,
+      "default": "*"
+    },
+    multiple: {
+      type: Boolean,
+      "default": false
+    },
+    isList: {
+      type: Boolean,
+      "default": false
+    },
+    isImage: {
+      type: Boolean,
+      "default": false
+    },
+    icon: {
+      type: String,
+      "default": null
+    }
+  },
+  methods: {
+    preventFileInput: function preventFileInput() {
+      var ref = this.$refs[this.id];
+
+      if (ref !== 'undefined') {
+        ref.click();
+      }
+    },
+    fileChanged: function fileChanged() {
+      var ref = this.$refs[this.id];
+      if (!ref.files[0]) return; // Verify duplicate file then push the file
+
+      var existsIndex = this.files.findIndex(function (i) {
+        return i.name === ref.files[0].name;
+      });
+
+      if (existsIndex === -1) {
+        if (this.multiple) {
+          var vm = this;
+          Array.from(ref.files).forEach(function (file) {
+            vm.files.push(file);
+          });
+        } else {
+          this.files = [ref.files[0]];
+        } // Is image
+
+
+        if (this.isImage) {
+          var _vm = this;
+
+          var reader = new FileReader();
+
+          reader.onload = function (e) {
+            _vm.$refs.img_src.src = e.target.result;
+          };
+
+          reader.readAsDataURL(ref.files[0]);
+        }
+      } // Emit on change method
+
+
+      this.$emit("custom", this.files);
+    },
+    removeFile: function removeFile(index) {
+      this.files.splice(index, 1);
+    },
+    removeImage: function removeImage() {
+      this.files = [];
+    }
+  },
+  data: function data() {
+    return {
+      files: [],
+      imgSrc: null
+    };
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/trackers/New.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/trackers/New.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! number-abbreviate */ "./node_modules/number-abbreviate/index.js");
-/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(number_abbreviate__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/Chart.js");
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chart_js__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _components_FileInput__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/FileInput */ "./resources/js/components/FileInput.vue");
+/* harmony import */ var _johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @johmun/vue-tags-input */ "./node_modules/@johmun/vue-tags-input/dist/vue-tags-input.js");
+/* harmony import */ var _johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -160,484 +320,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    campaign: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
-    }
-  },
-  methods: {
-    nbr: function nbr() {
-      return new number_abbreviate__WEBPACK_IMPORTED_MODULE_1___default.a();
-    },
-    createDoughtnutChart: function createDoughtnutChart(id, data) {
-      var chartEl = document.getElementById(id);
-
-      try {
-        var chart = new chart_js__WEBPACK_IMPORTED_MODULE_2___default.a(chartEl, {
-          type: 'doughnut',
-          data: data
-        });
-      } catch (e) {
-        chartEl.style.display = "none !important";
-      }
-    }
-  },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "campaigns"])), {}, {
-    fiveInfluencers: function fiveInfluencers() {
-      // Get five influencers
-      if (this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0) {
-        return this.campaign.influencers.slice(0, 5);
-      }
-
-      return [];
-    }
-  }),
-  mounted: function mounted() {
-    // Comments sentiments
-    if (this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative) {
-      this.createDoughtnutChart('sentiments-chart', {
-        datasets: [{
-          data: [(this.campaign.sentiments_positive * 100).toFixed(2), (this.campaign.sentiments_neutral * 100).toFixed(2), (this.campaign.sentiments_negative * 100).toFixed(2)],
-          backgroundColor: ["#AFD75C", "#999999", "#ED435A" //#d93176
-          ]
-        }],
-        labels: ['Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2), 'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2), 'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2)]
-      });
-    } // Communities
-
-
-    if (this.campaign.communities && this.campaign.communities > 0) {
-      this.createDoughtnutChart('communities-chart', {
-        datasets: [{
-          data: [this.campaign.communities.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Impressions
-
-
-    if (this.campaign.impressions && this.campaign.impressions > 0) {
-      this.createDoughtnutChart('impressions-chart', {
-        datasets: [{
-          data: [this.campaign.impressions.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Videos views
-
-
-    if (this.campaign.video_views && this.campaign.video_views > 0) {
-      this.createDoughtnutChart('views-chart', {
-        datasets: [{
-          data: [this.campaign.video_views],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Engagements
-
-
-    if (this.campaign.engagements && this.campaign.engagements > 0) {
-      this.createDoughtnutChart('engagements-chart', {
-        datasets: [{
-          data: [this.campaign.engagements.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Posts
-
-
-    if (this.campaign.posts_count && this.campaign.posts_count > 0) {
-      var postsAndStoriesLabel = 'Instagram: ' + (this.campaign.posts_count ? this.campaign.posts_count : 0) + ' including ' + (this.campaign.stories_count ? this.campaign.stories_count : 0) + ' stories';
-      this.createDoughtnutChart('posts-chart', {
-        datasets: [{
-          data: [this.campaign.posts_count.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: [postsAndStoriesLabel]
-      });
-    }
-  },
-  data: function data() {
-    return {
-      influencersColumns: [{
-        name: 'Influencer',
-        field: 'id',
-        callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '" style="margin-right:0.2rem"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
-        }
-      }, {
-        name: 'Number of posts',
-        field: 'campaign_media',
-        isNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Size of activated communities',
-        field: 'estimated_communities',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Estimated impressions',
-        field: 'campaign_impressions',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Earned Media Value',
-        field: 'earned_media_value',
-        currency: '€',
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }],
-      instaPostsColumns: [{
-        name: 'Influencer',
-        field: 'influencer',
-        callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username) + '</p>';
-        }
-      }, {
-        name: 'Post',
-        field: 'link',
-        callback: function callback(row) {
-          if (!row.link || !row.caption) return '<p>---</p>';
-          return '<a href="' + row.link + '" target="_blank">' + row.caption.substr(1, 100) + '...</a>';
-        }
-      }, {
-        name: 'Media type',
-        field: 'type',
-        capitalize: true
-      }, {
-        name: 'Size of activated communities',
-        field: 'activated_communities',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Estimated impressions',
-        field: 'estimated_impressions',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Engagements',
-        field: 'engagements',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Organic impressions (declarative)',
-        field: 'organic_impressions',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, //  {
-      //     name: 'Engagements rate (reach)',
-      //     field: 'engagement_rate',
-      //     callback: function (row) {
-      //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-      //     }
-      // },
-      {
-        name: 'Likes',
-        field: 'likes',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Views',
-        field: 'video_views',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Comments',
-        field: 'comments',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Impressions (first sequence)'
-      }, {
-        name: 'Story sequences'
-      }, {
-        name: 'Sequence impressions'
-      }, {
-        name: 'Earned Media Value',
-        field: 'earned_media_value',
-        currency: '€',
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, // {
-      //     name: 'Tags',
-      //     field: 'tags',
-      //     callback: function(row){
-      //         if(row.tags && row.tags.length > 0){
-      //             let html = "<ul>";
-      //             row.tags.map(function(item, index){
-      //                 html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
-      //             });
-      //             return html + "</ul>";
-      //         }
-      //         return '-';
-      //     }
-      // },
-      {
-        name: 'Posted at',
-        field: 'published_at'
-      }],
-      trackersColumns: [{
-        name: "name",
-        field: "name",
-        capitalize: true
-      }, {
-        name: "Platform",
-        field: "platform",
-        callback: function callback(row) {
-          var link = "";
-          var icon = "";
-
-          if (row.platform === "instagram") {
-            link = "https://instagram.com/";
-            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
-          } else if (row.platform === "youtube") {
-            link = "https://youtube.com/";
-            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
-          }
-
-          return '<a href="' + link + '" target="_blank" title="' + row.platform + '" class="icon-link">' + icon + '</a>';
-        }
-      }, {
-        name: "type",
-        field: "type",
-        capitalize: true
-      }, {
-        name: "Status",
-        field: "status",
-        sortable: false,
-        callback: function callback(row) {
-          return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
-        }
-      }, {
-        name: "Created at",
-        field: "created_at",
-        isTimeAgo: true
-      }],
-      attrActive: null,
-      sentimentData: {
-        labels: ['Positive', 'Neutral', 'Negative'],
-        backgroundColor: ["#AFD75C", "#999999", "#ED435A"]
-      }
-    };
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      show: false,
-      campaign: {
-        uuid: null,
-        name: null
-      },
-      title: "Add new campaign"
-    };
-  },
-  created: function created() {
-    var _this = this;
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key == "Escape" && _this.show) {
-        _this.close();
-      }
-    });
-  },
-  methods: {
-    open: function open(campaign) {
-      if (typeof campaign !== "undefined") this.campaign = campaign;
-      if (typeof campaign !== "undefined" && typeof campaign.uuid == "string" && campaign.name !== null) this.title = "Update " + campaign.name.slice();
-      this.show = true;
-    },
-    close: function close() {
-      this.show = false;
-      this.campaign = {
-        uuid: null,
-        name: null
-      };
-      this.title = "Add new campaign";
-    },
-    submit: function submit() {
-      var action = typeof this.campaign.uuid === "undefined" || this.campaign.uuid === null ? "create" : "update"; // Set base campaign info
-
-      var formData = {};
-      formData.name = this.campaign.name;
-      if (this.campaign.uuid !== null) formData.uuid = this.campaign.uuid;
-      this.$emit(action, formData);
-      this.close();
-    }
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_modals_CreateCampaignModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/modals/CreateCampaignModal */ "./resources/js/components/modals/CreateCampaignModal.vue");
-/* harmony import */ var _components_CampaignAnalytics__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/CampaignAnalytics */ "./resources/js/components/CampaignAnalytics.vue");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_DataTable_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DataTable.vue */ "./resources/js/components/DataTable.vue");
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    CreateCampaignModal: _components_modals_CreateCampaignModal__WEBPACK_IMPORTED_MODULE_0__["default"],
-    CampaignAnalytics: _components_CampaignAnalytics__WEBPACK_IMPORTED_MODULE_1__["default"]
+    FileInput: _components_FileInput__WEBPACK_IMPORTED_MODULE_1__["default"],
+    VueTagsInput: _johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2___default.a
   },
   notifications: {
+    createTrackerErrors: {
+      type: "error"
+    },
+    createTrackerSuccess: {
+      type: "success"
+    },
     showError: {
       type: "error",
       title: "Error",
@@ -645,464 +342,212 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     showSuccess: {
       type: "success"
-    },
-    createCampaignErrors: {
-      type: "error"
-    },
-    createCampaignSuccess: {
-      type: "success"
     }
   },
-  methods: {
-    loadCampaigns: function loadCampaigns() {
-      // Load campaigns
-      if (Object.values(this.campaigns).length === 0) this.$store.dispatch("fetchCampaigns")["catch"](function (error) {});
-    },
-    fetchCampaign: function fetchCampaign() {
-      // Load campaign analytics by UUID
-      this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid)["catch"](function (error) {});
-    },
-    addCampaign: function addCampaign() {
-      this.$refs.campaignFormModal.open();
-    },
-    editCampaign: function editCampaign(campaign) {
-      this.$refs.campaignFormModal.open(Object.assign({}, campaign));
-    },
-    deleteCampaign: function deleteCampaign(campaign) {
-      this.$refs.confirmDeleteCampaignModal.open("Are sure to delete this campaign?", campaign);
-    },
-    deleteCampaignAction: function deleteCampaignAction(campaign) {
-      var _this = this;
-
-      if (typeof campaign.uuid === "undefined") this.showError();
-      this.$store.dispatch("deleteCampaign", campaign.uuid).then(function (response) {
-        _this.$refs.campaignsDT.reloadData();
-
-        _this.showSuccess({
-          message: "Successfully deleted campaign '" + campaign.name + "'"
-        });
-      })["catch"](function (error) {
-        _this.showError({
-          message: error.message
-        });
-      });
-    },
-    create: function create(campaign) {
-      var _this2 = this;
-
-      // Set brand ID
-      campaign.brand_id = this.AuthenticatedUser.selected_brand_id;
-      this.$store.dispatch("addNewCampaign", campaign).then(function (response) {
-        _this2.$refs.campaignsDT.reloadData();
-
-        _this2.showSuccess({
-          message: response.message
-        });
-      })["catch"](function (error) {
-        _this2.showError({
-          message: error.response.data.message
-        });
-      });
-    },
-    update: function update(campaign) {
-      var _this3 = this;
-
-      this.$store.dispatch("updateCampaign", campaign).then(function (response) {
-        _this3.$refs.campaignsDT.reloadData();
-
-        _this3.showSuccess({
-          message: response.message
-        });
-      })["catch"](function (error) {
-        _this3.showError({
-          message: error.response.data.message
-        });
-      });
-    }
-  },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["AuthenticatedUser", "campaigns", "campaign"])), {}, {
-    parsedCampaigns: function parsedCampaigns() {
-      return this.campaigns;
-    },
-    activeBrand: function activeBrand() {
-      if (this.AuthenticatedUser !== null && typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand) return this.AuthenticatedUser.selected_brand;
-      return null;
-    }
-  }),
-  watch: {
-    "$route.params.uuid": function $routeParamsUuid(value) {
-      // Load campaign analytics or unset campaign state
-      if (typeof value !== "undefined") this.fetchCampaign();else this.$store.commit("setCampaign", {
-        campaign: null
-      });
-    }
-  },
-  mounted: function mounted() {
-    // Load campaign analytics
-    if (typeof this.$route.params.uuid !== "undefined") {
-      this.fetchCampaign();
-    } else {
-      // Unset campaign state
-      this.$store.commit("setCampaign", {
-        campaign: null
-      }); // Load campaigns
-
-      if (typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0) this.loadCampaigns();
-    }
-  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "campaigns"])),
   data: function data() {
     return {
-      columns: [{
-        name: "Campaign name",
-        field: "name"
-      }, {
-        name: "Status",
-        field: "status",
-        sortable: false,
-        callback: function callback(row) {
-          return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
-        }
-      }, {
-        name: "Activated communities",
-        field: "communities",
-        isNativeNbr: true
-      }, {
-        name: "Number of trackers",
-        field: "trackers_count",
-        isNbr: true
-      }, {
-        name: "Influencers",
-        field: "influencers",
-        "class": "influencers-avatars-list",
-        sortable: false,
-        callback: function callback(row) {
-          if (row.influencers.length === 0) return '-';
-          var influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
-          var html = '';
-          influencers.map(function (item, index) {
-            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-          }); // Add more avatar
-
-          if (row.influencers.length > 3) html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
-          return html;
-        }
-      }, {
-        name: "Last update",
-        field: "updated_at",
-        isTimeAgo: true
-      }]
+      user_id: null,
+      campaign_id: -1,
+      platform: "instagram",
+      name: null,
+      type: "post",
+      username: null,
+      story: null,
+      url: '',
+      urls: [],
+      reach: null,
+      impressions: null,
+      interactions: null,
+      back: null,
+      forward: null,
+      next_story: null,
+      exited: null,
+      published_at: null
     };
+  },
+  methods: {
+    init: function init() {
+      this.campaign_id = -1;
+      this.user_id = null;
+      this.platform = "instagram";
+      this.name = null;
+      this.type = "url";
+      this.username = null;
+      this.story = null;
+      this.url = '';
+      this.urls = [];
+      this.reach = null;
+      this.impressions = null;
+      this.interactions = null;
+      this.back = null;
+      this.forward = null;
+      this.next_story = null;
+      this.exited = null;
+      this.published_at = null;
+    },
+    handleStoryUpload: function handleStoryUpload(files) {
+      if (typeof files === "undefined" && files.length > 0) return;
+      this.story = files;
+    },
+    disableAction: function disableAction() {
+      if (!this.campaign_id || this.campaign_id === -1 || !this.name) return true;
+      var urlPattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$', 'i');
+      if (this.type === 'url' && urlPattern.test(this.url)) return false;
+      if (this.type === 'story' && this.story.length > 0 && this.username) return false;
+      if (this.type === 'post' && this.urls.length > 0) return false;
+      return true;
+    },
+    saveTracker: function saveTracker() {
+      var _data = {
+        name: this.name,
+        type: this.type,
+        campaign_id: this.campaign_id,
+        platform: this.type !== 'url' ? this.platform : null
+      };
+      var _urls = ""; // Set POST data
+
+      if (this.type === 'url') {
+        _data.url = this.url;
+      } // Set URL data
+
+
+      if (this.type === 'post' && this.urls.length > 0) {
+        this.urls.map(function (item, key) {
+          _urls += item.text + ";";
+        });
+        _data.url = _urls;
+      } // Set STORY data
+
+
+      if (this.type === 'story') {
+        // STORY data
+        _data.username = this.username;
+        _data.story = this.story;
+        _data.reach = this.reach;
+        _data.impressions = this.impressions;
+        _data.interactions = this.interactions;
+        _data.back = this.back;
+        _data.forward = this.forward;
+        _data.next_story = this.next_story;
+        _data.exited = this.exited;
+        _data.published_at = this.published_at;
+      } // Create new tracker
+
+
+      this.create(_data);
+    },
+    create: function create(data) {
+      var _this = this;
+
+      var formData = new FormData(); // Set base tracker info
+
+      formData.append("user_id", this.AuthenticatedUser.id);
+      formData.append("campaign_id", data.campaign_id);
+      formData.append("name", data.name);
+      formData.append("type", data.type);
+      if (data.type !== 'url') formData.append("platform", data.platform); // Create story tracker
+
+      if (data.type === "story") {
+        // Append form data
+        formData.append("username", data.username);
+        Array.from(data.story).forEach(function (file) {
+          formData.append("story[]", file);
+        });
+      } else {
+        formData.append("url", data.url);
+      } // Dispatch the creation action
+
+
+      this.$store.dispatch("addNewTracker", formData).then(function (response) {
+        _this.init();
+
+        _this.createTrackerSuccess({
+          message: "Tracker ".concat(response.content.name, " created successfuly!")
+        });
+
+        _this.$router.push({
+          name: 'trackers'
+        });
+      })["catch"](function (error) {
+        var errors = Object.values(error.response.data.errors);
+
+        if (_typeof(errors) === "object" && errors.length > 0) {
+          errors.forEach(function (element) {
+            _this.showError({
+              message: element
+            });
+          });
+        } else {
+          _this.showError({
+            message: error.response.data.message
+          });
+        }
+      });
+    }
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/moment/locale sync recursive ^\\.\\/.*$":
-/*!**************************************************!*\
-  !*** ./node_modules/moment/locale sync ^\.\/.*$ ***!
-  \**************************************************/
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-var map = {
-	"./af": "./node_modules/moment/locale/af.js",
-	"./af.js": "./node_modules/moment/locale/af.js",
-	"./ar": "./node_modules/moment/locale/ar.js",
-	"./ar-dz": "./node_modules/moment/locale/ar-dz.js",
-	"./ar-dz.js": "./node_modules/moment/locale/ar-dz.js",
-	"./ar-kw": "./node_modules/moment/locale/ar-kw.js",
-	"./ar-kw.js": "./node_modules/moment/locale/ar-kw.js",
-	"./ar-ly": "./node_modules/moment/locale/ar-ly.js",
-	"./ar-ly.js": "./node_modules/moment/locale/ar-ly.js",
-	"./ar-ma": "./node_modules/moment/locale/ar-ma.js",
-	"./ar-ma.js": "./node_modules/moment/locale/ar-ma.js",
-	"./ar-sa": "./node_modules/moment/locale/ar-sa.js",
-	"./ar-sa.js": "./node_modules/moment/locale/ar-sa.js",
-	"./ar-tn": "./node_modules/moment/locale/ar-tn.js",
-	"./ar-tn.js": "./node_modules/moment/locale/ar-tn.js",
-	"./ar.js": "./node_modules/moment/locale/ar.js",
-	"./az": "./node_modules/moment/locale/az.js",
-	"./az.js": "./node_modules/moment/locale/az.js",
-	"./be": "./node_modules/moment/locale/be.js",
-	"./be.js": "./node_modules/moment/locale/be.js",
-	"./bg": "./node_modules/moment/locale/bg.js",
-	"./bg.js": "./node_modules/moment/locale/bg.js",
-	"./bm": "./node_modules/moment/locale/bm.js",
-	"./bm.js": "./node_modules/moment/locale/bm.js",
-	"./bn": "./node_modules/moment/locale/bn.js",
-	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
-	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
-	"./bn.js": "./node_modules/moment/locale/bn.js",
-	"./bo": "./node_modules/moment/locale/bo.js",
-	"./bo.js": "./node_modules/moment/locale/bo.js",
-	"./br": "./node_modules/moment/locale/br.js",
-	"./br.js": "./node_modules/moment/locale/br.js",
-	"./bs": "./node_modules/moment/locale/bs.js",
-	"./bs.js": "./node_modules/moment/locale/bs.js",
-	"./ca": "./node_modules/moment/locale/ca.js",
-	"./ca.js": "./node_modules/moment/locale/ca.js",
-	"./cs": "./node_modules/moment/locale/cs.js",
-	"./cs.js": "./node_modules/moment/locale/cs.js",
-	"./cv": "./node_modules/moment/locale/cv.js",
-	"./cv.js": "./node_modules/moment/locale/cv.js",
-	"./cy": "./node_modules/moment/locale/cy.js",
-	"./cy.js": "./node_modules/moment/locale/cy.js",
-	"./da": "./node_modules/moment/locale/da.js",
-	"./da.js": "./node_modules/moment/locale/da.js",
-	"./de": "./node_modules/moment/locale/de.js",
-	"./de-at": "./node_modules/moment/locale/de-at.js",
-	"./de-at.js": "./node_modules/moment/locale/de-at.js",
-	"./de-ch": "./node_modules/moment/locale/de-ch.js",
-	"./de-ch.js": "./node_modules/moment/locale/de-ch.js",
-	"./de.js": "./node_modules/moment/locale/de.js",
-	"./dv": "./node_modules/moment/locale/dv.js",
-	"./dv.js": "./node_modules/moment/locale/dv.js",
-	"./el": "./node_modules/moment/locale/el.js",
-	"./el.js": "./node_modules/moment/locale/el.js",
-	"./en-au": "./node_modules/moment/locale/en-au.js",
-	"./en-au.js": "./node_modules/moment/locale/en-au.js",
-	"./en-ca": "./node_modules/moment/locale/en-ca.js",
-	"./en-ca.js": "./node_modules/moment/locale/en-ca.js",
-	"./en-gb": "./node_modules/moment/locale/en-gb.js",
-	"./en-gb.js": "./node_modules/moment/locale/en-gb.js",
-	"./en-ie": "./node_modules/moment/locale/en-ie.js",
-	"./en-ie.js": "./node_modules/moment/locale/en-ie.js",
-	"./en-il": "./node_modules/moment/locale/en-il.js",
-	"./en-il.js": "./node_modules/moment/locale/en-il.js",
-	"./en-in": "./node_modules/moment/locale/en-in.js",
-	"./en-in.js": "./node_modules/moment/locale/en-in.js",
-	"./en-nz": "./node_modules/moment/locale/en-nz.js",
-	"./en-nz.js": "./node_modules/moment/locale/en-nz.js",
-	"./en-sg": "./node_modules/moment/locale/en-sg.js",
-	"./en-sg.js": "./node_modules/moment/locale/en-sg.js",
-	"./eo": "./node_modules/moment/locale/eo.js",
-	"./eo.js": "./node_modules/moment/locale/eo.js",
-	"./es": "./node_modules/moment/locale/es.js",
-	"./es-do": "./node_modules/moment/locale/es-do.js",
-	"./es-do.js": "./node_modules/moment/locale/es-do.js",
-	"./es-mx": "./node_modules/moment/locale/es-mx.js",
-	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
-	"./es-us": "./node_modules/moment/locale/es-us.js",
-	"./es-us.js": "./node_modules/moment/locale/es-us.js",
-	"./es.js": "./node_modules/moment/locale/es.js",
-	"./et": "./node_modules/moment/locale/et.js",
-	"./et.js": "./node_modules/moment/locale/et.js",
-	"./eu": "./node_modules/moment/locale/eu.js",
-	"./eu.js": "./node_modules/moment/locale/eu.js",
-	"./fa": "./node_modules/moment/locale/fa.js",
-	"./fa.js": "./node_modules/moment/locale/fa.js",
-	"./fi": "./node_modules/moment/locale/fi.js",
-	"./fi.js": "./node_modules/moment/locale/fi.js",
-	"./fil": "./node_modules/moment/locale/fil.js",
-	"./fil.js": "./node_modules/moment/locale/fil.js",
-	"./fo": "./node_modules/moment/locale/fo.js",
-	"./fo.js": "./node_modules/moment/locale/fo.js",
-	"./fr": "./node_modules/moment/locale/fr.js",
-	"./fr-ca": "./node_modules/moment/locale/fr-ca.js",
-	"./fr-ca.js": "./node_modules/moment/locale/fr-ca.js",
-	"./fr-ch": "./node_modules/moment/locale/fr-ch.js",
-	"./fr-ch.js": "./node_modules/moment/locale/fr-ch.js",
-	"./fr.js": "./node_modules/moment/locale/fr.js",
-	"./fy": "./node_modules/moment/locale/fy.js",
-	"./fy.js": "./node_modules/moment/locale/fy.js",
-	"./ga": "./node_modules/moment/locale/ga.js",
-	"./ga.js": "./node_modules/moment/locale/ga.js",
-	"./gd": "./node_modules/moment/locale/gd.js",
-	"./gd.js": "./node_modules/moment/locale/gd.js",
-	"./gl": "./node_modules/moment/locale/gl.js",
-	"./gl.js": "./node_modules/moment/locale/gl.js",
-	"./gom-deva": "./node_modules/moment/locale/gom-deva.js",
-	"./gom-deva.js": "./node_modules/moment/locale/gom-deva.js",
-	"./gom-latn": "./node_modules/moment/locale/gom-latn.js",
-	"./gom-latn.js": "./node_modules/moment/locale/gom-latn.js",
-	"./gu": "./node_modules/moment/locale/gu.js",
-	"./gu.js": "./node_modules/moment/locale/gu.js",
-	"./he": "./node_modules/moment/locale/he.js",
-	"./he.js": "./node_modules/moment/locale/he.js",
-	"./hi": "./node_modules/moment/locale/hi.js",
-	"./hi.js": "./node_modules/moment/locale/hi.js",
-	"./hr": "./node_modules/moment/locale/hr.js",
-	"./hr.js": "./node_modules/moment/locale/hr.js",
-	"./hu": "./node_modules/moment/locale/hu.js",
-	"./hu.js": "./node_modules/moment/locale/hu.js",
-	"./hy-am": "./node_modules/moment/locale/hy-am.js",
-	"./hy-am.js": "./node_modules/moment/locale/hy-am.js",
-	"./id": "./node_modules/moment/locale/id.js",
-	"./id.js": "./node_modules/moment/locale/id.js",
-	"./is": "./node_modules/moment/locale/is.js",
-	"./is.js": "./node_modules/moment/locale/is.js",
-	"./it": "./node_modules/moment/locale/it.js",
-	"./it-ch": "./node_modules/moment/locale/it-ch.js",
-	"./it-ch.js": "./node_modules/moment/locale/it-ch.js",
-	"./it.js": "./node_modules/moment/locale/it.js",
-	"./ja": "./node_modules/moment/locale/ja.js",
-	"./ja.js": "./node_modules/moment/locale/ja.js",
-	"./jv": "./node_modules/moment/locale/jv.js",
-	"./jv.js": "./node_modules/moment/locale/jv.js",
-	"./ka": "./node_modules/moment/locale/ka.js",
-	"./ka.js": "./node_modules/moment/locale/ka.js",
-	"./kk": "./node_modules/moment/locale/kk.js",
-	"./kk.js": "./node_modules/moment/locale/kk.js",
-	"./km": "./node_modules/moment/locale/km.js",
-	"./km.js": "./node_modules/moment/locale/km.js",
-	"./kn": "./node_modules/moment/locale/kn.js",
-	"./kn.js": "./node_modules/moment/locale/kn.js",
-	"./ko": "./node_modules/moment/locale/ko.js",
-	"./ko.js": "./node_modules/moment/locale/ko.js",
-	"./ku": "./node_modules/moment/locale/ku.js",
-	"./ku.js": "./node_modules/moment/locale/ku.js",
-	"./ky": "./node_modules/moment/locale/ky.js",
-	"./ky.js": "./node_modules/moment/locale/ky.js",
-	"./lb": "./node_modules/moment/locale/lb.js",
-	"./lb.js": "./node_modules/moment/locale/lb.js",
-	"./lo": "./node_modules/moment/locale/lo.js",
-	"./lo.js": "./node_modules/moment/locale/lo.js",
-	"./lt": "./node_modules/moment/locale/lt.js",
-	"./lt.js": "./node_modules/moment/locale/lt.js",
-	"./lv": "./node_modules/moment/locale/lv.js",
-	"./lv.js": "./node_modules/moment/locale/lv.js",
-	"./me": "./node_modules/moment/locale/me.js",
-	"./me.js": "./node_modules/moment/locale/me.js",
-	"./mi": "./node_modules/moment/locale/mi.js",
-	"./mi.js": "./node_modules/moment/locale/mi.js",
-	"./mk": "./node_modules/moment/locale/mk.js",
-	"./mk.js": "./node_modules/moment/locale/mk.js",
-	"./ml": "./node_modules/moment/locale/ml.js",
-	"./ml.js": "./node_modules/moment/locale/ml.js",
-	"./mn": "./node_modules/moment/locale/mn.js",
-	"./mn.js": "./node_modules/moment/locale/mn.js",
-	"./mr": "./node_modules/moment/locale/mr.js",
-	"./mr.js": "./node_modules/moment/locale/mr.js",
-	"./ms": "./node_modules/moment/locale/ms.js",
-	"./ms-my": "./node_modules/moment/locale/ms-my.js",
-	"./ms-my.js": "./node_modules/moment/locale/ms-my.js",
-	"./ms.js": "./node_modules/moment/locale/ms.js",
-	"./mt": "./node_modules/moment/locale/mt.js",
-	"./mt.js": "./node_modules/moment/locale/mt.js",
-	"./my": "./node_modules/moment/locale/my.js",
-	"./my.js": "./node_modules/moment/locale/my.js",
-	"./nb": "./node_modules/moment/locale/nb.js",
-	"./nb.js": "./node_modules/moment/locale/nb.js",
-	"./ne": "./node_modules/moment/locale/ne.js",
-	"./ne.js": "./node_modules/moment/locale/ne.js",
-	"./nl": "./node_modules/moment/locale/nl.js",
-	"./nl-be": "./node_modules/moment/locale/nl-be.js",
-	"./nl-be.js": "./node_modules/moment/locale/nl-be.js",
-	"./nl.js": "./node_modules/moment/locale/nl.js",
-	"./nn": "./node_modules/moment/locale/nn.js",
-	"./nn.js": "./node_modules/moment/locale/nn.js",
-	"./oc-lnc": "./node_modules/moment/locale/oc-lnc.js",
-	"./oc-lnc.js": "./node_modules/moment/locale/oc-lnc.js",
-	"./pa-in": "./node_modules/moment/locale/pa-in.js",
-	"./pa-in.js": "./node_modules/moment/locale/pa-in.js",
-	"./pl": "./node_modules/moment/locale/pl.js",
-	"./pl.js": "./node_modules/moment/locale/pl.js",
-	"./pt": "./node_modules/moment/locale/pt.js",
-	"./pt-br": "./node_modules/moment/locale/pt-br.js",
-	"./pt-br.js": "./node_modules/moment/locale/pt-br.js",
-	"./pt.js": "./node_modules/moment/locale/pt.js",
-	"./ro": "./node_modules/moment/locale/ro.js",
-	"./ro.js": "./node_modules/moment/locale/ro.js",
-	"./ru": "./node_modules/moment/locale/ru.js",
-	"./ru.js": "./node_modules/moment/locale/ru.js",
-	"./sd": "./node_modules/moment/locale/sd.js",
-	"./sd.js": "./node_modules/moment/locale/sd.js",
-	"./se": "./node_modules/moment/locale/se.js",
-	"./se.js": "./node_modules/moment/locale/se.js",
-	"./si": "./node_modules/moment/locale/si.js",
-	"./si.js": "./node_modules/moment/locale/si.js",
-	"./sk": "./node_modules/moment/locale/sk.js",
-	"./sk.js": "./node_modules/moment/locale/sk.js",
-	"./sl": "./node_modules/moment/locale/sl.js",
-	"./sl.js": "./node_modules/moment/locale/sl.js",
-	"./sq": "./node_modules/moment/locale/sq.js",
-	"./sq.js": "./node_modules/moment/locale/sq.js",
-	"./sr": "./node_modules/moment/locale/sr.js",
-	"./sr-cyrl": "./node_modules/moment/locale/sr-cyrl.js",
-	"./sr-cyrl.js": "./node_modules/moment/locale/sr-cyrl.js",
-	"./sr.js": "./node_modules/moment/locale/sr.js",
-	"./ss": "./node_modules/moment/locale/ss.js",
-	"./ss.js": "./node_modules/moment/locale/ss.js",
-	"./sv": "./node_modules/moment/locale/sv.js",
-	"./sv.js": "./node_modules/moment/locale/sv.js",
-	"./sw": "./node_modules/moment/locale/sw.js",
-	"./sw.js": "./node_modules/moment/locale/sw.js",
-	"./ta": "./node_modules/moment/locale/ta.js",
-	"./ta.js": "./node_modules/moment/locale/ta.js",
-	"./te": "./node_modules/moment/locale/te.js",
-	"./te.js": "./node_modules/moment/locale/te.js",
-	"./tet": "./node_modules/moment/locale/tet.js",
-	"./tet.js": "./node_modules/moment/locale/tet.js",
-	"./tg": "./node_modules/moment/locale/tg.js",
-	"./tg.js": "./node_modules/moment/locale/tg.js",
-	"./th": "./node_modules/moment/locale/th.js",
-	"./th.js": "./node_modules/moment/locale/th.js",
-	"./tk": "./node_modules/moment/locale/tk.js",
-	"./tk.js": "./node_modules/moment/locale/tk.js",
-	"./tl-ph": "./node_modules/moment/locale/tl-ph.js",
-	"./tl-ph.js": "./node_modules/moment/locale/tl-ph.js",
-	"./tlh": "./node_modules/moment/locale/tlh.js",
-	"./tlh.js": "./node_modules/moment/locale/tlh.js",
-	"./tr": "./node_modules/moment/locale/tr.js",
-	"./tr.js": "./node_modules/moment/locale/tr.js",
-	"./tzl": "./node_modules/moment/locale/tzl.js",
-	"./tzl.js": "./node_modules/moment/locale/tzl.js",
-	"./tzm": "./node_modules/moment/locale/tzm.js",
-	"./tzm-latn": "./node_modules/moment/locale/tzm-latn.js",
-	"./tzm-latn.js": "./node_modules/moment/locale/tzm-latn.js",
-	"./tzm.js": "./node_modules/moment/locale/tzm.js",
-	"./ug-cn": "./node_modules/moment/locale/ug-cn.js",
-	"./ug-cn.js": "./node_modules/moment/locale/ug-cn.js",
-	"./uk": "./node_modules/moment/locale/uk.js",
-	"./uk.js": "./node_modules/moment/locale/uk.js",
-	"./ur": "./node_modules/moment/locale/ur.js",
-	"./ur.js": "./node_modules/moment/locale/ur.js",
-	"./uz": "./node_modules/moment/locale/uz.js",
-	"./uz-latn": "./node_modules/moment/locale/uz-latn.js",
-	"./uz-latn.js": "./node_modules/moment/locale/uz-latn.js",
-	"./uz.js": "./node_modules/moment/locale/uz.js",
-	"./vi": "./node_modules/moment/locale/vi.js",
-	"./vi.js": "./node_modules/moment/locale/vi.js",
-	"./x-pseudo": "./node_modules/moment/locale/x-pseudo.js",
-	"./x-pseudo.js": "./node_modules/moment/locale/x-pseudo.js",
-	"./yo": "./node_modules/moment/locale/yo.js",
-	"./yo.js": "./node_modules/moment/locale/yo.js",
-	"./zh-cn": "./node_modules/moment/locale/zh-cn.js",
-	"./zh-cn.js": "./node_modules/moment/locale/zh-cn.js",
-	"./zh-hk": "./node_modules/moment/locale/zh-hk.js",
-	"./zh-hk.js": "./node_modules/moment/locale/zh-hk.js",
-	"./zh-mo": "./node_modules/moment/locale/zh-mo.js",
-	"./zh-mo.js": "./node_modules/moment/locale/zh-mo.js",
-	"./zh-tw": "./node_modules/moment/locale/zh-tw.js",
-	"./zh-tw.js": "./node_modules/moment/locale/zh-tw.js"
-};
+exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
 
 
-function webpackContext(req) {
-	var id = webpackContextResolve(req);
-	return __webpack_require__(id);
-}
-function webpackContextResolve(req) {
-	if(!__webpack_require__.o(map, req)) {
-		var e = new Error("Cannot find module '" + req + "'");
-		e.code = 'MODULE_NOT_FOUND';
-		throw e;
-	}
-	return map[req];
-}
-webpackContext.keys = function webpackContextKeys() {
-	return Object.keys(map);
-};
-webpackContext.resolve = webpackContextResolve;
-module.exports = webpackContext;
-webpackContext.id = "./node_modules/moment/locale sync recursive ^\\.\\/.*$";
+// module
+exports.push([module.i, "\n.custom-file-upload[data-v-6c71a2d3]{\n    width: 100%;\n    height: auto;\n    overflow: hidden;\n    margin: 1rem 0;\n}\n.custom-file-upload > input[type=file][data-v-6c71a2d3]{\n    display: none;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    width: 100%;\n    color: white;\n    font-size: 8pt;\n}\n.custom-file-upload .btn-primary[data-v-6c71a2d3]{\n    background-color: #039be5;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]{\n    border: none;\n    background-color: unset;\n    cursor: pointer;\n}\n.custom-file-upload .btn-flat[data-v-6c71a2d3]:hover, .custom-file-upload .btn-flat[data-v-6c71a2d3]:focus{\n    opacity: .7;\n}\n.custom-file-upload .btn-flat-danger[data-v-6c71a2d3]{\n    color: #f44336;\n}\n.custom-file-upload ul li[data-v-6c71a2d3]{\n    font-size: 10pt;\n    font-weight: normal;\n    padding: 12px;\n}\n.custom-file-upload .btn[data-v-6c71a2d3]{\n    display: initial !important;\n}\n.custom-file-preview button[data-v-6c71a2d3]{\n    position: absolute;\n    top: 0;\n    right: 0;\n    transform: translate(-50%, 50%);\n}\n", ""]);
+
+// exports
+
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&":
-/*!********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b& ***!
-  \********************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css&":
+/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css& ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1114,704 +559,100 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.campaign
-    ? _c("div", { staticClass: "campaign" }, [
-        _c(
-          "ul",
+  return _c("div", { staticClass: "custom-file-upload" }, [
+    _c(
+      "ul",
+      {
+        directives: [
           {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.fiveInfluencers.length > 0,
-                expression: "fiveInfluencers.length > 0"
-              }
-            ],
-            staticClass: "influencers-avatars"
-          },
-          [
-            _c("h4", [_vm._v("influencers")]),
-            _vm._v(" "),
-            _vm._l(_vm.fiveInfluencers, function(influencer) {
-              return _c(
-                "li",
-                { key: influencer.id },
-                [
-                  _c(
-                    "router-link",
-                    {
-                      staticClass: "icon-link",
-                      attrs: {
-                        to: {
-                          name: "influencers",
-                          params: { uuid: influencer.uuid }
-                        },
-                        title: influencer.username
-                      }
-                    },
-                    [
-                      _c("img", {
-                        attrs: { src: influencer.pic_url, loading: "lazy" }
-                      })
-                    ]
-                  )
-                ],
-                1
-              )
-            }),
-            _vm._v(" "),
-            _vm.campaign.influencers.length > 5
-              ? _c("li", [_vm._m(0)])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("li", [
-              _c(
-                "span",
-                { staticClass: "campaign-more-influencers" },
-                [
-                  _vm._v(
-                    "\r\n                " +
-                      _vm._s(_vm.campaign.influencers.length) +
-                      " Influencers linked "
-                  ),
-                  _vm.campaign.influencers.length > 5
-                    ? _c("router-link", { attrs: { to: "#byinfuencers" } }, [
-                        _vm._v("See all")
-                      ])
-                    : _vm._e()
-                ],
-                1
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "count-details" }, [
-              _vm.campaign.stories_count && _vm.campaign.stories_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "far fa-clock" }),
-                    _vm._v(
-                      " " + _vm._s(_vm.campaign.stories_count) + " stories"
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.campaign.videos_count && _vm.campaign.videos_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "far fa-play-circle" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.videos_count) + " videos")
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.campaign.images_count && _vm.campaign.images_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "far fa-images" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.images_count) + " posts")
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.campaign.links_count && _vm.campaign.links_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "fas fa-link" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.links_count) + " links")
-                  ])
-                : _vm._e()
-            ])
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "cards statistics" }, [
-          _vm.campaign.communities > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-users egg-blue" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.communities))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total size of activated communities")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "communities-chart" } })
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.impressions > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-bullhorn purple" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.impressions))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total estimated impressions")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "impressions-chart" } })
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.video_views > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "far fa-eye green" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.video_views))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total videos views")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "views-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic videos views " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_video_views)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.video_views > 0
-                          ? (
-                              (_vm.campaign.organic_video_views /
-                                _vm.campaign.video_views) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.engagements > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-thumbs-up blue" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.engagements))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total engagements")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "engagements-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic engagements " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_engagements)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.engagements > 0
-                          ? (
-                              (_vm.campaign.organic_engagements /
-                                _vm.campaign.engagements) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.posts_count > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-hashtag yellow" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.posts_count))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total number of posts")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "posts-chart" } })
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "cards sentiments" }, [
-          _vm.campaign.comments_count > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("h5", [_vm._v("Comments sentiment")]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "sentiments-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Based on " +
-                      _vm._s(
-                        _vm._f("formatedNbr")(_vm.campaign.comments_count)
-                      ) +
-                      " comments"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.top_emojis
-            ? _c("div", { staticClass: "card emojis" }, [
-                _c("h5", [
-                  _vm._v(
-                    "Top " +
-                      _vm._s(
-                        _vm.campaign.top_emojis.top &&
-                          Object.values(_vm.campaign.top_emojis.top).length > 1
-                          ? Object.values(_vm.campaign.top_emojis.top).length +
-                              " "
-                          : ""
-                      ) +
-                      "used emoji"
-                  )
-                ]),
-                _vm._v(" "),
-                _c(
-                  "ul",
-                  _vm._l(_vm.campaign.top_emojis.top, function(count, emoji) {
-                    return _c("li", { key: count }, [
-                      _vm._v(
-                        "\r\n                    " +
-                          _vm._s(emoji) +
-                          "\r\n                    "
-                      ),
-                      _c("span", [
-                        _vm._v(
-                          _vm._s(
-                            (
-                              (count /
-                                (_vm.campaign.top_emojis.all
-                                  ? _vm.campaign.top_emojis.all
-                                  : 1)) *
-                              100
-                            ).toFixed(2)
-                          ) + "%"
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                ),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Based on " +
-                      _vm._s(
-                        _vm._f("formatedNbr")(_vm.campaign.top_emojis.all)
-                      ) +
-                      " emoji"
-                  )
-                ])
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "datatable-scroll" },
-          [
-            _c("h4", [_vm._v("Performance breakdown by Influencer")]),
-            _vm._v(" "),
-            _c("DataTable", {
-              ref: "byInfluencer",
-              attrs: {
-                cssClasses: "table-card",
-                columns: _vm.influencersColumns,
-                nativeData: _vm.campaign.influencers,
-                withPagination: false,
-                withTotalTab: true,
-                exportable: true,
-                exportableFields: [
-                  "username",
-                  "name",
-                  "campaign_media",
-                  "estimated_communities",
-                  "campaign_impressions",
-                  "earned_media_value"
-                ],
-                fileName:
-                  "Performance breakdown by Influencer for campaign " +
-                  _vm.campaign.name
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "datatable-scroll", attrs: { id: "byinfluencers" } },
-          [
-            _c("h4", [_vm._v("Performance breakdown by post on Instagram")]),
-            _vm._v(" "),
-            _c("DataTable", {
-              ref: "byInstaPosts",
-              attrs: {
-                cssClasses: "table-card",
-                columns: _vm.instaPostsColumns,
-                nativeData: _vm.campaign.instagram_media,
-                withPagination: false,
-                withTotalTab: true
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "datatable-scroll" },
-          [
-            _c("h4", [_vm._v("List of trackers")]),
-            _vm._v(" "),
-            _c(
-              "DataTable",
-              {
-                ref: "byTrackers",
-                attrs: {
-                  cssClasses: "table-card",
-                  columns: _vm.trackersColumns,
-                  nativeData: _vm.campaign.trackers
-                },
-                scopedSlots: _vm._u(
-                  [
-                    {
-                      key: "body-row",
-                      fn: function(row) {
-                        return _c(
-                          "td",
-                          {},
-                          [
-                            _vm.$can("analytics", "tracker") ||
-                            (_vm.AuthenticatedUser &&
-                              _vm.AuthenticatedUser.is_superadmin)
-                              ? _c(
-                                  "router-link",
-                                  {
-                                    directives: [
-                                      {
-                                        name: "show",
-                                        rawName: "v-show",
-                                        value:
-                                          row.data.original.queued ===
-                                          "finished",
-                                        expression:
-                                          "row.data.original.queued === 'finished'"
-                                      }
-                                    ],
-                                    staticClass: "icon-link",
-                                    attrs: {
-                                      to: {
-                                        name: "trackers",
-                                        params: { uuid: row.data.original.uuid }
-                                      },
-                                      title: "Statistics"
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "far fa-chart-bar" })]
-                                )
-                              : _vm._e()
-                          ],
-                          1
-                        )
-                      }
-                    }
-                  ],
-                  null,
-                  false,
-                  3662718142
-                )
-              },
-              [
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: {
-                      slot: "custom-buttons",
-                      disabled:
-                        !_vm.campaigns ||
-                        typeof _vm.campaigns.length === "undefined" ||
-                        _vm.campaigns.length === 0,
-                      to: { name: "new_tracker" }
-                    },
-                    slot: "custom-buttons"
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-plus" }),
-                    _vm._v(" Add new tracker    \r\n            ")
-                  ]
-                ),
-                _vm._v(" "),
-                _c("th", { attrs: { slot: "header" }, slot: "header" }, [
-                  _vm._v("Actions")
-                ])
-              ],
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _vm.campaign && _vm.campaign.posts_count > 0
-          ? _c("div", { staticClass: "posts-section" }, [
-              _c("h4", [_vm._v("Posts")]),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "There are " +
-                    _vm._s(
-                      _vm.campaign && _vm.campaign.posts_count
-                        ? _vm.campaign.posts_count
-                        : 0
-                    ) +
-                    " posts for this campaign."
-                )
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "campaign-posts" },
-                _vm._l(_vm.campaign.media, function(media) {
-                  return _c(
-                    "a",
-                    {
-                      key: media.uuid,
-                      staticClass: "campaign-posts-card",
-                      attrs: { href: media.link, target: "_blank" },
-                      on: {
-                        mouseover: function($event) {
-                          _vm.attrActive = media.uuid
-                        },
-                        mouseleave: function($event) {
-                          _vm.attrActive = null
-                        }
-                      }
-                    },
-                    [
-                      _c("img", {
-                        attrs: { src: media.thumbnail_url, loading: "lazy" }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "campaign-posts-card-icons" }, [
-                        media.platform === "instagram"
-                          ? _c("i", { staticClass: "fab fa-instagram" })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        media.type === "video" || media.type === "sidecar"
-                          ? _c("i", {
-                              class:
-                                "fas fa-" +
-                                (media.type === "sidecar" ? "images" : "video")
-                            })
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          class:
-                            "campaign-posts-card-attr " +
-                            (_vm.attrActive === media.uuid ? " active" : "")
-                        },
-                        [
-                          media.video_views
-                            ? _c("span", [
-                                _c("i", { staticClass: "fas fa-eye" }),
-                                _vm._v(
-                                  _vm._s(
-                                    String(
-                                      _vm.nbr().abbreviate(media.video_views)
-                                    ).toUpperCase()
-                                  )
-                                )
-                              ])
-                            : _vm._e(),
-                          _vm._v(" "),
-                          media.likes
-                            ? _c("span", [
-                                _c("i", { staticClass: "fas fa-heart" }),
-                                _vm._v(
-                                  _vm._s(
-                                    String(
-                                      _vm.nbr().abbreviate(media.likes)
-                                    ).toUpperCase()
-                                  )
-                                )
-                              ])
-                            : _vm._e(),
-                          _vm._v(" "),
-                          media.comments
-                            ? _c("span", [
-                                _c("i", { staticClass: "fas fa-comment" }),
-                                _vm._v(
-                                  _vm._s(
-                                    String(
-                                      _vm.nbr().abbreviate(media.comments)
-                                    ).toUpperCase()
-                                  )
-                                )
-                              ])
-                            : _vm._e()
-                        ]
-                      )
-                    ]
-                  )
-                }),
-                0
-              )
-            ])
-          : _vm._e()
-      ])
-    : _vm._e()
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "icon-link", attrs: { href: "#" } }, [
-      _c("img", { attrs: { src: __webpack_require__(/*! @assets/img/more.png */ "./resources/assets/img/more.png") } })
-    ])
-  }
-]
-render._withStripped = true
-
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&":
-/*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23& ***!
-  \*****************************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "modal", class: { "show-modal": _vm.show } },
-    [
-      _c("div", { staticClass: "modal-content" }, [
-        _c("header", [
-          _c("h4", { staticClass: "heading" }, [_vm._v(_vm._s(_vm.title))])
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "modal-form" }, [
-          _c("form", [
-            _c("div", { staticClass: "control" }, [
-              _c("input", {
-                attrs: { type: "hidden" },
-                domProps: { value: _vm.campaign.uuid }
-              }),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: _vm.campaign.name,
-                    expression: "campaign.name"
-                  }
-                ],
-                attrs: {
-                  type: "text",
-                  placeholder: "Campaign name (e.g. #FashionWeek20)"
-                },
-                domProps: { value: _vm.campaign.name },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(_vm.campaign, "name", $event.target.value)
-                  }
+            name: "show",
+            rawName: "v-show",
+            value: _vm.isList,
+            expression: "isList"
+          }
+        ]
+      },
+      _vm._l(_vm.files, function(file, index) {
+        return _c("li", { key: file.name }, [
+          _vm._v(
+            _vm._s(
+              file.name
+                .split(".")
+                .slice(0, -1)
+                .join(".")
+            ) + " "
+          ),
+          _c(
+            "button",
+            {
+              staticClass: "btn-flat btn-flat-danger",
+              attrs: { type: "button" },
+              on: {
+                click: function($event) {
+                  return _vm.removeFile(index)
                 }
-              })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-form__actions" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.submit()
-                    }
-                  }
-                },
-                [
-                  _vm._v(
-                    _vm._s(
-                      typeof _vm.campaign.uuid == "string" ? "Update" : "Create"
-                    )
-                  )
-                ]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-danger",
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.close()
-                    }
-                  }
-                },
-                [_vm._v("Cancel")]
-              )
-            ])
-          ])
+              }
+            },
+            [_c("i", { staticClass: "fas fa-times" })]
+          )
         ])
-      ])
-    ]
-  )
+      }),
+      0
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.isImage && _vm.files.length === 1,
+            expression: "isImage && files.length === 1"
+          }
+        ],
+        staticClass: "custom-file-preview"
+      },
+      [
+        _c(
+          "button",
+          {
+            staticClass: "btn-flat btn-flat-danger",
+            attrs: { type: "button" },
+            on: { click: _vm.removeImage }
+          },
+          [_c("i", { staticClass: "fas fa-times" })]
+        ),
+        _vm._v(" "),
+        _c("img", { ref: "img_src" })
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "button",
+      {
+        staticClass: "btn btn-primary custom-file-input",
+        attrs: { type: "button" },
+        on: {
+          click: function($event) {
+            return _vm.preventFileInput()
+          }
+        }
+      },
+      [_c("i", { class: _vm.icon }), _vm._v(" " + _vm._s(_vm.label))]
+    ),
+    _vm._v(" "),
+    _c("input", {
+      ref: _vm.id,
+      attrs: {
+        id: _vm.id,
+        type: "file",
+        accept: _vm.accept,
+        multiple: _vm.multiple
+      },
+      on: { change: _vm.fileChanged }
+    })
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -1820,10 +661,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&":
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9& ***!
-  \***********************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/trackers/New.vue?vue&type=template&id=530bb995&":
+/*!**********************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/trackers/New.vue?vue&type=template&id=530bb995& ***!
+  \**********************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1835,291 +676,681 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { staticClass: "campaigns" },
-    [
-      !_vm.campaign
-        ? _c("div", { staticClass: "hero" }, [
-            _vm._m(0),
+  return _c("div", { staticClass: "p-1" }, [
+    _c("div", { staticClass: "card" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("div", { staticClass: "card__content" }, [
+        _c(
+          "form",
+          {
+            ref: "trackerForm",
+            attrs: { enctype: "multipart/form-data" },
+            on: {
+              submit: function($event) {
+                $event.preventDefault()
+                return _vm.saveTracker($event)
+              }
+            }
+          },
+          [
+            _c("p", { staticClass: "modal-form__heading" }, [
+              _vm._v("What would you like to track?")
+            ]),
             _vm._v(" "),
-            _vm.$can("create", "campaign") ||
-            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-              ? _c("div", { staticClass: "hero__actions" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { disabled: !_vm.activeBrand },
+            _c("div", { staticClass: "radio-group" }, [
+              _c(
+                "div",
+                {
+                  staticClass: "radio-group__item",
+                  class: { active: _vm.type === "post" }
+                },
+                [
+                  _c("label", { attrs: { for: "post" } }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.type,
+                          expression: "type"
+                        }
+                      ],
+                      attrs: { type: "radio", id: "post", value: "post" },
+                      domProps: { checked: _vm._q(_vm.type, "post") },
                       on: {
-                        click: function($event) {
-                          return _vm.addCampaign()
+                        change: function($event) {
+                          _vm.type = "post"
                         }
                       }
-                    },
-                    [_vm._v("Add new campaign")]
-                  )
-                ])
-              : _vm._e()
-          ])
-        : _c("div", { staticClass: "campaign-header" }, [
-            _c("span", [
-              _vm._v("Campaign "),
-              _c("strong", [_vm._v(_vm._s(_vm.campaign.name))])
-            ])
-          ]),
-      _vm._v(" "),
-      !_vm.campaign
-        ? _c("div", { staticClass: "p-1" }, [
-            _vm.$can("analytics", "campaign") ||
-            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-              ? _c("header", { staticClass: "cards" }, [
-                  _c("div", { staticClass: "card" }, [
-                    _c("div", { staticClass: "number" }, [
+                    }),
+                    _vm._v(" "),
+                    _c("span", [
                       _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaigns.length))
+                        "Interactions for a post on a blog or social media"
                       )
                     ]),
                     _vm._v(" "),
-                    _c("p", { staticClass: "description" }, [
-                      _vm._v("NUMBER OF CAMPAIGNS")
+                    _c("p", [
+                      _vm._v(
+                        "Track the number of interactions for any public post on blogs or social media."
+                      )
                     ])
                   ])
-                ])
-              : _vm._e(),
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "radio-group__item",
+                  class: { active: _vm.type === "story" }
+                },
+                [
+                  _c("label", { attrs: { for: "story" } }, [
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.type,
+                          expression: "type"
+                        }
+                      ],
+                      attrs: { type: "radio", id: "story", value: "story" },
+                      domProps: { checked: _vm._q(_vm.type, "story") },
+                      on: {
+                        change: function($event) {
+                          _vm.type = "story"
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("span", [
+                      _vm._v("Interactions for an Instagram or Snapchat story")
+                    ]),
+                    _vm._v(" "),
+                    _c("p", [
+                      _vm._v(
+                        "Specify the metrics for a story and its content in order to include it in the aggregated statistics."
+                      )
+                    ])
+                  ])
+                ]
+              )
+            ]),
             _vm._v(" "),
-            _vm.$can("list", "campaign") ||
-            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-              ? _c(
-                  "div",
-                  { staticClass: "datatable-scroll" },
-                  [
-                    _c(
-                      "DataTable",
+            _c("div", { staticClass: "forms" }, [
+              _c("div", { staticClass: "form-url" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c("label", [_vm._v("Tracker name")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
                       {
-                        ref: "campaignsDT",
-                        attrs: {
-                          columns: _vm.columns,
-                          searchable: true,
-                          searchCols: ["name", "influencer"],
-                          nativeData: _vm.parsedCampaigns,
-                          fetchMethod: "fetchCampaigns",
-                          cssClasses: "table-card"
-                        },
-                        scopedSlots: _vm._u(
-                          [
-                            {
-                              key: "body-row",
-                              fn: function(row) {
-                                return _c(
-                                  "td",
-                                  {},
-                                  [
-                                    _vm.$can("analytics", "campaign") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "router-link",
-                                          {
-                                            directives: [
-                                              {
-                                                name: "show",
-                                                rawName: "v-show",
-                                                value:
-                                                  row.data.original
-                                                    .trackers_count > 0,
-                                                expression:
-                                                  "row.data.original.trackers_count > 0"
-                                              }
-                                            ],
-                                            staticClass: "icon-link",
-                                            attrs: {
-                                              to: {
-                                                name: "campaigns",
-                                                params: {
-                                                  uuid: row.data.original.uuid
-                                                }
-                                              },
-                                              title: "Statistics"
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "far fa-chart-bar datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can("list", "tracker") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "router-link",
-                                          {
-                                            directives: [
-                                              {
-                                                name: "show",
-                                                rawName: "v-show",
-                                                value:
-                                                  row.data.original
-                                                    .trackers_count > 0,
-                                                expression:
-                                                  "row.data.original.trackers_count > 0"
-                                              }
-                                            ],
-                                            staticClass: "icon-link",
-                                            attrs: {
-                                              to: {
-                                                name: "campaign_trackers",
-                                                params: {
-                                                  campaign:
-                                                    row.data.original.uuid
-                                                }
-                                              },
-                                              title: "Show trackers"
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass: "fas fa-list"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can("edit", "campaign") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "button",
-                                          {
-                                            staticClass: "btn icon-link",
-                                            attrs: { title: "Edit campaign" },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.editCampaign(
-                                                  row.data.original
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "fas fa-pen datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can(
-                                      "start-stop-tracking",
-                                      "campaign"
-                                    ) ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "button",
-                                          {
-                                            staticClass: "btn icon-link",
-                                            attrs: { title: "Stop tracking" },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.disableCampaign(row)
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "far fa-stop-circle datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can("delete", "campaign") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "button",
-                                          {
-                                            staticClass: "btn icon-link",
-                                            attrs: { title: "Delete campaign" },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.deleteCampaign(
-                                                  row.data.original
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "far fa-trash-alt datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e()
-                                  ],
-                                  1
-                                )
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.name,
+                        expression: "name"
+                      }
+                    ],
+                    attrs: { type: "text", placeholder: "Name" },
+                    domProps: { value: _vm.name },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.name = $event.target.value
+                      }
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("p", [
+                    _vm._v(
+                      "The tracker name is private. It's used in the tracker listing. If no name has been given, one will be automatically generated according to what is being tracked."
+                    )
+                  ])
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "form-url" }, [
+                _c("div", { staticClass: "control" }, [
+                  _c("label", [_vm._v("Assign to campaign")]),
+                  _vm._v(" "),
+                  _c(
+                    "select",
+                    {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.campaign_id,
+                          expression: "campaign_id"
+                        }
+                      ],
+                      on: {
+                        change: function($event) {
+                          var $$selectedVal = Array.prototype.filter
+                            .call($event.target.options, function(o) {
+                              return o.selected
+                            })
+                            .map(function(o) {
+                              var val = "_value" in o ? o._value : o.value
+                              return val
+                            })
+                          _vm.campaign_id = $event.target.multiple
+                            ? $$selectedVal
+                            : $$selectedVal[0]
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "option",
+                        { attrs: { selected: "" }, domProps: { value: -1 } },
+                        [_vm._v("Select a campaign")]
+                      ),
+                      _vm._v(" "),
+                      _vm._l(_vm.campaigns, function(camp) {
+                        return _c(
+                          "option",
+                          { key: camp.id, domProps: { value: camp.id } },
+                          [_vm._v(_vm._s(camp.name))]
+                        )
+                      })
+                    ],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _c("p", [_vm._v("Assign tracker to a exists campaign")])
+                ])
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.type !== "story",
+                      expression: "type !== 'story'"
+                    }
+                  ],
+                  staticClass: "form-url"
+                },
+                [
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [
+                        _vm._v(
+                          _vm._s(
+                            _vm.type === "url" ? "Destination URL" : "Post URL"
+                          )
+                        )
+                      ]),
+                      _vm._v(" "),
+                      _vm.type === "url"
+                        ? _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.url,
+                                expression: "url"
+                              }
+                            ],
+                            attrs: { type: "text", placeholder: "https://" },
+                            domProps: { value: _vm.url },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.url = $event.target.value
                               }
                             }
-                          ],
-                          null,
-                          false,
-                          1545961479
-                        )
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.type === "post"
+                        ? _c("vue-tags-input", {
+                            attrs: {
+                              placeholder: "Add post URL",
+                              tags: _vm.urls
+                            },
+                            on: {
+                              "tags-changed": function(newUrls) {
+                                return (_vm.urls = newUrls)
+                              }
+                            },
+                            model: {
+                              value: _vm.url,
+                              callback: function($$v) {
+                                _vm.url = $$v
+                              },
+                              expression: "url"
+                            }
+                          })
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _c(
+                        "p",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.type === "url",
+                              expression: "type === 'url'"
+                            }
+                          ]
+                        },
+                        [
+                          _vm._v(
+                            "We will generate a shortened URL which will redirect to the destination URL and allow us to track the number and location of visits."
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "p",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.type === "post",
+                              expression: "type === 'post'"
+                            }
+                          ]
+                        },
+                        [
+                          _vm._v(
+                            "You can specify multiple post URLs on blogs or social media, one URL per line. Several trackers will then be created."
+                          )
+                        ]
+                      )
+                    ],
+                    1
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.type !== "url",
+                      expression: "type !== 'url'"
+                    }
+                  ],
+                  staticClass: "form-url"
+                },
+                [
+                  _c("div", { staticClass: "form-control" }, [
+                    _c("p", { staticClass: "modal-form__heading" }, [
+                      _vm._v(
+                        "Which platform was used to post the " +
+                          _vm._s(_vm.type) +
+                          "?"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "label",
+                      {
+                        staticClass: "instagram-radio",
+                        attrs: { for: "instagram" }
                       },
                       [
-                        _c(
-                          "th",
-                          { attrs: { slot: "header" }, slot: "header" },
-                          [_vm._v("Actions")]
-                        )
+                        _c("input", {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.platform,
+                              expression: "platform"
+                            }
+                          ],
+                          attrs: { type: "radio", value: "instagram" },
+                          domProps: {
+                            checked: _vm.platform === "instagram",
+                            checked: _vm._q(_vm.platform, "instagram")
+                          },
+                          on: {
+                            change: function($event) {
+                              _vm.platform = "instagram"
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm._m(1)
                       ]
                     )
+                  ])
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  directives: [
+                    {
+                      name: "show",
+                      rawName: "v-show",
+                      value: _vm.type === "story",
+                      expression: "type === 'story'"
+                    }
                   ],
-                  1
+                  staticClass: "form-url"
+                },
+                [
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Story sequence")]),
+                      _vm._v(" "),
+                      _c("FileInput", {
+                        attrs: {
+                          id: "storyfile",
+                          label: "Upload story sequence",
+                          accept:
+                            "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
+                          isList: true,
+                          icon: "fas fa-plus",
+                          multiple: false
+                        },
+                        on: { custom: _vm.handleStoryUpload }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v(
+                          "If there are multiple images or videos for the story, we recommend creating one tracker per image or video."
+                        )
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "control" }, [
+                    _c("label", [
+                      _vm._v(
+                        _vm._s(
+                          _vm.platform === "instagram"
+                            ? "Instagram"
+                            : "Snapchat"
+                        ) + " username"
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.username,
+                          expression: "username"
+                        }
+                      ],
+                      attrs: { type: "text", placeholder: "Username" },
+                      domProps: { value: _vm.username },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.username = $event.target.value
+                        }
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("p", [_vm._v("Influencer username")])
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Reach")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.reach,
+                          callback: function($$v) {
+                            _vm.reach = $$v
+                          },
+                          expression: "reach"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Accounts reached with this story.")])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Impressions")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.impressions,
+                          callback: function($$v) {
+                            _vm.impressions = $$v
+                          },
+                          expression: "impressions"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Number of impressions.")])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Interactions")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.interactions,
+                          callback: function($$v) {
+                            _vm.interactions = $$v
+                          },
+                          expression: "interactions"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Actions taken from this story.")])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Back")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.back,
+                          callback: function($$v) {
+                            _vm.back = $$v
+                          },
+                          expression: "back"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v(
+                          "Number of taps users made to see the previous photo or video in this story."
+                        )
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Forward")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.forward,
+                          callback: function($$v) {
+                            _vm.forward = $$v
+                          },
+                          expression: "forward"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v(
+                          "Number of taps users made to see the next photo or video in this story."
+                        )
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Next story")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.next_story,
+                          callback: function($$v) {
+                            _vm.next_story = $$v
+                          },
+                          expression: "next_story"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v(
+                          "Number of taps users made to see the next account's story."
+                        )
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Exited")]),
+                      _vm._v(" "),
+                      _c("vue-numeric", {
+                        model: {
+                          value: _vm.exited,
+                          callback: function($$v) {
+                            _vm.exited = $$v
+                          },
+                          expression: "exited"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [
+                        _vm._v(
+                          "Number of times a user swiped away from this story."
+                        )
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "control" },
+                    [
+                      _c("label", [_vm._v("Published at")]),
+                      _vm._v(" "),
+                      _c("datetime", {
+                        attrs: {
+                          type: "datetime",
+                          title: "Story publiction datetime",
+                          "use12-hour": false
+                        },
+                        model: {
+                          value: _vm.published_at,
+                          callback: function($$v) {
+                            _vm.published_at = $$v
+                          },
+                          expression: "published_at"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("p", [_vm._v("Story publiction datetime.")])
+                    ],
+                    1
+                  )
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "modal-form__actions" },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: { disabled: _vm.disableAction() }
+                  },
+                  [_vm._v("Create")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "router-link",
+                  {
+                    staticClass: "btn btn-danger",
+                    attrs: { to: { name: "trackers" } }
+                  },
+                  [_vm._v("Cancel")]
                 )
-              : _vm._e()
-          ])
-        : _vm._e(),
-      _vm._v(" "),
-      _c("CreateCampaignModal", {
-        ref: "campaignFormModal",
-        on: { create: _vm.create, update: _vm.update }
-      }),
-      _vm._v(" "),
-      _vm.campaign
-        ? _c("CampaignAnalytics", { attrs: { campaign: _vm.campaign } })
-        : _vm._e(),
-      _vm._v(" "),
-      _c("ConfirmationModal", {
-        ref: "confirmDeleteCampaignModal",
-        on: { custom: _vm.deleteCampaignAction }
-      })
-    ],
-    1
-  )
+              ],
+              1
+            )
+          ]
+        )
+      ])
+    ])
+  ])
 }
 var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "hero__intro" }, [
-      _c("h1", [_vm._v("Campaigns")]),
-      _vm._v(" "),
-      _c("ul", { staticClass: "breadcrumbs" }, [
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Dashboard")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Campaigns")])])
-      ])
+    return _c("header", [_c("h2", [_vm._v("Add new Tracker")])])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("i", { staticClass: "fab fa-instagram" }),
+      _vm._v(" Instagram")
     ])
   }
 ]
@@ -2129,29 +1360,20 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./resources/assets/img/more.png":
-/*!***************************************!*\
-  !*** ./resources/assets/img/more.png ***!
-  \***************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = "/images/more.png?01227267fe89e713015bb9cc24dac9f1";
-
-/***/ }),
-
-/***/ "./resources/js/components/CampaignAnalytics.vue":
-/*!*******************************************************!*\
-  !*** ./resources/js/components/CampaignAnalytics.vue ***!
-  \*******************************************************/
+/***/ "./resources/js/components/FileInput.vue":
+/*!***********************************************!*\
+  !*** ./resources/js/components/FileInput.vue ***!
+  \***********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CampaignAnalytics.vue?vue&type=template&id=419a9e7b& */ "./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&");
-/* harmony import */ var _CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CampaignAnalytics.vue?vue&type=script&lang=js& */ "./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _FileInput_vue_vue_type_template_id_6c71a2d3_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true& */ "./resources/js/components/FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true&");
+/* harmony import */ var _FileInput_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./FileInput.vue?vue&type=script&lang=js& */ "./resources/js/components/FileInput.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _FileInput_vue_vue_type_style_index_0_id_6c71a2d3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css& */ "./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
 
 
 
@@ -2159,67 +1381,83 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _FileInput_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _FileInput_vue_vue_type_template_id_6c71a2d3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _FileInput_vue_vue_type_template_id_6c71a2d3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
-  null,
+  "6c71a2d3",
   null
   
 )
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/CampaignAnalytics.vue"
+component.options.__file = "resources/js/components/FileInput.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************/
+/***/ "./resources/js/components/FileInput.vue?vue&type=script&lang=js&":
+/*!************************************************************************!*\
+  !*** ./resources/js/components/FileInput.vue?vue&type=script&lang=js& ***!
+  \************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignAnalytics.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./FileInput.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b& ***!
-  \**************************************************************************************/
+/***/ "./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css&":
+/*!********************************************************************************************************!*\
+  !*** ./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css& ***!
+  \********************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_style_index_0_id_6c71a2d3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=style&index=0&id=6c71a2d3&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_style_index_0_id_6c71a2d3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_style_index_0_id_6c71a2d3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_style_index_0_id_6c71a2d3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_style_index_0_id_6c71a2d3_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
+
+/***/ }),
+
+/***/ "./resources/js/components/FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true& ***!
+  \******************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignAnalytics.vue?vue&type=template&id=419a9e7b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_template_id_6c71a2d3_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/FileInput.vue?vue&type=template&id=6c71a2d3&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_template_id_6c71a2d3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_FileInput_vue_vue_type_template_id_6c71a2d3_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 
 /***/ }),
 
-/***/ "./resources/js/components/modals/CreateCampaignModal.vue":
-/*!****************************************************************!*\
-  !*** ./resources/js/components/modals/CreateCampaignModal.vue ***!
-  \****************************************************************/
+/***/ "./resources/js/pages/trackers/New.vue":
+/*!*********************************************!*\
+  !*** ./resources/js/pages/trackers/New.vue ***!
+  \*********************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateCampaignModal.vue?vue&type=template&id=1cd11a23& */ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&");
-/* harmony import */ var _CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateCampaignModal.vue?vue&type=script&lang=js& */ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&");
+/* harmony import */ var _New_vue_vue_type_template_id_530bb995___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./New.vue?vue&type=template&id=530bb995& */ "./resources/js/pages/trackers/New.vue?vue&type=template&id=530bb995&");
+/* harmony import */ var _New_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./New.vue?vue&type=script&lang=js& */ "./resources/js/pages/trackers/New.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -2229,9 +1467,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _New_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _New_vue_vue_type_template_id_530bb995___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _New_vue_vue_type_template_id_530bb995___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -2241,107 +1479,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/modals/CreateCampaignModal.vue"
+component.options.__file = "resources/js/pages/trackers/New.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************/
+/***/ "./resources/js/pages/trackers/New.vue?vue&type=script&lang=js&":
+/*!**********************************************************************!*\
+  !*** ./resources/js/pages/trackers/New.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateCampaignModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_New_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./New.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/trackers/New.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_New_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&":
-/*!***********************************************************************************************!*\
-  !*** ./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23& ***!
-  \***********************************************************************************************/
+/***/ "./resources/js/pages/trackers/New.vue?vue&type=template&id=530bb995&":
+/*!****************************************************************************!*\
+  !*** ./resources/js/pages/trackers/New.vue?vue&type=template&id=530bb995& ***!
+  \****************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateCampaignModal.vue?vue&type=template&id=1cd11a23& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_New_vue_vue_type_template_id_530bb995___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./New.vue?vue&type=template&id=530bb995& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/trackers/New.vue?vue&type=template&id=530bb995&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_New_vue_vue_type_template_id_530bb995___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/pages/CampaignsPage.vue":
-/*!**********************************************!*\
-  !*** ./resources/js/pages/CampaignsPage.vue ***!
-  \**********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CampaignsPage.vue?vue&type=template&id=3a199ed9& */ "./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&");
-/* harmony import */ var _CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CampaignsPage.vue?vue&type=script&lang=js& */ "./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/pages/CampaignsPage.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&":
-/*!***********************************************************************!*\
-  !*** ./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignsPage.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&":
-/*!*****************************************************************************!*\
-  !*** ./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9& ***!
-  \*****************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignsPage.vue?vue&type=template&id=3a199ed9& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_New_vue_vue_type_template_id_530bb995___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

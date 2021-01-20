@@ -37,6 +37,8 @@ const state = () => ({
     statistics: {},
     trackers: [],
     tracker: null,
+    stories: [],
+    story: null,
     influencers: [],
     influencer: null,
     roles: [],
@@ -54,6 +56,8 @@ const getters = {
     statistics: state => state.statistics,
     trackers: state => state.trackers,
     tracker: state => state.tracker,
+    stories: state => state.stories,
+    story: state => state.story,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
     roles: state => state.roles,
@@ -650,6 +654,12 @@ const mutations = {
     },
     setTracker: (state, { tracker }) => {
         state.tracker = tracker;
+    },
+    setStories: (state, { stories }) => {
+        state.stories = stories;
+    },
+    setStory: (state, { story }) => {
+        state.story = story;
     },
     setRoles: (state, { roles }) => {
         state.roles = roles

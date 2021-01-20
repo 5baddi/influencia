@@ -1,19 +1,15 @@
 (window["webpackJsonp"] = window["webpackJsonp"] || []).push([[8],{
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&":
-/*!****************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js& ***!
-  \****************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateUserModal.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! number-abbreviate */ "./node_modules/number-abbreviate/index.js");
-/* harmony import */ var number_abbreviate__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(number_abbreviate__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/Chart.js");
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(chart_js__WEBPACK_IMPORTED_MODULE_2__);
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -61,458 +57,21 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: {
-    campaign: {
-      type: Object,
-      "default": function _default() {
-        return {};
-      }
-    }
-  },
-  methods: {
-    nbr: function nbr() {
-      return new number_abbreviate__WEBPACK_IMPORTED_MODULE_1___default.a();
-    },
-    createDoughtnutChart: function createDoughtnutChart(id, data) {
-      var chartEl = document.getElementById(id);
-
-      try {
-        var chart = new chart_js__WEBPACK_IMPORTED_MODULE_2___default.a(chartEl, {
-          type: 'doughnut',
-          data: data
-        });
-      } catch (e) {
-        chartEl.style.display = "none !important";
-      }
-    }
-  },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "campaigns"])), {}, {
-    fiveInfluencers: function fiveInfluencers() {
-      // Get five influencers
-      if (this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0) {
-        return this.campaign.influencers.slice(0, 5);
-      }
-
-      return [];
-    }
-  }),
-  mounted: function mounted() {
-    // Comments sentiments
-    if (this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative) {
-      this.createDoughtnutChart('sentiments-chart', {
-        datasets: [{
-          data: [(this.campaign.sentiments_positive * 100).toFixed(2), (this.campaign.sentiments_neutral * 100).toFixed(2), (this.campaign.sentiments_negative * 100).toFixed(2)],
-          backgroundColor: ["#AFD75C", "#999999", "#ED435A" //#d93176
-          ]
-        }],
-        labels: ['Positive ' + (this.campaign.sentiments_positive * 100).toFixed(2), 'Neutral ' + (this.campaign.sentiments_neutral * 100).toFixed(2), 'Negative ' + (this.campaign.sentiments_negative * 100).toFixed(2)]
-      });
-    } // Communities
-
-
-    if (this.campaign.communities && this.campaign.communities > 0) {
-      this.createDoughtnutChart('communities-chart', {
-        datasets: [{
-          data: [this.campaign.communities.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Impressions
-
-
-    if (this.campaign.impressions && this.campaign.impressions > 0) {
-      this.createDoughtnutChart('impressions-chart', {
-        datasets: [{
-          data: [this.campaign.impressions.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Videos views
-
-
-    if (this.campaign.video_views && this.campaign.video_views > 0) {
-      this.createDoughtnutChart('views-chart', {
-        datasets: [{
-          data: [this.campaign.video_views],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Engagements
-
-
-    if (this.campaign.engagements && this.campaign.engagements > 0) {
-      this.createDoughtnutChart('engagements-chart', {
-        datasets: [{
-          data: [this.campaign.engagements.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: ['Instagram']
-      });
-    } // Posts
-
-
-    if (this.campaign.posts_count && this.campaign.posts_count > 0) {
-      var postsAndStoriesLabel = 'Instagram: ' + (this.campaign.posts_count ? this.campaign.posts_count : 0) + ' including ' + (this.campaign.stories_count ? this.campaign.stories_count : 0) + ' stories';
-      this.createDoughtnutChart('posts-chart', {
-        datasets: [{
-          data: [this.campaign.posts_count.toFixed(2)],
-          backgroundColor: ['#d93176']
-        }],
-        labels: [postsAndStoriesLabel]
-      });
-    }
-  },
-  data: function data() {
-    return {
-      influencersColumns: [{
-        name: 'Influencer',
-        field: 'id',
-        callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '" style="margin-right:0.2rem"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
-        }
-      }, {
-        name: 'Number of posts',
-        field: 'campaign_media',
-        isNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Size of activated communities',
-        field: 'estimated_communities',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Estimated impressions',
-        field: 'campaign_impressions',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Earned Media Value',
-        field: 'earned_media_value',
-        currency: '€',
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }],
-      instaPostsColumns: [{
-        name: 'Influencer',
-        field: 'influencer',
-        callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username) + '</p>';
-        }
-      }, {
-        name: 'Post',
-        field: 'link',
-        callback: function callback(row) {
-          if (!row.link || !row.caption) return '<p>---</p>';
-          return '<a href="' + row.link + '" target="_blank">' + row.caption.substr(1, 100) + '...</a>';
-        }
-      }, {
-        name: 'Media type',
-        field: 'type',
-        capitalize: true
-      }, {
-        name: 'Size of activated communities',
-        field: 'activated_communities',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Estimated impressions',
-        field: 'estimated_impressions',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Engagements',
-        field: 'engagements',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Organic impressions (declarative)',
-        field: 'organic_impressions',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, //  {
-      //     name: 'Engagements rate (reach)',
-      //     field: 'engagement_rate',
-      //     callback: function (row) {
-      //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-      //     }
-      // },
-      {
-        name: 'Likes',
-        field: 'likes',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Views',
-        field: 'video_views',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Comments',
-        field: 'comments',
-        isNativeNbr: true,
-        isRounded: true,
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, {
-        name: 'Impressions (first sequence)'
-      }, {
-        name: 'Story sequences'
-      }, {
-        name: 'Sequence impressions'
-      }, {
-        name: 'Earned Media Value',
-        field: 'earned_media_value',
-        currency: '€',
-        hasTotal: true,
-        hasAverage: true,
-        hasMedian: true
-      }, // {
-      //     name: 'Tags',
-      //     field: 'tags',
-      //     callback: function(row){
-      //         if(row.tags && row.tags.length > 0){
-      //             let html = "<ul>";
-      //             row.tags.map(function(item, index){
-      //                 html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
-      //             });
-      //             return html + "</ul>";
-      //         }
-      //         return '-';
-      //     }
-      // },
-      {
-        name: 'Posted at',
-        field: 'published_at'
-      }],
-      trackersColumns: [{
-        name: "name",
-        field: "name",
-        capitalize: true
-      }, {
-        name: "Platform",
-        field: "platform",
-        callback: function callback(row) {
-          var link = "";
-          var icon = "";
-
-          if (row.platform === "instagram") {
-            link = "https://instagram.com/";
-            icon = "<i class=\"fab fa-instagram instagram-icon\"></i>";
-          } else if (row.platform === "youtube") {
-            link = "https://youtube.com/";
-            icon = "<i class=\"fab fa-youtube youtube-icon\"></i>";
-          }
-
-          return '<a href="' + link + '" target="_blank" title="' + row.platform + '" class="icon-link">' + icon + '</a>';
-        }
-      }, {
-        name: "type",
-        field: "type",
-        capitalize: true
-      }, {
-        name: "Status",
-        field: "status",
-        sortable: false,
-        callback: function callback(row) {
-          return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Enabled' : 'Disabled') + '">' + (row.queued.charAt(0).toUpperCase() + row.queued.slice(1)) + '</span>';
-        }
-      }, {
-        name: "Created at",
-        field: "created_at",
-        isTimeAgo: true
-      }],
-      attrActive: null,
-      sentimentData: {
-        labels: ['Positive', 'Neutral', 'Negative'],
-        backgroundColor: ["#AFD75C", "#999999", "#ED435A"]
-      }
-    };
-  }
-});
-
-/***/ }),
-
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&":
-/*!*************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js& ***!
-  \*************************************************************************************************************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       show: false,
-      campaign: {
-        uuid: null,
-        name: null
+      user: {
+        id: null,
+        name: null,
+        email: null,
+        password: null,
+        brand_id: -1,
+        role: -1
       },
-      title: "Add new campaign"
+      resetPassword: false,
+      title: "Add new user"
     };
   },
   created: function created() {
@@ -520,51 +79,63 @@ __webpack_require__.r(__webpack_exports__);
 
     document.addEventListener("keydown", function (e) {
       if (e.key == "Escape" && _this.show) {
-        _this.close();
+        _this.dismiss();
       }
-    });
+    }); // Load roles
+
+    this.$store.dispatch("fetchRoles");
   },
   methods: {
-    open: function open(campaign) {
-      if (typeof campaign !== "undefined") this.campaign = campaign;
-      if (typeof campaign !== "undefined" && typeof campaign.uuid == "string" && campaign.name !== null) this.title = "Update " + campaign.name.slice();
+    open: function open(user, resetPassword) {
+      if (typeof user !== "undefined") this.user = user;
+      if (typeof user !== "undefined" && typeof user.id !== "undefined" && typeof resetPassword === "undefined") this.title = "Edit " + user.name.toUpperCase();
+
+      if (typeof user !== "undefined" && typeof user.id !== "undefined" && typeof resetPassword !== "undefined") {
+        this.title = "Reset password for " + user.name.toUpperCase();
+        this.resetPassword = true;
+      } // Ignore password
+
+
+      this.user.password = null; // Set role
+
+      if (typeof this.user.role_id === "number") this.user.role = this.user.role_id;else this.user.role = -1;
+      if (this.is_superadmin) this.user.role = 'super';
       this.show = true;
     },
     close: function close() {
       this.show = false;
-      this.campaign = {
-        uuid: null,
-        name: null
+      this.user = {
+        id: null,
+        name: null,
+        email: null,
+        password: null,
+        brand_id: -1,
+        role: -1
       };
-      this.title = "Add new campaign";
+      this.resetPassword = false;
     },
     submit: function submit() {
-      var action = typeof this.campaign.uuid === "undefined" || this.campaign.uuid === null ? "create" : "update"; // Set base campaign info
-
-      var formData = {};
-      formData.name = this.campaign.name;
-      if (this.campaign.uuid !== null) formData.uuid = this.campaign.uuid;
-      this.$emit(action, formData);
+      var action = this.user.id !== null ? "update" : "create";
+      this.$emit(this.resetPassword ? "custom" : action, this.user);
       this.close();
     }
-  }
+  },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["brands", "roles"]))
 });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/UsersPage.vue?vue&type=script&lang=js&":
+/*!***************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/UsersPage.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************************************************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _components_modals_CreateCampaignModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/modals/CreateCampaignModal */ "./resources/js/components/modals/CreateCampaignModal.vue");
-/* harmony import */ var _components_CampaignAnalytics__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/CampaignAnalytics */ "./resources/js/components/CampaignAnalytics.vue");
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _components_DataTable_vue__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/DataTable.vue */ "./resources/js/components/DataTable.vue");
+/* harmony import */ var _components_modals_CreateUserModal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/modals/CreateUserModal */ "./resources/js/components/modals/CreateUserModal.vue");
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -621,21 +192,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-
-
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    CreateCampaignModal: _components_modals_CreateCampaignModal__WEBPACK_IMPORTED_MODULE_0__["default"],
-    CampaignAnalytics: _components_CampaignAnalytics__WEBPACK_IMPORTED_MODULE_1__["default"]
+    CreateUserModal: _components_modals_CreateUserModal__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   notifications: {
     showError: {
@@ -645,41 +206,37 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     showSuccess: {
       type: "success"
-    },
-    createCampaignErrors: {
-      type: "error"
-    },
-    createCampaignSuccess: {
-      type: "success"
     }
   },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapGetters"])(["users", "AuthenticatedUser"])),
   methods: {
-    loadCampaigns: function loadCampaigns() {
-      // Load campaigns
-      if (Object.values(this.campaigns).length === 0) this.$store.dispatch("fetchCampaigns")["catch"](function (error) {});
+    loadUsers: function loadUsers() {
+      this.$store.dispatch("fetchUsers")["catch"](function (error) {});
     },
-    fetchCampaign: function fetchCampaign() {
-      // Load campaign analytics by UUID
-      this.$store.dispatch("fetchCampaignAnalytics", this.$route.params.uuid)["catch"](function (error) {});
+    addUser: function addUser() {
+      this.$refs.userFormModal.open();
     },
-    addCampaign: function addCampaign() {
-      this.$refs.campaignFormModal.open();
+    editUser: function editUser(user) {
+      this.$refs.userFormModal.open(Object.assign({}, user));
     },
-    editCampaign: function editCampaign(campaign) {
-      this.$refs.campaignFormModal.open(Object.assign({}, campaign));
+    deleteUser: function deleteUser(user) {
+      this.$refs.confirmDeleteUserModal.open("Are sure to delete this user?", user);
     },
-    deleteCampaign: function deleteCampaign(campaign) {
-      this.$refs.confirmDeleteCampaignModal.open("Are sure to delete this campaign?", campaign);
+    banUser: function banUser(user) {
+      this.$refs.confirmBanUserModal.open("Are sure to " + (user.banned ? "unban" : "ban") + " this user?", user);
     },
-    deleteCampaignAction: function deleteCampaignAction(campaign) {
+    resetUserPassword: function resetUserPassword(user) {
+      this.$refs.userFormModal.open(user, true);
+    },
+    deleteUserAction: function deleteUserAction(user) {
       var _this = this;
 
-      if (typeof campaign.uuid === "undefined") this.showError();
-      this.$store.dispatch("deleteCampaign", campaign.uuid).then(function (response) {
-        _this.$refs.campaignsDT.reloadData();
+      if (typeof user.uuid === "undefined") this.showError();
+      this.$store.dispatch("deleteUser", user.uuid).then(function (response) {
+        _this.$refs.usersDT.reloadData();
 
         _this.showSuccess({
-          message: "Successfully deleted campaign '" + campaign.name + "'"
+          message: "Successfully deleted user '" + user.name + "'"
         });
       })["catch"](function (error) {
         _this.showError({
@@ -687,736 +244,171 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       });
     },
-    create: function create(campaign) {
+    banUserAction: function banUserAction(user) {
       var _this2 = this;
 
-      // Set brand ID
-      campaign.brand_id = this.AuthenticatedUser.selected_brand_id;
-      this.$store.dispatch("addNewCampaign", campaign).then(function (response) {
-        _this2.$refs.campaignsDT.reloadData();
+      this.$store.dispatch("banUser", user.uuid).then(function (response) {
+        _this2.$refs.usersDT.reloadData();
 
         _this2.showSuccess({
           message: response.message
         });
       })["catch"](function (error) {
         _this2.showError({
-          message: error.response.data.message
+          message: error.message
         });
       });
     },
-    update: function update(campaign) {
+    create: function create(user) {
       var _this3 = this;
 
-      this.$store.dispatch("updateCampaign", campaign).then(function (response) {
-        _this3.$refs.campaignsDT.reloadData();
+      this.$store.dispatch("addNewUser", user).then(function (response) {
+        if (response.success) {
+          _this3.$refs.usersDT.reloadData();
 
-        _this3.showSuccess({
-          message: response.message
-        });
+          _this3.showSuccess({
+            message: "user ".concat(response.content.name, " created successfuly!")
+          });
+        } else {
+          throw new Error("Something going wrong!");
+        }
       })["catch"](function (error) {
         _this3.showError({
-          message: error.response.data.message
+          title: "Error",
+          message: "".concat(error.response.data.message)
         });
       });
-    }
-  },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapGetters"])(["AuthenticatedUser", "campaigns", "campaign"])), {}, {
-    parsedCampaigns: function parsedCampaigns() {
-      return this.campaigns;
     },
-    activeBrand: function activeBrand() {
-      if (this.AuthenticatedUser !== null && typeof this.AuthenticatedUser !== "undefined" && this.AuthenticatedUser.selected_brand) return this.AuthenticatedUser.selected_brand;
-      return null;
-    }
-  }),
-  watch: {
-    "$route.params.uuid": function $routeParamsUuid(value) {
-      // Load campaign analytics or unset campaign state
-      if (typeof value !== "undefined") this.fetchCampaign();else this.$store.commit("setCampaign", {
-        campaign: null
+    update: function update(user) {
+      var _this4 = this;
+
+      this.$store.dispatch("editUser", user).then(function (response) {
+        _this4.$refs.usersDT.reloadData();
+
+        _this4.showSuccess({
+          message: "user ".concat(response.content.name, " updated successfuly!")
+        });
+      })["catch"](function (error) {
+        _this4.showError({
+          title: "Error",
+          message: "".concat(error.response.data.message)
+        });
+      });
+    },
+    resetPassword: function resetPassword(user) {
+      var _this5 = this;
+
+      this.$store.dispatch("resetUser", user).then(function (response) {
+        _this5.$refs.usersDT.reloadData();
+
+        _this5.showSuccess({
+          message: "Password for user ".concat(response.content.name, " reseted successfuly!")
+        });
+      })["catch"](function (error) {
+        _this5.showError({
+          title: "Error",
+          message: "".concat(error.response.data.message)
+        });
       });
     }
   },
   mounted: function mounted() {
-    // Load campaign analytics
-    if (typeof this.$route.params.uuid !== "undefined") {
-      this.fetchCampaign();
-    } else {
-      // Unset campaign state
-      this.$store.commit("setCampaign", {
-        campaign: null
-      }); // Load campaigns
-
-      if (typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0) this.loadCampaigns();
-    }
+    // Load users
+    if (typeof this.users === "undefined" || this.users === null || Object.values(this.users).length === 0) this.loadUsers();
   },
   data: function data() {
     return {
       columns: [{
-        name: "Campaign name",
-        field: "name"
+        name: 'name',
+        field: 'name'
       }, {
-        name: "Status",
-        field: "status",
-        sortable: false,
+        name: 'email',
+        field: 'email'
+      }, {
+        name: 'account type',
+        field: 'role_name'
+      }, {
+        name: 'brands',
+        field: 'brands',
         callback: function callback(row) {
-          return '<span class="status status-' + (row.status ? 'success' : 'danger') + '" title="' + (row.status ? 'Running' : 'Paused') + '">' + (row.status ? 'Running' : 'Paused') + '</span>';
-        }
-      }, {
-        name: "Activated communities",
-        field: "communities",
-        isNativeNbr: true
-      }, {
-        name: "Number of trackers",
-        field: "trackers_count",
-        isNbr: true
-      }, {
-        name: "Influencers",
-        field: "influencers",
-        "class": "influencers-avatars-list",
-        sortable: false,
-        callback: function callback(row) {
-          if (row.influencers.length === 0) return '-';
-          var influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
+          if (!row.brands) return '-';
           var html = '';
-          influencers.map(function (item, index) {
-            html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-          }); // Add more avatar
-
-          if (row.influencers.length > 3) html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
+          row.brands.map(function (item, index) {
+            // html += '<li>' + item.name.toUpperCase() + '</li>';
+            html += '<span class="badge badge-success">' + item.name.toUpperCase() + '</span>';
+            ;
+          });
           return html;
         }
       }, {
-        name: "Last update",
-        field: "updated_at",
+        name: 'last login',
+        field: 'last_login',
         isTimeAgo: true
-      }]
+      }, {
+        name: 'Joined at',
+        field: 'created_at',
+        isTimeAgo: true
+      }],
+      showAddUserModal: false
     };
   }
 });
 
 /***/ }),
 
-/***/ "./node_modules/chart.js/dist/Chart.js":
-/*!*********************************************!*\
-  !*** ./node_modules/chart.js/dist/Chart.js ***!
-  \*********************************************/
+/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css&":
+/*!****************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css& ***!
+  \****************************************************************************************************************************************************************************************************************************************************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-throw new Error("Module build failed: Error: ENOENT: no such file or directory, open 'C:\\Users\\HP\\Documents\\TCAgency\\influencia\\node_modules\\chart.js\\dist\\Chart.js'");
+exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
+// imports
 
-/***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&":
-/*!********************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b& ***!
-  \********************************************************************************************************************************************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+// module
+exports.push([module.i, "\n.radio-group[data-v-a540ee70] {\r\n    display: flex;\r\n    align-items: center;\r\n    margin: 1.2rem 0;\n}\n.radio-group>label+label[data-v-a540ee70] {\r\n    margin-left: 0.5rem;\n}\n.radio-group label[data-v-a540ee70] {\r\n    display: flex;\r\n    align-items: center;\n}\n.radio-group label span[data-v-a540ee70] {\r\n    margin-left: 0.3rem;\n}\n.radio-group span[data-v-a540ee70] {\r\n    font-weight: 100;\r\n    font-size: 0.8rem;\n}\r\n", ""]);
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _vm.campaign
-    ? _c("div", { staticClass: "campaign" }, [
-        _c(
-          "ul",
-          {
-            directives: [
-              {
-                name: "show",
-                rawName: "v-show",
-                value: _vm.fiveInfluencers.length > 0,
-                expression: "fiveInfluencers.length > 0"
-              }
-            ],
-            staticClass: "influencers-avatars"
-          },
-          [
-            _c("h4", [_vm._v("influencers")]),
-            _vm._v(" "),
-            _vm._l(_vm.fiveInfluencers, function(influencer) {
-              return _c(
-                "li",
-                { key: influencer.id },
-                [
-                  _c(
-                    "router-link",
-                    {
-                      staticClass: "icon-link",
-                      attrs: {
-                        to: {
-                          name: "influencers",
-                          params: { uuid: influencer.uuid }
-                        },
-                        title: influencer.username
-                      }
-                    },
-                    [
-                      _c("img", {
-                        attrs: { src: influencer.pic_url, loading: "lazy" }
-                      })
-                    ]
-                  )
-                ],
-                1
-              )
-            }),
-            _vm._v(" "),
-            _vm.campaign.influencers.length > 5
-              ? _c("li", [_vm._m(0)])
-              : _vm._e(),
-            _vm._v(" "),
-            _c("li", [
-              _c(
-                "span",
-                { staticClass: "campaign-more-influencers" },
-                [
-                  _vm._v(
-                    "\r\n                " +
-                      _vm._s(_vm.campaign.influencers.length) +
-                      " Influencers linked "
-                  ),
-                  _vm.campaign.influencers.length > 5
-                    ? _c("router-link", { attrs: { to: "#byinfuencers" } }, [
-                        _vm._v("See all")
-                      ])
-                    : _vm._e()
-                ],
-                1
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "count-details" }, [
-              _vm.campaign.stories_count && _vm.campaign.stories_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "far fa-clock" }),
-                    _vm._v(
-                      " " + _vm._s(_vm.campaign.stories_count) + " stories"
-                    )
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.campaign.videos_count && _vm.campaign.videos_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "far fa-play-circle" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.videos_count) + " videos")
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.campaign.images_count && _vm.campaign.images_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "far fa-images" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.images_count) + " posts")
-                  ])
-                : _vm._e(),
-              _vm._v(" "),
-              _vm.campaign.links_count && _vm.campaign.links_count > 0
-                ? _c("span", [
-                    _c("i", { staticClass: "fas fa-link" }),
-                    _vm._v(" " + _vm._s(_vm.campaign.links_count) + " links")
-                  ])
-                : _vm._e()
-            ])
-          ],
-          2
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "cards statistics" }, [
-          _vm.campaign.communities > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-users egg-blue" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.communities))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total size of activated communities")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "communities-chart" } })
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.impressions > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-bullhorn purple" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.impressions))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total estimated impressions")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "impressions-chart" } })
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.video_views > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "far fa-eye green" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.video_views))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total videos views")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "views-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic videos views " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_video_views)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.video_views > 0
-                          ? (
-                              (_vm.campaign.organic_video_views /
-                                _vm.campaign.video_views) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.engagements > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-thumbs-up blue" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.engagements))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total engagements")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "engagements-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic engagements " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_engagements)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.engagements > 0
-                          ? (
-                              (_vm.campaign.organic_engagements /
-                                _vm.campaign.engagements) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.posts_count > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("div", { staticClass: "title" }, [
-                  _c("i", { staticClass: "fas fa-hashtag yellow" }),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "numbers" }, [
-                    _c("h4", [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaign.posts_count))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("span", [_vm._v("Total number of posts")])
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "posts-chart" } })
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c("div", { staticClass: "cards sentiments" }, [
-          _vm.campaign.comments_count > 0
-            ? _c("div", { staticClass: "card" }, [
-                _c("h5", [_vm._v("Comments sentiment")]),
-                _vm._v(" "),
-                _c("canvas", { attrs: { id: "sentiments-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Based on " +
-                      _vm._s(
-                        _vm._f("formatedNbr")(_vm.campaign.comments_count)
-                      ) +
-                      " comments"
-                  )
-                ])
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.campaign.top_emojis
-            ? _c("div", { staticClass: "card emojis" }, [
-                _c("h5", [
-                  _vm._v(
-                    "Top " +
-                      _vm._s(
-                        _vm.campaign.top_emojis.top &&
-                          Object.values(_vm.campaign.top_emojis.top).length > 1
-                          ? Object.values(_vm.campaign.top_emojis.top).length +
-                              " "
-                          : ""
-                      ) +
-                      "used emoji"
-                  )
-                ]),
-                _vm._v(" "),
-                _c(
-                  "ul",
-                  _vm._l(_vm.campaign.top_emojis.top, function(count, emoji) {
-                    return _c("li", { key: count }, [
-                      _vm._v(
-                        "\r\n                    " +
-                          _vm._s(emoji) +
-                          "\r\n                    "
-                      ),
-                      _c("span", [
-                        _vm._v(
-                          _vm._s(
-                            (
-                              (count /
-                                (_vm.campaign.top_emojis.all
-                                  ? _vm.campaign.top_emojis.all
-                                  : 1)) *
-                              100
-                            ).toFixed(2)
-                          ) + "%"
-                        )
-                      ])
-                    ])
-                  }),
-                  0
-                ),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Based on " +
-                      _vm._s(
-                        _vm._f("formatedNbr")(_vm.campaign.top_emojis.all)
-                      ) +
-                      " emoji"
-                  )
-                ])
-              ])
-            : _vm._e()
-        ]),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "datatable-scroll" },
-          [
-            _c("h4", [_vm._v("Performance breakdown by Influencer")]),
-            _vm._v(" "),
-            _c("DataTable", {
-              ref: "byInfluencer",
-              attrs: {
-                cssClasses: "table-card",
-                columns: _vm.influencersColumns,
-                nativeData: _vm.campaign.influencers,
-                withPagination: false,
-                withTotalTab: true,
-                exportable: true
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "datatable-scroll", attrs: { id: "byinfluencers" } },
-          [
-            _c("h4", [_vm._v("Performance breakdown by post on Instagram")]),
-            _vm._v(" "),
-            _c("DataTable", {
-              ref: "byInstaPosts",
-              attrs: {
-                cssClasses: "table-card",
-                columns: _vm.instaPostsColumns,
-                nativeData: _vm.campaign.instagram_media,
-                withPagination: false,
-                withTotalTab: true
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "datatable-scroll" },
-          [
-            _c("h4", [_vm._v("List of trackers")]),
-            _vm._v(" "),
-            _c(
-              "DataTable",
-              {
-                ref: "byTrackers",
-                attrs: {
-                  cssClasses: "table-card",
-                  columns: _vm.trackersColumns,
-                  nativeData: _vm.campaign.trackers
-                },
-                scopedSlots: _vm._u(
-                  [
-                    {
-                      key: "body-row",
-                      fn: function(row) {
-                        return _c(
-                          "td",
-                          {},
-                          [
-                            _vm.$can("analytics", "tracker") ||
-                            (_vm.AuthenticatedUser &&
-                              _vm.AuthenticatedUser.is_superadmin)
-                              ? _c(
-                                  "router-link",
-                                  {
-                                    directives: [
-                                      {
-                                        name: "show",
-                                        rawName: "v-show",
-                                        value:
-                                          row.data.original.queued ===
-                                          "finished",
-                                        expression:
-                                          "row.data.original.queued === 'finished'"
-                                      }
-                                    ],
-                                    staticClass: "icon-link",
-                                    attrs: {
-                                      to: {
-                                        name: "trackers",
-                                        params: { uuid: row.data.original.uuid }
-                                      },
-                                      title: "Statistics"
-                                    }
-                                  },
-                                  [_c("i", { staticClass: "far fa-chart-bar" })]
-                                )
-                              : _vm._e()
-                          ],
-                          1
-                        )
-                      }
-                    }
-                  ],
-                  null,
-                  false,
-                  3662718142
-                )
-              },
-              [
-                _c(
-                  "router-link",
-                  {
-                    staticClass: "btn btn-success",
-                    attrs: {
-                      slot: "custom-buttons",
-                      disabled:
-                        !_vm.campaigns ||
-                        typeof _vm.campaigns.length === "undefined" ||
-                        _vm.campaigns.length === 0,
-                      to: { name: "new_tracker" }
-                    },
-                    slot: "custom-buttons"
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-plus" }),
-                    _vm._v(" Add new tracker    \r\n            ")
-                  ]
-                ),
-                _vm._v(" "),
-                _c("th", { attrs: { slot: "header" }, slot: "header" }, [
-                  _vm._v("Actions")
-                ])
-              ],
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _vm.campaign && _vm.campaign.posts_count > 0
-          ? _c("div", { staticClass: "posts-section" }, [
-              _c("h4", [_vm._v("Posts")]),
-              _vm._v(" "),
-              _c("p", [
-                _vm._v(
-                  "There are " +
-                    _vm._s(
-                      _vm.campaign && _vm.campaign.posts_count
-                        ? _vm.campaign.posts_count
-                        : 0
-                    ) +
-                    " posts for this campaign."
-                )
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "campaign-posts" },
-                _vm._l(_vm.campaign.media, function(media) {
-                  return _c(
-                    "a",
-                    {
-                      key: media.uuid,
-                      staticClass: "campaign-posts-card",
-                      attrs: { href: media.link, target: "_blank" },
-                      on: {
-                        mouseover: function($event) {
-                          _vm.attrActive = media.uuid
-                        },
-                        mouseleave: function($event) {
-                          _vm.attrActive = null
-                        }
-                      }
-                    },
-                    [
-                      _c("img", {
-                        attrs: { src: media.thumbnail_url, loading: "lazy" }
-                      }),
-                      _vm._v(" "),
-                      _c("div", { staticClass: "campaign-posts-card-icons" }, [
-                        media.platform === "instagram"
-                          ? _c("i", { staticClass: "fab fa-instagram" })
-                          : _vm._e(),
-                        _vm._v(" "),
-                        media.type === "video" || media.type === "sidecar"
-                          ? _c("i", {
-                              class:
-                                "fas fa-" +
-                                (media.type === "sidecar" ? "images" : "video")
-                            })
-                          : _vm._e()
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        {
-                          class:
-                            "campaign-posts-card-attr " +
-                            (_vm.attrActive === media.uuid ? " active" : "")
-                        },
-                        [
-                          media.video_views
-                            ? _c("span", [
-                                _c("i", { staticClass: "fas fa-eye" }),
-                                _vm._v(
-                                  _vm._s(
-                                    String(
-                                      _vm.nbr().abbreviate(media.video_views)
-                                    ).toUpperCase()
-                                  )
-                                )
-                              ])
-                            : _vm._e(),
-                          _vm._v(" "),
-                          media.likes
-                            ? _c("span", [
-                                _c("i", { staticClass: "fas fa-heart" }),
-                                _vm._v(
-                                  _vm._s(
-                                    String(
-                                      _vm.nbr().abbreviate(media.likes)
-                                    ).toUpperCase()
-                                  )
-                                )
-                              ])
-                            : _vm._e(),
-                          _vm._v(" "),
-                          media.comments
-                            ? _c("span", [
-                                _c("i", { staticClass: "fas fa-comment" }),
-                                _vm._v(
-                                  _vm._s(
-                                    String(
-                                      _vm.nbr().abbreviate(media.comments)
-                                    ).toUpperCase()
-                                  )
-                                )
-                              ])
-                            : _vm._e()
-                        ]
-                      )
-                    ]
-                  )
-                }),
-                0
-              )
-            ])
-          : _vm._e()
-      ])
-    : _vm._e()
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("a", { staticClass: "icon-link", attrs: { href: "#" } }, [
-      _c("img", { attrs: { src: __webpack_require__(/*! @assets/img/more.png */ "./resources/assets/img/more.png") } })
-    ])
-  }
-]
-render._withStripped = true
-
+// exports
 
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&":
-/*!*****************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23& ***!
-  \*****************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+
+var content = __webpack_require__(/*! !../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css&");
+
+if(typeof content === 'string') content = [[module.i, content, '']];
+
+var transform;
+var insertInto;
+
+
+
+var options = {"hmr":true}
+
+options.transform = transform
+options.insertInto = undefined;
+
+var update = __webpack_require__(/*! ../../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
+
+if(content.locals) module.exports = content.locals;
+
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/modals/CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1438,73 +430,317 @@ var render = function() {
         ]),
         _vm._v(" "),
         _c("div", { staticClass: "modal-form" }, [
-          _c("form", [
-            _c("div", { staticClass: "control" }, [
-              _c("input", {
-                attrs: { type: "hidden" },
-                domProps: { value: _vm.campaign.uuid }
-              }),
-              _vm._v(" "),
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.user.id,
+                expression: "user.id"
+              }
+            ],
+            attrs: { type: "hidden", name: "id" },
+            domProps: { value: _vm.user.id },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.$set(_vm.user, "id", $event.target.value)
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.resetPassword,
+                  expression: "!resetPassword"
+                }
+              ],
+              staticClass: "control"
+            },
+            [
               _c("input", {
                 directives: [
                   {
                     name: "model",
                     rawName: "v-model",
-                    value: _vm.campaign.name,
-                    expression: "campaign.name"
+                    value: _vm.user.name,
+                    expression: "user.name"
                   }
                 ],
-                attrs: {
-                  type: "text",
-                  placeholder: "Campaign name (e.g. #FashionWeek20)"
-                },
-                domProps: { value: _vm.campaign.name },
+                attrs: { type: "text", placeholder: "User name", required: "" },
+                domProps: { value: _vm.user.name },
                 on: {
                   input: function($event) {
                     if ($event.target.composing) {
                       return
                     }
-                    _vm.$set(_vm.campaign, "name", $event.target.value)
+                    _vm.$set(_vm.user, "name", $event.target.value)
                   }
                 }
               })
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "modal-form__actions" }, [
-              _c(
-                "button",
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
                 {
-                  staticClass: "btn btn-success",
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.resetPassword,
+                  expression: "!resetPassword"
+                }
+              ],
+              staticClass: "control"
+            },
+            [
+              _c("input", {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.user.email,
+                    expression: "user.email"
+                  }
+                ],
+                attrs: { type: "email", placeholder: "Email", required: "" },
+                domProps: { value: _vm.user.email },
+                on: {
+                  input: function($event) {
+                    if ($event.target.composing) {
+                      return
+                    }
+                    _vm.$set(_vm.user, "email", $event.target.value)
+                  }
+                }
+              })
+            ]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "control" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.password,
+                  expression: "user.password"
+                }
+              ],
+              attrs: { type: "text", placeholder: "Password", required: "" },
+              domProps: { value: _vm.user.password },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "password", $event.target.value)
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.resetPassword,
+                  expression: "!resetPassword"
+                }
+              ],
+              ref: "userBrand",
+              staticClass: "control"
+            },
+            [
+              _c("label", { attrs: { for: "brand" } }, [_vm._v("Brand")]),
+              _vm._v(" "),
+              _c(
+                "select",
+                {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.brand_id,
+                      expression: "user.brand_id"
+                    }
+                  ],
+                  attrs: { id: "brand" },
                   on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.submit()
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.user,
+                        "brand_id",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
                     }
                   }
                 },
                 [
-                  _vm._v(
-                    _vm._s(
-                      typeof _vm.campaign.uuid == "string" ? "Update" : "Create"
+                  _c(
+                    "option",
+                    {
+                      attrs: { value: "-1" },
+                      domProps: { selected: _vm.user.brand_id }
+                    },
+                    [_vm._v("Select a brand")]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.brands, function(item) {
+                    return _c(
+                      "option",
+                      {
+                        key: item.id,
+                        domProps: {
+                          value: item.id,
+                          selected: _vm.user.brand_id
+                        }
+                      },
+                      [_vm._v(_vm._s(item.name))]
                     )
-                  )
-                ]
-              ),
+                  })
+                ],
+                2
+              )
+            ]
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            {
+              directives: [
+                {
+                  name: "show",
+                  rawName: "v-show",
+                  value: !_vm.resetPassword,
+                  expression: "!resetPassword"
+                }
+              ],
+              staticClass: "control"
+            },
+            [
+              _c("label", { attrs: { for: "role" } }, [_vm._v("Role")]),
               _vm._v(" "),
               _c(
-                "button",
+                "select",
                 {
-                  staticClass: "btn btn-danger",
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.role,
+                      expression: "user.role"
+                    }
+                  ],
+                  attrs: { id: "role" },
                   on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.close()
+                    change: function($event) {
+                      var $$selectedVal = Array.prototype.filter
+                        .call($event.target.options, function(o) {
+                          return o.selected
+                        })
+                        .map(function(o) {
+                          var val = "_value" in o ? o._value : o.value
+                          return val
+                        })
+                      _vm.$set(
+                        _vm.user,
+                        "role",
+                        $event.target.multiple
+                          ? $$selectedVal
+                          : $$selectedVal[0]
+                      )
                     }
                   }
                 },
-                [_vm._v("Cancel")]
+                [
+                  _c(
+                    "option",
+                    {
+                      attrs: { value: "-1" },
+                      domProps: { selected: _vm.user.role }
+                    },
+                    [_vm._v("Select a role")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "option",
+                    {
+                      attrs: { value: "super" },
+                      domProps: { selected: _vm.user.role }
+                    },
+                    [_vm._v("Super Admin")]
+                  ),
+                  _vm._v(" "),
+                  _vm._l(_vm.roles, function(role) {
+                    return _c(
+                      "option",
+                      {
+                        key: role.id,
+                        domProps: { value: role.id, selected: _vm.user.role }
+                      },
+                      [_vm._v(_vm._s(role.name))]
+                    )
+                  })
+                ],
+                2
               )
-            ])
+            ]
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "modal-form__actions" }, [
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-success",
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.submit()
+                  }
+                }
+              },
+              [
+                _vm._v(
+                  _vm._s(typeof _vm.user.id === "number" ? "Update" : "Create")
+                )
+              ]
+            ),
+            _vm._v(" "),
+            _c(
+              "button",
+              {
+                staticClass: "btn btn-danger",
+                on: {
+                  click: function($event) {
+                    $event.preventDefault()
+                    return _vm.close()
+                  }
+                }
+              },
+              [_vm._v("Cancel")]
+            )
           ])
         ])
       ])
@@ -1518,10 +754,10 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&":
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9& ***!
-  \***********************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/UsersPage.vue?vue&type=template&id=90357404&":
+/*!*******************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/pages/UsersPage.vue?vue&type=template&id=90357404& ***!
+  \*******************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -1535,271 +771,263 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    { staticClass: "campaigns" },
+    { staticClass: "users" },
     [
-      !_vm.campaign
-        ? _c("div", { staticClass: "hero" }, [
-            _vm._m(0),
+      _c("div", { staticClass: "hero" }, [
+        _c("div", { staticClass: "hero__intro" }, [
+          _c("h1", [_vm._v("Users")]),
+          _vm._v(" "),
+          _c("ul", { staticClass: "breadcrumbs" }, [
+            _c(
+              "li",
+              [
+                _c("router-link", { attrs: { to: { name: "dashboard" } } }, [
+                  _vm._v("Dashboard")
+                ])
+              ],
+              1
+            ),
             _vm._v(" "),
-            _vm.$can("create", "campaign") ||
-            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-              ? _c("div", { staticClass: "hero__actions" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-success",
-                      attrs: { disabled: !_vm.activeBrand },
-                      on: {
-                        click: function($event) {
-                          return _vm.addCampaign()
-                        }
-                      }
+            _vm._m(0)
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "hero__actions" }, [
+          _c(
+            "button",
+            {
+              staticClass: "btn btn-success",
+              on: {
+                click: function($event) {
+                  return _vm.addUser()
+                }
+              }
+            },
+            [_vm._v("Add new user")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "p-1" }, [
+        _vm.$can("list", "user") ||
+        (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
+          ? _c(
+              "div",
+              { staticClass: "datatable-scroll" },
+              [
+                _c(
+                  "DataTable",
+                  {
+                    ref: "usersDT",
+                    attrs: {
+                      nativeData: _vm.users,
+                      fetchMethod: "fetchUsers",
+                      columns: _vm.columns,
+                      cssClasses: "table-card"
                     },
-                    [_vm._v("Add new campaign")]
-                  )
-                ])
-              : _vm._e()
-          ])
-        : _c("div", { staticClass: "campaign-header" }, [
-            _c("span", [
-              _vm._v("Campaign "),
-              _c("strong", [_vm._v(_vm._s(_vm.campaign.name))])
-            ])
-          ]),
-      _vm._v(" "),
-      !_vm.campaign
-        ? _c("div", { staticClass: "p-1" }, [
-            _vm.$can("analytics", "campaign") ||
-            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-              ? _c("header", { staticClass: "cards" }, [
-                  _c("div", { staticClass: "card" }, [
-                    _c("div", { staticClass: "number" }, [
-                      _vm._v(
-                        _vm._s(_vm._f("formatedNbr")(_vm.campaigns.length))
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("p", { staticClass: "description" }, [
-                      _vm._v("NUMBER OF CAMPAIGNS")
-                    ])
-                  ])
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            _vm.$can("list", "campaign") ||
-            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-              ? _c(
-                  "div",
-                  { staticClass: "datatable-scroll" },
-                  [
-                    _c(
-                      "DataTable",
-                      {
-                        ref: "campaignsDT",
-                        attrs: {
-                          columns: _vm.columns,
-                          searchable: true,
-                          searchCols: ["name", "influencer"],
-                          nativeData: _vm.parsedCampaigns,
-                          fetchMethod: "fetchCampaigns",
-                          cssClasses: "table-card"
-                        },
-                        scopedSlots: _vm._u(
-                          [
-                            {
-                              key: "body-row",
-                              fn: function(row) {
-                                return _c(
-                                  "td",
-                                  {},
-                                  [
-                                    _vm.$can("analytics", "campaign") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "router-link",
-                                          {
-                                            directives: [
-                                              {
-                                                name: "show",
-                                                rawName: "v-show",
-                                                value:
-                                                  row.data.original
-                                                    .trackers_count > 0,
-                                                expression:
-                                                  "row.data.original.trackers_count > 0"
-                                              }
-                                            ],
-                                            staticClass: "icon-link",
-                                            attrs: {
-                                              to: {
-                                                name: "campaigns",
-                                                params: {
-                                                  uuid: row.data.original.uuid
-                                                }
-                                              },
-                                              title: "Statistics"
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "far fa-chart-bar datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can("list", "tracker") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "router-link",
-                                          {
-                                            directives: [
-                                              {
-                                                name: "show",
-                                                rawName: "v-show",
-                                                value:
-                                                  row.data.original
-                                                    .trackers_count > 0,
-                                                expression:
-                                                  "row.data.original.trackers_count > 0"
-                                              }
-                                            ],
-                                            staticClass: "icon-link",
-                                            attrs: {
-                                              to: {
-                                                name: "campaign_trackers",
-                                                params: {
-                                                  campaign:
-                                                    row.data.original.uuid
-                                                }
-                                              },
-                                              title: "Show trackers"
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass: "fas fa-list"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can("edit", "campaign") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "button",
-                                          {
-                                            staticClass: "btn icon-link",
-                                            attrs: { title: "Edit campaign" },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.editCampaign(
-                                                  row.data.original
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "fas fa-pen datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can(
-                                      "start-stop-tracking",
-                                      "campaign"
-                                    ) ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "button",
-                                          {
-                                            staticClass: "btn icon-link",
-                                            attrs: { title: "Stop tracking" },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.disableCampaign(row)
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "far fa-stop-circle datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e(),
-                                    _vm._v(" "),
-                                    _vm.$can("delete", "campaign") ||
-                                    (_vm.AuthenticatedUser &&
-                                      _vm.AuthenticatedUser.is_superadmin)
-                                      ? _c(
-                                          "button",
-                                          {
-                                            staticClass: "btn icon-link",
-                                            attrs: { title: "Delete campaign" },
-                                            on: {
-                                              click: function($event) {
-                                                return _vm.deleteCampaign(
-                                                  row.data.original
-                                                )
-                                              }
-                                            }
-                                          },
-                                          [
-                                            _c("i", {
-                                              staticClass:
-                                                "far fa-trash-alt datatable-icon"
-                                            })
-                                          ]
-                                        )
-                                      : _vm._e()
-                                  ],
-                                  1
-                                )
-                              }
-                            }
-                          ],
-                          null,
-                          false,
-                          1545961479
-                        )
-                      },
+                    scopedSlots: _vm._u(
                       [
-                        _c(
-                          "th",
-                          { attrs: { slot: "header" }, slot: "header" },
-                          [_vm._v("Actions")]
-                        )
-                      ]
+                        {
+                          key: "body-row",
+                          fn: function(row) {
+                            return _c("td", {}, [
+                              _vm.$can("edit", "user") ||
+                              (_vm.AuthenticatedUser &&
+                                _vm.AuthenticatedUser.is_superadmin)
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn icon-link",
+                                      attrs: { title: "Reset user password" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.resetUserPassword(
+                                            row.data.original
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-key" })]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              (_vm.$can("edit", "user") ||
+                                (_vm.AuthenticatedUser &&
+                                  _vm.AuthenticatedUser.is_superadmin)) &&
+                              _vm.AuthenticatedUser.uuid !==
+                                row.data.original.uuid
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn icon-link",
+                                      attrs: { title: "Edit user" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.editUser(row.data.original)
+                                        }
+                                      }
+                                    },
+                                    [_c("i", { staticClass: "fas fa-pen" })]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              (_vm.$can("ban", "user") ||
+                                (_vm.AuthenticatedUser &&
+                                  _vm.AuthenticatedUser.is_superadmin)) &&
+                              _vm.AuthenticatedUser.uuid !==
+                                row.data.original.uuid
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn icon-link",
+                                      attrs: { title: "Ban user" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.banUser(row.data.original)
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "svg",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: row.data.original.banned,
+                                              expression:
+                                                "row.data.original.banned"
+                                            }
+                                          ],
+                                          staticClass:
+                                            "svg-inline--fa fa-redo-alt fa-w-16",
+                                          attrs: {
+                                            "data-v-4b997e69": "",
+                                            "aria-hidden": "true",
+                                            focusable: "false",
+                                            "data-prefix": "fas",
+                                            "data-icon": "redo-alt",
+                                            role: "img",
+                                            xmlns: "http://www.w3.org/2000/svg",
+                                            viewBox: "0 0 512 512",
+                                            "data-fa-i2svg": ""
+                                          }
+                                        },
+                                        [
+                                          _c("path", {
+                                            attrs: {
+                                              fill: "currentColor",
+                                              d:
+                                                "M256.455 8c66.269.119 126.437 26.233 170.859 68.685l35.715-35.715C478.149 25.851 504 36.559 504 57.941V192c0 13.255-10.745 24-24 24H345.941c-21.382 0-32.09-25.851-16.971-40.971l41.75-41.75c-30.864-28.899-70.801-44.907-113.23-45.273-92.398-.798-170.283 73.977-169.484 169.442C88.764 348.009 162.184 424 256 424c41.127 0 79.997-14.678 110.629-41.556 4.743-4.161 11.906-3.908 16.368.553l39.662 39.662c4.872 4.872 4.631 12.815-.482 17.433C378.202 479.813 319.926 504 256 504 119.034 504 8.001 392.967 8 256.002 7.999 119.193 119.646 7.755 256.455 8z"
+                                            }
+                                          })
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "svg",
+                                        {
+                                          directives: [
+                                            {
+                                              name: "show",
+                                              rawName: "v-show",
+                                              value: !row.data.original.banned,
+                                              expression:
+                                                "!row.data.original.banned"
+                                            }
+                                          ],
+                                          staticClass:
+                                            "svg-inline--fa fa-ban fa-w-16",
+                                          attrs: {
+                                            "data-v-4b997e69": "",
+                                            "aria-hidden": "true",
+                                            focusable: "false",
+                                            "data-prefix": "fas",
+                                            "data-icon": "ban",
+                                            role: "img",
+                                            xmlns: "http://www.w3.org/2000/svg",
+                                            viewBox: "0 0 512 512",
+                                            "data-fa-i2svg": ""
+                                          }
+                                        },
+                                        [
+                                          _c("path", {
+                                            attrs: {
+                                              fill: "currentColor",
+                                              d:
+                                                "M256 8C119.034 8 8 119.033 8 256s111.034 248 248 248 248-111.034 248-248S392.967 8 256 8zm130.108 117.892c65.448 65.448 70 165.481 20.677 235.637L150.47 105.216c70.204-49.356 170.226-44.735 235.638 20.676zM125.892 386.108c-65.448-65.448-70-165.481-20.677-235.637L361.53 406.784c-70.203 49.356-170.226 44.736-235.638-20.676z"
+                                            }
+                                          })
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              (_vm.$can("delete", "user") ||
+                                (_vm.AuthenticatedUser &&
+                                  _vm.AuthenticatedUser.is_superadmin)) &&
+                              _vm.AuthenticatedUser.uuid !==
+                                row.data.original.uuid
+                                ? _c(
+                                    "button",
+                                    {
+                                      staticClass: "btn icon-link",
+                                      attrs: { title: "Delete user" },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.deleteUser(
+                                            row.data.original
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c("i", {
+                                        staticClass: "far fa-trash-alt"
+                                      })
+                                    ]
+                                  )
+                                : _vm._e()
+                            ])
+                          }
+                        }
+                      ],
+                      null,
+                      false,
+                      3574816149
                     )
-                  ],
-                  1
+                  },
+                  [
+                    _c("th", { attrs: { slot: "header" }, slot: "header" }, [
+                      _vm._v("Actions")
+                    ])
+                  ]
                 )
-              : _vm._e()
-          ])
-        : _vm._e(),
+              ],
+              1
+            )
+          : _vm._e()
+      ]),
       _vm._v(" "),
-      _c("CreateCampaignModal", {
-        ref: "campaignFormModal",
-        on: { create: _vm.create, update: _vm.update }
+      _c("CreateUserModal", {
+        ref: "userFormModal",
+        on: {
+          create: _vm.create,
+          update: _vm.update,
+          custom: _vm.resetPassword
+        }
       }),
       _vm._v(" "),
-      _vm.campaign
-        ? _c("CampaignAnalytics", { attrs: { campaign: _vm.campaign } })
-        : _vm._e(),
+      _c("ConfirmationModal", {
+        ref: "confirmDeleteUserModal",
+        on: { custom: _vm.deleteUserAction }
+      }),
       _vm._v(" "),
       _c("ConfirmationModal", {
-        ref: "confirmDeleteCampaignModal",
-        on: { custom: _vm.deleteCampaignAction }
+        ref: "confirmBanUserModal",
+        on: { custom: _vm.banUserAction }
       })
     ],
     1
@@ -1810,15 +1038,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "hero__intro" }, [
-      _c("h1", [_vm._v("Campaigns")]),
-      _vm._v(" "),
-      _c("ul", { staticClass: "breadcrumbs" }, [
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Dashboard")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Campaigns")])])
-      ])
-    ])
+    return _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Users")])])
   }
 ]
 render._withStripped = true
@@ -1827,28 +1047,104 @@ render._withStripped = true
 
 /***/ }),
 
-/***/ "./resources/assets/img/more.png":
-/*!***************************************!*\
-  !*** ./resources/assets/img/more.png ***!
-  \***************************************/
+/***/ "./resources/js/components/modals/CreateUserModal.vue":
+/*!************************************************************!*\
+  !*** ./resources/js/components/modals/CreateUserModal.vue ***!
+  \************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _CreateUserModal_vue_vue_type_template_id_a540ee70_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true& */ "./resources/js/components/modals/CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true&");
+/* harmony import */ var _CreateUserModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateUserModal.vue?vue&type=script&lang=js& */ "./resources/js/components/modals/CreateUserModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _CreateUserModal_vue_vue_type_style_index_0_id_a540ee70_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css& */ "./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+  _CreateUserModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _CreateUserModal_vue_vue_type_template_id_a540ee70_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _CreateUserModal_vue_vue_type_template_id_a540ee70_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  "a540ee70",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/modals/CreateUserModal.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/modals/CreateUserModal.vue?vue&type=script&lang=js&":
+/*!*************************************************************************************!*\
+  !*** ./resources/js/components/modals/CreateUserModal.vue?vue&type=script&lang=js& ***!
+  \*************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateUserModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css&":
+/*!*********************************************************************************************************************!*\
+  !*** ./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css& ***!
+  \*********************************************************************************************************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-module.exports = "/images/more.png?01227267fe89e713015bb9cc24dac9f1";
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_style_index_0_id_a540ee70_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/style-loader!../../../../node_modules/css-loader??ref--6-1!../../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../../node_modules/postcss-loader/src??ref--6-2!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=style&index=0&id=a540ee70&scoped=true&lang=css&");
+/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_style_index_0_id_a540ee70_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_style_index_0_id_a540ee70_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_style_index_0_id_a540ee70_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_style_index_0_id_a540ee70_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+
 
 /***/ }),
 
-/***/ "./resources/js/components/CampaignAnalytics.vue":
-/*!*******************************************************!*\
-  !*** ./resources/js/components/CampaignAnalytics.vue ***!
-  \*******************************************************/
+/***/ "./resources/js/components/modals/CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true&":
+/*!*******************************************************************************************************!*\
+  !*** ./resources/js/components/modals/CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true& ***!
+  \*******************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_template_id_a540ee70_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateUserModal.vue?vue&type=template&id=a540ee70&scoped=true&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_template_id_a540ee70_scoped_true___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateUserModal_vue_vue_type_template_id_a540ee70_scoped_true___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/pages/UsersPage.vue":
+/*!******************************************!*\
+  !*** ./resources/js/pages/UsersPage.vue ***!
+  \******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CampaignAnalytics.vue?vue&type=template&id=419a9e7b& */ "./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&");
-/* harmony import */ var _CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CampaignAnalytics.vue?vue&type=script&lang=js& */ "./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&");
+/* harmony import */ var _UsersPage_vue_vue_type_template_id_90357404___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UsersPage.vue?vue&type=template&id=90357404& */ "./resources/js/pages/UsersPage.vue?vue&type=template&id=90357404&");
+/* harmony import */ var _UsersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UsersPage.vue?vue&type=script&lang=js& */ "./resources/js/pages/UsersPage.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -1858,9 +1154,9 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 
 var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  _UsersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UsersPage_vue_vue_type_template_id_90357404___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UsersPage_vue_vue_type_template_id_90357404___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
   false,
   null,
   null,
@@ -1870,176 +1166,38 @@ var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/CampaignAnalytics.vue"
+component.options.__file = "resources/js/pages/UsersPage.vue"
 /* harmony default export */ __webpack_exports__["default"] = (component.exports);
 
 /***/ }),
 
-/***/ "./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&":
-/*!********************************************************************************!*\
-  !*** ./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js& ***!
-  \********************************************************************************/
+/***/ "./resources/js/pages/UsersPage.vue?vue&type=script&lang=js&":
+/*!*******************************************************************!*\
+  !*** ./resources/js/pages/UsersPage.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignAnalytics.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./UsersPage.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/UsersPage.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
 
 /***/ }),
 
-/***/ "./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&":
-/*!**************************************************************************************!*\
-  !*** ./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b& ***!
-  \**************************************************************************************/
+/***/ "./resources/js/pages/UsersPage.vue?vue&type=template&id=90357404&":
+/*!*************************************************************************!*\
+  !*** ./resources/js/pages/UsersPage.vue?vue&type=template&id=90357404& ***!
+  \*************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignAnalytics.vue?vue&type=template&id=419a9e7b& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CampaignAnalytics.vue?vue&type=template&id=419a9e7b&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersPage_vue_vue_type_template_id_90357404___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./UsersPage.vue?vue&type=template&id=90357404& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/UsersPage.vue?vue&type=template&id=90357404&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersPage_vue_vue_type_template_id_90357404___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignAnalytics_vue_vue_type_template_id_419a9e7b___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/components/modals/CreateCampaignModal.vue":
-/*!****************************************************************!*\
-  !*** ./resources/js/components/modals/CreateCampaignModal.vue ***!
-  \****************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CreateCampaignModal.vue?vue&type=template&id=1cd11a23& */ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&");
-/* harmony import */ var _CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CreateCampaignModal.vue?vue&type=script&lang=js& */ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/modals/CreateCampaignModal.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&":
-/*!*****************************************************************************************!*\
-  !*** ./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js& ***!
-  \*****************************************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateCampaignModal.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&":
-/*!***********************************************************************************************!*\
-  !*** ./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23& ***!
-  \***********************************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./CreateCampaignModal.vue?vue&type=template&id=1cd11a23& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/modals/CreateCampaignModal.vue?vue&type=template&id=1cd11a23&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CreateCampaignModal_vue_vue_type_template_id_1cd11a23___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
-
-
-
-/***/ }),
-
-/***/ "./resources/js/pages/CampaignsPage.vue":
-/*!**********************************************!*\
-  !*** ./resources/js/pages/CampaignsPage.vue ***!
-  \**********************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./CampaignsPage.vue?vue&type=template&id=3a199ed9& */ "./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&");
-/* harmony import */ var _CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CampaignsPage.vue?vue&type=script&lang=js& */ "./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-
-
-/* normalize component */
-
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
-  _CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
-  _CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["render"],
-  _CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/pages/CampaignsPage.vue"
-/* harmony default export */ __webpack_exports__["default"] = (component.exports);
-
-/***/ }),
-
-/***/ "./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&":
-/*!***********************************************************************!*\
-  !*** ./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignsPage.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&":
-/*!*****************************************************************************!*\
-  !*** ./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9& ***!
-  \*****************************************************************************/
-/*! exports provided: render, staticRenderFns */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./CampaignsPage.vue?vue&type=template&id=3a199ed9& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/pages/CampaignsPage.vue?vue&type=template&id=3a199ed9&");
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["render"]; });
-
-/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CampaignsPage_vue_vue_type_template_id_3a199ed9___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UsersPage_vue_vue_type_template_id_90357404___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

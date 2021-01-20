@@ -79459,7 +79459,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vue_router__WEBPACK_IMPORTED_MODU
 var routes = [{
   path: '/',
   component: function component() {
-    return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ./pages/DashboardContainer */ "./resources/js/pages/DashboardContainer.vue"));
+    return __webpack_require__.e(/*! import() */ 3).then(__webpack_require__.bind(null, /*! ./pages/DashboardContainer */ "./resources/js/pages/DashboardContainer.vue"));
   },
   redirect: {
     name: 'dashboard'
@@ -79471,19 +79471,19 @@ var routes = [{
     name: 'Not found',
     path: '/404',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! ./components/partials/404 */ "./resources/js/components/partials/404.vue"));
+      return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! ./components/partials/404 */ "./resources/js/components/partials/404.vue"));
     }
   }, {
     name: 'Internal server error',
     path: '/error',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./components/partials/Error */ "./resources/js/components/partials/Error.vue"));
+      return __webpack_require__.e(/*! import() */ 11).then(__webpack_require__.bind(null, /*! ./components/partials/Error */ "./resources/js/components/partials/Error.vue"));
     }
   }, {
     name: 'search',
     path: '/search',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 10).then(__webpack_require__.bind(null, /*! ./pages/SearchPage */ "./resources/js/pages/SearchPage.vue"));
+      return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! ./pages/SearchPage */ "./resources/js/pages/SearchPage.vue"));
     },
     meta: {
       auth: true
@@ -79492,7 +79492,7 @@ var routes = [{
     name: 'trackers',
     path: '/trackers/:uuid?',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
     },
     meta: {
       auth: true // subject: 'tracker'
@@ -79502,7 +79502,7 @@ var routes = [{
     name: 'campaign_trackers',
     path: '/trackers/campaign/:campaign',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
     },
     meta: {
       auth: true
@@ -79511,7 +79511,16 @@ var routes = [{
     name: 'new_tracker',
     path: '/trackers/new',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(3), __webpack_require__.e(19)]).then(__webpack_require__.bind(null, /*! ./pages/trackers/New.vue */ "./resources/js/pages/trackers/New.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(17), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/trackers/New.vue */ "./resources/js/pages/trackers/New.vue"));
+    },
+    meta: {
+      auth: true
+    }
+  }, {
+    name: 'stories',
+    path: '/stories/:uuid?',
+    component: function component() {
+      return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./pages/stories/all.vue */ "./resources/js/pages/stories/all.vue"));
     },
     meta: {
       auth: true
@@ -79520,7 +79529,7 @@ var routes = [{
     name: 'brands',
     path: '/brands',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(18)]).then(__webpack_require__.bind(null, /*! ./pages/BrandsPage */ "./resources/js/pages/BrandsPage.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(4)]).then(__webpack_require__.bind(null, /*! ./pages/BrandsPage */ "./resources/js/pages/BrandsPage.vue"));
     },
     meta: {
       auth: true,
@@ -79531,7 +79540,7 @@ var routes = [{
     name: 'dashboard',
     path: '/dashboard',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./pages/DashboardPage */ "./resources/js/pages/DashboardPage.vue"));
+      return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! ./pages/DashboardPage */ "./resources/js/pages/DashboardPage.vue"));
     },
     meta: {
       auth: true
@@ -79540,7 +79549,7 @@ var routes = [{
     name: 'campaigns',
     path: '/campaigns/:uuid?',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/CampaignsPage */ "./resources/js/pages/CampaignsPage.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(6)]).then(__webpack_require__.bind(null, /*! ./pages/CampaignsPage */ "./resources/js/pages/CampaignsPage.vue"));
     },
     meta: {
       auth: true
@@ -79549,7 +79558,7 @@ var routes = [{
     name: 'users',
     path: '/users',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 9).then(__webpack_require__.bind(null, /*! ./pages/UsersPage */ "./resources/js/pages/UsersPage.vue"));
+      return __webpack_require__.e(/*! import() */ 8).then(__webpack_require__.bind(null, /*! ./pages/UsersPage */ "./resources/js/pages/UsersPage.vue"));
     },
     meta: {
       auth: true
@@ -79576,7 +79585,7 @@ var routes = [{
     name: 'influencers',
     path: '/influencers/:uuid?',
     component: function component() {
-      return __webpack_require__.e(/*! import() */ 6).then(__webpack_require__.bind(null, /*! ./pages/InfluencersPage */ "./resources/js/pages/InfluencersPage.vue"));
+      return __webpack_require__.e(/*! import() */ 5).then(__webpack_require__.bind(null, /*! ./pages/InfluencersPage */ "./resources/js/pages/InfluencersPage.vue"));
     },
     meta: {
       auth: true
@@ -79586,7 +79595,7 @@ var routes = [{
   name: 'login',
   path: '/login',
   component: function component() {
-    return __webpack_require__.e(/*! import() */ 13).then(__webpack_require__.bind(null, /*! ./pages/LoginPage */ "./resources/js/pages/LoginPage.vue"));
+    return __webpack_require__.e(/*! import() */ 12).then(__webpack_require__.bind(null, /*! ./pages/LoginPage */ "./resources/js/pages/LoginPage.vue"));
   }
 }];
 var router = new vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]({
@@ -79692,6 +79701,8 @@ var state = function state() {
     statistics: {},
     trackers: [],
     tracker: null,
+    stories: [],
+    story: null,
     influencers: [],
     influencer: null,
     roles: []
@@ -79731,6 +79742,12 @@ var getters = {
   },
   tracker: function tracker(state) {
     return state.tracker;
+  },
+  stories: function stories(state) {
+    return state.stories;
+  },
+  story: function story(state) {
+    return state.story;
   },
   influencers: function influencers(state) {
     return state.influencers;
@@ -80432,8 +80449,14 @@ var mutations = (_mutations = {
 }), _defineProperty(_mutations, "setTracker", function setTracker(state, _ref52) {
   var tracker = _ref52.tracker;
   state.tracker = tracker;
-}), _defineProperty(_mutations, "setRoles", function setRoles(state, _ref53) {
-  var roles = _ref53.roles;
+}), _defineProperty(_mutations, "setStories", function setStories(state, _ref53) {
+  var stories = _ref53.stories;
+  state.stories = stories;
+}), _defineProperty(_mutations, "setStory", function setStory(state, _ref54) {
+  var story = _ref54.story;
+  state.story = story;
+}), _defineProperty(_mutations, "setRoles", function setRoles(state, _ref55) {
+  var roles = _ref55.roles;
   state.roles = roles;
 }), _mutations);
 

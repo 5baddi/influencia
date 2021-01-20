@@ -49,6 +49,14 @@
                     <span class="text">Trackers</span>
                 </router-link>
             </li>
+            <li v-if="$can('list', 'tracker') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `stories`}">
+                <router-link :to="{name: 'stories'}">
+                    <span class="icon">
+                        <i class="far fa-clock"></i>
+                    </span>
+                    <span class="text">Stories</span>
+                </router-link>
+            </li>
             <li v-if="$can('list', 'influencer') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `influencers`}">
                 <router-link :to="{name: 'influencers'}">
                     <div class="icon">
