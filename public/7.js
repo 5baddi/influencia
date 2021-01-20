@@ -1454,7 +1454,18 @@ var render = function() {
                 nativeData: _vm.campaign.influencers,
                 withPagination: false,
                 withTotalTab: true,
-                exportable: true
+                exportable: true,
+                exportableFields: [
+                  "username",
+                  "name",
+                  "campaign_media",
+                  "estimated_communities",
+                  "campaign_impressions",
+                  "earned_media_value"
+                ],
+                fileName:
+                  "Performance breakdown by Influencer for campaign " +
+                  _vm.campaign.name
               }
             })
           ],

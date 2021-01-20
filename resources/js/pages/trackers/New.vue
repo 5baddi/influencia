@@ -148,18 +148,25 @@ export default {
       FileInput,
       VueTagsInput
    },
-   props: {
-      show: {
-         default: false,
-         type: Boolean
-      },
-      campaigns: {
-         type: Array,
-         default: () => {
-            return [];
-         }
-      }
-   },
+   notifications: {
+        createTrackerErrors: {
+            type: "error"
+        },
+        createTrackerSuccess: {
+            type: "success"
+        },
+        showError: {
+            type: "error",
+            title: "Error",
+            message: "Something going wrong! Please try again.."
+        },
+        showSuccess: {
+            type: "success",
+        }
+    },
+    computed: {
+        ...mapGetters(["AuthenticatedUser", "campaigns"])
+    },
    data() {
       return {
             user_id: null,
@@ -181,13 +188,6 @@ export default {
             published_at: null,
          };
    },
-   created() {
-      document.addEventListener("keydown", e => {
-         if (e.key == "Escape" && this.show) {
-            this.dismiss();
-         }
-      });
-   },
    methods: {
       init(){
          this.campaign_id = null;
@@ -207,9 +207,6 @@ export default {
          this.next_story = null;
          this.exited = null;
          this.published_at = null;
-      },
-      dismiss() {
-         this.$emit("dismiss");
       },
       handleStoryUpload(files){
          if(typeof files === "undefined" && files.length > 0)
@@ -278,11 +275,56 @@ export default {
             _data.published_at = this.published_at;
          }
 
-         this.$emit("create", {
-            data: _data
-         })
-         this.init();
-      }
+        // Create new tracker
+        this.create(_data);
+      },
+      create(payload) {
+            let data = payload.data;
+            let formData = new FormData();
+
+            // Set base tracker info
+            formData.append("user_id", this.AuthenticatedUser.id);
+            formData.append("campaign_id", data.campaign_id);
+            formData.append("name", data.name);
+            formData.append("type", data.type);
+            if (data.type !== 'url')
+                formData.append("platform", data.platform);
+
+            // Create story tracker
+            if (data.type === "story") {
+                // Append form data
+                formData.append("username", data.username);
+                Array.from(data.story).forEach(file => {
+                    formData.append("story[]", file);
+                });
+            } else {
+                formData.append("url", data.url);
+            }
+
+            // Dispatch the creation action
+            this.$store.dispatch("addNewTracker", formData)
+                .then(response => {
+                    this.init();
+                    this.createTrackerSuccess({
+                        message: `Tracker ${response.content.name} created successfuly!`
+                    });
+                    this.$router.push({ name: 'trackers' });
+                })
+                .catch(error => {
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
+                });
+        }
    }
 };
 </script>

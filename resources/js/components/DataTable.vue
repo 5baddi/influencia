@@ -254,6 +254,7 @@ import {
 } from "vuex";
 import dayjs from "dayjs";
 import abbreviate from 'number-abbreviate';
+import exportFromJSON from 'export-from-json';
 
 export default {
     name: 'DataTable',
@@ -301,8 +302,15 @@ export default {
             type: Boolean,
             default: false
         },
-        excelLink: {
-            type: String
+        fileName: {
+            type: String,
+            default: "DataTable as Excel"
+        },
+        exportableFields: {
+            type: Array,
+            default: () => {
+                return [];
+            }
         }
     },
     filters: {
@@ -601,7 +609,26 @@ export default {
             });
         },
         exportToExcel(){
-            
+            // Init
+            let exportableData = [];
+            let exportName = this.fileName;
+            let exportType = 'xls';
+
+            let vm = this;
+            this.data.map(function(value, idx){
+                let row = {};
+                vm.exportableFields.map(function(field, index){
+                    if(value.hasOwnProperty(field)){
+                        let item = vm.columns.find((col) => col.field === field);
+                        row[field] = vm.formatData((typeof item !== "undefined" && item !== null) ? item : {}, value[field]);
+                    }
+                });
+
+                exportableData.push(row);
+            });
+
+            // Export 
+            exportFromJSON({ data: exportableData, fileName: exportName, exportType: exportType });
         }
     },
     data() {

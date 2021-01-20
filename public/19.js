@@ -172,6 +172,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_FileInput__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../components/FileInput */ "./resources/js/components/FileInput.vue");
 /* harmony import */ var _johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @johmun/vue-tags-input */ "./node_modules/@johmun/vue-tags-input/dist/vue-tags-input.js");
 /* harmony import */ var _johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2__);
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -320,18 +328,23 @@ __webpack_require__.r(__webpack_exports__);
     FileInput: _components_FileInput__WEBPACK_IMPORTED_MODULE_1__["default"],
     VueTagsInput: _johmun_vue_tags_input__WEBPACK_IMPORTED_MODULE_2___default.a
   },
-  props: {
-    show: {
-      "default": false,
-      type: Boolean
+  notifications: {
+    createTrackerErrors: {
+      type: "error"
     },
-    campaigns: {
-      type: Array,
-      "default": function _default() {
-        return [];
-      }
+    createTrackerSuccess: {
+      type: "success"
+    },
+    showError: {
+      type: "error",
+      title: "Error",
+      message: "Something going wrong! Please try again.."
+    },
+    showSuccess: {
+      type: "success"
     }
   },
+  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "campaigns"])),
   data: function data() {
     return {
       user_id: null,
@@ -353,15 +366,6 @@ __webpack_require__.r(__webpack_exports__);
       published_at: null
     };
   },
-  created: function created() {
-    var _this = this;
-
-    document.addEventListener("keydown", function (e) {
-      if (e.key == "Escape" && _this.show) {
-        _this.dismiss();
-      }
-    });
-  },
   methods: {
     init: function init() {
       this.campaign_id = null;
@@ -381,9 +385,6 @@ __webpack_require__.r(__webpack_exports__);
       this.next_story = null;
       this.exited = null;
       this.published_at = null;
-    },
-    dismiss: function dismiss() {
-      this.$emit("dismiss");
     },
     handleStoryUpload: function handleStoryUpload(files) {
       if (typeof files === "undefined" && files.length > 0) return;
@@ -436,12 +437,59 @@ __webpack_require__.r(__webpack_exports__);
         _data.next_story = this.next_story;
         _data.exited = this.exited;
         _data.published_at = this.published_at;
-      }
+      } // Create new tracker
 
-      this.$emit("create", {
-        data: _data
+
+      this.create(_data);
+    },
+    create: function create(payload) {
+      var _this = this;
+
+      var data = payload.data;
+      var formData = new FormData(); // Set base tracker info
+
+      formData.append("user_id", this.AuthenticatedUser.id);
+      formData.append("campaign_id", data.campaign_id);
+      formData.append("name", data.name);
+      formData.append("type", data.type);
+      if (data.type !== 'url') formData.append("platform", data.platform); // Create story tracker
+
+      if (data.type === "story") {
+        // Append form data
+        formData.append("username", data.username);
+        Array.from(data.story).forEach(function (file) {
+          formData.append("story[]", file);
+        });
+      } else {
+        formData.append("url", data.url);
+      } // Dispatch the creation action
+
+
+      this.$store.dispatch("addNewTracker", formData).then(function (response) {
+        _this.init();
+
+        _this.createTrackerSuccess({
+          message: "Tracker ".concat(response.content.name, " created successfuly!")
+        });
+
+        _this.$router.push({
+          name: 'trackers'
+        });
+      })["catch"](function (error) {
+        var errors = Object.values(error.response.data.errors);
+
+        if (_typeof(errors) === "object" && errors.length > 0) {
+          errors.forEach(function (element) {
+            _this.showError({
+              message: element
+            });
+          });
+        } else {
+          _this.showError({
+            message: error.response.data.message
+          });
+        }
       });
-      this.init();
     }
   }
 });

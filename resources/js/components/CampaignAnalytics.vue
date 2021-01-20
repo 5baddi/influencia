@@ -101,7 +101,7 @@
 
     <div class="datatable-scroll">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" :withPagination="false" :withTotalTab="true" :exportable="true" />
+        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" :withPagination="false" :withTotalTab="true" :exportable="true" :exportableFields="['username', 'name', 'campaign_media', 'estimated_communities', 'campaign_impressions', 'earned_media_value']" :fileName="'Performance breakdown by Influencer for campaign ' + campaign.name" />
     </div>
 
     <div class="datatable-scroll" id="byinfluencers">

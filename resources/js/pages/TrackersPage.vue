@@ -57,7 +57,6 @@
             </DataTable>
         </div>
     </div>
-    <CreateTrackerModal :show="showAddTrackerModal" :campaigns="campaigns" @create="create" @dismiss="dismissAddTrackerModal" />
     <ConfirmationModal ref="confirmModal" v-on:custom="deleteAction" />
     <TrackerAnalytics v-if="tracker" :tracker="tracker" />
 </div>
@@ -67,11 +66,9 @@
 import {
     mapGetters
 } from "vuex";
-import CreateTrackerModal from "../components/modals/CreateTrackerModal";
 import TrackerAnalytics from "../components/TrackerAnalytics";
 export default {
     components: {
-        CreateTrackerModal,
         TrackerAnalytics
     },
     notifications: {
@@ -208,53 +205,6 @@ export default {
                     this.showError({
                         message: error.message
                     });
-                });
-        },
-        create(payload) {
-            let data = payload.data;
-            let formData = new FormData();
-
-            // Set base tracker info
-            formData.append("user_id", this.AuthenticatedUser.id);
-            formData.append("campaign_id", data.campaign_id);
-            formData.append("name", data.name);
-            formData.append("type", data.type);
-            if (data.type !== 'url')
-                formData.append("platform", data.platform);
-
-            // Create story tracker
-            if (data.type === "story") {
-                // Append form data
-                formData.append("username", data.username);
-                Array.from(data.story).forEach(file => {
-                    formData.append("story[]", file);
-                });
-            } else {
-                formData.append("url", data.url);
-            }
-
-            // Dispatch the creation action
-            this.$store.dispatch("addNewTracker", formData)
-                .then(response => {
-                    this.dismissAddTrackerModal();
-                    this.$refs.trackersDT.reloadData();
-                    this.createTrackerSuccess({
-                        message: `Tracker ${response.content.name} created successfuly!`
-                    });
-                })
-                .catch(error => {
-                    let errors = Object.values(error.response.data.errors);
-                    if(typeof errors === "object" && errors.length > 0){
-                        errors.forEach(element => {
-                            this.showError({
-                                message: element
-                            });
-                        });
-                    }else{
-                        this.showError({
-                            message: error.response.data.message
-                        });
-                    }
                 });
         }
     },
