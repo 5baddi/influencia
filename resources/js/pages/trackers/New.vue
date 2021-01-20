@@ -170,7 +170,7 @@ export default {
    data() {
       return {
             user_id: null,
-            campaign_id: null,
+            campaign_id: -1,
             platform: "instagram",
             name: null,
             type: "post",
@@ -190,7 +190,7 @@ export default {
    },
    methods: {
       init(){
-         this.campaign_id = null;
+         this.campaign_id = -1;
          this.user_id = null;
          this.platform = "instagram";
          this.name = null;
