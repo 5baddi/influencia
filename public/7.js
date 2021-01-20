@@ -164,6 +164,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 
@@ -1542,10 +1545,31 @@ var render = function() {
                 )
               },
               [
+                _c(
+                  "router-link",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: {
+                      slot: "custom-buttons",
+                      disabled:
+                        !_vm.campaigns ||
+                        typeof _vm.campaigns.length === "undefined" ||
+                        _vm.campaigns.length === 0,
+                      to: { name: "new_tracker" }
+                    },
+                    slot: "custom-buttons"
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-plus" }),
+                    _vm._v(" Add new tracker    \r\n            ")
+                  ]
+                ),
+                _vm._v(" "),
                 _c("th", { attrs: { slot: "header" }, slot: "header" }, [
                   _vm._v("Actions")
                 ])
-              ]
+              ],
+              1
             )
           ],
           1

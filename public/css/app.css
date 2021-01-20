@@ -7341,6 +7341,11 @@ button:disabled {
   src: url(/fonts/BebasNeueLight.ttf?b5c9e279edbebf333edcabba7f36f065);
 }
 
+a.btn {
+  text-decoration: none;
+  margin: 0.5rem;
+}
+
 .text-center {
   text-align: center !important;
 }

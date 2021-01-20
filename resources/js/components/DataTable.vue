@@ -13,6 +13,7 @@
                     <button class="btn icon-link" title="Reload all data" @click="reloadData()">
                         <i class="fas fa-sync-alt"></i>
                     </button>
+                    <slot name="custom-buttons"></slot>
                 </th>
             </tr>
             <tr ref="headercolumns">
@@ -114,6 +115,11 @@ table {
 table thead>>>.actions-header{
     /* border-bottom: none; */
     text-align: right;
+}
+table thead>>>.actions-header .btn{
+    display: initial;
+    padding: .5rem;
+    margin: unset;
 }
 table thead>>>.actions-header input[type='text']{
     min-width: 300px;

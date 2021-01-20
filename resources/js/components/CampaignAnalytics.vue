@@ -112,6 +112,9 @@
     <div class="datatable-scroll">
         <h4>List of trackers</h4>
         <DataTable cssClasses="table-card" ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers">
+            <router-link slot="custom-buttons" class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" :to="{name: 'new_tracker'}">
+                <i class="fas fa-plus"></i>&nbsp;Add new tracker    
+            </router-link>
             <th slot="header">Actions</th>
             <td slot="body-row" slot-scope="row">
                 <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
