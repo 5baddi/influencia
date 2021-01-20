@@ -16,13 +16,15 @@ class AddMoreFieldsAnalytics extends Migration
         // Campaign analytics
         Schema::table('campaign_analytics', function (Blueprint $table) {
             $table->integer('videos_count')->default(0)->after('posts_count');
-            $table->integer('images_count')->default(0)->after('images_count');
+            $table->integer('images_count')->default(0)->after('videos_count');
         });
         
         // Tracker analytics
         Schema::table('tracker_analytics', function (Blueprint $table) {
             $table->integer('videos_count')->default(0)->after('posts_count');
-            $table->integer('images_count')->default(0)->after('images_count');
+            $table->integer('images_count')->default(0)->after('videos_count');
+            $table->boolean('is_link')->default(false)->after('images_count');
+            $table->boolean('is_story')->default(false)->after('is_link');
         });
     }
 
@@ -37,7 +39,7 @@ class AddMoreFieldsAnalytics extends Migration
             $table->dropColumn(['videos_count', 'images_count']);
         });
         Schema::table('tracker_analytics', function (Blueprint $table) {
-            $table->dropColumn(['videos_count', 'images_count']);
+            $table->dropColumn(['videos_count', 'images_count', 'is_link', 'is_story']);
         });
     }
 }

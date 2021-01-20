@@ -361,6 +361,18 @@ span.status{
                 margin-left: 1rem;
             }
         }
+
+        .count-details{
+            padding: .5rem;
+
+            span{
+                padding: .5rem;
+                
+                svg{
+                    color: #333;
+                }
+            }
+        }
     }
     .cards{
         &.statistics{

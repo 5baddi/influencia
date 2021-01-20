@@ -137,6 +137,10 @@ class UpdateAnalyticsCommand extends Command
                             $analytics['videos_count'] += $tracker->analytics->videos_count;
                         if(!is_null($tracker->analytics->images_count))
                             $analytics['images_count'] += $tracker->analytics->images_count;
+                        if($tracker->analytics->is_link)
+                            $analytics['links_count'] += 1;
+                        if($tracker->analytics->is_story)
+                            $analytics['stories_count'] += 1;
 
                         // Emojis
                         if(isset($tracker->analytics->top_emojis['top'], $tracker->analytics->top_emojis['all'])){
@@ -203,6 +207,8 @@ class UpdateAnalyticsCommand extends Command
                         'posts_count'           => 0,
                         'images_count'          => 0,
                         'videos_count'          => 0,
+                        'is_link'               => false,
+                        'is_story'              => false,
                         'organic_posts'         => 0,
                         'top_emojis'            => [],
                         'sentiments_positive'   => 0.0,
@@ -214,6 +220,12 @@ class UpdateAnalyticsCommand extends Command
                     switch($tracker->type){
                         case "post":
                             $analytics['posts_count'] = $tracker->posts->count();
+                        break;
+                        case "url":
+                            $analytics['is_link'] = true;
+                        break;
+                        case "story":
+                            $analytics['is_story'] = true;
                         break;
                     }
 

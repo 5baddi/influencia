@@ -7700,6 +7700,18 @@ span.status-danger::before {
   margin-left: 1rem;
 }
 
+.campaign .influencers-avatars .count-details {
+  padding: 0.5rem;
+}
+
+.campaign .influencers-avatars .count-details span {
+  padding: 0.5rem;
+}
+
+.campaign .influencers-avatars .count-details span svg {
+  color: #333;
+}
+
 .campaign .cards.statistics {
   flex-wrap: wrap;
   gap: 1rem;

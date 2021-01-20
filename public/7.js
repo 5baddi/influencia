@@ -158,6 +158,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1173,6 +1179,38 @@ var render = function() {
                 ],
                 1
               )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "count-details" }, [
+              _vm.campaign.stories_count && _vm.campaign.stories_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "far fa-clock" }),
+                    _vm._v(
+                      " " + _vm._s(_vm.campaign.stories_count) + " stories"
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.campaign.videos_count && _vm.campaign.videos_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "far fa-play-circle" }),
+                    _vm._v(" " + _vm._s(_vm.campaign.videos_count) + " videos")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.campaign.posts_count && _vm.campaign.posts_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "far fa-images" }),
+                    _vm._v(" " + _vm._s(_vm.campaign.posts_count) + " posts")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.campaign.links_count && _vm.campaign.links_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "fas fa-link" }),
+                    _vm._v(" " + _vm._s(_vm.campaign.links_count) + " links")
+                  ])
+                : _vm._e()
             ])
           ],
           2
