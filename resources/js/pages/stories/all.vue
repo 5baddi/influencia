@@ -16,11 +16,12 @@
                 <button :disabled="!activeBrand" class="btn btn-success" @click="addStory()">Add new story</button>
             </div>
         </div>
-        <div class="p-1 influencer">
+        <div class="influencer">
             <div class="influencer-posts">
                 <a :href="story.link || '#'" target="_blank" @mouseover="attrActive=story.uuid" @mouseleave="attrActive=null" class="influencer-posts-card" v-for="story in stories.items" :key="story.uuid">
                     <img :src="story.thumbnail" loading="lazy"/>
                     <i v-if="story.type === 'video'" :class="'influencer-posts-card-type fas fa-' + (story.type === 'image' ? 'images' : 'video')"></i>
+                    <i v-if="story.influencer.platform === 'instagram'" class="influencer-posts-card-type fab fa-2 fa-instagram instagram-icon"></i>
                     <div :class="'influencer-posts-card-attr ' + (attrActive === story.uuid ? ' active' : '')">
                         
                     </div>
@@ -29,6 +30,15 @@
         </div> 
     </div>
 </template>
+<style scoped>
+    .influencer{
+        padding: 0;
+        margin: 1rem;
+    }
+    .influencer-posts{
+        margin: 0 !important;
+    }
+</style>
 <script>
 import {mapGetters} from 'vuex';
 

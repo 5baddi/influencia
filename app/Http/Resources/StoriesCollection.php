@@ -23,7 +23,7 @@ class StoriesCollection extends JsonResource
             'video_duration'        =>  $this->video_duration,
             'link'                  =>  $this->link,
             'published_at'          =>  $this->published_at,
-            'influencer'            =>  $this->influencer->only(['uuid', 'parsed_name', 'username', 'pic_url']),
+            'influencer'            =>  $this->influencer->only(['uuid', 'parsed_name', 'username', 'pic_url', 'platform']),
             'tracker'               =>  !is_null($this->tracker) ? $this->tracker->only(['uuid', 'queued', 'updated_at', 'status']) : null,
         ];
     }
