@@ -25,7 +25,10 @@
                         <i v-if="story.influencer.platform === 'instagram'" class="fab fa-2 fa-instagram instagram-icon"></i>
                     </span>
                     <div :class="'influencer-posts-card-attr ' + (attrActive === story.uuid ? ' active' : '')">
-                         <a class="influencer-avatar" :href="story.influencer.platform === 'instagram' ? 'https://instagram.com/' + story.influencer.username : ''" :title="'View on ' + story.influencer.platform" target="_blank"><img :src="story.influencer.pic_url" alt="Avatar"/></a>
+                         <a class="influencer-avatar" :href="story.influencer.platform === 'instagram' ? 'https://instagram.com/' + story.influencer.username : ''" :title="'View on ' + story.influencer.platform" target="_blank">
+                            <img :src="story.influencer.pic_url" alt="Avatar"/>
+                            {{ story.influencer.parsed_name }}
+                         </a>
                     </div>
                 </a>
             </div>
@@ -40,10 +43,17 @@
     .influencer-posts{
         margin: 0 !important;
     }
+    .influencer-avatar{
+        text-align: center;
+        color: white;
+        text-decoration: none;
+    }
     .influencer-avatar img{
+        display: block;
         max-width: 100px;
         max-height: 100px;
         border-radius: 50%;
+        margin-bottom: 1rem;
     }
 </style>
 <script>
