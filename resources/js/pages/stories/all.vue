@@ -20,8 +20,10 @@
             <div class="influencer-posts">
                 <a :href="story.link || '#'" target="_blank" @mouseover="attrActive=story.uuid" @mouseleave="attrActive=null" class="influencer-posts-card" v-for="story in stories.items" :key="story.uuid">
                     <img :src="story.thumbnail" loading="lazy"/>
-                    <i v-if="story.type === 'video'" :class="'influencer-posts-card-type fas fa-' + (story.type === 'image' ? 'images' : 'video')"></i>
-                    <i v-if="story.influencer.platform === 'instagram'" class="influencer-posts-card-type fab fa-2 fa-instagram instagram-icon"></i>
+                    <span class="influencer-posts-card-type">
+                        <i v-if="story.type === 'video'" :class="'fas fa-' + (story.type === 'image' ? 'images' : 'video')"></i>
+                        <i v-if="story.influencer.platform === 'instagram'" class="fab fa-2 fa-instagram instagram-icon"></i>
+                    </span>
                     <div :class="'influencer-posts-card-attr ' + (attrActive === story.uuid ? ' active' : '')">
                         
                     </div>

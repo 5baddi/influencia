@@ -57,6 +57,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "stories"])), {}, {
@@ -196,20 +198,21 @@ var render = function() {
             [
               _c("img", { attrs: { src: story.thumbnail, loading: "lazy" } }),
               _vm._v(" "),
-              story.type === "video"
-                ? _c("i", {
-                    class:
-                      "influencer-posts-card-type fas fa-" +
-                      (story.type === "image" ? "images" : "video")
-                  })
-                : _vm._e(),
-              _vm._v(" "),
-              story.influencer.platform === "instagram"
-                ? _c("i", {
-                    staticClass:
-                      "influencer-posts-card-type fab fa-2 fa-instagram instagram-icon"
-                  })
-                : _vm._e(),
+              _c("span", { staticClass: "influencer-posts-card-type" }, [
+                story.type === "video"
+                  ? _c("i", {
+                      class:
+                        "fas fa-" +
+                        (story.type === "image" ? "images" : "video")
+                    })
+                  : _vm._e(),
+                _vm._v(" "),
+                story.influencer.platform === "instagram"
+                  ? _c("i", {
+                      staticClass: "fab fa-2 fa-instagram instagram-icon"
+                    })
+                  : _vm._e()
+              ]),
               _vm._v(" "),
               _c("div", {
                 class:
