@@ -118,7 +118,7 @@ var render = function() {
       _c(
         "div",
         { staticClass: "influencer-posts" },
-        _vm._l(_vm.stories, function(story) {
+        _vm._l(_vm.stories.items, function(story) {
           return _c(
             "a",
             {

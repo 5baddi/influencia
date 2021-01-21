@@ -55,11 +55,20 @@ class InfluencerController extends Controller
         $stories = InfluencerStory::with(['influencer'])
                         ->whereIn('influencer_id', $ids)
                         ->orderBy('created_at', 'desc')
-                        ->get();
+                        ->paginate(25);
 
         return response()->success(
             "Stories fetched successfully.", 
-            StoriesCollection::collection($stories)
+            [
+                'items'         =>  StoriesCollection::collection($stories->getCollection()),
+                'paginations'   =>  [
+                    'total'     =>  $stories->total(),
+                    'count'     =>  $stories->count(),
+                    'perPage'   =>  $stories->perPage(),
+                    'currentPage'   =>  $stories->currentPage(),
+                    'lastPage'      =>  $stories->lastPage(),
+                ]
+            ],
         );
     }
 
