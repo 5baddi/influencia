@@ -59,6 +59,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "stories"])), {}, {
@@ -99,7 +104,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influencer[data-v-deeba6e8]{\n    padding: 0;\n    margin: 1rem;\n}\n.influencer-posts[data-v-deeba6e8]{\n    margin: 0 !important;\n}\n", ""]);
+exports.push([module.i, "\n.influencer[data-v-deeba6e8]{\n    padding: 0;\n    margin: 1rem;\n}\n.influencer-posts[data-v-deeba6e8]{\n    margin: 0 !important;\n}\n.influencer-avatar img[data-v-deeba6e8]{\n    max-width: 100px;\n    max-height: 100px;\n    border-radius: 50%;\n}\n", ""]);
 
 // exports
 
@@ -225,6 +230,7 @@ var render = function() {
                   _c(
                     "a",
                     {
+                      staticClass: "influencer-avatar",
                       attrs: {
                         href:
                           story.influencer.platform === "instagram"
