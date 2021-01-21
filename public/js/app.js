@@ -80362,11 +80362,11 @@ var actions = {
       });
     });
   },
-  fetchStories: function fetchStories(_ref36) {
+  fetchStories: function fetchStories(_ref36, attr) {
     var commit = _ref36.commit,
         state = _ref36.state;
     return new Promise(function (resolve, reject) {
-      _api__WEBPACK_IMPORTED_MODULE_2__["api"].get("/api/v1/".concat(state.user.selected_brand.uuid, "/stories")).then(function (response) {
+      _api__WEBPACK_IMPORTED_MODULE_2__["api"].get("/api/v1/".concat(state.user.selected_brand.uuid, "/stories?page=") + (attr.page ? attr.page : 1)).then(function (response) {
         commit('setStories', {
           stories: response.data.content
         });

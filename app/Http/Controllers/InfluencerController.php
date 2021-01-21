@@ -61,7 +61,7 @@ class InfluencerController extends Controller
             "Stories fetched successfully.", 
             [
                 'items'         =>  StoriesCollection::collection($stories->getCollection()),
-                'paginations'   =>  [
+                'pagination'    =>  [
                     'total'     =>  $stories->total(),
                     'count'     =>  $stories->count(),
                     'perPage'   =>  $stories->perPage(),

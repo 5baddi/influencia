@@ -74,6 +74,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "stories"])), {}, {
@@ -84,8 +107,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   }),
   methods: {
     loadStories: function loadStories() {
+      var _this = this;
+
       // Load stories
-      if (Object.values(this.stories).length === 0) this.$store.dispatch("fetchStories")["catch"](function (error) {});
+      this.loadingMore = true;
+      this.$store.dispatch("fetchStories", {
+        page: this.page
+      }).then(function (response) {
+        // Merge values and set mext page
+        if (typeof response.content.items !== "undefined") {
+          _this.fetchedStories = _this.fetchedStories.concat(response.content.items);
+          console.log(response.content);
+          if (response.content.pagination && response.content.pagination.lastPage && response.content.pagination.currentPage) _this.page = response.content.currentPage < response.content.pagination.lastPage ? response.content.pagination.currentPage + 1 : null;
+        }
+
+        _this.loadingMore = false;
+      })["catch"](function (error) {
+        _this.loadingMore = false;
+      });
     },
     addStory: function addStory() {}
   },
@@ -95,7 +134,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      attrActive: null
+      attrActive: null,
+      page: null,
+      loadingMore: true,
+      fetchedStories: []
     };
   }
 });
@@ -114,7 +156,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influencer[data-v-deeba6e8]{\n    padding: 0;\n    margin: 1rem;\n}\n.influencer-posts[data-v-deeba6e8]{\n    margin: 0 !important;\n}\n.influencer-avatar[data-v-deeba6e8]{\n    text-align: center;\n    color: white;\n    text-decoration: none;\n}\n.influencer-avatar img[data-v-deeba6e8]{\n    display: block;\n    max-width: 100px;\n    max-height: 100px;\n    border-radius: 50%;\n    margin-bottom: 1rem;\n}\n", ""]);
+exports.push([module.i, "\n.influencer[data-v-deeba6e8]{\n    padding: 0;\n    margin: 1rem;\n}\n.influencer-posts[data-v-deeba6e8]{\n    margin: 0 !important;\n}\n.influencer-avatar[data-v-deeba6e8]{\n    text-align: center;\n    color: white;\n    text-decoration: none;\n}\n.influencer-avatar img[data-v-deeba6e8]{\n    display: block;\n    max-width: 100px;\n    max-height: 100px;\n    border-radius: 50%;\n    margin-bottom: 1rem;\n}\n.load-more[data-v-deeba6e8]{\n    display: flex;\n    justify-content: center;\n    margin: 1rem 0;\n}\n.load-more .btn[data-v-deeba6e8]{\n    background-color: #039be5;\n    color: white;\n}\n.load-more .btn[data-v-deeba6e8]:hover, btn[data-v-deeba6e8]:focus{\n    opacity: 0.7;\n}\n.load-more svg[data-v-deeba6e8]{\n    font-size: 22pt;\n    color: #039be5;\n}\n", ""]);
 
 // exports
 
@@ -194,7 +236,7 @@ var render = function() {
       _c(
         "div",
         { staticClass: "influencer-posts" },
-        _vm._l(_vm.stories.items, function(story) {
+        _vm._l(_vm.fetchedStories, function(story) {
           return _c(
             "a",
             {
@@ -258,17 +300,88 @@ var render = function() {
                       _vm._v(
                         "\n                        " +
                           _vm._s(story.influencer.parsed_name) +
-                          "\n                     "
+                          "\n                    "
                       )
                     ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "router-link",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: { to: { name: "new_tracker" } }
+                    },
+                    [
+                      _c("i", { staticClass: "fas fa-plus" }),
+                      _vm._v(" Enter story insights   \n                    ")
+                    ]
                   )
-                ]
+                ],
+                1
               )
             ]
           )
         }),
         0
-      )
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "load-more" }, [
+        _c(
+          "button",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: !_vm.loadingMore && _vm.page,
+                expression: "!loadingMore && page"
+              }
+            ],
+            staticClass: "btn",
+            on: {
+              click: function($event) {
+                return _vm.loadStories()
+              }
+            }
+          },
+          [_vm._v("Load more")]
+        ),
+        _vm._v(" "),
+        _c(
+          "svg",
+          {
+            directives: [
+              {
+                name: "show",
+                rawName: "v-show",
+                value: _vm.loadingMore,
+                expression: "loadingMore"
+              }
+            ],
+            staticClass: "svg-inline--fa fa-spinner fa-w-16 fa-spin",
+            attrs: {
+              "data-v-3b43fdf1": "",
+              "aria-hidden": "true",
+              focusable: "false",
+              "data-prefix": "fas",
+              "data-icon": "spinner",
+              role: "img",
+              xmlns: "http://www.w3.org/2000/svg",
+              viewBox: "0 0 512 512",
+              "data-fa-i2svg": ""
+            }
+          },
+          [
+            _c("path", {
+              attrs: {
+                fill: "currentColor",
+                d:
+                  "M304 48c0 26.51-21.49 48-48 48s-48-21.49-48-48 21.49-48 48-48 48 21.49 48 48zm-48 368c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zm208-208c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.49-48-48-48zM96 256c0-26.51-21.49-48-48-48S0 229.49 0 256s21.49 48 48 48 48-21.49 48-48zm12.922 99.078c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.491-48-48-48zm294.156 0c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48c0-26.509-21.49-48-48-48zM108.922 60.922c-26.51 0-48 21.49-48 48s21.49 48 48 48 48-21.49 48-48-21.491-48-48-48z"
+              }
+            })
+          ]
+        )
+      ])
     ])
   ])
 }

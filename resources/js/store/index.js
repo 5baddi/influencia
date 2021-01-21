@@ -585,9 +585,9 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
-    fetchStories({ commit, state }) {
+    fetchStories({ commit, state }, attr) {
         return new Promise((resolve, reject) => {
-            api.get(`/api/v1/${state.user.selected_brand.uuid}/stories`).then(response => {
+            api.get(`/api/v1/${state.user.selected_brand.uuid}/stories?page=` + (attr.page ? attr.page : 1)).then(response => {
                 commit('setStories', { stories: response.data.content })
                 resolve(response.data)
             }).catch(response => reject(response));
