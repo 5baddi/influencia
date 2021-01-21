@@ -13,9 +13,7 @@
             </ul>
         </div>
         <div class="hero__actions" v-if="!tracker">
-            <router-link class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" :to="{name: 'new_tracker'}">
-                <i class="fas fa-plus"></i>&nbsp;Add new tracker    
-            </router-link>
+            <button class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" @click="showAddTrackerModal = !showAddTrackerModal">Add new tracker</button>
         </div>
     </div>
     <div class="p-1" v-if="!tracker">
@@ -57,6 +55,7 @@
             </DataTable>
         </div>
     </div>
+    <CreateTrackerModal :show="showAddTrackerModal" :campaigns="campaigns" @create="create" @dismiss="dismissAddTrackerModal" />
     <ConfirmationModal ref="confirmModal" v-on:custom="deleteAction" />
     <TrackerAnalytics v-if="tracker" :tracker="tracker" />
 </div>
@@ -66,9 +65,11 @@
 import {
     mapGetters
 } from "vuex";
+import CreateTrackerModal from "../components/modals/CreateTrackerModal";
 import TrackerAnalytics from "../components/TrackerAnalytics";
 export default {
     components: {
+        CreateTrackerModal,
         TrackerAnalytics
     },
     notifications: {

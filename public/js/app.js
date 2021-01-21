@@ -79492,7 +79492,7 @@ var routes = [{
     name: 'trackers',
     path: '/trackers/:uuid?',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(18)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
     },
     meta: {
       auth: true // subject: 'tracker'
@@ -79502,23 +79502,23 @@ var routes = [{
     name: 'campaign_trackers',
     path: '/trackers/campaign/:campaign',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(0), __webpack_require__.e(1), __webpack_require__.e(2), __webpack_require__.e(18)]).then(__webpack_require__.bind(null, /*! ./pages/TrackersPage */ "./resources/js/pages/TrackersPage.vue"));
     },
     meta: {
       auth: true
     }
   }, {
-    name: 'new_tracker',
-    path: '/trackers/new',
+    name: 'new_story',
+    path: '/trackers/story/:uuid?',
     component: function component() {
-      return Promise.all(/*! import() */[__webpack_require__.e(17), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/trackers/New.vue */ "./resources/js/pages/trackers/New.vue"));
+      return Promise.all(/*! import() */[__webpack_require__.e(2), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/trackers/story.vue */ "./resources/js/pages/trackers/story.vue"));
     },
     meta: {
       auth: true
     }
   }, {
     name: 'stories',
-    path: '/stories/:uuid?',
+    path: '/stories',
     component: function component() {
       return __webpack_require__.e(/*! import() */ 14).then(__webpack_require__.bind(null, /*! ./pages/stories/all.vue */ "./resources/js/pages/stories/all.vue"));
     },

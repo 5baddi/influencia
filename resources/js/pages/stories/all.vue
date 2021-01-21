@@ -13,7 +13,9 @@
                 </ul>
             </div>
             <div class="hero__actions" v-if="($can('create', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))">
-                <button :disabled="!activeBrand" class="btn btn-success" @click="addStory()">Add new story</button>
+                <router-link class="btn btn-success" :disabled="!activeBrand" :to="{name: 'new_story'}">
+                    <i class="fas fa-plus"></i>&nbsp;Add new story    
+                </router-link>
             </div>
         </div>
         <div class="influencer">
@@ -29,8 +31,8 @@
                             <img :src="story.influencer.pic_url" alt="Avatar"/>
                             {{ story.influencer.parsed_name }}
                         </a>
-                        <router-link class="btn btn-success" :to="{name: 'new_tracker'}">
-                            <i class="fas fa-plus"></i>&nbsp;Enter story insights   
+                        <router-link class="btn btn-success" :to="{name: 'new_story', params: {uuid: story.uuid}}">
+                            <i class="far fa-chart-bar"></i>&nbsp;Enter insights   
                         </router-link>
                     </div>
                 </a>
@@ -120,9 +122,6 @@ export default {
             .catch(error => {
                 this.loadingMore = false;
             });
-        },
-        addStory(){
-
         }
     },
     mounted(){

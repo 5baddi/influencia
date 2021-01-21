@@ -19,7 +19,7 @@ class StoriesCollection extends JsonResource
             'story_id'              =>  $this->story_id,
             'type'                  =>  $this->type,
             'thumbnail'             =>  $this->thumbnail,
-            'video'                 =>  $this->video,
+            // 'video'                 =>  $this->video,
             'video_duration'        =>  $this->video_duration,
             'link'                  =>  $this->link,
             'published_at'          =>  $this->published_at,

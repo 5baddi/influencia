@@ -52,16 +52,16 @@ const routes = [
                 },
             },
             {
-                name: 'new_tracker',
-                path: '/trackers/new',
-                component: () => import("./pages/trackers/New.vue"),
+                name: 'new_story',
+                path: '/trackers/story/:uuid?',
+                component: () => import("./pages/trackers/story.vue"),
                 meta: {
                     auth: true,
                 },
             },
             {
                 name: 'stories',
-                path: '/stories/:uuid?',
+                path: '/stories',
                 component: () => import("./pages/stories/all.vue"),
                 meta: {
                     auth: true,

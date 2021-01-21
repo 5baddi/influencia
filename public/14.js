@@ -105,6 +105,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "stories"])), {}, {
@@ -132,8 +134,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })["catch"](function (error) {
         _this.loadingMore = false;
       });
-    },
-    addStory: function addStory() {}
+    }
   },
   mounted: function mounted() {
     // Load stories
@@ -221,21 +222,27 @@ var render = function() {
       _vm._v(" "),
       _vm.$can("create", "tracker") ||
       (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
-        ? _c("div", { staticClass: "hero__actions" }, [
-            _c(
-              "button",
-              {
-                staticClass: "btn btn-success",
-                attrs: { disabled: !_vm.activeBrand },
-                on: {
-                  click: function($event) {
-                    return _vm.addStory()
+        ? _c(
+            "div",
+            { staticClass: "hero__actions" },
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "btn btn-success",
+                  attrs: {
+                    disabled: !_vm.activeBrand,
+                    to: { name: "new_story" }
                   }
-                }
-              },
-              [_vm._v("Add new story")]
-            )
-          ])
+                },
+                [
+                  _c("i", { staticClass: "fas fa-plus" }),
+                  _vm._v(" Add new story    \n            ")
+                ]
+              )
+            ],
+            1
+          )
         : _vm._e()
     ]),
     _vm._v(" "),
@@ -316,11 +323,13 @@ var render = function() {
                     "router-link",
                     {
                       staticClass: "btn btn-success",
-                      attrs: { to: { name: "new_tracker" } }
+                      attrs: {
+                        to: { name: "new_story", params: { uuid: story.uuid } }
+                      }
                     },
                     [
-                      _c("i", { staticClass: "fas fa-plus" }),
-                      _vm._v(" Enter story insights   \n                    ")
+                      _c("i", { staticClass: "far fa-chart-bar" }),
+                      _vm._v(" Enter insights   \n                    ")
                     ]
                   )
                 ],
