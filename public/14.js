@@ -97,6 +97,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "stories"])), {}, {
@@ -117,8 +125,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // Merge values and set mext page
         if (typeof response.content.items !== "undefined") {
           _this.fetchedStories = _this.fetchedStories.concat(response.content.items);
-          console.log(response.content);
-          if (response.content.pagination && response.content.pagination.lastPage && response.content.pagination.currentPage) _this.page = response.content.currentPage < response.content.pagination.lastPage ? response.content.pagination.currentPage + 1 : null;
+          if (response.content.pagination && response.content.pagination.lastPage && response.content.pagination.currentPage) _this.page = response.content.pagination.currentPage < response.content.pagination.lastPage ? response.content.pagination.currentPage + 1 : null;
         }
 
         _this.loadingMore = false;
@@ -156,7 +163,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.influencer[data-v-deeba6e8]{\n    padding: 0;\n    margin: 1rem;\n}\n.influencer-posts[data-v-deeba6e8]{\n    margin: 0 !important;\n}\n.influencer-avatar[data-v-deeba6e8]{\n    text-align: center;\n    color: white;\n    text-decoration: none;\n}\n.influencer-avatar img[data-v-deeba6e8]{\n    display: block;\n    max-width: 100px;\n    max-height: 100px;\n    border-radius: 50%;\n    margin-bottom: 1rem;\n}\n.load-more[data-v-deeba6e8]{\n    display: flex;\n    justify-content: center;\n    margin: 1rem 0;\n}\n.load-more .btn[data-v-deeba6e8]{\n    background-color: #039be5;\n    color: white;\n}\n.load-more .btn[data-v-deeba6e8]:hover, btn[data-v-deeba6e8]:focus{\n    opacity: 0.7;\n}\n.load-more svg[data-v-deeba6e8]{\n    font-size: 22pt;\n    color: #039be5;\n}\n", ""]);
+exports.push([module.i, "\n.influencer[data-v-deeba6e8]{\n    padding: 0;\n    margin: 1rem;\n}\n.influencer-posts[data-v-deeba6e8]{\n    margin: 0 !important;\n}\n.influencer-posts-card-attr[data-v-deeba6e8]{\n    flex-direction: column;\n}\n.influencer-posts-card-attr .btn[data-v-deeba6e8]{\n   font-size: 8pt;\n    padding: 0.7rem;\n    margin-top: 1rem;\n}\n.influencer-avatar[data-v-deeba6e8]{\n    text-align: center;\n    color: white;\n    text-decoration: none;\n}\n.influencer-avatar img[data-v-deeba6e8]{\n    display: block;\n    max-width: 100px;\n    max-height: 100px;\n    border-radius: 50%;\n    margin-bottom: 1rem;\n}\n.load-more[data-v-deeba6e8]{\n    display: flex;\n    justify-content: center;\n    margin: 1rem 0;\n}\n.load-more .btn[data-v-deeba6e8]{\n    background-color: #039be5;\n    color: white;\n}\n.load-more .btn[data-v-deeba6e8]:hover, btn[data-v-deeba6e8]:focus{\n    opacity: 0.7;\n}\n.load-more svg[data-v-deeba6e8]{\n    font-size: 22pt;\n    color: #039be5;\n}\n", ""]);
 
 // exports
 

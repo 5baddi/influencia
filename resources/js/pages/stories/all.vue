@@ -50,6 +50,14 @@
     .influencer-posts{
         margin: 0 !important;
     }
+    .influencer-posts-card-attr{
+        flex-direction: column;
+    }
+    .influencer-posts-card-attr .btn{
+       font-size: 8pt;
+        padding: 0.7rem;
+        margin-top: 1rem;
+    }
     .influencer-avatar{
         text-align: center;
         color: white;
@@ -103,9 +111,8 @@ export default {
                 if(typeof response.content.items !== "undefined"){
                     this.fetchedStories = this.fetchedStories.concat(response.content.items);
 
-                    console.log(response.content);
                     if(response.content.pagination && response.content.pagination.lastPage && response.content.pagination.currentPage)
-                        this.page = response.content.currentPage < response.content.pagination.lastPage ? response.content.pagination.currentPage + 1 : null;
+                        this.page = response.content.pagination.currentPage < response.content.pagination.lastPage ? response.content.pagination.currentPage + 1 : null;
                 }
 
                 this.loadingMore = false;
