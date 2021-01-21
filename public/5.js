@@ -136,9 +136,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    nbr: function nbr() {
-      return new number_abbreviate__WEBPACK_IMPORTED_MODULE_0___default.a();
-    },
     loadMore: function loadMore() {
       var _this = this;
 
@@ -649,7 +646,7 @@ var render = function() {
                   _vm._v(" "),
                   _c("span", [
                     _vm._v(
-                      _vm._s(_vm.nbr().abbreviate(_vm.influencer.followers))
+                      _vm._s(_vm._f("formatedNbr")(_vm.influencer.followers))
                     )
                   ])
                 ]),
@@ -661,7 +658,9 @@ var render = function() {
                       _c("span", [
                         _vm._v(
                           _vm._s(
-                            _vm.nbr().abbreviate(_vm.influencer.image_sequences)
+                            _vm._f("formatedNbr")(
+                              _vm.influencer.image_sequences
+                            )
                           )
                         )
                       ])
@@ -675,9 +674,9 @@ var render = function() {
                       _c("span", [
                         _vm._v(
                           _vm._s(
-                            _vm
-                              .nbr()
-                              .abbreviate(_vm.influencer.carousel_sequences)
+                            _vm._f("formatedNbr")(
+                              _vm.influencer.carousel_sequences
+                            )
                           )
                         )
                       ])
@@ -691,7 +690,9 @@ var render = function() {
                       _c("span", [
                         _vm._v(
                           _vm._s(
-                            _vm.nbr().abbreviate(_vm.influencer.video_sequences)
+                            _vm._f("formatedNbr")(
+                              _vm.influencer.video_sequences
+                            )
                           )
                         )
                       ])
@@ -704,7 +705,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("span", [
                         _vm._v(
-                          _vm._s(_vm.nbr().abbreviate(_vm.influencer.likes))
+                          _vm._s(_vm._f("formatedNbr")(_vm.influencer.likes))
                         )
                       ])
                     ])
@@ -716,7 +717,7 @@ var render = function() {
                       _vm._v(" "),
                       _c("span", [
                         _vm._v(
-                          _vm._s(_vm.nbr().abbreviate(_vm.influencer.comments))
+                          _vm._s(_vm._f("formatedNbr")(_vm.influencer.comments))
                         )
                       ])
                     ])
@@ -735,7 +736,7 @@ var render = function() {
                   _c("i", { staticClass: "fab fa-instagram" }),
                   _vm._v(
                     " " +
-                      _vm._s(_vm.nbr().abbreviate(_vm.influencer.followers)) +
+                      _vm._s(_vm._f("formatedNbr")(_vm.influencer.followers)) +
                       "\n                "
                   )
                 ]
@@ -786,12 +787,12 @@ var render = function() {
                   [
                     _c("i", { staticClass: "fas fa-heart" }),
                     _vm._v(
-                      _vm._s(_vm.nbr().abbreviate(status.likes)) +
-                        "\n              "
+                      _vm._s(_vm._f("formatedNbr")(_vm.story.likes)) +
+                        "\n                "
                     ),
                     _c("i", { staticClass: "fas fa-comment" }),
                     _vm._v(
-                      _vm._s(_vm.nbr().abbreviate(status.comments)) +
+                      _vm._s(_vm._f("formatedNbr")(_vm.story.comments)) +
                         "\n           "
                     )
                   ]

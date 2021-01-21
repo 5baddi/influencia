@@ -80361,23 +80361,37 @@ var actions = {
         return reject(response);
       });
     });
+  },
+  fetchStories: function fetchStories(_ref36) {
+    var commit = _ref36.commit,
+        state = _ref36.state;
+    return new Promise(function (resolve, reject) {
+      _api__WEBPACK_IMPORTED_MODULE_2__["api"].get("/api/v1/".concat(state.user.selected_brand.uuid, "/stories")).then(function (response) {
+        commit('setStories', {
+          stories: response.data.content
+        });
+        resolve(response.data);
+      })["catch"](function (response) {
+        return reject(response);
+      });
+    });
   }
 };
 var mutations = (_mutations = {
-  setToken: function setToken(state, _ref36) {
-    var token = _ref36.token;
+  setToken: function setToken(state, _ref37) {
+    var token = _ref37.token;
     state.token = token;
   },
-  setUser: function setUser(state, _ref37) {
-    var user = _ref37.user;
+  setUser: function setUser(state, _ref38) {
+    var user = _ref38.user;
     state.user = user;
   },
-  setUsers: function setUsers(state, _ref38) {
-    var users = _ref38.users;
+  setUsers: function setUsers(state, _ref39) {
+    var users = _ref39.users;
     state.users = users;
   },
-  setBrand: function setBrand(state, _ref39) {
-    var brand = _ref39.brand;
+  setBrand: function setBrand(state, _ref40) {
+    var brand = _ref40.brand;
 
     if (!state.brands) {
       state.brands = [];
@@ -80385,24 +80399,24 @@ var mutations = (_mutations = {
 
     state.brands.push(brand);
   },
-  setBrands: function setBrands(state, _ref40) {
-    var brands = _ref40.brands;
+  setBrands: function setBrands(state, _ref41) {
+    var brands = _ref41.brands;
     state.brands = brands;
   },
-  setInfluencers: function setInfluencers(state, _ref41) {
-    var influencers = _ref41.influencers;
+  setInfluencers: function setInfluencers(state, _ref42) {
+    var influencers = _ref42.influencers;
     state.influencers = influencers;
   },
-  pushInfluencer: function pushInfluencer(state, _ref42) {
-    var influencer = _ref42.influencer;
+  pushInfluencer: function pushInfluencer(state, _ref43) {
+    var influencer = _ref43.influencer;
     state.influencers.push(influencer);
   },
-  setInfluencer: function setInfluencer(state, _ref43) {
-    var influencer = _ref43.influencer;
+  setInfluencer: function setInfluencer(state, _ref44) {
+    var influencer = _ref44.influencer;
     state.influencer = influencer;
   },
-  setNewUser: function setNewUser(state, _ref44) {
-    var user = _ref44.user;
+  setNewUser: function setNewUser(state, _ref45) {
+    var user = _ref45.user;
 
     if (!state.users) {
       state.users = [];
@@ -80410,53 +80424,53 @@ var mutations = (_mutations = {
 
     state.users.push(user);
   }
-}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref45) {
-  var user = _ref45.user;
+}, _defineProperty(_mutations, "setNewUser", function setNewUser(state, _ref46) {
+  var user = _ref46.user;
 
   if (!state.users) {
     state.users = [];
   }
 
   state.users.push(user);
-}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref46) {
-  var campaign = _ref46.campaign;
+}), _defineProperty(_mutations, "setNewCampaign", function setNewCampaign(state, _ref47) {
+  var campaign = _ref47.campaign;
 
   if (!state.campaigns) {
     state.campaigns = [];
   }
 
   state.campaigns.push(campaign);
-}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref47) {
-  var tracker = _ref47.tracker;
+}), _defineProperty(_mutations, "setNewTracker", function setNewTracker(state, _ref48) {
+  var tracker = _ref48.tracker;
 
   if (!state.trackers) {
     state.trackers = [];
   }
 
   state.trackers.push(tracker);
-}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref48) {
-  var campaigns = _ref48.campaigns;
+}), _defineProperty(_mutations, "setCampaigns", function setCampaigns(state, _ref49) {
+  var campaigns = _ref49.campaigns;
   state.campaigns = campaigns;
-}), _defineProperty(_mutations, "setCampaign", function setCampaign(state, _ref49) {
-  var campaign = _ref49.campaign;
+}), _defineProperty(_mutations, "setCampaign", function setCampaign(state, _ref50) {
+  var campaign = _ref50.campaign;
   state.campaign = campaign;
-}), _defineProperty(_mutations, "setStatistics", function setStatistics(state, _ref50) {
-  var statistics = _ref50.statistics;
+}), _defineProperty(_mutations, "setStatistics", function setStatistics(state, _ref51) {
+  var statistics = _ref51.statistics;
   state.statistics = statistics;
-}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref51) {
-  var trackers = _ref51.trackers;
+}), _defineProperty(_mutations, "setTrackers", function setTrackers(state, _ref52) {
+  var trackers = _ref52.trackers;
   state.trackers = trackers;
-}), _defineProperty(_mutations, "setTracker", function setTracker(state, _ref52) {
-  var tracker = _ref52.tracker;
+}), _defineProperty(_mutations, "setTracker", function setTracker(state, _ref53) {
+  var tracker = _ref53.tracker;
   state.tracker = tracker;
-}), _defineProperty(_mutations, "setStories", function setStories(state, _ref53) {
-  var stories = _ref53.stories;
+}), _defineProperty(_mutations, "setStories", function setStories(state, _ref54) {
+  var stories = _ref54.stories;
   state.stories = stories;
-}), _defineProperty(_mutations, "setStory", function setStory(state, _ref54) {
-  var story = _ref54.story;
+}), _defineProperty(_mutations, "setStory", function setStory(state, _ref55) {
+  var story = _ref55.story;
   state.story = story;
-}), _defineProperty(_mutations, "setRoles", function setRoles(state, _ref55) {
-  var roles = _ref55.roles;
+}), _defineProperty(_mutations, "setRoles", function setRoles(state, _ref56) {
+  var roles = _ref56.roles;
   state.roles = roles;
 }), _mutations);
 

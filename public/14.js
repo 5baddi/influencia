@@ -36,6 +36,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "stories"])), {}, {
@@ -45,7 +56,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: {
+    loadStories: function loadStories() {
+      // Load stories
+      if (Object.values(this.stories).length === 0) this.$store.dispatch("fetchStories")["catch"](function (error) {});
+    },
     addStory: function addStory() {}
+  },
+  mounted: function mounted() {
+    // Load stories
+    if (typeof this.stories === "undefined" || this.stories === null || Object.values(this.stories).length === 0) this.loadStories();
+  },
+  data: function data() {
+    return {
+      attrActive: null
+    };
   }
 });
 
@@ -88,6 +112,49 @@ var render = function() {
             )
           ])
         : _vm._e()
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "p-1 influencer" }, [
+      _c(
+        "div",
+        { staticClass: "influencer-posts" },
+        _vm._l(_vm.stories, function(story) {
+          return _c(
+            "a",
+            {
+              key: story.uuid,
+              staticClass: "influencer-posts-card",
+              attrs: { href: story.link || "#", target: "_blank" },
+              on: {
+                mouseover: function($event) {
+                  _vm.attrActive = story.uuid
+                },
+                mouseleave: function($event) {
+                  _vm.attrActive = null
+                }
+              }
+            },
+            [
+              _c("img", { attrs: { src: story.thumbnail, loading: "lazy" } }),
+              _vm._v(" "),
+              story.type === "video"
+                ? _c("i", {
+                    class:
+                      "influencer-posts-card-type fas fa-" +
+                      (story.type === "image" ? "images" : "video")
+                  })
+                : _vm._e(),
+              _vm._v(" "),
+              _c("div", {
+                class:
+                  "influencer-posts-card-attr " +
+                  (_vm.attrActive === story.uuid ? " active" : "")
+              })
+            ]
+          )
+        }),
+        0
+      )
     ])
   ])
 }

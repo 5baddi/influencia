@@ -585,6 +585,14 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
+    fetchStories({ commit, state }) {
+        return new Promise((resolve, reject) => {
+            api.get(`/api/v1/${state.user.selected_brand.uuid}/stories`).then(response => {
+                commit('setStories', { stories: response.data.content })
+                resolve(response.data)
+            }).catch(response => reject(response));
+        });
+    },
 };
 
 const mutations = {
