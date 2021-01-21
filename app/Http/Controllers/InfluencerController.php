@@ -6,12 +6,14 @@ use App\Brand;
 use App\Influencer;
 use App\InfluencerPost;
 use App\BrandInfluencer;
+use App\InfluencerStory;
 use App\Jobs\ScrapInfluencerJob;
 use App\Services\YoutubeScraper;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\StoriesCollection;
 use App\Http\Requests\CreateInfluencerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\DataTable\InfluencerDTResource;
@@ -35,6 +37,29 @@ class InfluencerController extends Controller
         return response()->success(
             "Influencers fetched successfully.", 
             InfluencerDTResource::collection($brand->influencers)
+        );
+    }
+
+     /**
+     * Fetch stories by brand
+     *
+     * @param \App\Brand $brand
+     * @return \Illuminate\Http\Response
+     */
+    public function storiesByBrand(Brand $brand)
+    {
+        // Load brand influencers
+        $ids = BrandInfluencer::where('brand_id', $brand->id)->pluck('influencer_id')->toArray();
+        
+        // Load stories
+        $stories = InfluencerStory::with(['influencer'])
+                        ->whereIn('influencer_id', $ids)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+
+        return response()->success(
+            "Stories fetched successfully.", 
+            StoriesCollection::collection($stories)
         );
     }
 
