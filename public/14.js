@@ -214,11 +214,35 @@ var render = function() {
                   : _vm._e()
               ]),
               _vm._v(" "),
-              _c("div", {
-                class:
-                  "influencer-posts-card-attr " +
-                  (_vm.attrActive === story.uuid ? " active" : "")
-              })
+              _c(
+                "div",
+                {
+                  class:
+                    "influencer-posts-card-attr " +
+                    (_vm.attrActive === story.uuid ? " active" : "")
+                },
+                [
+                  _c(
+                    "a",
+                    {
+                      attrs: {
+                        href:
+                          story.influencer.platform === "instagram"
+                            ? "https://instagram.com/" +
+                              story.influencer.username
+                            : "",
+                        title: "View on " + story.influencer.platform,
+                        target: "_blank"
+                      }
+                    },
+                    [
+                      _c("img", {
+                        attrs: { src: story.influencer.pic_url, alt: "Avatar" }
+                      })
+                    ]
+                  )
+                ]
+              )
             ]
           )
         }),
