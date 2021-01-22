@@ -207,6 +207,42 @@ export default {
                         message: error.message
                     });
                 });
+        },
+        create(payload) {
+            let data = payload.data;
+            let formData = new FormData();
+            // Set base tracker info
+            formData.append("user_id", this.AuthenticatedUser.id);
+            formData.append("campaign_id", data.campaign_id);
+            formData.append("name", data.name);
+            formData.append("type", data.type);
+            formData.append("url", data.url);
+            if (data.type !== 'url')
+                formData.append("platform", data.platform);
+
+            // Dispatch the creation action
+            this.$store.dispatch("addNewTracker", formData)
+                .then(response => {
+                    this.dismissAddTrackerModal();
+                    this.$refs.trackersDT.reloadData();
+                    this.createTrackerSuccess({
+                        message: `Tracker ${response.content.name} created successfuly!`
+                    });
+                })
+                .catch(error => {
+                    let errors = Object.values(error.response.data.errors);
+                    if(typeof errors === "object" && errors.length > 0){
+                        errors.forEach(element => {
+                            this.showError({
+                                message: element
+                            });
+                        });
+                    }else{
+                        this.showError({
+                            message: error.response.data.message
+                        });
+                    }
+                });
         }
     },
     mounted(){

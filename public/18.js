@@ -728,6 +728,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
 /* harmony import */ var _components_modals_CreateTrackerModal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/modals/CreateTrackerModal */ "./resources/js/components/modals/CreateTrackerModal.vue");
 /* harmony import */ var _components_TrackerAnalytics__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/TrackerAnalytics */ "./resources/js/components/TrackerAnalytics.vue");
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -940,6 +942,43 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this3.showError({
           message: error.message
         });
+      });
+    },
+    create: function create(payload) {
+      var _this4 = this;
+
+      var data = payload.data;
+      var formData = new FormData(); // Set base tracker info
+
+      formData.append("user_id", this.AuthenticatedUser.id);
+      formData.append("campaign_id", data.campaign_id);
+      formData.append("name", data.name);
+      formData.append("type", data.type);
+      formData.append("url", data.url);
+      if (data.type !== 'url') formData.append("platform", data.platform); // Dispatch the creation action
+
+      this.$store.dispatch("addNewTracker", formData).then(function (response) {
+        _this4.dismissAddTrackerModal();
+
+        _this4.$refs.trackersDT.reloadData();
+
+        _this4.createTrackerSuccess({
+          message: "Tracker ".concat(response.content.name, " created successfuly!")
+        });
+      })["catch"](function (error) {
+        var errors = Object.values(error.response.data.errors);
+
+        if (_typeof(errors) === "object" && errors.length > 0) {
+          errors.forEach(function (element) {
+            _this4.showError({
+              message: element
+            });
+          });
+        } else {
+          _this4.showError({
+            message: error.response.data.message
+          });
+        }
       });
     }
   },

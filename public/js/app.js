@@ -79509,7 +79509,7 @@ var routes = [{
     }
   }, {
     name: 'new_story',
-    path: '/trackers/story/:uuid?',
+    path: '/stories/insight/:uuid?',
     component: function component() {
       return Promise.all(/*! import() */[__webpack_require__.e(2), __webpack_require__.e(7)]).then(__webpack_require__.bind(null, /*! ./pages/trackers/story.vue */ "./resources/js/pages/trackers/story.vue"));
     },

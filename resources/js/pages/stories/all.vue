@@ -126,7 +126,7 @@ export default {
     },
     mounted(){
         // Load stories
-        if(typeof this.stories === "undefined" || this.stories === null || Object.values(this.stories).length === 0)
+        if(typeof this.fetchedStories === "undefined" || this.fetchedStories === null || Object.values(this.fetchedStories).length === 0)
             this.loadStories();
     },
     data(){

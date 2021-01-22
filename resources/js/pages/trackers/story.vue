@@ -2,35 +2,10 @@
     <div class="p-1">
         <div class="card">
             <header>
-               <h2>Add new Tracker</h2>
+               <h2>{{ $route.params.uuid ? 'Enter story insights' : 'Add new story' }}</h2>
             </header>
             <div class="card__content">
                 <form enctype="multipart/form-data" ref="trackerForm" v-on:submit.prevent="saveTracker">
-                    <p class="modal-form__heading">What would you like to track?</p>
-                    <div class="radio-group">
-                        <!-- <div class="radio-group__item" :class="{active: type === 'url'}">
-                            <label for="url">
-                                <input type="radio" id="url" value="url" v-model="type" :disabled="true" />
-                                <span>Visits to a URL</span>
-                                <p>Track the number of visits and the location of the users that clicked on a link. There is absolutely no code to add to the destination URL to allow tracking, so you can track any URL, even if it's not your site.</p>
-                            </label>
-                        </div> -->
-                        <div class="radio-group__item" :class="{active: type === 'post'}">
-                            <label for="post">
-                                <input type="radio" id="post" value="post" v-model="type" />
-                                <span>Interactions for a post on a blog or social media</span>
-                                <p>Track the number of interactions for any public post on blogs or social media.</p>
-                            </label>
-                        </div>
-                        <div class="radio-group__item" :class="{active: type === 'story'}">
-                            <label for="story">
-                                <input type="radio" id="story" value="story" v-model="type"/>
-                                <span>Interactions for an Instagram or Snapchat story</span>
-                                <p>Specify the metrics for a story and its content in order to include it in the aggregated statistics.</p>
-                            </label>
-                        </div>
-                    </div>
-
                     <div class="forms">
                         <div class="form-url">
                             <div class="control">
@@ -43,42 +18,38 @@
                             <div class="control">
                                 <label>Assign to campaign</label>
                                 <select v-model="campaign_id">
-                                <option :value="-1" selected>Select a campaign</option>
+                                <option :value="null" selected>Select a campaign</option>
                                 <option v-for="camp in campaigns" :value="camp.id" :key="camp.id">{{ camp.name }}</option>
                                 </select>
                                 <p>Assign tracker to a exists campaign</p>
                             </div>
                         </div>
-                        <div class="form-url" v-show="type !== 'story'">
-                            <div class="control">
-                                <label>{{ type === 'url' ? 'Destination URL' : 'Post URL' }}</label>
-                                <input v-if="type === 'url'" v-model="url" type="text" placeholder="https://" />
-                                <vue-tags-input v-if="type === 'post'" v-model="url" :placeholder="'Add post URL'" :tags="urls" @tags-changed="newUrls => urls = newUrls"/>
-                                <p v-show="type === 'url'">We will generate a shortened URL which will redirect to the destination URL and allow us to track the number and location of visits.</p>
-                                <p v-show="type === 'post'">You can specify multiple post URLs on blogs or social media, one URL per line. Several trackers will then be created.</p>
-                            </div>
-                        </div>
-                        <div class="form-url" v-show="type !== 'url'">
+                        <div class="form-url">
                             <div class="form-control">
                                 <p class="modal-form__heading">Which platform was used to post the {{ type }}?</p>
                                 <label for="instagram" class="instagram-radio">
                                 <input type="radio" value="instagram" v-model="platform" :checked="platform === 'instagram'"/>
                                 <span><i class="fab fa-instagram"></i>&nbsp;Instagram</span>
                                 </label>
-                                <!-- <label for="youtube" class="youtube-radio">
+                                <label for="youtube" class="youtube-radio">
                                 <input :disabled="true" type="radio" value="youtube" v-model="platform" :checked="platform === 'youtube'"/>
                                 <span><i class="fab fa-youtube"></i>&nbsp;YouTube</span>
-                                </label> -->
+                                </label>
                                 <!-- <label for="snapchat" class="snapchat-radio">
                                 <input type="radio" value="snapchat" v-model="platform" :checked="platform === 'snapchat'" :disabled="true"/>
                                 <span><i class="fab fa-snapchat-ghost"></i>&nbsp;Snapchat</span>
                                 </label> -->
                             </div>
                         </div>
-                        <div class="form-url" v-show="type === 'story'">
-                            <div class="control">
+                        <div class="form-url">
+                            <div class="control" v-if="!$route.params.uuid">
                                 <label>Story sequence</label>
                                 <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Upload story sequence'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                                <p>If there are multiple images or videos for the story, we recommend creating one story per image or video.</p>
+                            </div>
+                            <div class="control">
+                                <label>Story insights proofs</label>
+                                <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Upload story insights screenshots'" v-bind:accept="'image/jpeg,image/png,image/gif'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="true"></FileInput>
                                 <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
                             </div>
                             <div class="control">
@@ -131,13 +102,18 @@
 
                     <div class="modal-form__actions">
                         <button class="btn btn-success" :disabled="disableAction()">Create</button>
-                        <router-link class="btn btn-danger" :to="{name: 'trackers'}">Cancel</router-link>
+                        <router-link class="btn btn-danger" :to="{name: 'stories'}">Cancel</router-link>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </template>
+<style scoped>
+    header{
+        border-bottom: 1px solid rgba(204, 204, 204, 0.43);
+    }
+</style>
 <script>
 import {mapGetters} from 'vuex';
 import FileInput from '../../components/FileInput';
@@ -167,101 +143,35 @@ export default {
     computed: {
         ...mapGetters(["AuthenticatedUser", "campaigns"])
     },
-   data() {
-      return {
-            user_id: null,
-            campaign_id: -1,
-            platform: "instagram",
-            name: null,
-            type: "post",
-            username: null,
-            story: null,
-            url: '',
-            urls: [],
-            reach: null,
-            impressions: null,
-            interactions: null,
-            back: null,
-            forward: null,
-            next_story: null,
-            exited: null,
-            published_at: null,
-         };
-   },
    methods: {
-      init(){
-         this.campaign_id = -1;
-         this.user_id = null;
-         this.platform = "instagram";
-         this.name = null;
-         this.type = "url";
-         this.username = null;
-         this.story = null;
-         this.url = '';
-         this.urls = [];
-         this.reach = null;
-         this.impressions = null;
-         this.interactions = null;
-         this.back = null;
-         this.forward = null;
-         this.next_story = null;
-         this.exited = null;
-         this.published_at = null;
-      },
-      handleStoryUpload(files){
-         if(typeof files === "undefined" && files.length > 0)
+        loadCampaigns(){
+            this.$store.dispatch("fetchCampaigns").catch(e => {});
+        },
+        handleStoryUpload(files){
+            if(typeof files === "undefined" && files.length > 0)
             return;
 
-         this.story = files;
-      },
-      disableAction(){
-         if(!this.campaign_id || this.campaign_id === -1 || !this.name)
+            this.story = files;
+        },
+        disableAction(){
+            if(!this.campaign_id || this.campaign_id === -1 || !this.name)
             return true;
-
-         let urlPattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-            '(\\#[-a-z\\d_]*)?$','i');
-
-         if(this.type === 'url' && urlPattern.test(this.url))
-            return false;
-         
-         if(this.type === 'story' && this.story.length > 0 && this.username)
+            
+            if(this.type === 'story' && this.story.length > 0 && this.username)
             return false;
 
-         if(this.type === 'post' && this.urls.length > 0)
-            return false;
-
-         return true;
-      },
-      saveTracker(){
-         let _data = {
+            return true;
+        },
+        saveTracker(){
+            let _data = {
             name: this.name,
             type: this.type,
             campaign_id: this.campaign_id,
             platform: this.type !== 'url' ? this.platform : null
-         };
-
-         let _urls = "";
-
-         // Set POST data
-         if(this.type === 'url'){
-            _data.url = this.url;
-         }
-         
-         // Set URL data
-         if(this.type === 'post' && this.urls.length > 0){
-            this.urls.map((item, key) => {
-               _urls += item.text + ";";
-            });
-
-            _data.url = _urls;
-         }
-         
-         // Set STORY data
-         if(this.type === 'story'){
+            };
+            
+            // Set STORY data
+            if(this.type === 'story'){
             // STORY data
             _data.username = this.username;
             _data.story = this.story;
@@ -273,12 +183,12 @@ export default {
             _data.next_story = this.next_story;
             _data.exited = this.exited;
             _data.published_at = this.published_at;
-         }
+            }
 
         // Create new tracker
         this.create(_data);
-      },
-      create(data) {
+        },
+        create(data) {
             let formData = new FormData();
 
             // Set base tracker info
@@ -303,7 +213,6 @@ export default {
             // Dispatch the creation action
             this.$store.dispatch("addNewTracker", formData)
                 .then(response => {
-                    this.init();
                     this.createTrackerSuccess({
                         message: `Tracker ${response.content.name} created successfuly!`
                     });
@@ -324,6 +233,32 @@ export default {
                     }
                 });
         }
-   }
+   },
+   mounted(){
+        // Load campaigns
+        if(typeof this.campaigns === "undefined" || this.campaigns === null || Object.values(this.campaigns).length === 0)
+            this.loadCampaigns();
+    },
+   data() {
+      return {
+            user_id: null,
+            campaign_id: null,
+            platform: "instagram",
+            name: null,
+            type: "story",
+            username: null,
+            story: null,
+            url: '',
+            urls: [],
+            reach: 0,
+            impressions: 0,
+            interactions: 0,
+            back: 0,
+            forward: 0,
+            next_story: 0,
+            exited: 0,
+            published_at: (new Date()).toISOString(),
+         };
+   },
 };
 </script>

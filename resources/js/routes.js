@@ -53,7 +53,7 @@ const routes = [
             },
             {
                 name: 'new_story',
-                path: '/trackers/story/:uuid?',
+                path: '/stories/insight/:uuid?',
                 component: () => import("./pages/trackers/story.vue"),
                 meta: {
                     auth: true,

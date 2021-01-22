@@ -49,7 +49,7 @@
                     <span class="text">Trackers</span>
                 </router-link>
             </li>
-            <li v-if="$can('list', 'tracker') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `stories`}">
+            <li v-if="$can('list', 'tracker') || (authenticatedUser && authenticatedUser.is_superadmin)" :class="{active : currentRouteName == `stories` || currentRouteName == `new_story`}">
                 <router-link :to="{name: 'stories'}">
                     <span class="icon">
                         <i class="far fa-clock"></i>

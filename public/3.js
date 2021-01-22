@@ -650,7 +650,13 @@ var render = function() {
           (_vm.authenticatedUser && _vm.authenticatedUser.is_superadmin)
             ? _c(
                 "li",
-                { class: { active: _vm.currentRouteName == "stories" } },
+                {
+                  class: {
+                    active:
+                      _vm.currentRouteName == "stories" ||
+                      _vm.currentRouteName == "new_story"
+                  }
+                },
                 [
                   _c("router-link", { attrs: { to: { name: "stories" } } }, [
                     _c("span", { staticClass: "icon" }, [
