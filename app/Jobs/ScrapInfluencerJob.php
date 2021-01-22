@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Notifications\CreateInfluencerJobState;
+use App\StoryAnalytics;
 use InstagramScraper\Model\Story;
 
 class ScrapInfluencerJob implements ShouldQueue
@@ -110,6 +111,18 @@ class ScrapInfluencerJob implements ShouldQueue
                         'influencer_id' =>  $influencer->id,
                         'tracker_id'    =>  $this->story['tracker_id'],
                         'published_at'  =>  $this->story['published_at']
+                    ]);
+
+                    // Save story insights
+                    $insights = StoryAnalytics::create([
+                        'story_id'      =>  $story->id,
+                        'reach'         =>  $this->story['reach'],
+                        'impressions'   =>  $this->story['impressions'],
+                        'interactions'  =>  $this->story['interactions'],
+                        'back'          =>  $this->story['back'],
+                        'forward'       =>  $this->story['forward'],
+                        'next_story'    =>  $this->story['next_story'],
+                        'exited'        =>  $this->story['exited'],
                     ]);
                 }
             }
