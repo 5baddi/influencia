@@ -9,7 +9,6 @@ use App\BrandInfluencer;
 use App\InfluencerStory;
 use App\Jobs\ScrapInfluencerJob;
 use App\Services\YoutubeScraper;
-use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -72,7 +71,7 @@ class InfluencerController extends Controller
         );
     }
 
-    public function create(CreateInfluencerRequest $request, InstagramScraper $instagram, YoutubeScraper $youtube)
+    public function create(CreateInfluencerRequest $request, YoutubeScraper $youtube)
     {
         // Check ability
         abort_if(Gate::denies('create_influencer') && !Auth()->user()->is_superadmin, Response::HTTP_FORBIDDEN, "403 Forbidden");

@@ -148,75 +148,76 @@ export default {
             this.$store.dispatch("fetchCampaigns").catch(e => {});
         },
         handleStoryUpload(files){
-            if(typeof files === "undefined" && files.length > 0)
-            return;
+            if(typeof files[0] === "undefined")
+                return;
 
-            this.story = files;
+            this.story = files[0];
+        },
+        handleProofsUpload(files){
+            if(typeof files === "undefined" || files.length < 1)
+                return;
+
+            this.proofs = files;
         },
         disableAction(){
-            if(!this.campaign_id || this.campaign_id === -1 || !this.name)
-            return true;
+            if(!this.campaign_id || this.campaign_id === -1 || !this.name || !this.username)
+                return true;
             
-            if(this.type === 'story' && this.story.length > 0 && this.username)
-            return false;
+            if(this.type === 'story' && this.story && this.username)
+                return false;
 
             return true;
         },
         saveTracker(){
             let _data = {
-            name: this.name,
-            type: this.type,
-            campaign_id: this.campaign_id,
-            platform: this.type !== 'url' ? this.platform : null
+                name: this.name,
+                type: this.type,
+                campaign_id: this.campaign_id,
+                platform: this.type !== 'url' ? this.platform : null
             };
             
             // Set STORY data
             if(this.type === 'story'){
-            // STORY data
-            _data.username = this.username;
-            _data.story = this.story;
-            _data.reach = this.reach;
-            _data.impressions = this.impressions;
-            _data.interactions = this.interactions;
-            _data.back = this.back;
-            _data.forward = this.forward;
-            _data.next_story = this.next_story;
-            _data.exited = this.exited;
-            _data.published_at = this.published_at;
+                // STORY data
+                _data.username = this.username;
+                _data.story = this.story;
+                _data.proofs = this.proofs;
+                _data.reach = this.reach;
+                _data.impressions = this.impressions;
+                _data.interactions = this.interactions;
+                _data.back = this.back;
+                _data.forward = this.forward;
+                _data.next_story = this.next_story;
+                _data.exited = this.exited;
+                _data.published_at = this.published_at;
             }
 
-        // Create new tracker
-        this.create(_data);
+            // Create new tracker
+            this.create(_data);
         },
         create(data) {
             let formData = new FormData();
 
             // Set base tracker info
-            formData.append("user_id", this.AuthenticatedUser.id);
             formData.append("campaign_id", data.campaign_id);
             formData.append("name", data.name);
             formData.append("type", data.type);
-            if (data.type !== 'url')
-                formData.append("platform", data.platform);
+            formData.append("platform", data.platform);
+            formData.append("username", data.username);
 
-            // Create story tracker
-            if (data.type === "story") {
-                // Append form data
-                formData.append("username", data.username);
-                Array.from(data.story).forEach(file => {
-                    formData.append("story[]", file);
-                });
-            } else {
-                formData.append("url", data.url);
-            }
+            // Append story files
+            formData.append("story", data.story);
+            Array.from(data.proofs).forEach(file => {
+                formData.append("proofs[]", file);
+            });
 
             // Dispatch the creation action
-            this.$store.dispatch("addNewTracker", formData)
+            this.$store.dispatch("addNewStory", formData)
                 .then(response => {
                     this.createTrackerSuccess({
-                        message: `Tracker ${response.content.name} created successfuly!`
+                        message: `Story ${response.content.name} created successfuly!`
                     });
-                    this.$router.push({ name: 'trackers' });
+                    this.$router.push({ name: 'stories' });
                 })
                 .catch(error => {
                     let errors = Object.values(error.response.data.errors);
@@ -240,16 +241,14 @@ export default {
             this.loadCampaigns();
     },
    data() {
-      return {
-            user_id: null,
+        return {
             campaign_id: null,
             platform: "instagram",
             name: null,
             type: "story",
             username: null,
             story: null,
-            url: '',
-            urls: [],
+            proofs: [],
             reach: 0,
             impressions: 0,
             interactions: 0,
@@ -258,7 +257,7 @@ export default {
             next_story: 0,
             exited: 0,
             published_at: (new Date()).toISOString(),
-         };
+        };
    },
 };
 </script>

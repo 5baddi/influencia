@@ -395,10 +395,7 @@ const actions = {
     },
     addNewTracker({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            // Verify is a story tracker
-            let isStory = data.get('type') === "story";
-
-            api.post("/api/v1/trackers" + (isStory ? "/story" : ""), data, {
+            api.post("/api/v1/trackers", data, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -408,8 +405,8 @@ const actions = {
                 })
                 .catch(error => {
                     reject(error)
-                })
-        })
+                });
+        });
     },
     changeTrackerStatus({commit, state}, uuid){
         return new Promise((resolve, reject) => {
@@ -591,6 +588,20 @@ const actions = {
                 commit('setStories', { stories: response.data.content })
                 resolve(response.data)
             }).catch(response => reject(response));
+        });
+    },
+    addNewStory({ commit, state }, data){
+        return new Promise((resolve, reject) => {
+            api.post("/api/v1/stories", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(response => {
+                    resolve(response.data)
+                })
+                .catch(error => {
+                    reject(error)
+                });
         });
     },
 };

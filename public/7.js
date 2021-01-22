@@ -326,12 +326,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$store.dispatch("fetchCampaigns")["catch"](function (e) {});
     },
     handleStoryUpload: function handleStoryUpload(files) {
-      if (typeof files === "undefined" && files.length > 0) return;
-      this.story = files;
+      if (typeof files[0] === "undefined") return;
+      this.story = files[0];
+    },
+    handleProofsUpload: function handleProofsUpload(files) {
+      if (typeof files === "undefined" || files.length < 1) return;
+      this.proofs = files;
     },
     disableAction: function disableAction() {
-      if (!this.campaign_id || this.campaign_id === -1 || !this.name) return true;
-      if (this.type === 'story' && this.story.length > 0 && this.username) return false;
+      if (!this.campaign_id || this.campaign_id === -1 || !this.name || !this.username) return true;
+      if (this.type === 'story' && this.story && this.username) return false;
       return true;
     },
     saveTracker: function saveTracker() {
@@ -346,6 +350,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         // STORY data
         _data.username = this.username;
         _data.story = this.story;
+        _data.proofs = this.proofs;
         _data.reach = this.reach;
         _data.impressions = this.impressions;
         _data.interactions = this.interactions;
@@ -364,30 +369,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       var formData = new FormData(); // Set base tracker info
 
-      formData.append("user_id", this.AuthenticatedUser.id);
       formData.append("campaign_id", data.campaign_id);
       formData.append("name", data.name);
       formData.append("type", data.type);
-      if (data.type !== 'url') formData.append("platform", data.platform); // Create story tracker
+      formData.append("platform", data.platform);
+      formData.append("username", data.username); // Append story files
 
-      if (data.type === "story") {
-        // Append form data
-        formData.append("username", data.username);
-        Array.from(data.story).forEach(function (file) {
-          formData.append("story[]", file);
-        });
-      } else {
-        formData.append("url", data.url);
-      } // Dispatch the creation action
+      formData.append("story", data.story);
+      Array.from(data.proofs).forEach(function (file) {
+        formData.append("proofs[]", file);
+      }); // Dispatch the creation action
 
-
-      this.$store.dispatch("addNewTracker", formData).then(function (response) {
+      this.$store.dispatch("addNewStory", formData).then(function (response) {
         _this.createTrackerSuccess({
-          message: "Tracker ".concat(response.content.name, " created successfuly!")
+          message: "Story ".concat(response.content.name, " created successfuly!")
         });
 
         _this.$router.push({
-          name: 'trackers'
+          name: 'stories'
         });
       })["catch"](function (error) {
         var errors = Object.values(error.response.data.errors);
@@ -412,15 +411,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      user_id: null,
       campaign_id: null,
       platform: "instagram",
       name: null,
       type: "story",
       username: null,
       story: null,
-      url: '',
-      urls: [],
+      proofs: [],
       reach: 0,
       impressions: 0,
       interactions: 0,

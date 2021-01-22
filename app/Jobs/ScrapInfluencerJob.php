@@ -13,6 +13,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Notifications\CreateInfluencerJobState;
+use InstagramScraper\Model\Story;
 
 class ScrapInfluencerJob implements ShouldQueue
 {
@@ -32,6 +33,13 @@ class ScrapInfluencerJob implements ShouldQueue
      * @var string
      */
     public $username;
+    
+    /**
+     * Story insights
+     * 
+     * @var array
+     */
+    public $story;
 
     /**
      * The number of times the job may be attempted.
@@ -52,10 +60,11 @@ class ScrapInfluencerJob implements ShouldQueue
      *
      * @return void
      */
-    public function __construct(User $user, string $username)
+    public function __construct(User $user, string $username, array $story = [])
     {
         $this->user = $user;
         $this->username = $username;
+        $this->story = $story;
     }
 
     /**
@@ -91,6 +100,16 @@ class ScrapInfluencerJob implements ShouldQueue
                     BrandInfluencer::firstOrCreate([
                         'brand_id'      =>  $this->user->selected_brand_id,
                         'influencer_id' =>  $influencer->id
+                    ]);
+                }
+
+                // Handle story
+                if(sizeof($this->story) > 0){
+                    // Save story
+                    $story = Story::create([
+                        'influencer_id' =>  $influencer->id,
+                        'tracker_id'    =>  $this->story['tracker_id'],
+                        'published_at'  =>  $this->story['published_at']
                     ]);
                 }
             }
