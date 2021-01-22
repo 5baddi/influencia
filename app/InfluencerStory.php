@@ -63,7 +63,8 @@ class InfluencerStory extends Model
 
             // Picture as base64
             if(Storage::disk('local')->exists($this->attributes['thumbnail']))
-                return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail']));
+                return Storage::disk('local')->url($this->attributes['thumbnail']);
+                // return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail']));
         }
 
         return null;
