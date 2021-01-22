@@ -652,9 +652,9 @@ var render = function() {
                 "li",
                 {
                   class: {
-                    active:
-                      _vm.currentRouteName == "stories" ||
-                      _vm.currentRouteName == "new_story"
+                    active: ["stories", "new_story"].includes(
+                      _vm.currentRouteName
+                    )
                   }
                 },
                 [
