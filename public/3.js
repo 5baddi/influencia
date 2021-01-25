@@ -799,6 +799,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 
@@ -2613,26 +2616,50 @@ var render = function() {
         ]),
         _vm._v(" "),
         !_vm.tracker
-          ? _c("div", { staticClass: "hero__actions" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success",
-                  attrs: {
-                    disabled:
-                      !_vm.campaigns ||
-                      typeof _vm.campaigns.length === "undefined" ||
-                      _vm.campaigns.length === 0
-                  },
-                  on: {
-                    click: function($event) {
-                      _vm.showAddTrackerModal = !_vm.showAddTrackerModal
+          ? _c(
+              "div",
+              { staticClass: "hero__actions" },
+              [
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: {
+                      disabled:
+                        !_vm.campaigns ||
+                        typeof _vm.campaigns.length === "undefined" ||
+                        _vm.campaigns.length === 0
+                    },
+                    on: {
+                      click: function($event) {
+                        _vm.showAddTrackerModal = !_vm.showAddTrackerModal
+                      }
                     }
-                  }
-                },
-                [_vm._v("Add new tracker")]
-              )
-            ])
+                  },
+                  [_vm._v("Add new tracker")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "router-link",
+                  {
+                    staticClass: "btn btn-success",
+                    staticStyle: { margin: "6px 0" },
+                    attrs: {
+                      disabled:
+                        !_vm.campaigns ||
+                        typeof _vm.campaigns.length === "undefined" ||
+                        _vm.campaigns.length === 0,
+                      to: { name: "new_story" }
+                    }
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-plus" }),
+                    _vm._v(" Add new story    \r\n            ")
+                  ]
+                )
+              ],
+              1
+            )
           : _vm._e()
       ]),
       _vm._v(" "),
