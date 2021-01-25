@@ -368,20 +368,21 @@ class InstagramScraper
 
             // Start from last inserted media
             if(!is_null($nextCursor) && $nextCursor !== ''){
-                $lastPost = InfluencerPost::where('influencer_id', $influencer->id)
-                                ->where('next_cursor', $nextCursor)
-                                ->first();
+                $lastPost = InfluencerPost::where([
+                    'influencer_id' => $influencer->id,
+                    'next_cursor'   => $nextCursor
+                ])->first();
             }
 
             // Set the next cursor
-            $maxID = isset($lastPost) ? $lastPost->next_cursor : '';
-            if($maxID !== '')
+            $maxID = isset($lastPost, $lastPost->next_cursor) ? $lastPost->next_cursor : '';
+            if($maxID !== '' && !is_null($maxID))
                 $this->log("Start scraping from " . $maxID);
 
             // Calculate the max media by query
-            $influencer->loadCount('posts');
-            if($influencer->posts_count < $max)
-                $max = $influencer->posts_count;
+            // $influencer->loadCount('posts');
+            // if($influencer->posts_count < $max)
+            //     $max = $influencer->posts_count;
 
             // Scrap medias
             $result = $this->instagram->getPaginateMediasByUserId($influencer->account_id, $max, $maxID ?? null);
@@ -462,7 +463,7 @@ class InstagramScraper
                 'likes'         =>  $media->getLikesCount(),
                 'thumbnail_url' =>  $thumbnailURL,
                 'comments'      =>  $media->getCommentsCount() ?? 0,
-                'published_at'  =>  Carbon::parse($media->getCreatedTime()),
+                'published_at'  =>  Carbon::parse($media->getCreatedTime())->format("Y-m-d H:i:s"),
                 'caption'       =>  $media->getCaption(),
                 'location'      =>  $media->getLocationName(),
                 'location_id'   =>  $media->getLocationId(),
@@ -495,6 +496,9 @@ class InstagramScraper
         try{
             // Init
             $stories = [];
+            if(!isset($influencer) || is_null($influencer->account_id))
+                return $stories;
+
             $accountID = $influencer->account_id;
 
             $this->log("Scrap stories for account ID: {$accountID}");

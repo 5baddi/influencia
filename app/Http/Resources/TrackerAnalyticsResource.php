@@ -15,11 +15,23 @@ class TrackerAnalyticsResource extends JsonResource
      */
     public function toArray($request)
     {
-        // Load tags
-        // $tags = [];
-        // $this->posts->map(function($post) use(&$tags){
-        //     $tags = array_merge($tags, $post->caption_hashtags);
-        // });
+        // Influencers
+        $influencers = $this->influencers->map(function($influencer){
+            return $influencer->only(['uuid', 'name', 'username', 'pic_url', 'medias', 'estimated_communities', 'estimated_impressions', 'earned_media_value']);
+        });
+        $this->posts->load('influencer')->map(function($media, $key) use(&$influencers){
+            $influencers = $influencers->map(function($item, $index) use($media){
+                if($item['uuid'] == $media->influencer->uuid){
+                    if(isset($item['campaign_media']))
+                        $item['campaign_media'] += 1;
+                    else
+                        $item['campaign_media'] = 1;
+                }
+
+                return $item;
+            });
+        });
+
 
         return [
             'uuid'          =>  $this->uuid,
@@ -38,6 +50,10 @@ class TrackerAnalyticsResource extends JsonResource
             'video_views'   =>  $this->analytics->video_views ?? 0,
             'engagements'   =>  $this->analytics->engagements ?? 0,
             'posts_count'   =>  $this->analytics->posts_count ?? 0,
+            'images_count'  =>  $this->analytics->images_count ?? 0,
+            'videos_count'  =>  $this->analytics->videos_count ?? 0,
+            'is_link'       =>  $this->analytics->is_link ?? false,
+            'is_story'      =>  $this->analytics->is_story ?? false,
             'comments_count'   =>  $this->analytics->comments_count ?? 0,
             'engagement_rate'  =>  $this->analytics->engagement_rate ?? 0,
             'top_emojis'       =>  $this->analytics->top_emojis ?? [],
@@ -51,9 +67,7 @@ class TrackerAnalyticsResource extends JsonResource
             'media'                 =>  $this->posts->map(function($post){
                 return $post->only(['uuid', 'thumbnail_url', 'type', 'link', 'likes', 'video_views', 'comments']);
             }),
-            'influencers'           =>  $this->influencers->map(function($influencer){
-                return $influencer->only(['uuid', 'name', 'username', 'pic_url', 'medias', 'estimated_communities', 'estimated_impressions', 'earned_media_value']);
-            }),
+            'influencers'           =>  $influencers,
         ];
     }
 }

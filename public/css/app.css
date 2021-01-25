@@ -7341,6 +7341,11 @@ button:disabled {
   src: url(/fonts/BebasNeueLight.ttf?b5c9e279edbebf333edcabba7f36f065);
 }
 
+a.btn {
+  text-decoration: none;
+  margin: 0.5rem;
+}
+
 .text-center {
   text-align: center !important;
 }
@@ -7657,6 +7662,11 @@ span.status-danger::before {
   box-shadow: none !important;
 }
 
+.campaigns .campaign-header {
+  padding: 2rem 1rem;
+  font-size: 24pt;
+}
+
 .campaign {
   padding: 0rem 1rem 1rem 1rem;
 }
@@ -7681,9 +7691,30 @@ span.status-danger::before {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  border: 1px solid;
-  border-color: rgba(0, 0, 0, 0.12);
+  border: 2px solid;
+  border-color: white;
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+  background: white;
+}
+
+.campaign .influencers-avatars li .icon-link {
+  margin-right: -24px !important;
+}
+
+.campaign .influencers-avatars li .campaign-more-influencers {
+  margin-left: 1rem;
+}
+
+.campaign .influencers-avatars .count-details {
+  padding: 0.5rem;
+}
+
+.campaign .influencers-avatars .count-details span {
+  padding: 0.5rem;
+}
+
+.campaign .influencers-avatars .count-details span svg {
+  color: #333;
 }
 
 .campaign .cards.statistics {
@@ -7999,6 +8030,24 @@ span.status-danger::before {
   width: 36px;
 }
 
+.influencers-avatars-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.influencers-avatars-list a {
+  margin: 0.2rem;
+  box-sizing: border-box;
+  width: 36px;
+  margin-right: -16px;
+}
+
+.influencers-avatars-list a img {
+  border-radius: 50%;
+  border: 2px solid white;
+  background: white;
+}
+
 .text-white {
   color: white !important;
 }
@@ -8216,6 +8265,8 @@ var map = {
 	"./bm": "./node_modules/moment/locale/bm.js",
 	"./bm.js": "./node_modules/moment/locale/bm.js",
 	"./bn": "./node_modules/moment/locale/bn.js",
+	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
+	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
 	"./bn.js": "./node_modules/moment/locale/bn.js",
 	"./bo": "./node_modules/moment/locale/bo.js",
 	"./bo.js": "./node_modules/moment/locale/bo.js",
@@ -8264,6 +8315,8 @@ var map = {
 	"./es": "./node_modules/moment/locale/es.js",
 	"./es-do": "./node_modules/moment/locale/es-do.js",
 	"./es-do.js": "./node_modules/moment/locale/es-do.js",
+	"./es-mx": "./node_modules/moment/locale/es-mx.js",
+	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
 	"./es-us": "./node_modules/moment/locale/es-us.js",
 	"./es-us.js": "./node_modules/moment/locale/es-us.js",
 	"./es.js": "./node_modules/moment/locale/es.js",

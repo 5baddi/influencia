@@ -20,6 +20,26 @@ class InfluencerStory extends Model
     protected $table = 'influencer_stories';
 
     /**
+     * Get story owner
+     * 
+     * @return \App\Influencer
+     */
+    public function influencer()
+    {
+        return $this->belongsTo(Influencer::class);
+    }
+    
+    /**
+     * Get tracker
+     * 
+     * @return \App\Tracker
+     */
+    public function tracker()
+    {
+        return $this->belongsTo(Tracker::class);
+    }
+
+    /**
      * Get story analytics
      *
      * @return \App\StoryAnalytics
@@ -42,7 +62,8 @@ class InfluencerStory extends Model
                 return $this->attributes['thumbnail'];
 
             // Picture as base64
-            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail']));
+            if(Storage::disk('local')->exists($this->attributes['thumbnail']))
+                return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['thumbnail']));
         }
 
         return null;
@@ -55,8 +76,8 @@ class InfluencerStory extends Model
      */
     public function getVideoAttribute(): ?string
     {
-        if(isset($this->attributes['video'])){
-            return Storgae::disk('local')->url($this->attributes['video']);
+        if(isset($this->attributes['video']) && Storage::disk('local')->exists($this->attributes['video'])){
+            return Storage::disk('local')->url($this->attributes['video']);
         }
 
         return null;

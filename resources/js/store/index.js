@@ -37,6 +37,8 @@ const state = () => ({
     statistics: {},
     trackers: [],
     tracker: null,
+    stories: [],
+    story: null,
     influencers: [],
     influencer: null,
     roles: [],
@@ -54,6 +56,8 @@ const getters = {
     statistics: state => state.statistics,
     trackers: state => state.trackers,
     tracker: state => state.tracker,
+    stories: state => state.stories,
+    story: state => state.story,
     influencers: state => state.influencers,
     influencer: state => state.influencer,
     roles: state => state.roles,
@@ -391,10 +395,7 @@ const actions = {
     },
     addNewTracker({ commit, state }, data) {
         return new Promise((resolve, reject) => {
-            // Verify is a story tracker
-            let isStory = data.get('type') === "story";
-
-            api.post("/api/v1/trackers" + (isStory ? "/story" : ""), data, {
+            api.post("/api/v1/trackers", data, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -404,8 +405,8 @@ const actions = {
                 })
                 .catch(error => {
                     reject(error)
-                })
-        })
+                });
+        });
     },
     changeTrackerStatus({commit, state}, uuid){
         return new Promise((resolve, reject) => {
@@ -581,6 +582,28 @@ const actions = {
             }).catch(response => reject(response))
         });
     },
+    fetchStories({ commit, state }, attr) {
+        return new Promise((resolve, reject) => {
+            api.get(`/api/v1/${state.user.selected_brand.uuid}/stories?page=` + (attr.page ? attr.page : 1)).then(response => {
+                commit('setStories', { stories: response.data.content })
+                resolve(response.data)
+            }).catch(response => reject(response));
+        });
+    },
+    addNewStory({ commit, state }, data){
+        return new Promise((resolve, reject) => {
+            api.post("/api/v1/stories", data, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                }).then(response => {
+                    resolve(response.data)
+                })
+                .catch(error => {
+                    reject(error)
+                });
+        });
+    },
 };
 
 const mutations = {
@@ -650,6 +673,12 @@ const mutations = {
     },
     setTracker: (state, { tracker }) => {
         state.tracker = tracker;
+    },
+    setStories: (state, { stories }) => {
+        state.stories = stories;
+    },
+    setStory: (state, { story }) => {
+        state.story = story;
     },
     setRoles: (state, { roles }) => {
         state.roles = roles

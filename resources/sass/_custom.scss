@@ -13,6 +13,11 @@
     src: url('../assets/fonts/BebasNeueLight.ttf');
 }
 
+a.btn{
+    text-decoration: none;
+    margin: .5rem;
+}
+
 .text-center{
     text-align: center !important;
 }
@@ -319,6 +324,13 @@ span.status{
     }
 }
 
+.campaigns{
+    .campaign-header{
+        padding: 2rem 1rem;
+        font-size: 24pt;
+    }
+}
+
 .campaign{
     padding: 0rem 1rem 1rem 1rem;
 
@@ -340,9 +352,30 @@ span.status{
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                border: 1px solid;
-                border-color: rgba(0, 0, 0, 0.12);
+                border: 2px solid;
+                border-color: white;
                 box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.2), 0 1px 3px 0 rgba(0, 0, 0, 0.12);
+                background: white;
+            }
+
+            .icon-link{
+                margin-right: -24px !important;
+            }
+
+            .campaign-more-influencers{
+                margin-left: 1rem;
+            }
+        }
+
+        .count-details{
+            padding: .5rem;
+
+            span{
+                padding: .5rem;
+                
+                svg{
+                    color: #333;
+                }
             }
         }
     }
@@ -648,6 +681,23 @@ span.status{
         margin: .2rem;
         box-sizing: border-box;
         width: 36px;
+    }
+}
+.influencers-avatars-list{
+    display: flex;
+    flex-wrap: wrap;
+
+    a{
+        margin: .2rem;
+        box-sizing: border-box;
+        width: 36px;
+        margin-right: -16px;
+
+        img{
+            border-radius: 50%;
+            border: 2px solid white;
+            background: white;
+        }
     }
 }
 

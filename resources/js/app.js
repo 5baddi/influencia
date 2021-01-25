@@ -22,6 +22,8 @@ import ConfirmationModal from "./components/modals/ConfirmationModal";
 import VueTimeago from 'vue-timeago';
 import './services/filters';
 import SecureLS from "secure-ls";
+import VueNumeric from 'vue-numeric';
+import { Datetime } from 'vue-datetime';
 
 Vue.prototype.$http = api;
 
@@ -35,10 +37,13 @@ Vue.use(VueTimeago, {
 // Register global component
 Vue.component('DataTable', DataTable);
 Vue.component('ConfirmationModal', ConfirmationModal);
+Vue.component('VueNumeric', VueNumeric);
+Vue.component('datetime', Datetime);
 
 // Stylesheet
 import '@fortawesome/fontawesome-free/css/all.css';
 import '@fortawesome/fontawesome-free/js/all.js';
+import 'vue-datetime/dist/vue-datetime.css';
 
 // Routes auth validation
 router.beforeEach((to, from, next) => {

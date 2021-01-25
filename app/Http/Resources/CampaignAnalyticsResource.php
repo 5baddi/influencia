@@ -21,8 +21,10 @@ class CampaignAnalyticsResource extends JsonResource
         $media = collect();
         $trackers = collect();
         $tags = [];
+        $influencers = collect($this->influencers);
 
-        $this->trackers->map(function($tracker) use(&$instagramMedia, &$trackers, &$media, &$tags){
+        // Collect details about media and tags
+        $this->trackers->map(function($tracker) use(&$instagramMedia, &$trackers, &$influencers, &$media, &$tags){
             // Get media type post
             $trackers->add($tracker->only(['uuid', 'type', 'platform', 'name', 'status', 'queued', 'created_at']));
 
@@ -33,19 +35,50 @@ class CampaignAnalyticsResource extends JsonResource
                 if($tracker->posts->count() > 0){
                     $instagramMedia = $instagramMedia->merge($tracker->posts);
 
-                    $tracker->posts->map(function($post) use(&$media, $tracker, &$tags){
+                    $tracker->posts->load('influencer')->map(function($post) use(&$influencers, &$media, $tracker, &$tags){
                         $_media = collect($post->only(['uuid', 'thumbnail_url', 'type', 'link', 'likes', 'video_views', 'comments']));
                         $_media->put('platform', $tracker->platform);
                         $media->add($_media);
 
                         // Tags
                         // $tags = array_merge($tags, $post->caption_hashtags);
+
+                        // Set media count by campaign
+                        $_influencer = $post->influencer;
+                        $influencers = $influencers->map(function($item, $key) use($post, $_influencer){
+                            if($item['uuid'] == $_influencer->uuid){
+                                // Parse name
+                                $item['name'] = preg_replace('/[[:^print:]]/', '', $_influencer->name); // TODO: Improve parsing name
+
+                                // Set number of campaign media
+                                if(isset($item['campaign_media']))
+                                    $item['campaign_media'] += 1;
+                                else
+                                    $item['campaign_media'] = 1;
+
+                                // Calculate estimated impressions for all media
+                                if(isset($item['campaign_impressions']))
+                                    $item['campaign_impressions'] += $post->estimated_impressions;
+                                else
+                                    $item['campaign_impressions'] = $post->estimated_impressions;
+                                    
+                                // Calculate earned media value for all media
+                                if(isset($item['earned_media_value']))
+                                    $item['earned_media_value'] += $post->earned_media_value;
+                                else
+                                    $item['earned_media_value'] = $post->earned_media_value;
+                            }
+
+                            return $item;
+                        });
                     });
                 }
             }
         });
 
         return [
+            'uuid'                  =>  $this->uuid,
+            'name'                  =>  $this->name,
             'communities'           =>  $this->analytics->communities ?? 0,
             'engagements'           =>  $this->analytics->engagements ?? 0,
             'organic_engagements'   =>  $this->analytics->organic_engagements ?? 0,
@@ -59,13 +92,15 @@ class CampaignAnalyticsResource extends JsonResource
             'sentiments_positive'   =>  $this->analytics->sentiments_positive ?? 0.0,
             'sentiments_neutral'    =>  $this->analytics->sentiments_neutral ?? 0.0,
             'sentiments_negative'   =>  $this->analytics->sentiments_negative ?? 0.0,
-            'posts_count'           =>  $this->analytics->posts_count ?? 0.0,
-            'organic_posts'         =>  $this->analytics->organic_posts ?? 0.0,
-            'stories_count'         =>  $this->analytics->stories_count ?? 0.0,
-            'links_count'           =>  $this->analytics->links_count ?? 0.0 ,
+            'posts_count'           =>  $this->analytics->posts_count ?? 0,
+            'images_count'          =>  $this->analytics->images_count ?? 0,
+            'videos_count'          =>  $this->analytics->videos_count ?? 0,
+            'organic_posts'         =>  $this->analytics->organic_posts ?? 0,
+            'stories_count'         =>  $this->analytics->stories_count ?? 0,
+            'links_count'           =>  $this->analytics->links_count ?? 0 ,
             // 'tags'                  =>  collect($tags)->unique()->take(10)->toArray(),
             'updated_at'            =>  isset($this->analytics, $this->analytics->updated_at) ? Carbon::parse($this->analytics->updated_at)->format("Y-m-d H:i") : Carbon::parse($this->updated_at)->format("Y-m-d H:i"),
-            'influencers'           =>  $this->influencers,
+            'influencers'           =>  $influencers,
             'instagram_media'       =>  InstagramMediaDTResource::collection($instagramMedia),
             'trackers'              =>  $trackers,
             'media'                 =>  $media,

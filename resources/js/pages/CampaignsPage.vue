@@ -1,8 +1,8 @@
 <template>
 <div class="campaigns">
-    <div class="hero">
+    <div class="hero" v-if="!campaign">
         <div class="hero__intro">
-            <h1>{{ (campaign && campaign.name) ? campaign.name.toUpperCase() : 'campaigns' }}</h1>
+            <h1>Campaigns</h1>
             <ul class="breadcrumbs">
                 <li>
                     <a href="#">Dashboard</a>
@@ -12,9 +12,12 @@
                 </li>
             </ul>
         </div>
-        <div class="hero__actions" v-if="($can('create', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)) && !campaign">
+        <div class="hero__actions" v-if="($can('create', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin))">
             <button :disabled="!activeBrand" class="btn btn-success" @click="addCampaign()">Add new campaign</button>
         </div>
+    </div>
+    <div class="campaign-header" v-else>
+        <span>Campaign <strong>{{ campaign.name }}</strong></span>
     </div>
     <div class="p-1" v-if="!campaign">
         <header class="cards" v-if="$can('analytics', 'campaign') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)">
@@ -197,7 +200,7 @@ export default {
                 {
                     name: "Activated communities",
                     field: "communities",
-                    isNbr: true
+                    isNativeNbr: true
                 },
                 {
                     name: "Number of trackers",
@@ -207,16 +210,22 @@ export default {
                 {
                     name: "Influencers",
                     field: "influencers",
-                    class: "avatars-list",
+                    class: "influencers-avatars-list",
                     sortable: false,
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
+                        let influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
+
                         let html = '';
-                        row.influencers.map(function (item, index) {
+                        influencers.map(function (item, index) {
                             html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
                         });
+
+                        // Add more avatar
+                        if(row.influencers.length > 3)
+                            html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
 
                         return html;
                     }

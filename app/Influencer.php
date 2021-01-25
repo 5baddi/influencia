@@ -14,51 +14,6 @@ class Influencer extends Model
     protected $guarded = [];
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'account_id',
-        'platform',
-        'username',
-        'biography',
-        'website',
-        'name',
-        'is_business',
-        'is_private',
-        'is_verified',
-        'medias',
-        'follows',
-        'followers',
-        'pic_url',
-        'banned',
-        'engagement_rate',
-        'queued',
-        'highlight_reel',
-        'business_category',
-        'business_email',
-        'business_phone',
-        'business_address',
-        'in_process'
-    ];
-
-     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'is_business'       =>  'boolean',
-        'is_private'        =>  'boolean',
-        'in_process'        =>  'boolean',
-        'banned'            =>  'boolean',
-        'business_address'  =>  'json',
-        'updated_at'        =>  'datetime:Y-m-d H:i',
-        'created_at'        =>  'datetime:Y-m-d H:i',
-    ];
-
-    /**
      * The accessors to append to the model's array form.
      *
      * @var array
@@ -74,8 +29,22 @@ class Influencer extends Model
         'active_posts_count',
         'estimated_impressions',
         'estimated_communities',
-        'earned_media_value'
+        'earned_media_value',
+        'parsed_name'
     ];
+
+    /**
+     * Get parsed name without emoji
+     *
+     * @return string|null
+     */
+    public function getParsedNameAttribute() : ?string
+    {
+        if(isset($this->attributes['name']))
+            return preg_replace('/[[:^print:]]/', '', $this->attributes['name']); // TODO: Improve parsing name
+
+        return null;
+    }
 
     /**
      * Get influencer picture as base64
@@ -90,7 +59,8 @@ class Influencer extends Model
                 return $this->attributes['pic_url'];
 
             // Picture as base64
-            return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
+            if(Storage::disk('local')->exists($this->attributes['pic_url']))
+                return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['pic_url']));
         }
 
         return null;

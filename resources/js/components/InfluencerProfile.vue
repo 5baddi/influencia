@@ -20,33 +20,33 @@
                         </li>
                         <li>
                             <i class="fas fa-users"></i>
-                            <span>{{ nbr().abbreviate(influencer.followers) }}</span>
+                            <span>{{ influencer.followers | formatedNbr }}</span>
                         </li>
                         <li v-if="influencer.image_sequences > 0">
                             <i class="fas fa-image"></i>
-                            <span>{{ nbr().abbreviate(influencer.image_sequences) }}</span>
+                            <span>{{ influencer.image_sequences | formatedNbr }}</span>
                         </li>
                         <li v-if="influencer.carousel_sequences > 0">
                             <i class="fas fa-images"></i>
-                            <span>{{ nbr().abbreviate(influencer.carousel_sequences) }}</span>
+                            <span>{{ influencer.carousel_sequences | formatedNbr }}</span>
                         </li>
                         <li v-if="influencer.video_sequences > 0">
                             <i class="fas fa-video"></i>
-                            <span>{{ nbr().abbreviate(influencer.video_sequences) }}</span>
+                            <span>{{ influencer.video_sequences | formatedNbr }}</span>
                         </li>
                         <li v-if="influencer.likes > 0">
                             <i class="fas fa-heart"></i>
-                            <span>{{ nbr().abbreviate(influencer.likes) }}</span>
+                            <span>{{ influencer.likes | formatedNbr }}</span>
                         </li>
                         <li v-if="influencer.comments > 0">
                             <i class="fas fa-comments"></i>
-                            <span>{{ nbr().abbreviate(influencer.comments) }}</span>
+                            <span>{{ influencer.comments | formatedNbr }}</span>
                         </li>
                     </ul>
                 </div>
                 <div class="influencer-details-bar">
                     <span :class="'influencer-details-bar-' + influencer.platform" style="width:100%">
-                        <i class="fab fa-instagram"></i>&nbsp;{{ nbr().abbreviate(influencer.followers) }}
+                        <i class="fab fa-instagram"></i>&nbsp;{{ influencer.followers | formatedNbr }}
                     </span>
                 </div>
               </div>
@@ -56,8 +56,8 @@
                <img :src="status.thumbnail_url" loading="lazy"/>
                <i v-if="status.type === 'video' || status.type === 'sidecar'" :class="'influencer-posts-card-type fas fa-' + (status.type === 'sidecar' ? 'images' : 'video')"></i>
                <div :class="'influencer-posts-card-attr ' + (attrActive === status.id ? ' active' : '')">
-                  <i class="fas fa-heart"></i>{{ nbr().abbreviate(status.likes) }}
-                  <i class="fas fa-comment"></i>{{ nbr().abbreviate(status.comments) }}
+                    <i class="fas fa-heart"></i>{{ status.likes | formatedNbr }}
+                    <i class="fas fa-comment"></i>{{ status.comments | formatedNbr }}
                </div>
              </a>
           </div>
@@ -123,9 +123,6 @@ export default {
        }
    },
    methods: {
-       nbr(){
-           return new abbreviate();
-       },
        loadMore(){
            this.loadingMore = true;
 

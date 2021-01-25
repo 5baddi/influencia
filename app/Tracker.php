@@ -13,22 +13,6 @@ class Tracker extends Model
     protected $guarded = [];
 
     /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'campaign_id',
-        'platform',
-        'name',
-        'type',
-        'url',
-        'status',
-        'queued'
-    ];
-
-    /**
      * Get user
      *
      * @return \App\User

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'version'   =>  '0.4.6',
+    'version'   =>  '0.4.8',
     'support'   =>  env('SUPPORT_EMAIL'),
     'usd2eur'   =>  env('USD2EUR'),
     'fbcost_perimpressions'    =>  env('FBCOSTPERIMPRESSIONS'),

@@ -56,7 +56,7 @@ class Brand extends Model
      */
     public function getLogoAttribute() : ?string
     {
-        if(isset($this->attributes['logo']))
+        if(isset($this->attributes['logo']) && Storage::disk('local')->exists($this->attributes['logo']))
             return "data:image/png;base64," . base64_encode(Storage::disk('local')->get($this->attributes['logo']));
 
         return null;

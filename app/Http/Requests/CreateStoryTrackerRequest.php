@@ -26,25 +26,22 @@ class CreateStoryTrackerRequest extends FormRequest
     public function rules()
     {
         return [
-            'user_id'       =>  'required|integer|exists:users,id',
             'campaign_id'   =>  'required|integer|exists:campaigns,id',
             'name'          =>  'required|unique:trackers,name|max:255',
             'type'          =>  'required|in:story',
             'platform'      =>  'nullable|in:instagram,snapchat',
             'username'      =>  'required|string',
-            'story.*'       =>  'required|max:50000|mimetypes:image/jpeg,image/png,image/gif,video/mp4,video/quicktime',
-            'nbr_squences'  =>  'nullable|integer',
-            'nbr_squences_impressions'          =>  'nullable|integer',
-            'nbr_impressions_first_sequence'    =>  'nullable|integer',
-            'reach_first_sequence'              =>  'nullable|integer',
-            'sticker_taps_mentions'             =>  'nullable|integer',
-            'sticker_taps_hashtags'             =>  'nullable|string',
-            'link_clicks'                       =>  'nullable|integer',
-            'nbr_replies'                       =>  'nullable|integer',
-            'nbr_taps_forward'                  =>  'nullable|integer',
-            'nbr_taps_backward'                 =>  'nullable|integer',
-            'posted_date'                       =>  'nullable|date|date_format:d/m/Y',
-            'posted_hour'                       =>  'nullable|integer|min:0,max:23'
+            'thumbnail'     =>  'required|max:50000|mimetypes:image/jpeg,image/png,image/gif',
+            'story'         =>  'nullable|max:50000|mimetypes:video/mp4,video/quicktime',
+            'proofs.*'      =>  'nullable|max:50000|mimetypes:image/jpeg,image/png,image/gif',
+            'reach'         =>  'nullable|integer',
+            'impressions'   =>  'nullable|integer',
+            'interactions'  =>  'nullable|integer',
+            'back'          =>  'nullable|integer',
+            'forward'       =>  'nullable|integer',
+            'next_story'    =>  'nullable|integer',
+            'exited'        =>  'nullable|integer',
+            'published_at'  =>  'nullable|date',
         ];
     }
 }

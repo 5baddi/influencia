@@ -14,6 +14,9 @@
         </div>
         <div class="hero__actions" v-if="!tracker">
             <button class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" @click="showAddTrackerModal = !showAddTrackerModal">Add new tracker</button>
+            <router-link style="margin: 6px 0;" class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" :to="{name: 'new_story'}">
+                <i class="fas fa-plus"></i>&nbsp;Add new story    
+            </router-link>
         </div>
     </div>
     <div class="p-1" v-if="!tracker">
@@ -211,25 +214,14 @@ export default {
         create(payload) {
             let data = payload.data;
             let formData = new FormData();
-
             // Set base tracker info
             formData.append("user_id", this.AuthenticatedUser.id);
             formData.append("campaign_id", data.campaign_id);
             formData.append("name", data.name);
             formData.append("type", data.type);
+            formData.append("url", data.url);
             if (data.type !== 'url')
                 formData.append("platform", data.platform);
-
-            // Create story tracker
-            if (data.type === "story") {
-                // Append form data
-                formData.append("username", data.username);
-                Array.from(data.story).forEach(file => {
-                    formData.append("story[]", file);
-                });
-            } else {
-                formData.append("url", data.url);
-            }
 
             // Dispatch the creation action
             this.$store.dispatch("addNewTracker", formData)
@@ -308,16 +300,22 @@ export default {
                 {
                     name: "Influencers",
                     field: "influencers",
-                    class: "avatars-list",
+                    class: "influencers-avatars-list",
                     sortable: false,
                     callback: function (row) {
                         if (row.influencers.length === 0)
                             return '-';
 
+                        let influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
+
                         let html = '';
-                        row.influencers.map(function (item, index) {
+                        influencers.map(function (item, index) {
                             html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
                         });
+
+                        // Add more avatar
+                        if(row.influencers.length > 3)
+                            html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
 
                         return html;
                     }
@@ -343,7 +341,7 @@ export default {
                 {
                     name: "Activated communities",
                     field: "communities",
-                    isNbr: true
+                    isNativeNbr: true
                 },
                 {
                     name: "Last update",

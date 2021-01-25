@@ -6,12 +6,13 @@ use App\Brand;
 use App\Influencer;
 use App\InfluencerPost;
 use App\BrandInfluencer;
+use App\InfluencerStory;
 use App\Jobs\ScrapInfluencerJob;
 use App\Services\YoutubeScraper;
-use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Resources\StoriesCollection;
 use App\Http\Requests\CreateInfluencerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\DataTable\InfluencerDTResource;
@@ -38,7 +39,39 @@ class InfluencerController extends Controller
         );
     }
 
-    public function create(CreateInfluencerRequest $request, InstagramScraper $instagram, YoutubeScraper $youtube)
+     /**
+     * Fetch stories by brand
+     *
+     * @param \App\Brand $brand
+     * @return \Illuminate\Http\Response
+     */
+    public function storiesByBrand(Brand $brand)
+    {
+        // Load brand influencers
+        $ids = BrandInfluencer::where('brand_id', $brand->id)->pluck('influencer_id')->toArray();
+        
+        // Load stories
+        $stories = InfluencerStory::with(['influencer'])
+                        ->whereIn('influencer_id', $ids)
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(10);
+
+        return response()->success(
+            "Stories fetched successfully.", 
+            [
+                'items'         =>  StoriesCollection::collection($stories->getCollection()),
+                'pagination'    =>  [
+                    'total'     =>  $stories->total(),
+                    'count'     =>  $stories->count(),
+                    'perPage'   =>  $stories->perPage(),
+                    'currentPage'   =>  $stories->currentPage(),
+                    'lastPage'      =>  $stories->lastPage(),
+                ]
+            ],
+        );
+    }
+
+    public function create(CreateInfluencerRequest $request, YoutubeScraper $youtube)
     {
         // Check ability
         abort_if(Gate::denies('create_influencer') && !Auth()->user()->is_superadmin, Response::HTTP_FORBIDDEN, "403 Forbidden");

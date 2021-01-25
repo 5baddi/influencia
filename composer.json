@@ -35,6 +35,7 @@
         "pusher/pusher-php-server": "~3.0",
         "raiym/instagram-php-scraper": "0.9.10",
         "ryancco/laravel-uuid-models": "^1.0",
+        "spatie/laravel-robots-middleware": "^1.3",
         "spekulatius/phpscraper": "^0.4.1",
         "ssilence/php-imap-client": "dev-master",
         "tuqqu/gender-detector": "^0.3.0"

@@ -21,14 +21,14 @@ class AddGenderAnalytics extends Migration
         
         // Tracker analytics
         Schema::table('tracker_analytics', function (Blueprint $table) {
-            $table->integer('new_male')->default(0)->after('links_count');
-            $table->integer('new_female')->default(0)->after('new_male');
+            $table->integer('male')->default(0)->after('links_count');
+            $table->integer('female')->default(0)->after('male');
         });
         
         // Campaign analytics
         Schema::table('campaign_analytics', function (Blueprint $table) {
-            $table->integer('new_male')->default(0)->after('links_count');
-            $table->integer('new_female')->default(0)->after('new_male');
+            $table->integer('male')->default(0)->after('links_count');
+            $table->integer('female')->default(0)->after('male');
         });
     }
 
@@ -44,11 +44,11 @@ class AddGenderAnalytics extends Migration
         });
 
         Schema::table('tracker_analytics', function (Blueprint $table) {
-            $table->dropColumn(['new_male', 'new_female']);
+            $table->dropColumn(['male', 'female']);
         });
         
         Schema::table('campaign_analytics', function (Blueprint $table) {
-            $table->dropColumn(['new_male', 'new_female']);
+            $table->dropColumn(['male', 'female']);
         });
     }
 }

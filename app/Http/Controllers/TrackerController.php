@@ -8,17 +8,19 @@ use App\Campaign;
 use App\ShortLink;
 use Carbon\Carbon;
 use App\Influencer;
+use App\BrandInfluencer;
 use App\Jobs\ScrapPostJob;
 use Illuminate\Support\Str;
+use App\Jobs\ScrapInfluencerJob;
 use App\Jobs\ScrapURLContentJob;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
-use App\Http\Resources\DataTable\TrackerDTResource;
 use App\Http\Requests\CreateTrackerRequest;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CreateStoryTrackerRequest;
 use App\Http\Resources\TrackerAnalyticsResource;
+use App\Http\Resources\DataTable\TrackerDTResource;
 
 class TrackerController extends Controller
 {
@@ -117,7 +119,7 @@ class TrackerController extends Controller
     public function analytics(Tracker $tracker)
     {
         // Load tracker analytics
-        $analytics = Tracker::with(['posts', 'medias', 'campaign', 'shortlink', 'influencers'])->findOrFail($tracker->id);
+        $analytics = Tracker::with(['posts', 'campaign', 'shortlink', 'influencers'])->findOrFail($tracker->id);
         
         return response()->success(
             "Tracker fetched successfully.",
@@ -141,7 +143,7 @@ class TrackerController extends Controller
         ]);
 
         if($updated)
-            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])->find($tracker->id));
+            return response()->success("Tracker {$tracker->name} status changed successfully.", Tracker::with(['user', 'campaign', 'shortlink', 'influencers'])->find($tracker->id));
 
 
         return response()->error("Something going wrong! Please try again or contact the support..");
@@ -158,7 +160,6 @@ class TrackerController extends Controller
 
         // Create new tracker row
         $tracker = Tracker::create($request->validated());
-        $tracker = $tracker->refresh();
 
         // Handle URL Tracker
         if($tracker->type === 'url'){
@@ -178,7 +179,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'influencers'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'shortlink', 'influencers'])->find($tracker->id)
         );
     }
 
@@ -191,35 +192,74 @@ class TrackerController extends Controller
     {
         abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
-        // Create tracker
-        $tracker = Tracker::create($request->validated());
-        $tracker = $tracker->refresh();
+        // Validated data
+        $data = $request->validated();
 
-        // Upload story sequences
-        $medias = [];
-        if($request->hasFile('story')){
-            foreach($request->file('story') as $file){
-                $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $file->getClientOriginalExtension();
-                $storyFilePath = $file->storeAs('uploads', $storyFileName, 'public');
-                // TODO: use story table insted of tracker media
-                // $medias[] = TrackerMedia::create([
-                //     'tracker_id'    =>  $tracker->id,
-                //     'name'          =>  $storyFileName,
-                //     'type'          =>  'media',
-                //     'media_path'    =>  '/storage/' . $storyFilePath
-                // ]);
-            }
+        // Story insights
+        $story = [
+            'reach'         =>  $data['reach'],
+            'impressions'   =>  $data['impressions'],
+            'interactions'  =>  $data['interactions'],
+            'back'          =>  $data['back'],
+            'forward'       =>  $data['forward'],
+            'next_story'    =>  $data['next_story'],
+            'exited'        =>  $data['exited'],
+            'published_at'  =>  !is_null($data['published_at']) ? Carbon::parse($data['published_at'])->format("Y-m-d H:i:s") : null
+        ];
+
+        // Create new tracker
+        $tracker = Tracker::create([
+            'user_id'       =>  Auth::id(),
+            'campaign_id'   =>  $data['campaign_id'],
+            'name'          =>  $data['name'],
+            'type'          =>  $data['type'],
+            'platform'      =>  $data['platform'],
+        ]);
+
+        // Set story tracker
+        $story['tracker_id'] = $tracker->id;
+
+        // Upload story thumbnail
+        if($request->hasFile('thumbnail')){
+            $fileName = Str::slug($request->file('thumbnail')->getClientOriginalName()) . '_' . time() . '.' . $request->file('thumbnail')->getClientOriginalExtension();
+            $thumbnailPath = $request->file('thumbnail')->storeAs('influencers/instagram/temp/stories/thumbnails/', $fileName, 'local');
+            
+            if($thumbnailPath)
+                $story['thumbnail'] = $thumbnailPath;
         }
 
-        // Srap Influencer
-        $scraper = $scraper->authenticate();
-        $instagramUser = $scraper->byUsername($request->input('username'));
-        $influencer = Influencer::create($instagramUser);
+        // Upload story video
+        if($request->hasFile('story')){
+            $fileName = Str::slug($request->file('story')->getClientOriginalName()) . '_' . time() . '.' . $request->file('story')->getClientOriginalExtension();
+            $videoPath = $request->file('thumbnail')->storeAs('influencers/instagram/temp/stories/videos/', $fileName, 'local');
+            
+            if($videoPath)
+                $story['story'] = $videoPath;
+        }
+        
+        // Upload story proofs
+        if($request->hasFile('proofs')){
 
-        return response()->success(
-            "Story tracker created successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'infleuncers'])->find($tracker->id)
-        );
+        }
+
+        // Verify if influencer already exists
+        $exists = Influencer::where([
+            'platform' => 'instagram',
+            'username' => $data['username']
+        ])->first();
+        
+        if(!is_null($exists)){
+            // Set influencer to current selected brand
+            BrandInfluencer::firstOrCreate([
+                'brand_id'      =>  Auth::user()->selected_brand_id,
+                'influencer_id' =>  $exists->id
+            ]);
+        }else{
+            // Send create new influencer job
+            ScrapInfluencerJob::dispatch(Auth::user(), $data['username'], $story)->onQueue('influencers');
+        }
+
+        return response()->success("Task executed in background, please wait...", [], 200);
     }
 
     /**
@@ -234,7 +274,7 @@ class TrackerController extends Controller
 
         return response()->success(
             "Tracker fetched successfully.",
-            Tracker::with(['user', 'campaign', 'medias', 'shortlink', 'infleuncers'])->find($tracker->id)
+            Tracker::with(['user', 'campaign', 'shortlink', 'infleuncers'])->find($tracker->id)
         );
     }
 

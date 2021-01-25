@@ -67,7 +67,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
     Route::get('/{brand}/trackers/search/{query}', 'TrackerController@search');
     Route::get('/{brand}/trackers/{campaign}', 'TrackerController@byCampaign');
     Route::post('/trackers', 'TrackerController@create');
-    Route::post('/trackers/story', 'TrackerController@createStory');
+    Route::post('/stories', 'TrackerController@createStory');
     Route::get('/trackers/{tracker}/status', 'TrackerController@changeStatus');
     Route::delete('/trackers/{tracker}', 'TrackerController@delete');
     Route::get('/trackers/{tracker}/analytics', 'TrackerController@analytics');
@@ -89,6 +89,7 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => 'v1'], function(){
 
     // Influencers
     Route::get('{brand}/influencers', 'InfluencerController@byBrand');
+    Route::get('{brand}/stories', 'InfluencerController@storiesByBrand');
     Route::get('/influencers/{influencer}', 'InfluencerController@show');
     Route::get('/influencers/{influencer}/content', 'InfluencerController@content');
     Route::post('/influencers', 'InfluencerController@create');

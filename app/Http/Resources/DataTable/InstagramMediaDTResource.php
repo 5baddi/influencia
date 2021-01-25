@@ -20,7 +20,7 @@ class InstagramMediaDTResource extends JsonResource
             'caption'                   =>  $this->caption, 
             'type'                      =>  $this->type, 
             'comments'                  =>  $this->comments, 
-            'influencer'                =>  $this->influencer->only(['uuid', 'name', 'username', 'pic_url']),
+            'influencer'                =>  $this->influencer->only(['uuid', 'parsed_name', 'username', 'pic_url']),
             'activated_communities'     =>  $this->activated_communities, 
             'estimated_impressions'     =>  $this->estimated_impressions, 
             'engagements'               =>  $this->engagements, 

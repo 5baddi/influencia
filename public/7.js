@@ -148,6 +148,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -177,7 +196,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   },
-  computed: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser"])),
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapGetters"])(["AuthenticatedUser", "campaigns"])), {}, {
+    fiveInfluencers: function fiveInfluencers() {
+      // Get five influencers
+      if (this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0) {
+        return this.campaign.influencers.slice(0, 5);
+      }
+
+      return [];
+    }
+  }),
   mounted: function mounted() {
     // Comments sentiments
     if (this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative) {
@@ -257,30 +285,41 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       }, {
         name: 'Number of posts',
-        field: 'medias',
-        isNbr: true
-      }, {
-        name: 'Engagemnets rate',
-        field: 'engagement_rate',
-        isPercentage: true
+        field: 'campaign_media',
+        isNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Size of activated communities',
         field: 'estimated_communities',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Estimated impressions',
-        field: 'estimated_impressions',
-        isNbr: true
+        field: 'campaign_impressions',
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Earned Media Value',
         field: 'earned_media_value',
-        currency: '€'
+        currency: '€',
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }],
       instaPostsColumns: [{
         name: 'Influencer',
         field: 'influencer',
         callback: function callback(row) {
-          return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+          return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username) + '</p>';
         }
       }, {
         name: 'Post',
@@ -296,37 +335,66 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: 'Size of activated communities',
         field: 'activated_communities',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Estimated impressions',
         field: 'estimated_impressions',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Engagements',
         field: 'engagements',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Organic impressions (declarative)',
         field: 'organic_impressions',
-        isNbr: true
-      }, {
-        name: 'Engagements rate (reach)',
-        field: 'engagement_rate',
-        callback: function callback(row) {
-          return row.influencer.engagement_rate && row.influencer.engagement_rate > 0 ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-        }
-      }, {
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
+      }, //  {
+      //     name: 'Engagements rate (reach)',
+      //     field: 'engagement_rate',
+      //     callback: function (row) {
+      //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
+      //     }
+      // },
+      {
         name: 'Likes',
         field: 'likes',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Views',
         field: 'video_views',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Comments',
         field: 'comments',
-        isNbr: true
+        isNativeNbr: true,
+        isRounded: true,
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
       }, {
         name: 'Impressions (first sequence)'
       }, {
@@ -334,28 +402,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: 'Sequence impressions'
       }, {
-        name: 'Tags',
-        field: 'tags',
-        callback: function callback(row) {
-          if (row.tags && row.tags.length > 0) {
-            var html = "<ul>";
-            row.tags.map(function (item, index) {
-              html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
-            });
-            return html + "</ul>";
-          }
-
-          return '-';
-        }
-      }, {
-        name: 'Posted at',
-        field: 'published_at',
-        isDate: true,
-        format: 'DD/MM/YYYY'
-      }, {
         name: 'Earned Media Value',
         field: 'earned_media_value',
-        currency: '€'
+        currency: '€',
+        hasTotal: true,
+        hasAverage: true,
+        hasMedian: true
+      }, // {
+      //     name: 'Tags',
+      //     field: 'tags',
+      //     callback: function(row){
+      //         if(row.tags && row.tags.length > 0){
+      //             let html = "<ul>";
+      //             row.tags.map(function(item, index){
+      //                 html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+      //             });
+      //             return html + "</ul>";
+      //         }
+      //         return '-';
+      //     }
+      // },
+      {
+        name: 'Posted at',
+        field: 'published_at'
       }],
       trackersColumns: [{
         name: "name",
@@ -556,6 +625,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 
@@ -693,7 +765,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Activated communities",
         field: "communities",
-        isNbr: true
+        isNativeNbr: true
       }, {
         name: "Number of trackers",
         field: "trackers_count",
@@ -701,14 +773,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }, {
         name: "Influencers",
         field: "influencers",
-        "class": "avatars-list",
+        "class": "influencers-avatars-list",
         sortable: false,
         callback: function callback(row) {
           if (row.influencers.length === 0) return '-';
+          var influencers = row.influencers.length > 3 ? row.influencers.slice(0, 3) : row.influencers;
           var html = '';
-          row.influencers.map(function (item, index) {
+          influencers.map(function (item, index) {
             html += '<a href="/influencers/' + item.uuid + '" class="avatars-list" title="View ' + (item.name ? item.name : item.username) + ' profile"><img src="' + item.pic_url + '"/>';
-          });
+          }); // Add more avatar
+
+          if (row.influencers.length > 3) html += '<a href="#" title="' + row.influencers.length + ' Influencers linked"><img src="/images/more.png"/></a>';
           return html;
         }
       }, {
@@ -755,6 +830,8 @@ var map = {
 	"./bm": "./node_modules/moment/locale/bm.js",
 	"./bm.js": "./node_modules/moment/locale/bm.js",
 	"./bn": "./node_modules/moment/locale/bn.js",
+	"./bn-bd": "./node_modules/moment/locale/bn-bd.js",
+	"./bn-bd.js": "./node_modules/moment/locale/bn-bd.js",
 	"./bn.js": "./node_modules/moment/locale/bn.js",
 	"./bo": "./node_modules/moment/locale/bo.js",
 	"./bo.js": "./node_modules/moment/locale/bo.js",
@@ -803,6 +880,8 @@ var map = {
 	"./es": "./node_modules/moment/locale/es.js",
 	"./es-do": "./node_modules/moment/locale/es-do.js",
 	"./es-do.js": "./node_modules/moment/locale/es-do.js",
+	"./es-mx": "./node_modules/moment/locale/es-mx.js",
+	"./es-mx.js": "./node_modules/moment/locale/es-mx.js",
 	"./es-us": "./node_modules/moment/locale/es-us.js",
 	"./es-us.js": "./node_modules/moment/locale/es-us.js",
 	"./es.js": "./node_modules/moment/locale/es.js",
@@ -1044,11 +1123,8 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
-                value:
-                  typeof _vm.campaign.influencers !== "undefined" &&
-                  _vm.campaign.influencers.length > 0,
-                expression:
-                  "typeof campaign.influencers !== 'undefined' && campaign.influencers.length > 0"
+                value: _vm.fiveInfluencers.length > 0,
+                expression: "fiveInfluencers.length > 0"
               }
             ],
             staticClass: "influencers-avatars"
@@ -1056,7 +1132,7 @@ var render = function() {
           [
             _c("h4", [_vm._v("influencers")]),
             _vm._v(" "),
-            _vm._l(_vm.campaign.influencers, function(influencer) {
+            _vm._l(_vm.fiveInfluencers, function(influencer) {
               return _c(
                 "li",
                 { key: influencer.id },
@@ -1082,7 +1158,63 @@ var render = function() {
                 ],
                 1
               )
-            })
+            }),
+            _vm._v(" "),
+            _vm.campaign.influencers.length > 5
+              ? _c("li", [_vm._m(0)])
+              : _vm._e(),
+            _vm._v(" "),
+            _c("li", [
+              _c(
+                "span",
+                { staticClass: "campaign-more-influencers" },
+                [
+                  _vm._v(
+                    "\r\n                " +
+                      _vm._s(_vm.campaign.influencers.length) +
+                      " Influencers linked "
+                  ),
+                  _vm.campaign.influencers.length > 5
+                    ? _c("router-link", { attrs: { to: "#byinfuencers" } }, [
+                        _vm._v("See all")
+                      ])
+                    : _vm._e()
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "count-details" }, [
+              _vm.campaign.stories_count && _vm.campaign.stories_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "far fa-clock" }),
+                    _vm._v(
+                      " " + _vm._s(_vm.campaign.stories_count) + " stories"
+                    )
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.campaign.videos_count && _vm.campaign.videos_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "far fa-play-circle" }),
+                    _vm._v(" " + _vm._s(_vm.campaign.videos_count) + " videos")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.campaign.images_count && _vm.campaign.images_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "far fa-images" }),
+                    _vm._v(" " + _vm._s(_vm.campaign.images_count) + " posts")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.campaign.links_count && _vm.campaign.links_count > 0
+                ? _c("span", [
+                    _c("i", { staticClass: "fas fa-link" }),
+                    _vm._v(" " + _vm._s(_vm.campaign.links_count) + " links")
+                  ])
+                : _vm._e()
+            ])
           ],
           2
         ),
@@ -1124,29 +1256,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c("canvas", { attrs: { id: "impressions-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic impressions " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_impressions)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.impressions > 0
-                          ? (
-                              (_vm.campaign.organic_impressions /
-                                _vm.campaign.impressions) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
+                _c("canvas", { attrs: { id: "impressions-chart" } })
               ])
             : _vm._e(),
           _vm._v(" "),
@@ -1250,29 +1360,7 @@ var render = function() {
                   ])
                 ]),
                 _vm._v(" "),
-                _c("canvas", { attrs: { id: "posts-chart" } }),
-                _vm._v(" "),
-                _c("span", [
-                  _vm._v(
-                    "Organic posts " +
-                      _vm._s(
-                        String(
-                          _vm.nbr().abbreviate(_vm.campaign.organic_posts)
-                        ).toUpperCase()
-                      ) +
-                      " (" +
-                      _vm._s(
-                        _vm.campaign.posts_count > 0
-                          ? (
-                              (_vm.campaign.organic_posts /
-                                _vm.campaign.posts_count) *
-                              100
-                            ).toFixed(2)
-                          : 0
-                      ) +
-                      "%)"
-                  )
-                ])
+                _c("canvas", { attrs: { id: "posts-chart" } })
               ])
             : _vm._e()
         ]),
@@ -1363,7 +1451,21 @@ var render = function() {
               attrs: {
                 cssClasses: "table-card",
                 columns: _vm.influencersColumns,
-                nativeData: _vm.campaign.influencers
+                nativeData: _vm.campaign.influencers,
+                withPagination: false,
+                withTotalTab: true,
+                exportable: true,
+                exportableFields: [
+                  "username",
+                  "name",
+                  "campaign_media",
+                  "estimated_communities",
+                  "campaign_impressions",
+                  "earned_media_value"
+                ],
+                fileName:
+                  "Performance breakdown by Influencer for campaign " +
+                  _vm.campaign.name
               }
             })
           ],
@@ -1372,7 +1474,7 @@ var render = function() {
         _vm._v(" "),
         _c(
           "div",
-          { staticClass: "datatable-scroll" },
+          { staticClass: "datatable-scroll", attrs: { id: "byinfluencers" } },
           [
             _c("h4", [_vm._v("Performance breakdown by post on Instagram")]),
             _vm._v(" "),
@@ -1381,7 +1483,9 @@ var render = function() {
               attrs: {
                 cssClasses: "table-card",
                 columns: _vm.instaPostsColumns,
-                nativeData: _vm.campaign.instagram_media
+                nativeData: _vm.campaign.instagram_media,
+                withPagination: false,
+                withTotalTab: true
               }
             })
           ],
@@ -1453,10 +1557,31 @@ var render = function() {
                 )
               },
               [
+                _c(
+                  "router-link",
+                  {
+                    staticClass: "btn btn-success",
+                    attrs: {
+                      slot: "custom-buttons",
+                      disabled:
+                        !_vm.campaigns ||
+                        typeof _vm.campaigns.length === "undefined" ||
+                        _vm.campaigns.length === 0,
+                      to: { name: "new_tracker" }
+                    },
+                    slot: "custom-buttons"
+                  },
+                  [
+                    _c("i", { staticClass: "fas fa-plus" }),
+                    _vm._v(" Add new tracker    \r\n            ")
+                  ]
+                ),
+                _vm._v(" "),
                 _c("th", { attrs: { slot: "header" }, slot: "header" }, [
                   _vm._v("Actions")
                 ])
-              ]
+              ],
+              1
             )
           ],
           1
@@ -1574,7 +1699,16 @@ var render = function() {
       ])
     : _vm._e()
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("a", { staticClass: "icon-link", attrs: { href: "#" } }, [
+      _c("img", { attrs: { src: __webpack_require__(/*! @assets/img/more.png */ "./resources/assets/img/more.png") } })
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -1705,41 +1839,35 @@ var render = function() {
     "div",
     { staticClass: "campaigns" },
     [
-      _c("div", { staticClass: "hero" }, [
-        _c("div", { staticClass: "hero__intro" }, [
-          _c("h1", [
-            _vm._v(
-              _vm._s(
-                _vm.campaign && _vm.campaign.name
-                  ? _vm.campaign.name.toUpperCase()
-                  : "campaigns"
-              )
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(0)
-        ]),
-        _vm._v(" "),
-        (_vm.$can("create", "campaign") ||
-          (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)) &&
-        !_vm.campaign
-          ? _c("div", { staticClass: "hero__actions" }, [
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success",
-                  attrs: { disabled: !_vm.activeBrand },
-                  on: {
-                    click: function($event) {
-                      return _vm.addCampaign()
-                    }
-                  }
-                },
-                [_vm._v("Add new campaign")]
-              )
+      !_vm.campaign
+        ? _c("div", { staticClass: "hero" }, [
+            _vm._m(0),
+            _vm._v(" "),
+            _vm.$can("create", "campaign") ||
+            (_vm.AuthenticatedUser && _vm.AuthenticatedUser.is_superadmin)
+              ? _c("div", { staticClass: "hero__actions" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-success",
+                      attrs: { disabled: !_vm.activeBrand },
+                      on: {
+                        click: function($event) {
+                          return _vm.addCampaign()
+                        }
+                      }
+                    },
+                    [_vm._v("Add new campaign")]
+                  )
+                ])
+              : _vm._e()
+          ])
+        : _c("div", { staticClass: "campaign-header" }, [
+            _c("span", [
+              _vm._v("Campaign "),
+              _c("strong", [_vm._v(_vm._s(_vm.campaign.name))])
             ])
-          : _vm._e()
-      ]),
+          ]),
       _vm._v(" "),
       !_vm.campaign
         ? _c("div", { staticClass: "p-1" }, [
@@ -1984,16 +2112,31 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("ul", { staticClass: "breadcrumbs" }, [
-      _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Dashboard")])]),
+    return _c("div", { staticClass: "hero__intro" }, [
+      _c("h1", [_vm._v("Campaigns")]),
       _vm._v(" "),
-      _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Campaigns")])])
+      _c("ul", { staticClass: "breadcrumbs" }, [
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Dashboard")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("Campaigns")])])
+      ])
     ])
   }
 ]
 render._withStripped = true
 
 
+
+/***/ }),
+
+/***/ "./resources/assets/img/more.png":
+/*!***************************************!*\
+  !*** ./resources/assets/img/more.png ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = "/images/more.png?01227267fe89e713015bb9cc24dac9f1";
 
 /***/ }),
 

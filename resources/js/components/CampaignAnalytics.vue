@@ -1,12 +1,28 @@
 <template>
 <div class="campaign" v-if="campaign">
-    <ul v-show="typeof campaign.influencers !== 'undefined' && campaign.influencers.length > 0" class="influencers-avatars">
+    <ul v-show="fiveInfluencers.length > 0" class="influencers-avatars">
         <h4>influencers</h4>
-        <li v-for="influencer in campaign.influencers" :key="influencer.id">
+        <li v-for="influencer in fiveInfluencers" :key="influencer.id">
             <router-link :to="{name : 'influencers', params: {uuid: influencer.uuid}}" class="icon-link" :title="influencer.username">
                 <img :src="influencer.pic_url" loading="lazy" />
             </router-link>
         </li>
+        <li v-if="campaign.influencers.length > 5">
+            <a href="#" class="icon-link">
+                <img src="@assets/img/more.png"/>
+            </a>
+        </li>
+        <li>
+            <span class="campaign-more-influencers">
+                {{ campaign.influencers.length }} Influencers linked&nbsp;<router-link to="#byinfuencers" v-if="campaign.influencers.length > 5">See all</router-link>
+            </span>
+        </li>
+        <div class="count-details">
+            <span v-if="campaign.stories_count && campaign.stories_count > 0"><i class="far fa-clock"></i>&nbsp;{{ campaign.stories_count }}&nbsp;stories</span>
+            <span v-if="campaign.videos_count && campaign.videos_count > 0"><i class="far fa-play-circle"></i>&nbsp;{{ campaign.videos_count }}&nbsp;videos</span>
+            <span v-if="campaign.images_count && campaign.images_count > 0"><i class="far fa-images"></i>&nbsp;{{ campaign.images_count }}&nbsp;posts</span>
+            <span v-if="campaign.links_count && campaign.links_count > 0"><i class="fas fa-link"></i>&nbsp;{{ campaign.links_count }}&nbsp;links</span>
+        </div>
     </ul>
     <div class="cards statistics">
         <div class="card" v-if="campaign.communities > 0">
@@ -28,7 +44,7 @@
                 </div>
             </div>
             <canvas id="impressions-chart"></canvas>
-            <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span>
+            <!-- <span>Organic impressions {{ String(nbr().abbreviate(campaign.organic_impressions)).toUpperCase() }} ({{ campaign.impressions > 0 ? ((campaign.organic_impressions / campaign.impressions) * 100).toFixed(2) : 0  }}%)</span> -->
         </div>
         <div class="card" v-if="campaign.video_views > 0">
             <div class="title">
@@ -61,7 +77,7 @@
                 </div>
             </div>
             <canvas id="posts-chart"></canvas>
-            <span>Organic posts {{ String(nbr().abbreviate(campaign.organic_posts)).toUpperCase() }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span>
+            <!-- <span>Organic posts {{ String(nbr().abbreviate(campaign.organic_posts)).toUpperCase() }} ({{ campaign.posts_count > 0 ? ((campaign.organic_posts / campaign.posts_count) * 100).toFixed(2) : 0  }}%)</span> -->
         </div>
     </div>
 
@@ -85,17 +101,20 @@
 
     <div class="datatable-scroll">
         <h4>Performance breakdown by Influencer</h4>
-        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" />
+        <DataTable cssClasses="table-card" ref="byInfluencer" :columns="influencersColumns" :nativeData="campaign.influencers" :withPagination="false" :withTotalTab="true" :exportable="true" :exportableFields="['username', 'name', 'campaign_media', 'estimated_communities', 'campaign_impressions', 'earned_media_value']" :fileName="'Performance breakdown by Influencer for campaign ' + campaign.name" />
     </div>
 
-    <div class="datatable-scroll">
+    <div class="datatable-scroll" id="byinfluencers">
         <h4>Performance breakdown by post on Instagram</h4>
-        <DataTable cssClasses="table-card" ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_media" />
+        <DataTable cssClasses="table-card" ref="byInstaPosts" :columns="instaPostsColumns" :nativeData="campaign.instagram_media" :withPagination="false" :withTotalTab="true"/>
     </div>
 
     <div class="datatable-scroll">
         <h4>List of trackers</h4>
         <DataTable cssClasses="table-card" ref="byTrackers" :columns="trackersColumns" :nativeData="campaign.trackers">
+            <router-link slot="custom-buttons" class="btn btn-success" :disabled="!campaigns || typeof campaigns.length === 'undefined' || campaigns.length === 0" :to="{name: 'new_tracker'}">
+                <i class="fas fa-plus"></i>&nbsp;Add new tracker    
+            </router-link>
             <th slot="header">Actions</th>
             <td slot="body-row" slot-scope="row">
                 <router-link v-if="$can('analytics', 'tracker') || (AuthenticatedUser && AuthenticatedUser.is_superadmin)" v-show="row.data.original.queued === 'finished'" :to="{name : 'trackers', params: {uuid: row.data.original.uuid}}" class="icon-link" title="Statistics">
@@ -160,9 +179,17 @@ export default {
         }
     },
     computed: {
-        ...mapGetters(["AuthenticatedUser"])
+        ...mapGetters(["AuthenticatedUser", "campaigns"]),
+        fiveInfluencers(){
+            // Get five influencers
+            if(this.campaign && typeof this.campaign.influencers !== 'undefined' && this.campaign.influencers.length > 0){
+                return this.campaign.influencers.slice(0, 5);
+            }
+
+            return [];
+        }
     },
-    mounted() {
+    mounted(){
         // Comments sentiments
         if(this.campaign.sentiments_positive && this.campaign.sentiments_neutral && this.campaign.sentiments_negative){
             this.createDoughtnutChart('sentiments-chart', {
@@ -249,32 +276,47 @@ export default {
             callback: function (row) {
                 return '<p style="display: inline-flex; align-items: center;margin:0"><img src="' + row.pic_url + '" style="margin-right:0.2rem"/>&nbsp;' + (row.name ? row.name : row.username) + '</p>';
             }
-        }, {
+        },
+        {
             name: 'Number of posts',
-            field: 'medias',
-            isNbr: true
-        }, {
-            name: 'Engagemnets rate',
-            field: 'engagement_rate',
-            isPercentage: true
-        },{
+            field: 'campaign_media',
+            isNbr: true,
+            isRounded: true,
+            hasTotal: true,
+            hasAverage: true,
+            hasMedian: true
+        },
+        {
             name: 'Size of activated communities',
             field: 'estimated_communities',
-            isNbr: true
-        }, {
+            isNativeNbr: true,
+            isRounded: true,
+            hasTotal: true,
+            hasAverage: true,
+            hasMedian: true
+        }, 
+        {
             name: 'Estimated impressions',
-            field: 'estimated_impressions',
-            isNbr: true
-        }, {
+            field: 'campaign_impressions',
+            isNativeNbr: true,
+            isRounded: true,
+            hasTotal: true,
+            hasAverage: true,
+            hasMedian: true
+        }, 
+        {
             name: 'Earned Media Value',
             field: 'earned_media_value',
-            currency: '€'
+            currency: '€',
+            hasTotal: true,
+            hasAverage: true,
+            hasMedian: true
         }],
         instaPostsColumns: [{
                 name: 'Influencer',
                 field: 'influencer',
                 callback: function (row) {
-                    return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.name ? row.influencer.name : row.influencer.username) + '</p>';
+                    return '<p style="display: inline-flex; align-items: center;margin:0"><img style="margin-right:0.2rem" src="' + row.influencer.pic_url + '"/>&nbsp;' + (row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username) + '</p>';
                 }
             }, {
                 name: 'Post',
@@ -293,38 +335,69 @@ export default {
             {
                 name: 'Size of activated communities',
                 field: 'activated_communities',
-                isNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
-                isNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             },
             {
                 name: 'Engagements',
                 field: 'engagements',
-                isNbr: true
-            }, {
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
+            }, 
+            {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
-                isNbr: true
-            }, {
-                name: 'Engagements rate (reach)',
-                field: 'engagement_rate',
-                callback: function (row) {
-                    return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-                }
-            }, {
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
+            },
+            //  {
+            //     name: 'Engagements rate (reach)',
+            //     field: 'engagement_rate',
+            //     callback: function (row) {
+            //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
+            //     }
+            // },
+             {
                 name: 'Likes',
                 field: 'likes',
-                isNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Views',
                 field: 'video_views',
-                isNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Comments',
                 field: 'comments',
-                isNbr: true
+                isNativeNbr: true,
+                isRounded: true,
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
             }, {
                 name: 'Impressions (first sequence)'
             }, {
@@ -333,30 +406,32 @@ export default {
                 name: 'Sequence impressions'
             },
             {
-                name: 'Tags',
-                field: 'tags',
-                callback: function(row){
-                    if(row.tags && row.tags.length > 0){
-                        let html = "<ul>";
-                        row.tags.map(function(item, index){
-                            html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
-                        });
-
-                        return html + "</ul>";
-                    }
-
-                    return '-';
-                }
-            } 
-            ,{
-                name: 'Posted at',
-                field: 'published_at',
-                isDate: true,
-                format: 'DD/MM/YYYY'
-            }, {
                 name: 'Earned Media Value',
                 field: 'earned_media_value',
-                currency: '€'
+                currency: '€',
+                hasTotal: true,
+                hasAverage: true,
+                hasMedian: true
+            },
+            // {
+            //     name: 'Tags',
+            //     field: 'tags',
+            //     callback: function(row){
+            //         if(row.tags && row.tags.length > 0){
+            //             let html = "<ul>";
+            //             row.tags.map(function(item, index){
+            //                 html += '<a href="https://www.instagram.com/explore/tags/' + item + '" tagert="_blank">' + item + '</a>&nbsp;&nbsp;';
+            //             });
+
+            //             return html + "</ul>";
+            //         }
+
+            //         return '-';
+            //     }
+            // },
+            {
+                name: 'Posted at',
+                field: 'published_at'
             }
         ],
         trackersColumns: [

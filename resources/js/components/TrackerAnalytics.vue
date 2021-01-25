@@ -244,18 +244,18 @@ export default {
             }, 
             {
                 name: 'Number of posts',
-                field: 'medias',
+                field: 'campaign_media',
                 isNbr: true
             },
             {
                 name: 'Size of activated communities',
                 field: 'estimated_communities',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Earned Media Value',
@@ -277,7 +277,7 @@ export default {
                 name: 'Influencer',
                 field: 'influencer',
                 callback: function (row) {
-                    return row.influencer.name ? row.influencer.name : row.influencer.username;
+                    return row.influencer.parsed_name ? row.influencer.parsed_name : row.influencer.username;
                 }
             }, 
             {
@@ -298,44 +298,45 @@ export default {
             {
                 name: 'Size of activated communities',
                 field: 'activated_communities',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Estimated impressions',
                 field: 'estimated_impressions',
-                isNbr: true
+                isNativeNbr: true
             },
             {
                 name: 'Engagements',
                 field: 'engagements',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Organic impressions (declarative)',
                 field: 'organic_impressions',
-                isNbr: true
+                isNativeNbr: true
             }, 
-            {
-                name: 'Engagements rate (reach)',
-                field: 'engagement_rate',
-                callback: function (row) {
-                    return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
-                }
-            }, 
+            // {
+            //     name: 'Engagements rate (reach)',
+            //     field: 'engagement_rate',
+            //     callback: function (row) {
+            //         return (row.influencer.engagement_rate && row.influencer.engagement_rate > 0) ? (row.influencer.engagement_rate * 100).toFixed(2) : '-';
+            //     },
+            //     isNativeNbr: true
+            // }, 
             {
                 name: 'Likes',
                 field: 'likes',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Views',
                 field: 'video_views',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Comments',
                 field: 'comments',
-                isNbr: true
+                isNativeNbr: true
             }, 
             {
                 name: 'Impressions (first sequence)'

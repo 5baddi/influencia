@@ -1,10 +1,5 @@
 <template>
 <div :class="cssClasses">
-    <!--<ul v-show="exportable">
-        <li>
-            <a :href="excelLink" class="btn btn-excel" target="_blank"><i class="fas fa-file-excel"></i></a>
-        </li>
-    </ul>-->
     <table>
         <thead>
             <tr>
@@ -13,6 +8,10 @@
                     <button class="btn icon-link" title="Reload all data" @click="reloadData()">
                         <i class="fas fa-sync-alt"></i>
                     </button>
+                    <button v-show="exportable" class="btn icon-link excel-btn" @click="exportToExcel()">
+                        <i class="fas fa-file-excel"></i>&nbsp;Export to Excel
+                    </button>
+                    <slot name="custom-buttons"></slot>
                 </th>
             </tr>
             <tr ref="headercolumns">
@@ -43,6 +42,24 @@
                     </router-link>
                 </td>
                 <slot name="body-row" :data="obj"></slot>
+            </tr>
+            <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof col.hasTotal === 'boolean' && col.hasTotal" v-html="formatData(col, calculateColumnSum(col.field))"></div>
+                    <div v-if="idx === 0 && (typeof col.hasTotal !== 'boolean' || !col.hasTotal)" align="right" :colspan="colsSpan.total || 1">Total: </div>
+                </td>
+            </tr>
+            <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof col.hasMedian === 'boolean' && col.hasMedian" v-html="formatData(col, calculateColumnMedian(col.field))"></div>
+                    <div v-if="idx === 0 && (typeof col.hasMedian !== 'boolean' || !col.hasMedian)" align="right" :colspan="colsSpan.median || 1">Median: </div>
+                </td>
+            </tr>
+            <tr v-if="withTotalTab && formatedData.length > 0 && !loading">
+                <td v-for="(col, idx) in formatedColumns" :key="idx">
+                    <div v-if="typeof col.hasAverage === 'boolean' && col.hasAverage" v-html="formatData(col, calculateColumnAverage(col.field))"></div>
+                    <div v-if="idx === 0 && (typeof col.hasAverage !== 'boolean' || !col.hasAverage)" align="right" :colspan="colsSpan.average || 1">Average: </div>
+                </td>
             </tr>
         </tbody>
         <tfoot v-if="data.length > 0 && !loading">
@@ -96,6 +113,12 @@ table {
 table thead>>>.actions-header{
     /* border-bottom: none; */
     text-align: right;
+}
+table thead>>>.actions-header .btn{
+    display: initial;
+    padding: .5rem;
+    margin: unset;
+    font-size: 8pt !important;
 }
 table thead>>>.actions-header input[type='text']{
     min-width: 300px;
@@ -187,6 +210,7 @@ table tfoot td>>>button:hover {
 
 table tbody>>>img {
     max-width: 36px;
+    max-height: 36px;
     border-radius: 50%;
 }
 
@@ -218,6 +242,10 @@ table tbody>>>a {
 .is-sorting-column{
     color: rgba(0, 0, 0, 0.9);
 }
+.excel-btn{
+    background-color: #1D6F42 !important;
+    color: white !important;
+}
 </style>
 
 <script>
@@ -226,6 +254,7 @@ import {
 } from "vuex";
 import dayjs from "dayjs";
 import abbreviate from 'number-abbreviate';
+import exportFromJSON from 'export-from-json';
 
 export default {
     name: 'DataTable',
@@ -261,6 +290,10 @@ export default {
             type: Boolean,
             default: true
         },
+        withTotalTab: {
+            type: Boolean,
+            default: false
+        },
         defaultSorting: {
             type: String,
             default: "desc"
@@ -269,8 +302,15 @@ export default {
             type: Boolean,
             default: false
         },
-        excelLink: {
-            type: String
+        fileName: {
+            type: String,
+            default: "DataTable as Excel"
+        },
+        exportableFields: {
+            type: Array,
+            default: () => {
+                return [];
+            }
         }
     },
     filters: {
@@ -309,6 +349,18 @@ export default {
                 // Set ID
                 vm.columns[key].id = Math.random().toString(36).substr(2, 9);
 
+                // Total cols span
+                if(typeof value.hasTotal !== "boolean" || !value.hasTotal)
+                    vm.colsSpan['total'] += 1;
+                    
+                // Average cols span
+                if(typeof value.hasAverage !== "boolean" || !value.hasAverage)
+                    vm.colsSpan['average'] += 1;
+                    
+                // Median cols span
+                if(typeof value.hasMedian !== "boolean" || !value.hasMedian)
+                    vm.colsSpan['median'] += 1;
+
                 columns.push(vm.columns[key]);
             });
 
@@ -317,6 +369,10 @@ export default {
         formatedData() {
             if (this.data.length === 0)
                 return [];
+
+            // Paginate data
+            if(this.withPagination)
+                this.paginateData();
 
             let vm = this;
             let _parsedData = [];
@@ -334,41 +390,7 @@ export default {
                         val = item.callback.call(item, value);
                         
                     if (typeof val !== "undefined" && val !== null) {
-                        // Currency symbol
-                        if (typeof item.currency === "string" && item.currency !== ''){
-                            val = val.toFixed(2);
-                            val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
-                        }
-                        
-                        // Format number to K
-                        if (typeof item.isNbr === "boolean" && item.isNbr)
-                            val = String(abbreviate(val)).toUpperCase();
-
-                        // Percentage
-                        if(typeof item.isPercentage === "boolean" && item.isPercentage){
-                            val *= 100;
-                            val = val.toFixed(2);
-                            val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
-                        }
-
-                        // Capitalize string
-                        if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
-                            val = val.charAt(0).toUpperCase() + val.slice(1);
-
-                        // Re-format link
-                        if(typeof item.isLink === "boolean" && item.isLink){
-                            val = {
-                                condition: typeof val.condition !== "undefined" ? val.condition : true,
-                                showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
-                                content: typeof val.content !== "undefined" ? val.content : null,
-                                route: typeof val.route !== "undefined" ? val.route : null,
-                                title: typeof val.title !== "undefined" ? val.title : null,
-                            };
-                        }
-
-                        // Ignore zero or empty
-                        if (val == null || val == 0 || val == '')
-                            val = '-';
+                        val = vm.formatData(item, val);
 
                         rowData[item.field] = val;
                     }else{
@@ -386,6 +408,103 @@ export default {
         },
     },
     methods: {
+        formatData(item, val){
+            // Rounded number 
+            if(typeof item.isRounded === "boolean" && item.isRounded)
+                val = Math.round(val);
+                
+            // Currency symbol
+            if (typeof item.currency === "string" && item.currency !== ''){
+                val = val.toFixed(2);
+                val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + ' ' + item.currency;
+            }
+            
+            // Format number to K
+            if (typeof item.isNbr === "boolean" && item.isNbr && (typeof item.isNativeNbr === "undefined" || !item.isNativeNbr))
+                val = String(abbreviate(val)).toUpperCase();
+            if(typeof item.isNativeNbr === "boolean" && item.isNativeNbr)
+                val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ');
+
+            // Percentage
+            if(typeof item.isPercentage === "boolean" && item.isPercentage){
+                val *= 100;
+                val = val.toFixed(2);
+                val = new Intl.NumberFormat('en-US').format(val).replace(/,/g, ' ') + '%';
+            }
+
+            // Capitalize string
+            if (typeof val === "string" && typeof item.capitalize === "boolean" && item.capitalize)
+                val = val.charAt(0).toUpperCase() + val.slice(1);
+
+            // Re-format link
+            if(typeof item.isLink === "boolean" && item.isLink){
+                val = {
+                    condition: typeof val.condition !== "undefined" ? val.condition : true,
+                    showIf: typeof val.showIf !== "undefined" ? val.showIf : true,
+                    content: typeof val.content !== "undefined" ? val.content : null,
+                    route: typeof val.route !== "undefined" ? val.route : null,
+                    title: typeof val.title !== "undefined" ? val.title : null,
+                };
+            }
+
+            // Ignore zero or empty
+            if (val == null || val == 0 || val == '')
+                val = '-';
+
+            return val;
+        },
+        calculateColumnSum(field){
+            let total = 0;
+            try{
+                this.parsedData.map(function(value, index){
+                    if(value !== '' && value !== '-' && value !== '---'){
+                        let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                        total += Number(formatedValue) || 0;
+                    }
+                });
+            }catch(e){}
+
+            return total;
+        },
+        calculateColumnAverage(field){
+            let values = [];
+            
+            try{
+                this.parsedData.map(function(value, index){
+                    if(value !== '' && value !== '-' && value !== '---'){
+                        let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                        values.push(Number(formatedValue) || 0);
+                    }
+                });
+            }catch(e){}
+
+            return values.reduce((a, b) => a + b, 0) / values.length;
+        },
+        calculateColumnMedian(field){
+            let values = [];
+            
+            try{
+                this.parsedData.map(function(value, index){
+                    if(value !== '' && value !== '-' && value !== '---'){
+                        let formatedValue = value[field].replace( /[^\d\.]*/g, '');
+                        values.push(Number(formatedValue) || 0);
+                    }
+                });
+            }catch(e){}
+
+            if(values.length ===0) return 0;
+
+            values.sort(function(a,b){
+                return a - b;
+            });
+
+            var half = Math.floor(values.length / 2);
+
+            if (values.length % 2)
+                return values[half];
+
+            return (values[half - 1] + values[half]) / 2.0;
+        },
         getColumnsCount() {
             return typeof this.$refs.headercolumns !== "undefined" ? this.$refs.headercolumns.childElementCount : this.columns.length;
         },
@@ -488,6 +607,28 @@ export default {
                 console.log(error);
                 this.data = [];
             });
+        },
+        exportToExcel(){
+            // Init
+            let exportableData = [];
+            let exportName = this.fileName;
+            let exportType = 'xls';
+
+            let vm = this;
+            this.data.map(function(value, idx){
+                let row = {};
+                vm.exportableFields.map(function(field, index){
+                    if(value.hasOwnProperty(field)){
+                        let item = vm.columns.find((col) => col.field === field);
+                        row[field] = vm.formatData((typeof item !== "undefined" && item !== null) ? item : {}, value[field]);
+                    }
+                });
+
+                exportableData.push(row);
+            });
+
+            // Export 
+            exportFromJSON({ data: exportableData, fileName: exportName, exportType: exportType });
         }
     },
     data() {
@@ -502,7 +643,12 @@ export default {
             sortingColumn: null,
             searchQuery: null,
             isTyping: false,
-            debounceSearchQuery: null
+            debounceSearchQuery: null,
+            colsSpan: {
+                'total': 0,
+                'median': 0,
+                'avarage': 0
+            }
         }
     },
     mounted(){        
