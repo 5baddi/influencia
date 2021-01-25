@@ -296,6 +296,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -324,6 +329,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   methods: {
     loadCampaigns: function loadCampaigns() {
       this.$store.dispatch("fetchCampaigns")["catch"](function (e) {});
+    },
+    handleThumbnailUpload: function handleThumbnailUpload(files) {
+      if (typeof files[0] === "undefined") return;
+      this.story = files[0];
     },
     handleStoryUpload: function handleStoryUpload(files) {
       if (typeof files[0] === "undefined") return;
@@ -380,29 +389,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         formData.append("proofs[]", file);
       }); // Dispatch the creation action
 
-      this.$store.dispatch("addNewStory", formData).then(function (response) {
-        _this.createTrackerSuccess({
-          message: "Story ".concat(response.content.name, " created successfuly!")
-        });
+      if (typeof this.$route.params.uuid === "undefined" || this.$route.params.uuid === null) {
+        this.$store.dispatch("addNewStory", formData).then(function (response) {
+          _this.createTrackerSuccess({
+            message: "Story ".concat(response.content.name, " created successfuly!")
+          });
 
-        _this.$router.push({
-          name: 'stories'
-        });
-      })["catch"](function (error) {
-        var errors = Object.values(error.response.data.errors);
+          _this.$router.push({
+            name: 'trackers'
+          });
+        })["catch"](function (error) {
+          var errors = Object.values(error.response.data.errors);
 
-        if (_typeof(errors) === "object" && errors.length > 0) {
-          errors.forEach(function (element) {
-            _this.showError({
-              message: element
+          if (_typeof(errors) === "object" && errors.length > 0) {
+            errors.forEach(function (element) {
+              _this.showError({
+                message: element
+              });
             });
-          });
-        } else {
-          _this.showError({
-            message: error.response.data.message
-          });
-        }
-      });
+          } else {
+            _this.showError({
+              message: error.response.data.message
+            });
+          }
+        });
+      } else {// TODO: update exists story
+      }
     }
   },
   mounted: function mounted() {
@@ -858,24 +870,50 @@ var render = function() {
                       "div",
                       { staticClass: "control" },
                       [
-                        _c("label", [_vm._v("Story sequence")]),
+                        _c("label", [_vm._v("Story screenshot or thumbnail")]),
                         _vm._v(" "),
                         _c("FileInput", {
                           attrs: {
-                            id: "storyfile",
-                            label: "Upload story sequence",
-                            accept:
-                              "image/jpeg,image/png,image/gif,video/mp4,video/quicktime",
+                            id: "storyThumbnail",
+                            label: "Upload story thumbnail",
+                            accept: "image/jpeg,image/png,image/gif",
                             isList: true,
                             icon: "fas fa-plus",
                             multiple: false
                           },
-                          on: { custom: _vm.handleStoryUpload }
+                          on: { custom: _vm.handleThumbnailUpload }
+                        }),
+                        _vm._v(" "),
+                        _c("p", [
+                          _vm._v("A screenshot or thumbnail of story sequence.")
+                        ])
+                      ],
+                      1
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                !_vm.$route.params.uuid
+                  ? _c(
+                      "div",
+                      { staticClass: "control" },
+                      [
+                        _c("label", [_vm._v("Story video")]),
+                        _vm._v(" "),
+                        _c("FileInput", {
+                          attrs: {
+                            id: "storyVideo",
+                            label: "Upload story video",
+                            accept: "video/mp4,video/quicktime",
+                            isList: true,
+                            icon: "fas fa-plus",
+                            multiple: false
+                          },
+                          on: { custom: _vm.handleThumbnailUpload }
                         }),
                         _vm._v(" "),
                         _c("p", [
                           _vm._v(
-                            "If there are multiple images or videos for the story, we recommend creating one story per image or video."
+                            "If story sequence is a video upload the video sequence."
                           )
                         ])
                       ],
@@ -891,7 +929,7 @@ var render = function() {
                     _vm._v(" "),
                     _c("FileInput", {
                       attrs: {
-                        id: "storyfile",
+                        id: "storyProofs",
                         label: "Upload story insights screenshots",
                         accept: "image/jpeg,image/png,image/gif",
                         isList: true,

@@ -43,13 +43,18 @@
                         </div>
                         <div class="form-url">
                             <div class="control" v-if="!$route.params.uuid">
-                                <label>Story sequence</label>
-                                <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Upload story sequence'" v-bind:accept="'image/jpeg,image/png,image/gif,video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
-                                <p>If there are multiple images or videos for the story, we recommend creating one story per image or video.</p>
+                                <label>Story screenshot or thumbnail</label>
+                                <FileInput v-on:custom="handleThumbnailUpload" v-bind:id="'storyThumbnail'" v-bind:label="'Upload story thumbnail'" v-bind:accept="'image/jpeg,image/png,image/gif'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                                <p>A screenshot or thumbnail of story sequence.</p>
+                            </div>
+                            <div class="control" v-if="!$route.params.uuid">
+                                <label>Story video</label>
+                                <FileInput v-on:custom="handleThumbnailUpload" v-bind:id="'storyVideo'" v-bind:label="'Upload story video'" v-bind:accept="'video/mp4,video/quicktime'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="false"></FileInput>
+                                <p>If story sequence is a video upload the video sequence.</p>
                             </div>
                             <div class="control">
                                 <label>Story insights proofs</label>
-                                <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyfile'" v-bind:label="'Upload story insights screenshots'" v-bind:accept="'image/jpeg,image/png,image/gif'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="true"></FileInput>
+                                <FileInput v-on:custom="handleStoryUpload" v-bind:id="'storyProofs'" v-bind:label="'Upload story insights screenshots'" v-bind:accept="'image/jpeg,image/png,image/gif'" v-bind:isList="true" v-bind:icon="'fas fa-plus'" v-bind:multiple="true"></FileInput>
                                 <p>If there are multiple images or videos for the story, we recommend creating one tracker per image or video.</p>
                             </div>
                             <div class="control">
@@ -147,6 +152,12 @@ export default {
         loadCampaigns(){
             this.$store.dispatch("fetchCampaigns").catch(e => {});
         },
+        handleThumbnailUpload(files){
+            if(typeof files[0] === "undefined")
+                return;
+
+            this.story = files[0];
+        },
         handleStoryUpload(files){
             if(typeof files[0] === "undefined")
                 return;
@@ -212,27 +223,31 @@ export default {
             });
 
             // Dispatch the creation action
-            this.$store.dispatch("addNewStory", formData)
-                .then(response => {
-                    this.createTrackerSuccess({
-                        message: `Story ${response.content.name} created successfuly!`
-                    });
-                    this.$router.push({ name: 'stories' });
-                })
-                .catch(error => {
-                    let errors = Object.values(error.response.data.errors);
-                    if(typeof errors === "object" && errors.length > 0){
-                        errors.forEach(element => {
-                            this.showError({
-                                message: element
+            if(typeof this.$route.params.uuid === "undefined" || this.$route.params.uuid === null){
+                this.$store.dispatch("addNewStory", formData)
+                    .then(response => {
+                        this.createTrackerSuccess({
+                            message: `Story ${response.content.name} created successfuly!`
+                        });
+                        this.$router.push({ name: 'trackers' });
+                    })
+                    .catch(error => {
+                        let errors = Object.values(error.response.data.errors);
+                        if(typeof errors === "object" && errors.length > 0){
+                            errors.forEach(element => {
+                                this.showError({
+                                    message: element
+                                });
                             });
-                        });
-                    }else{
-                        this.showError({
-                            message: error.response.data.message
-                        });
-                    }
-                });
+                        }else{
+                            this.showError({
+                                message: error.response.data.message
+                            });
+                        }
+                    });
+            }else{
+                // TODO: update exists story
+            }
         }
    },
    mounted(){

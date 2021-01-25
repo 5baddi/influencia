@@ -219,6 +219,29 @@ class TrackerController extends Controller
         // Set story tracker
         $story['tracker_id'] = $tracker->id;
 
+        // Upload story thumbnail
+        if($request->hasFile('thumbnail')){
+            $fileName = Str::slug($request->file('thumbnail')->getClientOriginalName()) . '_' . time() . '.' . $request->file('thumbnail')->getClientOriginalExtension();
+            $thumbnailPath = $request->file('thumbnail')->storeAs('influencers/instagram/temp/stories/thumbnails/', $fileName, 'local');
+            
+            if($thumbnailPath)
+                $story['thumbnail'] = $thumbnailPath;
+        }
+
+        // Upload story video
+        if($request->hasFile('story')){
+            $fileName = Str::slug($request->file('story')->getClientOriginalName()) . '_' . time() . '.' . $request->file('story')->getClientOriginalExtension();
+            $videoPath = $request->file('thumbnail')->storeAs('influencers/instagram/temp/stories/videos/', $fileName, 'local');
+            
+            if($videoPath)
+                $story['story'] = $videoPath;
+        }
+        
+        // Upload story proofs
+        if($request->hasFile('proofs')){
+
+        }
+
         // Verify if influencer already exists
         $exists = Influencer::where([
             'platform' => 'instagram',
@@ -237,35 +260,6 @@ class TrackerController extends Controller
         }
 
         return response()->success("Task executed in background, please wait...", [], 200);
-        // Create tracker
-        // $tracker = Tracker::create($request->validated());
-        // $tracker = $tracker->refresh();
-
-        // // Upload story sequences
-        // $medias = [];
-        // if($request->hasFile('story')){
-        //     foreach($request->file('story') as $file){
-        //         $storyFileName =  Str::slug($request->input('name') . '_') . time() . '.' . $file->getClientOriginalExtension();
-        //         $storyFilePath = $file->storeAs('uploads', $storyFileName, 'public');
-        //         // TODO: use story table insted of tracker media
-        //         // $medias[] = TrackerMedia::create([
-        //         //     'tracker_id'    =>  $tracker->id,
-        //         //     'name'          =>  $storyFileName,
-        //         //     'type'          =>  'media',
-        //         //     'media_path'    =>  '/storage/' . $storyFilePath
-        //         // ]);
-        //     }
-        // }
-
-        // // Srap Influencer
-        // $scraper = $scraper->authenticate();
-        // $instagramUser = $scraper->byUsername($request->input('username'));
-        // $influencer = Influencer::create($instagramUser);
-
-        // return response()->success(
-        //     "Story tracker created successfully.",
-        //     Tracker::with(['user', 'campaign', 'shortlink', 'infleuncers'])->find($tracker->id)
-        // );
     }
 
     /**

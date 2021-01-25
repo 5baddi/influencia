@@ -4,17 +4,21 @@ namespace App\Jobs;
 
 use App\User;
 use App\Influencer;
+use App\StoryAnalytics;
 use App\BrandInfluencer;
 use Illuminate\Bus\Queueable;
+use Owenoj\LaravelGetId3\GetId3;
+use Illuminate\Http\UploadedFile;
+use InstagramScraper\Model\Story;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Notifications\CreateInfluencerJobState;
-use App\StoryAnalytics;
-use InstagramScraper\Model\Story;
+use Illuminate\Support\Facades\File;
 
 class ScrapInfluencerJob implements ShouldQueue
 {
@@ -106,10 +110,34 @@ class ScrapInfluencerJob implements ShouldQueue
 
                 // Handle story
                 if(sizeof($this->story) > 0){
+                    // Copy thumbnail
+                    if(Storage::disk('local')->exists($this->story['thumbnail'])){
+                        $oldPath = $this->story['thumbnail'];
+                        $newPath = str_replace('temp', $influencer->id, $this->story['thumbnail']);
+                        Storage::disk('local')->copy($this->story['thumbnail'], $newPath);
+                        Storage::disk('local')->delete($oldPath);
+                        $this->story['thumbnail'] = $newPath;
+                    }
+                    
+                    // Copy video
+                    if(Storage::disk('local')->exists($this->story['story'])){
+                        $oldPath = $this->story['story'];
+                        $newPath = str_replace('temp', $influencer->id, $this->story['story']);
+                        Storage::disk('local')->copy($this->story['story'], $newPath);
+                        Storage::disk('local')->delete($oldPath);
+                        $this->story['video'] = $newPath;
+
+                        // Get video duration
+                        $video = new GetId3(new UploadedFile(Storage::disk('local')->path($newPath), File::name($newPath)));
+                        $this->story['video_duration'] = $video->getPlaytimeSeconds();
+                    }
+
                     // Save story
                     $story = Story::create([
                         'influencer_id' =>  $influencer->id,
                         'tracker_id'    =>  $this->story['tracker_id'],
+                        'thumbnail'     =>  $this->story['thumbnail'],
+                        'video'         =>  $this->story['video'],
                         'published_at'  =>  $this->story['published_at']
                     ]);
 
@@ -119,10 +147,11 @@ class ScrapInfluencerJob implements ShouldQueue
                         'reach'         =>  $this->story['reach'],
                         'impressions'   =>  $this->story['impressions'],
                         'interactions'  =>  $this->story['interactions'],
-                        'back'          =>  $this->story['back'],
-                        'forward'       =>  $this->story['forward'],
-                        'next_story'    =>  $this->story['next_story'],
-                        'exited'        =>  $this->story['exited'],
+                        'back'          =>  $this->story['back'] ?? 0,
+                        'forward'       =>  $this->story['forward'] ?? 0,
+                        'next_story'    =>  $this->story['next_story'] ?? 0,
+                        'exited'        =>  $this->story['exited'] ?? 0,
+                        'navigation'    =>  $this->story['back'] + $this->story['forward'] + $this->story['next_story'] + $this->story['exited'],
                     ]);
                 }
             }
