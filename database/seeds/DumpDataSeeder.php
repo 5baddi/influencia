@@ -62,8 +62,8 @@ class DumpDataSeeder extends Seeder
         // Super admin
         $user = User::create([
             'name'              =>  'Super Admin',
-            'email'             =>  'amine.karhat@gmail.com',
-            'password'          =>  'inf2021',
+            'email'             =>  'project@baddi.info',
+            'password'          =>  'baddidev',
             'is_superadmin'     =>  true
         ]);
     }
