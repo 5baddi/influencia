@@ -1,8 +1,8 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use App\Tracker;
+use App\Models\Tracker;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Ryancco\HasUuidRouteKey\HasUuidRouteKey;

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Role;
-use App\Permission;
+use App\Models\Role;
+use App\Models\Permission;
 use App\Http\Requests\RoleRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\PermissionRequest;

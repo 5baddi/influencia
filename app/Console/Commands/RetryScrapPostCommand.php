@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Tracker;
+use App\Models\Tracker;
 use Carbon\Carbon;
 use App\Jobs\ScrapPostJob;
 use Illuminate\Console\Command;

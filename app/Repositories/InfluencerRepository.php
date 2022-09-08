@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Influencer;
+use App\Models\Influencer;
 use Illuminate\Database\Eloquent\Model;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Brand;
+use App\Models\User;
+use App\Models\Brand;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

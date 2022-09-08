@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Brand;
-use App\Campaign;
+use App\Models\Brand;
+use App\Models\Campaign;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;

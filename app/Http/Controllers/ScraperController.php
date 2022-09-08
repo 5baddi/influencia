@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Influencer;
+use App\Models\Influencer;
 use App\Services\InstagramScraper;
 use Unirest\Request;
 use InstagramScraper\Instagram;

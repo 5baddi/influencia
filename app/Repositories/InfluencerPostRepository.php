@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Influencer;
-use App\InfluencerPost;
-use App\Tracker;
+use App\Models\Influencer;
+use App\Models\InfluencerPost;
+use App\Models\Tracker;
 use Illuminate\Database\Eloquent\Model;
 use Format;
 

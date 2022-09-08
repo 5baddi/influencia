@@ -3,7 +3,7 @@
 namespace App\Jobs;
 
 use Goose\Client;
-use App\ShortLink;
+use App\Models\ShortLink;
 use Illuminate\Bus\Queueable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\SerializesModels;

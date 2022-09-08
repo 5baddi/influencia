@@ -1,9 +1,11 @@
 <?php
 
-use App\Role;
-use App\User;
-use App\Permission;
-use App\ApplicationSetting;
+namespace Database\Seeders;
+
+use App\Models\Role;
+use App\Models\User;
+use App\Models\Permission;
+use App\Models\ApplicationSetting;
 use Illuminate\Database\Seeder;
 
 class DumpDataSeeder extends Seeder

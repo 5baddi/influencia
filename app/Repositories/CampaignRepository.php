@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use App\Campaign;
+use App\Models\Campaign;
 use Illuminate\Support\Facades\Auth;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\LinkVisit;
-use App\ShortLink;
+use App\Models\LinkVisit;
+use App\Models\ShortLink;
 use Carbon\Carbon;
 use Jenssegers\Agent\Agent;
 use Illuminate\Support\Facades\Request;

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\ApplicationSetting;
+use App\Models\ApplicationSetting;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Swap;

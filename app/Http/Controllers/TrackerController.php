@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Brand;
-use App\Tracker;
-use App\Campaign;
-use App\ShortLink;
+use App\Models\Brand;
+use App\Models\Tracker;
+use App\Models\Campaign;
+use App\Models\ShortLink;
 use Carbon\Carbon;
-use App\Influencer;
-use App\BrandInfluencer;
+use App\Models\Influencer;
+use App\Models\BrandInfluencer;
 use App\Jobs\ScrapPostJob;
 use Illuminate\Support\Str;
 use App\Jobs\ScrapInfluencerJob;

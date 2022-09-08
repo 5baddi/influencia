@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Brand;
-use App\Influencer;
-use App\InfluencerPost;
-use App\BrandInfluencer;
-use App\InfluencerStory;
+use App\Models\Brand;
+use App\Models\Influencer;
+use App\Models\InfluencerPost;
+use App\Models\BrandInfluencer;
+use App\Models\InfluencerStory;
 use App\Jobs\ScrapInfluencerJob;
 use App\Services\YoutubeScraper;
 use Illuminate\Support\Facades\Log;

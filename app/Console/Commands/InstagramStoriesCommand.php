@@ -3,8 +3,8 @@
 namespace App\Console\Commands;
 
 use Carbon\Carbon;
-use App\Influencer;
-use App\InfluencerStory;
+use App\Models\Influencer;
+use App\Models\InfluencerStory;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 

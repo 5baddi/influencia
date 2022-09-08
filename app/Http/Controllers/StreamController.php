@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Brand;
-use App\Tracker;
+use App\Models\Brand;
+use App\Models\Tracker;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 

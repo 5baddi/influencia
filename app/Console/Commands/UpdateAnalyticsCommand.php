@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Tracker;
-use App\Campaign;
+use App\Models\Tracker;
+use App\Models\Campaign;
 use Carbon\Carbon;
-use App\TrackerAnalytics;
-use App\CampaignAnalytics;
+use App\Models\TrackerAnalytics;
+use App\Models\CampaignAnalytics;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 

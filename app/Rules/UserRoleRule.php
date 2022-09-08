@@ -2,7 +2,7 @@
 
 namespace App\Rules;
 
-use App\Role;
+use App\Models\Role;
 use Illuminate\Contracts\Validation\Rule;
 
 class UserRoleRule implements Rule

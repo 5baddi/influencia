@@ -2,9 +2,9 @@
 
 namespace App\Providers;
 
-use App\User;
-use App\Brand;
-use App\Tracker;
+use App\Models\User;
+use App\Models\Brand;
+use App\Models\Tracker;
 use App\Policies\UserPolicy;
 use App\Policies\BrandPolicy;
 use App\Policies\TrackerPolicy;

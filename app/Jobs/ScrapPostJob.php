@@ -3,14 +3,14 @@
 namespace App\Jobs;
 
 use Format;
-use App\Tracker;
+use App\Models\Tracker;
 use Carbon\Carbon;
-use App\Influencer;
-use App\InfluencerPost;
-use App\BrandInfluencer;
-use App\TrackerInfluencer;
+use App\Models\Influencer;
+use App\Models\InfluencerPost;
+use App\Models\BrandInfluencer;
+use App\Models\TrackerInfluencer;
 use Illuminate\Bus\Queueable;
-use App\TrackerInfluencerMedia;
+use App\Models\TrackerInfluencerMedia;
 use App\Services\YoutubeScraper;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;

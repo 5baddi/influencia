@@ -2,8 +2,8 @@
 
 namespace App\Notifications;
 
-use App\User;
-use App\Influencer;
+use App\Models\User;
+use App\Models\Influencer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;

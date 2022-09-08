@@ -2,10 +2,10 @@
 
 namespace App\Jobs;
 
-use App\User;
-use App\Influencer;
-use App\StoryAnalytics;
-use App\BrandInfluencer;
+use App\Models\User;
+use App\Models\Influencer;
+use App\Models\StoryAnalytics;
+use App\Models\BrandInfluencer;
 use Illuminate\Bus\Queueable;
 use Owenoj\LaravelGetId3\GetId3;
 use Illuminate\Http\UploadedFile;

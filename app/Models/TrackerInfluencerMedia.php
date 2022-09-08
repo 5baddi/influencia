@@ -1,13 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ApplicationSetting extends Model
+class TrackerInfluencerMedia extends Model
 {
-    const DEFAULT_PAGINATION = 100;
-
     protected $guarded = [];
 
     /**
@@ -15,5 +13,7 @@ class ApplicationSetting extends Model
      *
      * @var string
      */
-    protected $table = 'application_settings';
+    protected $table = 'tracker_influencer_media';
+
+    public $timestamps = false;
 }

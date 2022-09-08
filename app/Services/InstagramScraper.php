@@ -5,12 +5,12 @@ namespace App\Services;
 use Format;
 use Exception;
 use Carbon\Carbon;
-use App\Influencer;
-use App\ScrapAccount;
+use App\Models\Influencer;
+use App\Models\ScrapAccount;
 use GuzzleHttp\Client;
-use App\InfluencerPost;
+use App\Models\InfluencerPost;
 use Sentiment\Analyzer;
-use App\InfluencerStory;
+use App\Models\InfluencerStory;
 use App\Helpers\EmojiParser;
 use InstagramScraper\Instagram;
 use Phpfastcache\Config\Config;
@@ -200,7 +200,7 @@ class InstagramScraper
                 ],
                 'config'            =>  [
                     'curl'          =>  [
-			            CURLOPT_PROXY		    =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
+			            CURLOPT_PROXY           =>  config('scraper.proxy.ip') . ':' . config('scraper.proxy.port'),
                         CURLOPT_SSL_VERIFYPEER  =>  0,
                         CURLOPT_SSL_VERIFYHOST  =>  0,
                         // CURLOPT_SSLVERSION      =>  CURL_SSLVERSION_TLSv1,
@@ -210,8 +210,8 @@ class InstagramScraper
                         CURLOPT_HTTPPROXYTUNNEL =>  1,
                         CURLOPT_RETURNTRANSFER  =>  true,
                         CURLOPT_HEADER          =>  1,
-			            CURLOPT_TIMEOUT		    =>  0,
-                        CURLOPT_CONNECTTIMEOUT	=>  35,
+			            CURLOPT_TIMEOUT         =>  0,
+                        CURLOPT_CONNECTTIMEOUT  =>  35,
                         CURLOPT_IPRESOLVE       =>  CURL_IPRESOLVE_V4
                     ]
                 ],

@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Campaign;
+use App\Models\User;
+use App\Models\Campaign;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\HandlesAuthorization;
 

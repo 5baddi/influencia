@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use Format;
 use Carbon\Carbon;
-use App\Influencer;
-use App\InfluencerPost;
-use App\TrackerInfluencerMedia;
+use App\Models\Influencer;
+use App\Models\InfluencerPost;
+use App\Models\TrackerInfluencerMedia;
 use Illuminate\Console\Command;
 use App\Services\InstagramScraper;
 use Illuminate\Support\Facades\Log;

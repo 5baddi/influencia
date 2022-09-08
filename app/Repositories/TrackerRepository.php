@@ -2,8 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Influencer;
-use App\Tracker;
+use App\Models\Influencer;
+use App\Models\Tracker;
 
 /**
  * Class TrackerRepository.

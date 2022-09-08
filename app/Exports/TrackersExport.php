@@ -2,8 +2,8 @@
 
 namespace App\Exports;
 
-use App\Tracker;
-use App\Influencer;
+use App\Models\Tracker;
+use App\Models\Influencer;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\FromCollection;

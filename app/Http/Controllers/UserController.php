@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Format;
-use App\User;
-use App\Brand;
+use App\Models\User;
+use App\Models\Brand;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use App\Http\Resources\DataTable\UserDTResource;

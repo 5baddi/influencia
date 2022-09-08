@@ -2,9 +2,9 @@
 
 namespace App\Policies;
 
-use App\Campaign;
-use App\Tracker;
-use App\User;
+use App\Models\Campaign;
+use App\Models\Tracker;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
