@@ -72,7 +72,7 @@ class SearchController extends Controller
         $dynamic_ip = '' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255);
 
         $cookieJar = CookieJar::fromArray([
-            'sessionid' => '5403984220%3AS59ft1BZsXXvXP%3A17'
+            'sessionid' => '50782112744%3AhDmAEkkE6cfbrP%3A11%3AAYeKslw5xEJOrmQZF1t1bv27SYlWXH2UYn2bb4X5SQ'
         ], '.instagram.com');
 
         $response = $client->get($url, [
@@ -153,7 +153,7 @@ class SearchController extends Controller
         $dynamic_ip = '' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255);
 
         $cookieJar = CookieJar::fromArray([
-            'sessionid' => '5403984220%3AS59ft1BZsXXvXP%3A17'
+            'sessionid' => '50782112744%3AhDmAEkkE6cfbrP%3A11%3AAYeKslw5xEJOrmQZF1t1bv27SYlWXH2UYn2bb4X5SQ'
         ], '.instagram.com');
 
         $response = $client->get($url, [
@@ -187,7 +187,7 @@ class SearchController extends Controller
     protected function cUrlOptionHandler()
     {
         $dynamic_ip = '' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255) . '.' . mt_rand(0, 255);
-        $sessionid = '5403984220%3AS59ft1BZsXXvXP%3A17';
+        $sessionid = '50782112744%3AhDmAEkkE6cfbrP%3A11%3AAYeKslw5xEJOrmQZF1t1bv27SYlWXH2UYn2bb4X5SQ';
         $http_curl_headers = array("REMOTE_ADDR: {$dynamic_ip}", "HTTP_X_FORWARDED_FOR: {$dynamic_ip}", "Cookie: sessionid={$sessionid}");
         $this->custom_headers = $http_curl_headers;
     }
