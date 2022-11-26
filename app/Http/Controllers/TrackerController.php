@@ -156,8 +156,7 @@ class TrackerController extends Controller
      */
     public function create(CreateTrackerRequest $request)
     {
-        try {
-            abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
+        abort_if(Gate::denies('create_tracker') && Gate::denies('create', Auth::user()), Response::HTTP_FORBIDDEN, "403 Forbidden");
 
         // Create new tracker row
         $tracker = Tracker::create($request->validated());
@@ -182,9 +181,6 @@ class TrackerController extends Controller
             "Tracker created successfully.",
             Tracker::with(['user', 'campaign', 'shortlink', 'influencers'])->find($tracker->id)
         );
-        } catch (\Throwable $e) {
-            dd($e);
-        }
     }
 
     /**
